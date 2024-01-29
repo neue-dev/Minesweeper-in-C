@@ -1,0 +1,7 @@
+# Ignore all executables and the working vscode directory
+.vscode/
+*.exe
+*.o
+
+# Don't ignore the build files
+!build/
