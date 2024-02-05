@@ -13,11 +13,11 @@ int main(int argc, char *argv[]) {
 
   // Compile and run the game
   #ifdef _WIN32
-    sprintf(command, "gcc -std=c99 -Wall src\\%s.c -o build\\minesweeper.win.exe", filename);
+    sprintf(command, "gcc -std=c99 -Wall src\\%s.c -o build\\minesweeper.win.exe 2> build\\log.win.txt", filename);
     system(command);
     system("build\\minesweeper.win.exe");
   #else
-    sprintf(command, "gcc -std=c99 -Wall ./src/%s.c -o ./build/minesweeper.unix.o", filename);
+    sprintf(command, "gcc -std=c99 -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> build\\log.unix.txt", filename);
     system(command);
     system("./build/minesweeper.unix.o");
   #endif

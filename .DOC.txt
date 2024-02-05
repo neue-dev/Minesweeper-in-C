@@ -1,3 +1,10 @@
 // Temporary acknowledgements and resources
 
-[ANSI Escape Sequences] https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+[ANSI Escape Sequences]                   https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+[Using swprintf_s]                        https://www.educative.io/answers/what-is-swprintfs-in-c
+[Multithreading in C Linux]               https://linux.die.net/man/2/clone
+[Multithreading in C Linux Demo]          https://www.evanjones.ca/software/threading.html
+[Multithreading in C Windows Demo]        https://learn.microsoft.com/en-us/cpp/parallel/sample-multithread-c-program
+[Multithreading in Linux without Posix]   https://stackoverflow.com/questions/13283294/how-to-make-thread-in-c-without-using-posix-library-pthread-h
+[Windows Data Types]                      https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
+[PVOID vs. LPVOID]                        https://forums.codeguru.com/showthread.php?490459-what-is-difference-between-PVOID-and-LPVOID

@@ -1,0 +1,7 @@
+src\minesweeper.dev.c: In function 'main':
+src\minesweeper.dev.c:12:8: warning: statement with no effect [-Wunused-value]
+   test * test
+   ~~~~~^~~~~~
+src\minesweeper.dev.c:14:3: error: expected ';' before 'return'
+   return 0;
+   ^~~~~~

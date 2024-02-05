@@ -2,6 +2,7 @@
  * A library for rendering graphics onto the screen.
 */
 
+#include "../utils.types.h"
 #include <stdio.h>
 
 /**
@@ -16,18 +17,18 @@
  * @param   {int}   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
 */
 void Graphics_setForeground(int color) {
-  char ANSIEscSequence[32];
+  char sANSISequence[32];
 
   // Create the ANSI escape sequence and parse the RGB values from the int
   // Note that 
   //    1.) the 38; specifies we are changing the foreground color
   //    2.) the 2; specifies the format of the color value input (RGB)
-  sprintf(ANSIEscSequence, "\x1b[38;2;%d;%d;%dm", 
+  sprintf(sANSISequence, "\x1b[38;2;%d;%d;%dm", 
     (color >> 16) % (1 << 8), 
     (color >> 8) % (1 << 8), 
     (color >> 0) % (1 << 8));
 
-  printf("%s", ANSIEscSequence);
+  printf("%s", sANSISequence);
 }
 
 /**
@@ -36,16 +37,16 @@ void Graphics_setForeground(int color) {
  * @param   {int}   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
 */
 void Graphics_setBackground(int color) {
-  char ANSIEscSequence[32];
+  char sANSISequence[32];
 
   // Create the ANSI escape sequence and parse the RGB values from the int
   // Note that 
   //    1.) the 48; specifies we are changing the background color
   //    2.) the 2; specifies the format of the color value input (RGB)
-  sprintf(ANSIEscSequence, "\x1b[48;2;%d;%d;%dm", 
+  sprintf(sANSISequence, "\x1b[48;2;%d;%d;%dm", 
     (color >> 16) % (1 << 8), 
     (color >> 8) % (1 << 8), 
     (color >> 0) % (1 << 8));
 
-  printf("%s", ANSIEscSequence);
+  printf("%s", sANSISequence);
 }

@@ -5,21 +5,15 @@
 #ifndef UTILS_THREADS
 #define UTILS_THREADS
 
+#include "../utils.types.h"
+
 // Windows for now
 #ifdef _WIN32
-
-// The needed header files
-#include <windows.h>
-#include <conio.h>
-
-struct Thread {
-
-};
-
+#include "./win/utils.threads.win.h"
 
 // Not in Windows
 #else
-// !add some unix stuff
+#include "./unix/utils.threads.unix.h"
 #endif
 
 #endif
