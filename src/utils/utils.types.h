@@ -20,7 +20,10 @@
 //    (3) uint32_t
 #include <stdint.h>
 
-// Pointer handles
+// A handle is just a pointer
+// It's a Windows convention (?)
+
+// Pointers
 typedef void *Handle;           // A handle to any object we wish
 typedef Handle HandleSTD;       // IO handles
 typedef Handle HandleThread;    // Distinguishes threads

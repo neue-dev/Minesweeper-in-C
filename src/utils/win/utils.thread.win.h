@@ -19,46 +19,46 @@
                                                         //    that deals with the timeout only accepts numbers of 
                                                         //    type long for some reason
 
-/**
- * //
- * ////
- * //////    ThreadCallback struct
- * ////////
- * ////////// 
-*/
+// /**
+//  * //
+//  * ////
+//  * //////    ThreadCallback struct
+//  * ////////
+//  * ////////// 
+// */
 
-/**
- * A struct for storing information about the callback to a thread.
- * We need to do this so we can call the callback within a timeout loop
- *    that executes every THREAD_TIMEOUT milliseconds.
- * @struct
-*/
-typedef struct ThreadCallback {
+// /**
+//  * A struct for storing information about the callback to a thread.
+//  * We need to do this so we can call the callback within a timeout loop
+//  *    that executes every THREAD_TIMEOUT milliseconds.
+//  * @struct
+// */
+// typedef struct ThreadCallback {
 
-  ParamFunc pCallback;  // The callback of the thread
-  ParamObj pArgs;       // The arguments to the callback
+//   ParamFunc pCallback;  // The callback of the thread
+//   ParamObj pArgs;       // The arguments to the callback
 
-} ThreadCallback;
+// } ThreadCallback;
 
-/**
- * The function represents the timeout function we input into a thread, with a ThreadCallback struct as 
- *    its argument. Note that I did not use ParamObj as a type for pThreadCallback because it would 
- *    be best to use it only for the properties of the ThreadCallback struct itself.
- * 
- * @param   { HandleMutex }   hStateMutex       A mutex that prevents threads from overrunning each other.
- * @param   { void * }        pThreadCallback   An object containing details about what the thread should execute.
-*/
-void ThreadTimeoutCallback(void *pThreadCallback) {
-  do {
+// /**
+//  * The function represents the timeout function we input into a thread, with a ThreadCallback struct as 
+//  *    its argument. Note that I did not use ParamObj as a type for pThreadCallback because it would 
+//  *    be best to use it only for the properties of the ThreadCallback struct itself.
+//  * 
+//  * @param   { HandleMutex }   hStateMutex       A mutex that prevents threads from overrunning each other.
+//  * @param   { void * }        pThreadCallback   An object containing details about what the thread should execute.
+// */
+// void ThreadTimeoutCallback(void *pThreadCallback) {
+//   do {
 
-    // ! Fix the goddamn errors here
-    ((ThreadCallback *) pThreadCallback)->pCallback(
-      ((ThreadCallback *) pThreadCallback)->pArgs);
+//     // ! Fix the goddamn errors here
+//     ((ThreadCallback *) pThreadCallback)->pCallback(
+//       ((ThreadCallback *) pThreadCallback)->pArgs);
 
 
-    // ! Change this while condition to a timeout every few milliseconds
-  } while(1);
-}
+//     // ! Change this while condition to a timeout every few milliseconds
+//   } while(1);
+// }
 
 /**
  * //
@@ -79,8 +79,12 @@ typedef struct Thread {
                             // TBH, this is only here for convenience and debugging
 
   HandleThread hThread;     // A handle to the actual thread instance
-  HandleMutex hStateMutex;  // A handle to the state mutex stored in the thread pool struct
-  HandleMutex hDataMutex;   // A handle to the shared data mutex
+  HandleMutex hStateMutex;  // A handle to the mutex that tells the thread to keep running
+  HandleMutex hDataMutex;   // A handle to the mutex that tells the thread if it can 
+                            //    modify the shared resource
+
+  ParamFunc pCallee;        // A pointer to the routine to be run by the thread
+  ParamObj pArgs;           // The arguments to the callee
 
 } Thread;
 
@@ -115,7 +119,7 @@ Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMu
   // Update its name
   this->sName = sName;
 
-  // Store the references to the pertinent mutexes first
+  // Store the references to the mutex
   this->hStateMutex = hStateMutex;
   this->hDataMutex = hDataMutex;
 
@@ -135,7 +139,6 @@ Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMu
  * @param   { ParamFunc }     pCallback     A pointer to the callback to be executed by the thread.
  * @param   { ParamObj }      pArgs         A pointer to the arguments to be passed to the callback.
  * @return  { Thread * }                    A pointer to the initialized thread object.
- * @return  { Thread * }        A pointer to the initialized thread object.
 */
 Thread *Thread_create(char *sName, HandleMutex hStateMutex, HandleMutex hDataMutex, ParamFunc pCallback, ParamObj pArgs) {
   return Thread_init(Thread_new(), sName, hStateMutex, hDataMutex, pCallback, pArgs);
@@ -149,6 +152,19 @@ Thread *Thread_create(char *sName, HandleMutex hStateMutex, HandleMutex hDataMut
 */
 void Thread_kill(Thread *this) {
   free(this);
+}
+
+/**
+ * ! DO THE CALLBACK HERE
+*/
+void Thread_caller(void *pThread) {
+  do {
+
+    // ! is this right?
+    // pThread->pCallee(pThread->pArgs);
+
+  // While the state mutex hasn't been released, keep running the thread
+  } while(WaitForSingleObject(pThread->hStateMutex, THREAD_TIMEOUT) == WAIT_TIMEOUT);
 }
 
 /**
@@ -167,17 +183,15 @@ void Thread_kill(Thread *this) {
  * @struct
 */
 typedef struct ThreadPool {
-  
-  // These are the pertinent mutexes for the thread pool
+
+  Thread *pThreadsArray[THREAD_MAX_COUNT];            // Stores references to all the threads
+
   // A mutual exclusion (mutex) prevents two different threads from modifying 
   //    a shared resource at the same time. Such "races" can be quite a problem
   //    if not handled correctly.
-  // ! remove the state mutex?? I dont think they need to execute one after the other,, they can overlap
-  HandleMutex hStateMutex;                  // Describes the state of the thread pool (tells threads to keep running)
-  HandleMutex hDataMutex;                   // Refers to whether or not the data resource shared by the threads is free
-
-  Thread *pThreadsArray[THREAD_MAX_COUNT];  // Stores references to all the threads
-  int dThreadsCount;                        // Stores the length of the threads array
+  HandleMutex *hStateMutexesArray[THREAD_MAX_COUNT];  // Stores the mutexes that tell each thread to keep running
+  HandleMutex *hDataMutexesArray[THREAD_MAX_COUNT];   // Stores the mutexes that tell each thread if it can modify its resource
+  int dThreadsCount;                                  // Stores the length of the threads array
 
 } ThreadPool;
 
@@ -189,14 +203,8 @@ typedef struct ThreadPool {
 */
 ThreadPool *ThreadPool_init(ThreadPool *this) {
 
-  // The mutexes
-  this->hStateMutex = CreateMutexA(NULL, FALSE, NULL);
-  this->hDataMutex = CreateMutexA(NULL, FALSE, NULL);
-
-  // The array
+  // Set the array size to 0
   this->dThreadsCount = 0;
-
-  printf("hello world");
 
   return this;
 }
@@ -208,22 +216,28 @@ ThreadPool *ThreadPool_init(ThreadPool *this) {
 */
 void ThreadPool_exit(ThreadPool *this) {
 
-  // Make sure no thread is holding onto the mutex anymore
-  ReleaseMutex(this->hStateMutex);
+  // By releasing this mutex, we terminate all threads
+
+  // ! fix this first
+  // !
 
   // Kill all the threads first
   while(--this->dThreadsCount) {
 
+    // This tells the thread to terminate
+    ReleaseMutex(this->hStateMutexesArray[this->dThreadsCount]);
+
     // Wait for the thread to die, then deallocate the thread object 
     WaitForSingleObject(this->pThreadsArray[this->dThreadsCount]->hThread, INFINITE);
     Thread_kill(this->pThreadsArray[this->dThreadsCount]);
+
+    // Close the mutexes
+    if(this->hStateMutexesArray[this->dThreadsCount]) CloseHandle(this->hStateMutexesArray[this->dThreadsCount]);
+    if(this->hDataMutexesArray[this->dThreadsCount]) CloseHandle(this->hDataMutexesArray[this->dThreadsCount]);
   }
   
   // Reset the thread counter
   this->dThreadsCount = 0;
-
-  // Close the mutexes
-  if(this->hStateMutex) CloseHandle(this->hStateMutex);
 }
 
 /**
@@ -238,20 +252,27 @@ void ThreadPool_exit(ThreadPool *this) {
  * @return  { int }                         The index of the created thread within the array of the manager.
 */
 int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallback, ParamObj pArgs) {
+  
+  // The stuff to create
   Thread *pThread;
+  HandleMutex hStateMutex;
+  HandleMutex hDataMutex;
 
   if(this->dThreadsCount >= THREAD_MAX_COUNT)
     return -1;
 
-  // Create a new thread
-  // !CHANGE THE NULLS HERE
-  pThread = Thread_create(sName, this->hStateMutex, this->hDataMutex, pCallback, pArgs);
+  // Create a new thread with its pertinent mutexes
+  hStateMutex = CreateMutexA(NULL, TRUE, NULL);
+  hDataMutex = CreateMutexA(NULL, FALSE, NULL);
+  pThread = Thread_create(sName, hStateMutex, hDataMutex, pCallback, pArgs);
 
-  // Store the thread in its array
+  // Store the thread and its mutexes in their arrays
+  this->hStateMutexesArray[this->dThreadsCount] = hStateMutex;
+  this->hDataMutexesArray[this->dThreadsCount] = hDataMutex;
   this->pThreadsArray[this->dThreadsCount] = pThread;
   
   // Return the index
-  return ++this->dThreadsCount;
+  return this->dThreadsCount++;
 }
 
 /**
@@ -269,7 +290,10 @@ void ThreadPool_killThread(ThreadPool *this, int dThreadId) {
 
   // ! fix this function first
 
-  // Kill the thread instance first
+  // Release its state mutex first
+  ReleaseMutex(this->hStateMutexesArray[dThreadId]);
+
+  // Kill the thread instance
   Thread_kill(this->pThreadsArray[dThreadId]);
 
   // Shorten the length of the list
@@ -277,9 +301,8 @@ void ThreadPool_killThread(ThreadPool *this, int dThreadId) {
   this->dThreadsCount--;
 
   // Update the array
-  for(i = dThreadId; i < this->dThreadsCount; i++) {
+  for(i = dThreadId; i < this->dThreadsCount; i++)
     this->pThreadsArray[i] = this->pThreadsArray[i + 1];
-  }
 }
 
 #endif
