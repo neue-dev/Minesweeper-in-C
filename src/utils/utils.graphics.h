@@ -2,19 +2,23 @@
  * A library for rendering graphics onto the screen.
 */
 
-#include "../utils.types.h"
+#ifndef UTILS_GRAPHICS
+#define UTILS_GRAPHICS
+
 #include <stdio.h>
 
 /**
- * ########################################
- * #### Color Functions
- * ########################################
+ * //
+ * ////
+ * //////    Color functions
+ * ////////
+ * ////////// 
 */
 
 /**
  * Sets the current color of the text of the terminal.
  * 
- * @param   {int}   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
+ * @param   { int }   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
 */
 void Graphics_setForeground(int color) {
   char sANSISequence[32];
@@ -34,7 +38,7 @@ void Graphics_setForeground(int color) {
 /**
  * Sets the current color of the background of the terminal.
  * 
- * @param   {int}   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
+ * @param   { int }   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
 */
 void Graphics_setBackground(int color) {
   char sANSISequence[32];
@@ -50,3 +54,5 @@ void Graphics_setBackground(int color) {
 
   printf("%s", sANSISequence);
 }
+
+#endif
