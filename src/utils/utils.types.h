@@ -14,16 +14,28 @@
 #define UTILS_TYPES
 
 // Some primitives
-// Gives us fixed width data types
+// Gives us fixed-width data types
 //    (1) uint8_t
 //    (2) uint16_t
 //    (3) uint32_t
 #include <stdint.h>
 
-// Pointer types
-typedef void *Handle;                                           // A handle to any object we wish
-typedef Handle HandleSTD;                                       // IO handles
-typedef Handle HandleThread;                                    // Distinguishes threads
-typedef Handle HandleMutex;                                     // Just so we can distinguish mutexes
+// Pointer handles
+typedef void *Handle;           // A handle to any object we wish
+typedef Handle HandleSTD;       // IO handles
+typedef Handle HandleThread;    // Distinguishes threads
+typedef Handle HandleMutex;     // Just so we can distinguish mutexes
+
+// FOR THE CODE BELOW (parameter object pointers):
+// Note that we have to do this because some of the Windows API requires us to pass
+//    both a callback and its arguments separately. The data types here are primarily
+//    for representing the arguments to a callback function.
+
+// Parameter object pointers
+typedef void *Param;            // A pointer to a collection of function parameters
+typedef Param ParamInt;         // An integer to be passed as an argument
+typedef Param ParamStr;         // A string to be passed as an argument
+typedef Param ParamObj;         // A pointer to a struct to be passed to a function
+typedef Param ParamFunc;        // A pointer to a callback function
 
 #endif

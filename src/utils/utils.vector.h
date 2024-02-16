@@ -21,14 +21,12 @@ typedef struct Vec2D {
 
 /**
  * Allocates memory for an instance of the vector class.
+ * The function returns NULL when the allocation fails.
  * 
  * @return  { Vec2D * }   An instance of the Vec2D class.
 */
 Vec2D *Vec2D_new() {
   Vec2D *pVec2D = calloc(1, sizeof(*pVec2D));
-
-  if(pVec2D == NULL)
-    return NULL;
   return pVec2D;
 }
 
@@ -55,10 +53,7 @@ Vec2D *Vec2D_init(Vec2D *this, int x, int y) {
  * @return  { Vec2D * }       A pointer to the initialized class.
 */
 Vec2D *Vec2D_create(int x, int y) {
-  this->x = x;
-  this->y = y;
-
-  return this;
+  return Vec2D_init(Vec2D_new(), x, y);
 }
 
 /**
