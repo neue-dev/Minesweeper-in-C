@@ -62,7 +62,7 @@ Vec2D *Vec2D_create(int x, int y) {
  * 
  * @param   { Vec2D * }   this  The instance to be freed from memory.
 */
-void Vec2D_kill(Vec2d *this) {
+void Vec2D_kill(Vec2D *this) {
   free(this);
 }
 
