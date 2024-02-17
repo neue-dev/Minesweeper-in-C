@@ -1,10 +1,10 @@
-In file included from ./src/utils/utils.thread.h:14,
+In file included from ./src/utils/utils.thread.h:21,
                  from ./src/minesweeper.dev.c:2:
 ./src/utils/./unix/utils.thread.unix.h: In function ‘Thread_caller’:
-./src/utils/./unix/utils.thread.unix.h:79:12: warning: implicit declaration of function ‘usleep’ [-Wimplicit-function-declaration]
-   79 |   } while(!usleep(THREAD_TIMEOUT * 1000) && pthread_mutex_trylock(this->hStateMutex));
+./src/utils/./unix/utils.thread.unix.h:72:12: warning: implicit declaration of function ‘usleep’ [-Wimplicit-function-declaration]
+   72 |   } while(!usleep(THREAD_TIMEOUT * 1000) && pthread_mutex_trylock(this->hStateMutex));
       |            ^~~~~~
 ./src/minesweeper.dev.c: In function ‘main’:
-./src/minesweeper.dev.c:24:7: warning: unused variable ‘threadId2’ [-Wunused-variable]
-   24 |   int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
+./src/minesweeper.dev.c:25:7: warning: unused variable ‘threadId2’ [-Wunused-variable]
+   25 |   int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
       |       ^~~~~~~~~
