@@ -2,6 +2,7 @@
 
 [ANSI Escape Sequences]                   https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 [FuncA vs FuncW in Windows libs]          https://comp.os.ms-windows.programmer.narkive.com/4ADwdQBR/regarding-createmutexw-and-createmutexa
+[Function Pointers]                       https://stackoverflow.com/questions/840501/how-do-function-pointers-in-c-work
 [Using swprintf_s]                        https://www.educative.io/answers/what-is-swprintfs-in-c
 [Multithreading in C Linux]               https://linux.die.net/man/2/clone
 [Multithreading in C Linux Demo]          https://www.evanjones.ca/software/threading.html

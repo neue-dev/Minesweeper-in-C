@@ -3,3 +3,13 @@
 3. Output the warnings and errors of the compilation unto the build folder (or a separate log folder ??)
 4. Create a warning on the terminal in case the program doesnt run properly (in case conhost doesnt execute for some reason)
     > in this case, tell the user to execute main.exe with an argument or smthh
+
+might it be better to have the following caller structure?
+
+if(WaitForSingleObject(dataMutex, TIMEOUT) == WAIT_TIMEOUT)
+    // ! do some stuff but dont touch resource
+else {
+    // ! do stuff
+    // ! modify resource
+    ReleaseMutex(dataMutex);
+}

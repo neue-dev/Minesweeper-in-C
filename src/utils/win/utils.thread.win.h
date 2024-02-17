@@ -1,5 +1,9 @@
 /**
  * A utility library for implementing threads in Windows.
+ * Note that:
+ *    (1) hThread is a handle to the actual thread while
+ *    (2) pThread is a pointer to an instance of the Thread class
+ * 
 */
 
 #ifndef UTILS_THREAD_WIN
@@ -18,47 +22,6 @@
                                                         // Note that it has to be a long because the Windows API
                                                         //    that deals with the timeout only accepts numbers of 
                                                         //    type long for some reason
-
-// /**
-//  * //
-//  * ////
-//  * //////    ThreadCallback struct
-//  * ////////
-//  * ////////// 
-// */
-
-// /**
-//  * A struct for storing information about the callback to a thread.
-//  * We need to do this so we can call the callback within a timeout loop
-//  *    that executes every THREAD_TIMEOUT milliseconds.
-//  * @struct
-// */
-// typedef struct ThreadCallback {
-
-//   ParamFunc pCallback;  // The callback of the thread
-//   ParamObj pArgs;       // The arguments to the callback
-
-// } ThreadCallback;
-
-// /**
-//  * The function represents the timeout function we input into a thread, with a ThreadCallback struct as 
-//  *    its argument. Note that I did not use ParamObj as a type for pThreadCallback because it would 
-//  *    be best to use it only for the properties of the ThreadCallback struct itself.
-//  * 
-//  * @param   { HandleMutex }   hStateMutex       A mutex that prevents threads from overrunning each other.
-//  * @param   { void * }        pThreadCallback   An object containing details about what the thread should execute.
-// */
-// void ThreadTimeoutCallback(void *pThreadCallback) {
-//   do {
-
-//     // ! Fix the goddamn errors here
-//     ((ThreadCallback *) pThreadCallback)->pCallback(
-//       ((ThreadCallback *) pThreadCallback)->pArgs);
-
-
-//     // ! Change this while condition to a timeout every few milliseconds
-//   } while(1);
-// }
 
 /**
  * //
@@ -89,6 +52,31 @@ typedef struct Thread {
 } Thread;
 
 /**
+ * Executes the callback function assigned to the thread.
+ * 
+ * @param   { void * }  pThread   A reference to the Thread object whose info we need.
+*/
+void Thread_caller(void *pThread) {
+
+  // Note we have to do this because _beginthread expects a function of type void (*)(void *)
+  Thread *this = (Thread *) pThread;
+
+  do {
+
+    // Wait for it to be able to modify data
+    WaitForSingleObject(this->hDataMutex, INFINITE);
+
+    // Call the callback function
+    this->pCallee(this->pArgs);
+
+    // Release the mutex
+    ReleaseMutex(this->hDataMutex);
+
+  // While the state mutex hasn't been released, keep running the thread
+  } while(WaitForSingleObject(this->hStateMutex, THREAD_TIMEOUT) == WAIT_TIMEOUT);
+}
+
+/**
  * Allocates memory for a new thread object instance.
  * Note that this does not allocate memory for a thread but rather a *thread object*.
  *    The thread object refers to the struct above, which stores information about
@@ -110,11 +98,11 @@ Thread *Thread_new() {
  * @param   { char * }        sName         The name of the thread instance.
  * @param   { HandleMutex }   hStateMutex   A handle to the state mutex.
  * @param   { HandleMutex }   hDataMutex    A handle to the data mutex.
- * @param   { ParamFunc }     pCallback     A pointer to the callback to be executed by the thread.
+ * @param   { ParamFunc }     pCallee       A pointer to the callback to be executed by the thread.
  * @param   { ParamObj }      pArgs         A pointer to the arguments to be passed to the callback.
  * @return  { Thread * }                    A pointer to the initialized thread object.
 */
-Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMutex hDataMutex, ParamFunc pCallback, ParamObj pArgs) {
+Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMutex hDataMutex, ParamFunc pCallee, ParamObj pArgs) {
   
   // Update its name
   this->sName = sName;
@@ -123,8 +111,12 @@ Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMu
   this->hStateMutex = hStateMutex;
   this->hDataMutex = hDataMutex;
 
+  // Store the callback and its argument object
+  this->pCallee = pCallee;
+  this->pArgs = pArgs;
+
   // Spawn a new thread
-  this->hThread = (HandleThread) _beginthread(pCallback, 0, pArgs);
+  this->hThread = (HandleThread) _beginthread(Thread_caller, 0, this);
 
   return this;
 }
@@ -136,35 +128,28 @@ Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMu
  * @param   { char * }        sName         The name of the thread instance.
  * @param   { HandleMutex }   hStateMutex   A handle to the state mutex.
  * @param   { HandleMutex }   hDataMutex    A handle to the data mutex.
- * @param   { ParamFunc }     pCallback     A pointer to the callback to be executed by the thread.
+ * @param   { ParamFunc }     pCallee       A pointer to the callback to be executed by the thread.
  * @param   { ParamObj }      pArgs         A pointer to the arguments to be passed to the callback.
  * @return  { Thread * }                    A pointer to the initialized thread object.
 */
-Thread *Thread_create(char *sName, HandleMutex hStateMutex, HandleMutex hDataMutex, ParamFunc pCallback, ParamObj pArgs) {
-  return Thread_init(Thread_new(), sName, hStateMutex, hDataMutex, pCallback, pArgs);
+Thread *Thread_create(char *sName, HandleMutex hStateMutex, HandleMutex hDataMutex, ParamFunc pCallee, ParamObj pArgs) {
+  return Thread_init(Thread_new(), sName, hStateMutex, hDataMutex, pCallee, pArgs);
 }
 
 /**
- * Destroys a thread instance and frees the memory of the object.
- * 
- * ! actually terminate the thread and what not
- * ! search for counterpart to _beginthread ?
+ * Terminates a thread then destroys a Thread object instance and frees the memory of the object.
 */
 void Thread_kill(Thread *this) {
+
+  // Release its mutexes first
+  ReleaseMutex(this->hStateMutex);
+  ReleaseMutex(this->hDataMutex);
+
+  // Wait for the thread to terminate
+  WaitForSingleObject(this->hThread, INFINITE);
+
+  // Deallocate the object instance
   free(this);
-}
-
-/**
- * ! DO THE CALLBACK HERE
-*/
-void Thread_caller(void *pThread) {
-  do {
-
-    // ! is this right?
-    // pThread->pCallee(pThread->pArgs);
-
-  // While the state mutex hasn't been released, keep running the thread
-  } while(WaitForSingleObject(pThread->hStateMutex, THREAD_TIMEOUT) == WAIT_TIMEOUT);
 }
 
 /**
@@ -224,11 +209,7 @@ void ThreadPool_exit(ThreadPool *this) {
   // Kill all the threads first
   while(--this->dThreadsCount) {
 
-    // This tells the thread to terminate
-    ReleaseMutex(this->hStateMutexesArray[this->dThreadsCount]);
-
-    // Wait for the thread to die, then deallocate the thread object 
-    WaitForSingleObject(this->pThreadsArray[this->dThreadsCount]->hThread, INFINITE);
+    // Kill the current thread
     Thread_kill(this->pThreadsArray[this->dThreadsCount]);
 
     // Close the mutexes
@@ -247,26 +228,27 @@ void ThreadPool_exit(ThreadPool *this) {
  * 
  * @param   { ThreadPool * }  this          A reference to the thread manager object.
  * @param   { char * }        sName         The name of the thread instance.
- * @param   { ParamFunc }     pCallback     A pointer to the callback to be executed by the thread.
+ * @param   { ParamFunc }     pCallee       A pointer to the callback to be executed by the thread.
  * @param   { ParamObj }      pArgs         A pointer to the arguments to be passed to the callback
  * @return  { int }                         The index of the created thread within the array of the manager.
 */
-int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallback, ParamObj pArgs) {
+int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallee, ParamObj pArgs) {
   
   // The stuff to create
   Thread *pThread;
   HandleMutex hStateMutex;
   HandleMutex hDataMutex;
 
+  // If we don't have too many threads yet
   if(this->dThreadsCount >= THREAD_MAX_COUNT)
     return -1;
 
-  // Create a new thread with its pertinent mutexes
+  // Create the pertinent mutexes of the thread
   hStateMutex = CreateMutexA(NULL, TRUE, NULL);
   hDataMutex = CreateMutexA(NULL, FALSE, NULL);
-  pThread = Thread_create(sName, hStateMutex, hDataMutex, pCallback, pArgs);
 
-  // Store the thread and its mutexes in their arrays
+  // Create the thread and store its mutexes in their arrays
+  pThread = Thread_create(sName, hStateMutex, hDataMutex, pCallee, pArgs);
   this->hStateMutexesArray[this->dThreadsCount] = hStateMutex;
   this->hDataMutexesArray[this->dThreadsCount] = hDataMutex;
   this->pThreadsArray[this->dThreadsCount] = pThread;
@@ -287,11 +269,6 @@ void ThreadPool_killThread(ThreadPool *this, int dThreadId) {
   
   if(dThreadId >= this->dThreadsCount)
     return;
-
-  // ! fix this function first
-
-  // Release its state mutex first
-  ReleaseMutex(this->hStateMutexesArray[dThreadId]);
 
   // Kill the thread instance
   Thread_kill(this->pThreadsArray[dThreadId]);

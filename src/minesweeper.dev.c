@@ -3,25 +3,31 @@
 
 #include <stdio.h>
 
-void dummy(void *test) {
+void dummy(void *pArgs) {
+  Graphics_setForeground(0xEEEEEE);
+  Graphics_setBackground(0x111111);
   printf("This is printing from a thread\n");
 }
 
-int main() {
-  long test;
+void dummy2(void *pArgs) {
   Graphics_setForeground(0x111111);
   Graphics_setBackground(0xEEEEEE);
-  printf("Lets test this out\n");
-  printf("Size of long: %d\n", sizeof(test));
+  printf("This is printing from another thread\n");
+}
 
+int main() {
   ThreadPool threadPool;
   ThreadPool_init(&threadPool);
-  ThreadPool_createThread(&threadPool, dummy, NULL);
 
-  for(int i = 0; i < 100; i++)
-    printf("haha\n");
+  int threadId = ThreadPool_createThread(&threadPool, "test", dummy, NULL);
+  int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
+
 
   do {} while(_getch() != 'q');
+
+  ThreadPool_killThread(&threadPool, threadId);
+
+  do {} while(_getch() != 'v');
 
   return 0;
 }

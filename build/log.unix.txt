@@ -1,0 +1,55 @@
+In file included from ./src/utils/utils.thread.h:14,
+                 from ./src/minesweeper.dev.c:2:
+./src/utils/./unix/utils.thread.unix.h: In function ‘Thread_caller’:
+./src/utils/./unix/utils.thread.unix.h:60:11: warning: unused variable ‘this’ [-Wunused-variable]
+   60 |   Thread *this = (Thread *) pThread;
+      |           ^~~~
+In file included from ./src/utils/utils.thread.h:14,
+                 from ./src/minesweeper.dev.c:2:
+./src/utils/./unix/utils.thread.unix.h: In function ‘Thread_init’:
+./src/utils/./unix/utils.thread.unix.h:112:39: warning: passing argument 3 of ‘pthread_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+  112 |   pthread_create(this->hThread, NULL, Thread_caller, this);
+      |                                       ^~~~~~~~~~~~~
+      |                                       |
+      |                                       void (*)(void *)
+In file included from ./src/utils/./unix/utils.thread.unix.h:15,
+                 from ./src/utils/utils.thread.h:14,
+                 from ./src/minesweeper.dev.c:2:
+/usr/include/pthread.h:204:36: note: expected ‘void * (*)(void *)’ but argument is of type ‘void (*)(void *)’
+  204 |                            void *(*__start_routine) (void *),
+      |                            ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from ./src/utils/utils.thread.h:14,
+                 from ./src/minesweeper.dev.c:2:
+./src/utils/./unix/utils.thread.unix.h: In function ‘Thread_kill’:
+./src/utils/./unix/utils.thread.unix.h:139:3: warning: implicit declaration of function ‘ReleaseMutex’ [-Wimplicit-function-declaration]
+  139 |   ReleaseMutex(this->hStateMutex);
+      |   ^~~~~~~~~~~~
+./src/utils/./unix/utils.thread.unix.h:143:3: warning: implicit declaration of function ‘WaitForSingleObject’ [-Wimplicit-function-declaration]
+  143 |   WaitForSingleObject(this->hThread, INFINITE);
+      |   ^~~~~~~~~~~~~~~~~~~
+./src/utils/./unix/utils.thread.unix.h:143:38: error: ‘INFINITE’ undeclared (first use in this function)
+  143 |   WaitForSingleObject(this->hThread, INFINITE);
+      |                                      ^~~~~~~~
+./src/utils/./unix/utils.thread.unix.h:143:38: note: each undeclared identifier is reported only once for each function it appears in
+./src/utils/./unix/utils.thread.unix.h: In function ‘ThreadPool_exit’:
+./src/utils/./unix/utils.thread.unix.h:210:55: warning: implicit declaration of function ‘CloseHandle’ [-Wimplicit-function-declaration]
+  210 |     if(this->hStateMutexesArray[this->dThreadsCount]) CloseHandle(this->hStateMutexesArray[this->dThreadsCount]);
+      |                                                       ^~~~~~~~~~~
+./src/utils/./unix/utils.thread.unix.h: In function ‘ThreadPool_createThread’:
+./src/utils/./unix/utils.thread.unix.h:241:17: warning: implicit declaration of function ‘CreateMutexA’ [-Wimplicit-function-declaration]
+  241 |   hStateMutex = CreateMutexA(NULL, TRUE, NULL);
+      |                 ^~~~~~~~~~~~
+./src/utils/./unix/utils.thread.unix.h:241:36: error: ‘TRUE’ undeclared (first use in this function)
+  241 |   hStateMutex = CreateMutexA(NULL, TRUE, NULL);
+      |                                    ^~~~
+./src/utils/./unix/utils.thread.unix.h:242:35: error: ‘FALSE’ undeclared (first use in this function)
+  242 |   hDataMutex = CreateMutexA(NULL, FALSE, NULL);
+      |                                   ^~~~~
+./src/minesweeper.dev.c: In function ‘main’:
+./src/minesweeper.dev.c:26:15: warning: implicit declaration of function ‘_getch’; did you mean ‘getc’? [-Wimplicit-function-declaration]
+   26 |   do {} while(_getch() != 'q');
+      |               ^~~~~~
+      |               getc
+./src/minesweeper.dev.c:23:7: warning: unused variable ‘threadId2’ [-Wunused-variable]
+   23 |   int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
+      |       ^~~~~~~~~
