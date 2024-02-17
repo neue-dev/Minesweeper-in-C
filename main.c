@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 
   // Compile and run the game
   #ifdef _WIN32
-    sprintf(command, "gcc -std=c99 -Wall src\\%s.c -o build\\minesweeper.win.exe 2> build\\log.win.txt", filename);
+    sprintf(command, "gcc -std=c99 -Wall src\\%s.c -o build\\minesweeper.win.exe 2> build\\.log.win.txt", filename);
     system(command);
 
     // Execute using conhost or just execute with the system default shell
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     printf("    (2) Run the program with \"std\" as an argument (example: \".\\main.exe std\")\n\n");
     printf("If you select the second option, the program display might not fit\nwithin the console window.\n\n");
   #else
-    sprintf(command, "gcc -std=c99 -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/log.unix.txt", filename);
+    sprintf(command, "gcc -std=c99 -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.log.unix.txt", filename);
     system(command);
     system("./build/minesweeper.unix.o");
   #endif

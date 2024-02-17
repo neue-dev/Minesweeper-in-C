@@ -210,14 +210,16 @@ void ThreadPool_exit(ThreadPool *this) {
  * Creates a new thread object instance and adds it to the array.
  * Returns the index of the thread within that array. 
  * Returns -1 if there are too many threads already.
+ * Note that hDataMutex can be NULL (and if it is, a new one is created).
  * 
- * @param   { ThreadPool * }  this          A reference to the thread manager object.
- * @param   { char * }        sName         The name of the thread instance.
- * @param   { ParamFunc }     pCallee       A pointer to the callback to be executed by the thread.
- * @param   { ParamObj }      pArgs         A pointer to the arguments to be passed to the callback
- * @return  { int }                         The index of the created thread within the array of the manager.
+ * @param   { ThreadPool * }  this              A reference to the thread manager object.
+ * @param   { char * }        sName             The name of the thread instance.
+ * @param   { HandleMutex }   hSharedDataMutex  A handle to the mutex that tells the thread whether it can modify its resource.
+ * @param   { ParamFunc }     pCallee           A pointer to the callback to be executed by the thread.
+ * @param   { ParamObj }      pArgs             A pointer to the arguments to be passed to the callback
+ * @return  { int }                             The index of the created thread within the array of the manager.
 */
-int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallee, ParamObj pArgs) {
+int ThreadPool_createThread(ThreadPool *this, char *sName, HandleMutex hSharedDataMutex, ParamFunc pCallee, ParamObj pArgs) {
   
   // The stuff to create
   Thread *pThread;
@@ -230,7 +232,9 @@ int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallee, Pa
 
   // Create the pertinent mutexes of the thread
   hStateMutex = CreateMutexA(NULL, TRUE, NULL);
-  hDataMutex = CreateMutexA(NULL, FALSE, NULL);
+  if(hSharedDataMutex == NULL) 
+    hDataMutex = CreateMutexA(NULL, FALSE, NULL);
+  else hDataMutex = hSharedDataMutex;
 
   // Create the thread and store its mutexes in their arrays
   pThread = Thread_create(sName, hStateMutex, hDataMutex, pCallee, pArgs);

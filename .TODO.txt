@@ -1,3 +1,5 @@
+// IMPLEMENT BUFFER CLASS
+
 1. Make sure to foward declare all your functions
 2. Make the main file cleaner sheesh
 3. Output the warnings and errors of the compilation unto the build folder (or a separate log folder ??)

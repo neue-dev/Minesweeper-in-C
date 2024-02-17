@@ -214,13 +214,14 @@ void ThreadPool_exit(ThreadPool *this) {
  * Returns the index of the thread within that array. 
  * Returns -1 if there are too many threads already.
  * 
- * @param   { ThreadPool * }  this          A reference to the thread manager object.
- * @param   { char * }        sName         The name of the thread instance.
- * @param   { ParamFunc }     pCallee       A pointer to the callback to be executed by the thread.
- * @param   { ParamObj }      pArgs         A pointer to the arguments to be passed to the callback
- * @return  { int }                         The index of the created thread within the array of the manager.
+ * @param   { ThreadPool * }  this              A reference to the thread manager object.
+ * @param   { char * }        sName             The name of the thread instance.
+ * @param   { HandleMutex }   hSharedDataMutex  A handle to the mutex that tells the thread whether it can modify its resource.
+ * @param   { ParamFunc }     pCallee           A pointer to the callback to be executed by the thread.
+ * @param   { ParamObj }      pArgs             A pointer to the arguments to be passed to the callback
+ * @return  { int }                             The index of the created thread within the array of the manager.
 */
-int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallee, ParamObj pArgs) {
+int ThreadPool_createThread(ThreadPool *this, char *sName, HandleMutex hSharedDataMutex, ParamFunc pCallee, ParamObj pArgs) {
   
   // The stuff to create
   // Because the Unix API and Windows API behave differently, we have to initialize our 
@@ -235,7 +236,12 @@ int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallee, Pa
 
   // Create the pertinent mutexes of the thread
   pthread_mutex_init(hStateMutex, NULL);
-  pthread_mutex_init(hDataMutex, NULL);
+  if(hSharedDataMutex == NULL) {
+    pthread_mutex_init(hDataMutex, NULL);
+  } else {
+    free(hDataMutex); 
+    hDataMutex = hSharedDataMutex;
+  }
 
   // We have to lock it to prevent the thread from terminating
   // The thread only terminates when it (the thread) locks the mutex

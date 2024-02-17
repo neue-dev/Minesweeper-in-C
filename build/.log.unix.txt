@@ -6,5 +6,5 @@ In file included from ./src/utils/utils.thread.h:21,
       |            ^~~~~~
 ./src/minesweeper.dev.c: In function ‘main’:
 ./src/minesweeper.dev.c:25:7: warning: unused variable ‘threadId2’ [-Wunused-variable]
-   25 |   int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
+   25 |   int threadId2 = ThreadPool_createThread(&threadPool, "test2", NULL, dummy2, NULL);
       |       ^~~~~~~~~

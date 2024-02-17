@@ -21,8 +21,8 @@ int main() {
   ThreadPool_init(&threadPool);
 
   printf("hmmm\n");
-  int threadId = ThreadPool_createThread(&threadPool, "test", dummy, NULL);
-  int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
+  int threadId = ThreadPool_createThread(&threadPool, "test", NULL, dummy, NULL);
+  int threadId2 = ThreadPool_createThread(&threadPool, "test2", NULL, dummy2, NULL);
 
   #ifndef _WIN32
     do{}while(1);
