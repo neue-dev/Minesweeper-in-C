@@ -3,7 +3,6 @@
  * Note that:
  *    (1) hThread is a handle to the actual thread while
  *    (2) pThread is a pointer to an instance of the Thread class
- * 
 */
 
 #ifndef UTILS_THREAD_WIN
@@ -145,9 +144,11 @@ void Thread_kill(Thread *this) {
   ReleaseMutex(this->hStateMutex);
   ReleaseMutex(this->hDataMutex);
 
-  // Wait for the thread to terminate
-  WaitForSingleObject(this->hThread, INFINITE);
+  // Close the mutexes
+  if(this->hStateMutex) CloseHandle(this->hStateMutex);
+  if(this->hDataMutex) CloseHandle(this->hDataMutex);
 
+  // No need to wait for thread to terminate
   // Deallocate the object instance
   free(this);
 }
@@ -174,8 +175,8 @@ typedef struct ThreadPool {
   // A mutual exclusion (mutex) prevents two different threads from modifying 
   //    a shared resource at the same time. Such "races" can be quite a problem
   //    if not handled correctly.
-  HandleMutex *hStateMutexesArray[THREAD_MAX_COUNT];  // Stores the mutexes that tell each thread to keep running
-  HandleMutex *hDataMutexesArray[THREAD_MAX_COUNT];   // Stores the mutexes that tell each thread if it can modify its resource
+  HandleMutex hStateMutexesArray[THREAD_MAX_COUNT];   // Stores the mutexes that tell each thread to keep running
+  HandleMutex hDataMutexesArray[THREAD_MAX_COUNT];    // Stores the mutexes that tell each thread if it can modify its resource
   int dThreadsCount;                                  // Stores the length of the threads array
 
 } ThreadPool;
@@ -201,20 +202,11 @@ ThreadPool *ThreadPool_init(ThreadPool *this) {
 */
 void ThreadPool_exit(ThreadPool *this) {
 
-  // By releasing this mutex, we terminate all threads
-
-  // ! fix this first
-  // !
-
   // Kill all the threads first
   while(--this->dThreadsCount) {
 
     // Kill the current thread
     Thread_kill(this->pThreadsArray[this->dThreadsCount]);
-
-    // Close the mutexes
-    if(this->hStateMutexesArray[this->dThreadsCount]) CloseHandle(this->hStateMutexesArray[this->dThreadsCount]);
-    if(this->hDataMutexesArray[this->dThreadsCount]) CloseHandle(this->hDataMutexesArray[this->dThreadsCount]);
   }
   
   // Reset the thread counter
@@ -280,6 +272,27 @@ void ThreadPool_killThread(ThreadPool *this, int dThreadId) {
   // Update the array
   for(i = dThreadId; i < this->dThreadsCount; i++)
     this->pThreadsArray[i] = this->pThreadsArray[i + 1];
+}
+
+/**
+ * Locks the data mutex of the thread with a given index.
+ * Note that this function does not terminate until it gets a handle to the mutex.
+ * 
+ * @param   { ThreadPool * }  this        A reference to an instance of ThreadPool to modify.
+ * @param   { int }           dThreadId   The id of the thread whose mutex we will lock.
+*/
+void ThreadPool_LockMutex(ThreadPool *this, int dThreadId) {
+  WaitForSingleObject(this->hDataMutexesArray[dThreadId], INFINITE);
+}
+
+/**
+ * Unlocks the data mutex of the thread with a given index.
+ * 
+ * @param   { ThreadPool * }  this        A reference to an instance of ThreadPool to modify.
+ * @param   { int }           dThreadId   The id of the thread whose mutex we will unlock.
+*/
+void ThreadPool_UnlockMutex(ThreadPool *this, int dThreadId) {
+  ReleaseMutex(this->hDataMutexesArray[dThreadId]);
 }
 
 #endif

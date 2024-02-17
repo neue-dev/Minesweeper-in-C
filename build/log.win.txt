@@ -1,4 +1,4 @@
 src\minesweeper.dev.c: In function 'main':
-src\minesweeper.dev.c:23:7: warning: unused variable 'threadId2' [-Wunused-variable]
+src\minesweeper.dev.c:24:7: warning: unused variable 'threadId2' [-Wunused-variable]
    int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
        ^~~~~~~~~

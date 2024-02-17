@@ -6,9 +6,9 @@
 
 might it be better to have the following caller structure?
 
-if(WaitForSingleObject(dataMutex, TIMEOUT) == WAIT_TIMEOUT)
+if(WaitForSingleObject(dataMutex, TIMEOUT) == WAIT_TIMEOUT) {
     // ! do some stuff but dont touch resource
-else {
+} else {
     // ! do stuff
     // ! modify resource
     ReleaseMutex(dataMutex);

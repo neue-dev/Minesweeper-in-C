@@ -5,7 +5,7 @@
 #ifndef UTILS_THREAD
 #define UTILS_THREAD
 
-// Windows for now
+// You are in Windows
 #ifdef _WIN32
 #include "./win/utils.thread.win.h"
 

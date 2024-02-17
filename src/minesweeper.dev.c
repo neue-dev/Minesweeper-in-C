@@ -19,15 +19,19 @@ int main() {
   ThreadPool threadPool;
   ThreadPool_init(&threadPool);
 
+  printf("hmmm\n");
   int threadId = ThreadPool_createThread(&threadPool, "test", dummy, NULL);
   int threadId2 = ThreadPool_createThread(&threadPool, "test2", dummy2, NULL);
 
-
-  do {} while(_getch() != 'q');
+  #ifndef _WIN32
+    do{}while(1);
+    #include<time.h>
+    usleep(1000000);
+  #else
+    do {} while(_getch() != 'q');
+  #endif
 
   ThreadPool_killThread(&threadPool, threadId);
-
-  do {} while(_getch() != 'v');
 
   return 0;
 }

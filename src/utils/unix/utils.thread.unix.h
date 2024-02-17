@@ -3,7 +3,6 @@
  * Note that:
  *    (1) hThread is a handle to the actual thread while
  *    (2) pThread is a pointer to an instance of the Thread class
- * 
 */
 
 #ifndef UTILS_THREAD_UNIX
@@ -13,6 +12,7 @@
 #include "../utils.vector.h"
 
 #include <pthread.h>
+#include <time.h>
 
 #define THREAD_MAX_COUNT 16                             // Maximum number of threads we can have for our program
 #define THREAD_FRAME_RATE 30                            // Number of frames per second
@@ -39,7 +39,7 @@ typedef struct Thread {
   char *sName;              // The name of the thread
                             // TBH, this is only here for convenience and debugging
 
-  pthread_t *hThread;       // A handle to the actual thread instance
+  HandleThread hThread;     // A handle to the actual thread instance
   HandleMutex hStateMutex;  // A handle to the mutex that tells the thread to keep running
   HandleMutex hDataMutex;   // A handle to the mutex that tells the thread if it can 
                             //    modify the shared resource
@@ -54,19 +54,31 @@ typedef struct Thread {
  * 
  * @param   { void * }  pThread   A reference to the Thread object whose info we need.
 */
-void Thread_caller(void *pThread) {
+void *Thread_caller(void *pThread) {
 
   // Note we have to do this because pthread_create expects a function of type void (*)(void *)
   Thread *this = (Thread *) pThread;
 
-  // ! fix this
-  // do {
+  do {
 
-  //   // Call the callback function
-  //   this->pCallee(this->pArgs);
+    // Try to lock the mutex first
+    do {} while(pthread_mutex_trylock(this->hDataMutex));
 
-  // // While the state mutex hasn't been released, keep running the thread
-  // } while(WaitForSingleObject(this->hStateMutex, THREAD_TIMEOUT) == WAIT_TIMEOUT);
+    // Call the callback function
+    this->pCallee(this->pArgs);
+
+    // Unlock the mutex after use
+    pthread_mutex_unlock(this->hDataMutex);
+
+  // While the state mutex hasn't been released, keep running the thread
+  // I find it kinda funny how usleep() means "microsleep" (counts in microseconds)
+  //    Also just found out that usleep() is deprecated and now Unix prefers nanosleep()
+  //    like WTF?? How reliable would specifying nanoseconds be within a program runtime 
+  //    environment? Anyway, that kind of precision is overkill so I used usleep() (they 
+  //    haven't borked it so I can)
+  } while(!usleep(THREAD_TIMEOUT * 1000) && pthread_mutex_trylock(this->hStateMutex));
+
+  return NULL;
 }
 
 /**
@@ -109,6 +121,7 @@ Thread *Thread_init(Thread *this, char *sName, HandleMutex hStateMutex, HandleMu
   this->pArgs = pArgs;
 
   // Spawn a new thread
+  this->hThread = calloc(1, sizeof(*this->hThread));
   pthread_create(this->hThread, NULL, Thread_caller, this);
 
   return this;
@@ -135,12 +148,10 @@ Thread *Thread_create(char *sName, HandleMutex hStateMutex, HandleMutex hDataMut
 void Thread_kill(Thread *this) {
 
   // Release its mutexes first
-  ReleaseMutex(this->hStateMutex);
-  ReleaseMutex(this->hDataMutex);
+  pthread_mutex_unlock(this->hStateMutex);
+  pthread_mutex_unlock(this->hDataMutex);
 
-  // Wait for the thread to terminate
-  WaitForSingleObject(this->hThread, INFINITE);
-
+  // No need to wait for the thread to terminate
   // Deallocate the object instance
   free(this);
 }
@@ -167,8 +178,8 @@ typedef struct ThreadPool {
   // A mutual exclusion (mutex) prevents two different threads from modifying 
   //    a shared resource at the same time. Such "races" can be quite a problem
   //    if not handled correctly.
-  HandleMutex *hStateMutexesArray[THREAD_MAX_COUNT];  // Stores the mutexes that tell each thread to keep running
-  HandleMutex *hDataMutexesArray[THREAD_MAX_COUNT];   // Stores the mutexes that tell each thread if it can modify its resource
+  HandleMutex hStateMutexesArray[THREAD_MAX_COUNT];   // Stores the mutexes that tell each thread to keep running
+  HandleMutex hDataMutexesArray[THREAD_MAX_COUNT];    // Stores the mutexes that tell each thread if it can modify its resource
   int dThreadsCount;                                  // Stores the length of the threads array
 
 } ThreadPool;
@@ -194,20 +205,11 @@ ThreadPool *ThreadPool_init(ThreadPool *this) {
 */
 void ThreadPool_exit(ThreadPool *this) {
 
-  // By releasing this mutex, we terminate all threads
-
-  // ! fix this first
-  // !
-
   // Kill all the threads first
   while(--this->dThreadsCount) {
 
     // Kill the current thread
     Thread_kill(this->pThreadsArray[this->dThreadsCount]);
-
-    // Close the mutexes
-    if(this->hStateMutexesArray[this->dThreadsCount]) CloseHandle(this->hStateMutexesArray[this->dThreadsCount]);
-    if(this->hDataMutexesArray[this->dThreadsCount]) CloseHandle(this->hDataMutexesArray[this->dThreadsCount]);
   }
   
   // Reset the thread counter
@@ -228,18 +230,24 @@ void ThreadPool_exit(ThreadPool *this) {
 int ThreadPool_createThread(ThreadPool *this, char *sName, ParamFunc pCallee, ParamObj pArgs) {
   
   // The stuff to create
-  Thread *pThread;
-  HandleMutex hStateMutex;
-  HandleMutex hDataMutex;
+  // Because the Unix API and Windows API behave differently, we have to initialize our 
+  //    pointers here before being able to pass them into the functions provided by pthread.h
+  Thread *pThread = calloc(1, sizeof(*pThread));
+  HandleMutex hStateMutex = calloc(1, sizeof(*hStateMutex));
+  HandleMutex hDataMutex = calloc(1, sizeof(*hDataMutex));
 
   // If we don't have too many threads yet
   if(this->dThreadsCount >= THREAD_MAX_COUNT)
     return -1;
 
   // Create the pertinent mutexes of the thread
-  hStateMutex = CreateMutexA(NULL, TRUE, NULL);
-  hDataMutex = CreateMutexA(NULL, FALSE, NULL);
+  pthread_mutex_init(hStateMutex, NULL);
+  pthread_mutex_init(hDataMutex, NULL);
 
+  // We have to lock it to prevent the thread from terminating
+  // The thread only terminates when it (the thread) locks the mutex
+  pthread_mutex_trylock(hStateMutex);
+  
   // Create the thread and store its mutexes in their arrays
   pThread = Thread_create(sName, hStateMutex, hDataMutex, pCallee, pArgs);
   this->hStateMutexesArray[this->dThreadsCount] = hStateMutex;
@@ -273,6 +281,27 @@ void ThreadPool_killThread(ThreadPool *this, int dThreadId) {
   // Update the array
   for(i = dThreadId; i < this->dThreadsCount; i++)
     this->pThreadsArray[i] = this->pThreadsArray[i + 1];
+}
+
+/**
+ * Locks the data mutex of the thread with a given index.
+ * Note that this function does not terminate until it gets a handle to the mutex.
+ * 
+ * @param   { ThreadPool * }  this        A reference to an instance of ThreadPool to modify.
+ * @param   { int }           dThreadId   The id of the thread whose mutex we will lock.
+*/
+void ThreadPool_LockMutex(ThreadPool *this, int dThreadId) {
+  do {} while(pthread_mutex_trylock(this->hDataMutexesArray[dThreadId]));
+}
+
+/**
+ * Unlocks the data mutex of the thread with a given index.
+ * 
+ * @param   { ThreadPool * }  this        A reference to an instance of ThreadPool to modify.
+ * @param   { int }           dThreadId   The id of the thread whose mutex we will unlock.
+*/
+void ThreadPool_UnlockMutex(ThreadPool *this, int dThreadId) {
+  pthread_mutex_unlock(this->hDataMutexesArray[dThreadId]);
 }
 
 #endif
