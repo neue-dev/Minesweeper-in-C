@@ -1,6 +1,10 @@
 /**
- * A file containing some useful helper functions for low-level input and output operations
-*/
+ * @ Author: Mo David
+ * @ Create Time: 2024-02-17 19:37:04
+ * @ Modified time: 2024-02-20 11:37:54
+ * @ Description:
+ *    A file containing some useful helper functions for low-level input and output operations.
+ */
 
 #ifndef UTILS_IO
 #define UTILS_IO

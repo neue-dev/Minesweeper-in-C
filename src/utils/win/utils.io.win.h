@@ -15,9 +15,9 @@
  * This has to be here because the Unix implementation of this struct actually has stuff in it.
  * For the sake of not breaking things, both implementations will have this struct defined.
 */
-struct IO {
-
-};
+typedef struct IO {
+  int dummy;
+} IO;
 
 /**
  * Stuff to set up for Windows.

@@ -1,6 +1,10 @@
 /**
- * A utility library for implementing threads.
-*/
+ * @ Author: Mo David
+ * @ Create Time: 2024-01-29 12:01:02
+ * @ Modified time: 2024-02-20 11:38:27
+ * @ Description:
+ *    A utility library for implementing threads.
+ */
 
 #ifndef UTILS_THREAD
 #define UTILS_THREAD

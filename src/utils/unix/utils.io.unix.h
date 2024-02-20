@@ -13,10 +13,10 @@
  * A struct to hold some variables so we don't pollute the global namespace.
  * Stores the original settings of the terminal so we can revert them back after the program exuts.
 */
-struct IO {
+typedef struct IO {
   struct termios defaultSettings;
   struct termios overrideSettings;
-};
+} IO;
 
 /**
  * Sets up some stuff for IO handling.

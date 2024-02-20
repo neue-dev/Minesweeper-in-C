@@ -1,4 +1,12 @@
-src\minesweeper.dev.c: In function 'main':
-src\minesweeper.dev.c:25:7: warning: unused variable 'threadId2' [-Wunused-variable]
-   int threadId2 = ThreadPool_createThread(&threadPool, "test2", NULL, dummy2, NULL);
-       ^~~~~~~~~
+In file included from src\minesweeper.dev.c:1:0:
+src\utils/utils.graphics.h: In function 'Graphics_getCodeFG':
+src\utils/utils.graphics.h:40:25: warning: implicit declaration of function 'calloc' [-Wimplicit-function-declaration]
+   char *sANSISequence = calloc(GRAPHICS_MAX_SEQ, sizeof(char));
+                         ^~~~~~
+src\utils/utils.graphics.h:40:25: warning: incompatible implicit declaration of built-in function 'calloc'
+src\utils/utils.graphics.h:40:25: note: include '<stdlib.h>' or provide a declaration of 'calloc'
+src\utils/utils.graphics.h: In function 'Graphics_getCodeBG':
+src\utils/utils.graphics.h:61:25: warning: incompatible implicit declaration of built-in function 'calloc'
+   char *sANSISequence = calloc(GRAPHICS_MAX_SEQ, sizeof(char));
+                         ^~~~~~
+src\utils/utils.graphics.h:61:25: note: include '<stdlib.h>' or provide a declaration of 'calloc'

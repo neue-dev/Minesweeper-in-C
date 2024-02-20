@@ -2,6 +2,7 @@
 .vscode/
 *.exe
 *.o
+debug*.
 
 # Don't ignore the build files
 !build/

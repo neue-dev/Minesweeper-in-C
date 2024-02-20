@@ -7,3 +7,6 @@
     > in this case, tell the user to execute main.exe with an argument or smthh
 
 5. make it so that different threads can share a mutex
+
+ehmm pretend we didnt see this LMAO
+[Char Arrays vs Char Pointers]            https://www.reddit.com/r/C_Programming/comments/rxqp8u/when_to_use_char_array_vs_char_pointer/
