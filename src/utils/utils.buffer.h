@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-20 12:43:16
+ * @ Modified time: 2024-02-20 12:43:57
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.

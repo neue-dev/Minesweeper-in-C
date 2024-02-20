@@ -30,6 +30,8 @@ int main() {
   Buffer *test = Buffer_create(IO_getWidth(), IO_getHeight());
 
   Buffer_append(test, "hello%s%s world!", Graphics_getCodeFG(0x212121), Graphics_getCodeBG(0xf0f0f0));
+  Buffer_append(test, "another one %s%shahahaha", Graphics_getCodeFG(0x123456), Graphics_getCodeBG(0x654321));
+  Buffer_append(test, "what thefuck%s%sim so cool", Graphics_getCodeFG(0xaa11ff), Graphics_getCodeBG(0x121212));
   Buffer_print(test);
 
   #ifndef _WIN32
