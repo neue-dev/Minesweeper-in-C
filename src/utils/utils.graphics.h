@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-02-20 11:44:17
+ * @ Modified time: 2024-02-20 11:51:49
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define GRAPHICS_MAX_SEQ 32
 

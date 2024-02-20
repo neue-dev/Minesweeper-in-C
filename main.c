@@ -17,15 +17,18 @@ int main(int argc, char *argv[]) {
     system(command);
 
     // Execute using conhost or just execute with the system default shell
-    if(argc > 1 ? !strcmp(argv[1], "std") : 0) 
+    if(argc > 1 ? !strcmp(argv[1], "force") : 0) {
+      system("%windiw%\\SysNative\\conhost.exe build\\minesweeper.win.exe");
+      system("%windiw%\\System32\\conhost.exe build\\minesweeper.win.exe");
+    } else {
       system("build\\minesweeper.win.exe");
-    else system("%windiw%\\SysNative\\conhost.exe build\\minesweeper.win.exe");
+    }
 
     // Warning, in case conhost doesn't execute
     system("cls");
     printf("\n\nIf you do not see the program running, do either of the following:\n\n");
     printf("    (1) Run the program in the C:\\ drive.\n");
-    printf("    (2) Run the program with \"std\" as an argument (example: \".\\main.exe std\")\n\n");
+    printf("    (2) Run the program inside conhost (ie. type \"conhost\" first then run main.exe)\n\n");
     printf("If you select the second option, the program display might not fit\nwithin the console window.\n\n");
   #else
     sprintf(command, "gcc -std=c99 -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.log.unix.txt", filename);
