@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-20 11:44:12
+ * @ Modified time: 2024-02-20 12:43:16
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -91,7 +91,7 @@ void Buffer_kill(Buffer *this) {
 */
 void Buffer_append(Buffer *this, char *sEntry, ...) {
   int i = 0;
-  int dEntryLen = 0;
+  int dEntryLen = 0, dFormats = 0;
 
   // Because our function is variadic, ie, has a variable number of arguments
   va_list pArg;
@@ -106,8 +106,7 @@ void Buffer_append(Buffer *this, char *sEntry, ...) {
   // other numbers will not be excluded.
   do {
     if(sEntry[i] == '%') {
-      // Do nothing
-
+      dFormats++;
     } else {
       if(i > 0) {
         if(sEntry[i - 1] != '%') {
@@ -124,8 +123,8 @@ void Buffer_append(Buffer *this, char *sEntry, ...) {
   printf("%d\n", dEntryLen);
 
   // Copy the format string first
-  char *sFormattedEntry = calloc(this->dWidth, sizeof(char));
-  vsnprintf(sFormattedEntry, this->dWidth, sEntry, pArg);
+  char *sFormattedEntry = calloc(this->dWidth + dFormats, sizeof(char));
+  vsnprintf(sFormattedEntry, this->dWidth + dFormats, sEntry, pArg);
 
   // Final save it into the buffer
   this->sArray[this->dLength] = sFormattedEntry;

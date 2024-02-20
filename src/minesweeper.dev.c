@@ -18,7 +18,7 @@ int main() {
   // Some IO stuff
   IO io;
   IO_init(&io);
-  // IO_setSize(16, 16);
+  IO_setSize(120, 32);
   
   // ThreadPool threadPool;
   // ThreadPool_init(&threadPool);
