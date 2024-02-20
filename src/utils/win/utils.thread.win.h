@@ -1,9 +1,14 @@
 /**
+ * @ Author: MMMM
+ * @ Create Time: 2024-02-05 11:18:06
+ * @ Modified time: 2024-02-20 11:43:43
+ * @ Description:
+ * 
  * A utility library for implementing threads in Windows.
  * Note that:
  *    (1) hThread is a handle to the actual thread while
  *    (2) pThread is a pointer to an instance of the Thread class
-*/
+ */
 
 #ifndef UTILS_THREAD_WIN
 #define UTILS_THREAD_WIN

@@ -1,9 +1,10 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-16 18:08:00
- * @ Modified time: 2024-02-20 11:39:26
+ * @ Modified time: 2024-02-20 11:44:51
  * @ Description:
- *    Creates a vector class which can help us deal with coordinates and stuff.
+ *    
+ * Creates a vector class which can help us deal with coordinates and stuff.
  */
 
 #ifndef UTILS_VECTOR

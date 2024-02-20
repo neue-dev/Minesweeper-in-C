@@ -1,7 +1,12 @@
 /**
+ * @ Author: MMMM
+ * @ Create Time: 2024-02-17 17:45:28
+ * @ Modified time: 2024-02-20 11:44:01
+ * @ Description:
+ * 
  * This makes sure we have the same type names in both Windows and Unix,
  *    even though under the hood they're (just a bit) different.
-*/
+ */
 
 #ifndef UTILS_TYPES_WIN
 #define UTILS_TYPES_WIN

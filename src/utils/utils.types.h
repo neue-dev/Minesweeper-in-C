@@ -1,17 +1,18 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-20 11:39:04
+ * @ Modified time: 2024-02-20 11:44:43
  * @ Description:
- *    Typedefs some custom types.
- *    We will be using lowercase letters and underscores to denote that something is a data type.
+ *    
+ * Typedefs some custom types.   
+ * We will be using lowercase letters and underscores to denote that something is a data type.
  * 
- *    Note that some of these data types take inspiration from the Windows data types 
- *        (bad idea tho, Microsoft creates its own names for everything).
+ * Note that some of these data types take inspiration from the Windows data types 
+ *    (bad idea tho, Microsoft creates its own names for everything).
  * 
- *    They are reimplemented here for the sake of convenience.
- *    Refer to the following documentation for more info: 
- *        https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
+ * They are reimplemented here for the sake of convenience.
+ * Refer to the following documentation for more info: 
+ *    https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
  */
 
 #ifndef UTILS_TYPES

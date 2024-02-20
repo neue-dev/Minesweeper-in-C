@@ -1,9 +1,10 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-20 11:37:28
+ * @ Modified time: 2024-02-20 11:44:12
  * @ Description:
- *    A buffer class that can help us create blocks of text before printing them.
+ *   
+ * A buffer class that can help us create blocks of text before printing them.
  */
 
 #ifndef UTILS_BUFFER

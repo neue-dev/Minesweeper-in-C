@@ -1,10 +1,11 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-02-20 03:34:10
+ * @ Modified time: 2024-02-20 11:44:17
  * @ Description:
- *    A library that implements graphics-related functionality.
- *    Allows coloring the output.
+ *    
+ * A library that implements graphics-related functionality.
+ * Allows coloring the output.
  */
 
 #ifndef UTILS_GRAPHICS_
