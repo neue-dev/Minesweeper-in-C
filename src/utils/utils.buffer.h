@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-20 12:43:57
+ * @ Modified time: 2024-02-21 11:29:41
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -64,7 +64,7 @@ Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight) {
  * 
  * @param   { Buffer * }  dWidth    The width of each of the buffer lines.
  * @param   { Buffer * }  dHeight   The height of the buffer.
- * @return  { Buffer * }  The pointer to the initialized instance.
+ * @return  { Buffer * }            The pointer to the initialized instance.
 */
 Buffer *Buffer_create(int dWidth, int dHeight) {
   return Buffer_init(Buffer_new(), dWidth, dHeight);
@@ -119,8 +119,6 @@ void Buffer_append(Buffer *this, char *sEntry, ...) {
   
   // Iterate through the entire string
   } while(sEntry[++i]);
-
-  printf("%d\n", dEntryLen);
 
   // Copy the format string first
   char *sFormattedEntry = calloc(this->dWidth + dFormats, sizeof(char));
