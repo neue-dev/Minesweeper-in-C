@@ -1,3 +1,5 @@
+#include "game/field.obj.h"
+
 #include "utils/utils.graphics.h"
 #include "utils/utils.thread.h"
 #include "utils/utils.buffer.h"
@@ -36,19 +38,20 @@ int main() {
   // Buffer_append(test, "another one %s%shahahaha", Graphics_getCodeFG(0x123456), Graphics_getCodeBG(0x654321));
   // Buffer_append(test, "what thefuck%s%sim so cool", Graphics_getCodeFG(0xaa11ff), Graphics_getCodeBG(0x121212));
 
-  Grid *pGrid = Grid_create(15, 10);
-  Grid_clear(pGrid, 1);
-  Grid_clear(pGrid, 0);
+  Field field;
+  // Grid *pGrid = Grid_create(15, 10);
+  // Grid_clear(pGrid, 1);
+  // Grid_clear(pGrid, 0);
 
-  for(int i = 0; i < pGrid->dHeight; i++) {
+  Field_init(&field, 15, 10);
+  Field_populate(&field, 30);
+
+  for(int i = 0; i < field.dHeight; i++) {
     char string[65] = "";
     char bit[2] = "";
 
-    for(int j = 0; j < pGrid->dWidth; j++) {
-      if(i == j || i == j * 2 % pGrid->dWidth)
-        Grid_setBit(pGrid, j, i, 1);
-
-      sprintf(bit, "%d", Grid_getBit(pGrid, j, i));
+    for(int j = 0; j < field.dWidth; j++) {
+      sprintf(bit, "%d", Grid_getBit(field.pMineGrid, j, i));
       strcat(string, bit);
     }
 

@@ -1,5 +1,0 @@
-In file included from src\minesweeper.dev.c:4:0:
-src\utils/utils.grid.h: In function 'Grid_init':
-src\utils/utils.grid.h:55:10: warning: unused variable 'j' [-Wunused-variable]
-   int i, j;
-          ^

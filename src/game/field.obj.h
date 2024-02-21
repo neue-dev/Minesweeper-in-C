@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-02-21 12:05:01
+ * @ Modified time: 2024-02-21 12:31:01
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -14,6 +14,7 @@
 #include "../utils/utils.grid.h"
 
 #include <stdlib.h>
+#include <time.h>
 
 /**
  * The field object.
@@ -49,25 +50,58 @@ void Field_init(Field *this, int dWidth, int dHeight) {
 
 /**
  * Clears the mines on the mine grid.
+ * 
+ * @param   { Field * }   this  The field object to modify.
 */
-void Field_clearMines() {
-  
+void Field_clearMines(Field *this) {
+  Grid_clear(this->pMineGrid, 0);
 }
 
 /**
  * Clears the flags on the flag grid.
+ * 
+ * @param   { Field * }   this  The field object to modify.
 */
-void Field_clearFlags() {
-  
+void Field_clearFlags(Field *this) {
+  Grid_clear(this->pFlagGrid, 0);
 }
 
 /**
  * Populates the mine grid with random mines.
  * 
- * @param   { int }   dMines  The number of mines to create
+ * @param   { Field * }   this    The field object to modify.
+ * @param   { int }       dMines  The number of mines to create
 */
-void Field_populate() {
-  // srand();
+void Field_populate(Field *this, int dMines) {
+
+  // If there's too many mines to fit the grid, we won't allow that
+  if(dMines >= this->dWidth * this->dHeight)
+    return;
+
+  // We will use a clock to seed our RNG
+  srand((unsigned) time(NULL));
+
+  // Produce the given number of mines
+  while(dMines--) {
+
+    // Choose a location to plant a mine
+    int dLocation = rand() % (this->dWidth * this->dHeight);
+
+    // While the selected bit already has a mine
+    while(Grid_getBit(this->pMineGrid, 
+      dLocation % this->dWidth,       // The x-value of the bit 
+      dLocation / this->dWidth)) {    // The y-value of the bit
+      
+      // Move to another cell and loop start if end is reached
+      dLocation++;
+      dLocation %= (this->dWidth * this->dHeight);
+    }
+
+    // Set the chosen bit
+    Grid_setBit(this->pMineGrid, 
+      dLocation % this->dWidth, 
+      dLocation / this->dWidth, 1);
+  }
 }
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-02-21 12:08:00
+ * @ Modified time: 2024-02-21 12:28:15
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
@@ -52,7 +52,7 @@ Grid *Grid_new() {
  * @return  { Grid * }            The pointer to the initialized instance.
 */
 Grid *Grid_init(Grid *this, int dWidth, int dHeight) {
-  int i, j;
+  int i;
 
   // Set all the bit strings to 0
   for(i = 0; i < GRID_MAX_SIZE; i++)
