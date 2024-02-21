@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-02-21 11:39:40
+ * @ Modified time: 2024-02-21 12:08:00
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
@@ -115,6 +115,20 @@ void Grid_setBit(Grid *this, int x, int y, int n) {
 
   if(n) this->dBitArray[y] |= dMask >> x;     // If we're making the bit truthy, we need an |=
   else this->dBitArray[y] &= ~(dMask >> x);   // Otherwise, an &= with the inverse of the mask works
+}
+
+/**
+ * Clears the values stored by a grid instance (sets them all to 0 or 1).
+ * 
+ * @param   { Grid * }  this  The grid instance we wish to modify.
+ * @param   { int }     n     Whether or not to set all bits to 1 or 0.
+*/
+void Grid_clear(Grid *this, int n) {
+  int i;
+
+  // Set them all back to 0
+  for(i = 0; i < this->dHeight; i++)
+    this->dBitArray[i] = n ? -1 : 0;
 }
 
 #endif

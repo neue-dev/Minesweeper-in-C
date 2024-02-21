@@ -37,6 +37,8 @@ int main() {
   // Buffer_append(test, "what thefuck%s%sim so cool", Graphics_getCodeFG(0xaa11ff), Graphics_getCodeBG(0x121212));
 
   Grid *pGrid = Grid_create(15, 10);
+  Grid_clear(pGrid, 1);
+  Grid_clear(pGrid, 0);
 
   for(int i = 0; i < pGrid->dHeight; i++) {
     char string[65] = "";
