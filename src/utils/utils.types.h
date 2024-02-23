@@ -1,31 +1,15 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-20 11:44:43
+ * @ Modified time: 2024-02-23 11:26:58
  * @ Description:
  *    
  * Typedefs some custom types.   
  * We will be using lowercase letters and underscores to denote that something is a data type.
- * 
- * Note that some of these data types take inspiration from the Windows data types 
- *    (bad idea tho, Microsoft creates its own names for everything).
- * 
- * They are reimplemented here for the sake of convenience.
- * Refer to the following documentation for more info: 
- *    https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
  */
 
 #ifndef UTILS_TYPES
 #define UTILS_TYPES
-
-// You are in Windows
-#ifdef _WIN32
-#include "./win/utils.types.win.h"
-
-// Not in Windows
-#else
-#include "./unix/utils.types.unix.h"
-#endif
 
 // Some primitives
 // Gives us fixed-width data types
@@ -33,5 +17,17 @@
 //    (2) uint16_t
 //    (3) uint32_t
 #include <stdint.h>
+
+// FOR THE CODE BELOW (parameter object pointers):
+// Note that we have to do this because some of the Windows API requires us to pass
+//    both a callback and its arguments separately. The data types here are primarily
+//    for representing the arguments to a callback function.
+
+// Parameter object pointers
+typedef void *param;                      // A pointer to a collection of function parameters
+typedef param param_int;                  // An integer to be passed as an argument
+typedef param param_str;                  // A string to be passed as an argument
+typedef param param_obj;                  // A pointer to a struct to be passed to a function
+typedef void (*param_func)(void *pArgs);  // A pointer to a callback function
 
 #endif

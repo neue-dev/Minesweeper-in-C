@@ -11,6 +11,7 @@
 [Multithreading in C Windows Demo]        https://learn.microsoft.com/en-us/cpp/parallel/sample-multithread-c-program
 [Multithreading in Linux without Posix]   https://stackoverflow.com/questions/13283294/how-to-make-thread-in-c-without-using-posix-library-pthread-h
 [Passing Arguments to _beginthread]       https://stackoverflow.com/questions/20412633/calling-beginthreadx-with-passing-function-pointers
+[Timeouts in C Unix]                      https://stackoverflow.com/questions/46365448/pthread-mutex-timedlock-exiting-prematurely-without-waiting-for-timeout
 [Windows Data Types]                      https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
 [Variadic Functions in C]                 https://stackoverflow.com/questions/205529/passing-variable-number-of-arguments-around
 [PVOID vs. LPVOID]                        https://forums.codeguru.com/showthread.php?490459-what-is-difference-between-PVOID-and-LPVOID
