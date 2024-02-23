@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-23 13:55:42
+ * @ Modified time: 2024-02-23 14:12:04
  * @ Description:
  * 
  * The main game file.
@@ -74,12 +74,12 @@ int main() {
   #ifndef _WIN32
     int i = 99999999;
     do{}while(--i);
-    ThreadPool_killThread(&threadPool, threadId);  
+    ThreadPool_killThread(&threadPool, "hello");  
     i = 99999999;
     do{}while(1);
   #else
     do {} while(_getch() != 'q');
-    ThreadPool_killThread(&threadPool, threadId);
+    ThreadPool_killThread(&threadPool, "hello");
     do {} while(_getch() != 'q');
   #endif
 

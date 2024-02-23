@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-23 13:52:56
+ * @ Modified time: 2024-02-23 14:33:18
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -18,6 +18,8 @@
 #else
 #include "./unix/utils.thread.unix.h"
 #endif
+
+#include <string.h>
 
 /**
  * //
@@ -112,6 +114,8 @@ void ThreadPool_exit(ThreadPool *this) {
 */
 int ThreadPool_createThread(ThreadPool *this, char *sName, int dMutexIndex, param_func pCallee, param_obj pArgs) {
 
+  // ! refactor this so it uses the mutex name, not mutex index
+
   // If we don't have too many threads yet
   if(this->dThreadCount >= THREAD_MAX_COUNT)
     return -1;
@@ -121,7 +125,7 @@ int ThreadPool_createThread(ThreadPool *this, char *sName, int dMutexIndex, para
     return -1;
 
   // Find an empty spot in our array first
-  int i, dIndex = 0;
+  int i = 0, dIndex = 0;
   
   for(i = 0; i < this->dThreadCount; i++) {
     if(this->pThreadArray[i] == NULL) {
@@ -130,7 +134,7 @@ int ThreadPool_createThread(ThreadPool *this, char *sName, int dMutexIndex, para
     }
   }
 
-  if(i > this->dThreadCount)
+  if(i <= this->dThreadCount)
     dIndex = this->dThreadCount;
 
   // The data mutex is the mutex at the specified index
@@ -179,29 +183,46 @@ int ThreadPool_createMutex(ThreadPool *this, char *sName) {
  * Terminates the thread with the given index in the array.
  * Also deallocates the memory associated with its object.
  * 
- * @param   { ThreadPool * }  this        A reference to the thread manager object.
- * @param   { int }           dThreadId   The index of thread to be terminated.
+ * Note that what happens here is the following:
+ *    (1) The function releases the state mutex associated with the thread.
+ *    (2) The pointer to the thread is then deleted within the array (although the instance is still in memory).
+ *    (3) The thread, upon realizing that its state mutex is free, cleans up after itself and deletes its instance.
+ *          It does this by using the Thread_kill() function, which it calls thereafter.
+ * 
+ * @param   { ThreadPool * }  this          A reference to the thread manager object.
+ * @param   { char * }        sThreadName   The name of thread to be terminated.
 */
-void ThreadPool_killThread(ThreadPool *this, int dThreadId) {
-  
-  // ! refactor this function,, trminate based ON NAME NOT INDEX
+void ThreadPool_killThread(ThreadPool *this, char *sThreadName) {
+  int i, dThreadId = 0, dThreadLast = this->dThreadCount;
 
-  // If the thread does not exist
-  if(dThreadId >= this->dThreadCount)
-    return;
+  // Look for the index of the thread
+  for(i = 0; i < dThreadLast && dThreadLast <= THREAD_MAX_COUNT; i++) {
+
+    // If its null, we skip it and check one more thread
+    if(this->pThreadArray[i] == NULL) {
+      dThreadLast++;
+
+    // We found the thread
+    } else if(!strcmp(this->pThreadArray[i]->sName, sThreadName)) {
+      dThreadId = i;
+      i = dThreadLast;
+    }
+  }
+
+  printf("fucker");
 
   // Release the mutex associated with the thread
   // This automatically kills the thread afterwards, since Thread_kill is called when the 
   //    thread routine terminates
   Mutex_unlock(this->pStateArray[dThreadId]);
 
-  // Shorten the length of the list
-  // We can execute this before the loop because of the i + 1
-  this->dThreadCount--;
-
   // Update the array
   this->pThreadArray[dThreadId] = NULL;
   this->pStateArray[dThreadId] = NULL;
+
+  // Shorten the length of the list
+  // We can execute this before the loop because of the i + 1
+  this->dThreadCount--;
 }
 
 /**

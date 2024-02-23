@@ -1,13 +1,7 @@
-In file included from src\utils/utils.thread.h:15:0,
-                 from src\minesweeper.dev.c:13:
-src\utils/./win/utils.thread.win.h: In function 'Thread_caller':
-src\utils/./win/utils.thread.win.h:278:10: warning: 'return' with a value, in function returning void
-   return NULL;
-          ^~~~
-src\utils/./win/utils.thread.win.h:256:6: note: declared here
- void Thread_caller(void *pThread) {
-      ^~~~~~~~~~~~~
 src\minesweeper.dev.c: In function 'main':
 src\minesweeper.dev.c:43:7: warning: unused variable 'threadId2' [-Wunused-variable]
    int threadId2 = ThreadPool_createThread(&threadPool, "hello2", mutexId2, dummy2, NULL);
        ^~~~~~~~~
+src\minesweeper.dev.c:42:7: warning: unused variable 'threadId' [-Wunused-variable]
+   int threadId = ThreadPool_createThread(&threadPool, "hello", mutexId, dummy, NULL);
+       ^~~~~~~~
