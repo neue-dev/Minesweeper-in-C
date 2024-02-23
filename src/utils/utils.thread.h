@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-23 14:33:18
+ * @ Modified time: 2024-02-23 14:37:56
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -107,26 +107,16 @@ void ThreadPool_exit(ThreadPool *this) {
  * 
  * @param   { ThreadPool * }  this              A reference to the thread manager object.
  * @param   { char * }        sName             The identifier for the thread and its data mutex.
+ * @param   { char * }        sMutexName        The name of the mutex to be associated with.
  * @param   { Mutex * }       pDataMutex        A handle to the mutex that tells the thread whether it can modify its resource.
  * @param   { param_func }    pCallee           A pointer to the callback to be executed by the thread.
  * @param   { param_obj }     pArgs             A pointer to the arguments to be passed to the callback
  * @return  { int }                             The index of the created thread within the array of the manager.
 */
-int ThreadPool_createThread(ThreadPool *this, char *sName, int dMutexIndex, param_func pCallee, param_obj pArgs) {
-
-  // ! refactor this so it uses the mutex name, not mutex index
-
-  // If we don't have too many threads yet
-  if(this->dThreadCount >= THREAD_MAX_COUNT)
-    return -1;
-
-  // If the mutex is invalid
-  if(dMutexIndex >= this->dMutexCount)
-    return -1;
-
-  // Find an empty spot in our array first
-  int i = 0, dIndex = 0;
+int ThreadPool_createThread(ThreadPool *this, char *sName, char *sMutexName, param_func pCallee, param_obj pArgs) {
+  int i = 0, dIndex = 0, dMutexIndex = 0;
   
+  // Find an empty spot in our array first
   for(i = 0; i < this->dThreadCount; i++) {
     if(this->pThreadArray[i] == NULL) {
       dIndex = i;
@@ -136,6 +126,20 @@ int ThreadPool_createThread(ThreadPool *this, char *sName, int dMutexIndex, para
 
   if(i <= this->dThreadCount)
     dIndex = this->dThreadCount;
+
+  // Gets the last mutex with the specified name
+  for(i = 0; i < this->dMutexCount; i++) {
+    if(!strcmp(this->pMutexArray[i]->sName, sMutexName))
+      dMutexIndex = i;
+  }
+
+  // If we don't have too many threads yet
+  if(this->dThreadCount >= THREAD_MAX_COUNT)
+    return -1;
+
+  // If the mutex is invalid
+  if(dMutexIndex >= this->dMutexCount)
+    return -1;
 
   // The data mutex is the mutex at the specified index
   // Also, we have a new state mutex specifically for the new thread (these are not saved in the array of mutexes)
@@ -208,8 +212,6 @@ void ThreadPool_killThread(ThreadPool *this, char *sThreadName) {
       i = dThreadLast;
     }
   }
-
-  printf("fucker");
 
   // Release the mutex associated with the thread
   // This automatically kills the thread afterwards, since Thread_kill is called when the 

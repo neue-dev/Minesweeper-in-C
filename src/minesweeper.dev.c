@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-23 14:12:04
+ * @ Modified time: 2024-02-23 14:38:07
  * @ Description:
  * 
  * The main game file.
@@ -39,8 +39,8 @@ int main() {
   printf("hmmm\n");
   int mutexId = ThreadPool_createMutex(&threadPool, "hello-mutex");
   int mutexId2 = ThreadPool_createMutex(&threadPool, "hello2-mutex");
-  int threadId = ThreadPool_createThread(&threadPool, "hello", mutexId, dummy, NULL);
-  int threadId2 = ThreadPool_createThread(&threadPool, "hello2", mutexId2, dummy2, NULL);
+  int threadId = ThreadPool_createThread(&threadPool, "hello", "hello-mutex", dummy, NULL);
+  int threadId2 = ThreadPool_createThread(&threadPool, "hello2", "hello2-mutex", dummy2, NULL);
 
   // // Buffers
   // Buffer *test = Buffer_create(IO_getWidth(), IO_getHeight());
