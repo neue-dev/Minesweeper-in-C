@@ -1,18 +1,17 @@
+In file included from ./src/minesweeper.dev.c:10:
+./src/./engine.c: In function ‘Engine_init’:
+./src/./engine.c:59:5: warning: passing argument 4 of ‘ThreadManager_createThread’ from incompatible pointer type [-Wincompatible-pointer-types]
+   59 |     EventListener_keyPressed,             // The callback to be executed by the thread
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+      |     |
+      |     void * (*)(void *)
+In file included from ./src/./engine.c:12,
+                 from ./src/minesweeper.dev.c:10:
+./src/././utils/utils.thread.h:118:96: note: expected ‘p_void_func’ {aka ‘void (*)(void *)’} but argument is of type ‘void * (*)(void *)’
+  118 | int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, p_void_func pCallee, p_obj pArgs) {
+      |                                                                                    ~~~~~~~~~~~~^~~~~~~
 In file included from ./src/minesweeper.dev.c:15:
 ./src/utils/utils.buffer.h: In function ‘Buffer_print’:
 ./src/utils/utils.buffer.h:154:3: warning: format not a string literal and no format arguments [-Wformat-security]
   154 |   printf(sBlob);
       |   ^~~~~~
-./src/minesweeper.dev.c: In function ‘main’:
-./src/minesweeper.dev.c:44:7: warning: unused variable ‘threadId2’ [-Wunused-variable]
-   44 |   int threadId2 = ThreadManager_createThread(&threadManager, "hello2", "hello2-mutex", dummy2, NULL);
-      |       ^~~~~~~~~
-./src/minesweeper.dev.c:43:7: warning: unused variable ‘threadId’ [-Wunused-variable]
-   43 |   int threadId = ThreadManager_createThread(&threadManager, "hello", "hello-mutex", dummy, NULL);
-      |       ^~~~~~~~
-./src/minesweeper.dev.c:42:7: warning: unused variable ‘mutexId2’ [-Wunused-variable]
-   42 |   int mutexId2 = ThreadManager_createMutex(&threadManager, "hello2-mutex");
-      |       ^~~~~~~~
-./src/minesweeper.dev.c:41:7: warning: unused variable ‘mutexId’ [-Wunused-variable]
-   41 |   int mutexId = ThreadManager_createMutex(&threadManager, "hello-mutex");
-      |       ^~~~~~~

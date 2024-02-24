@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:05:03
- * @ Modified time: 2024-02-24 23:19:03
+ * @ Modified time: 2024-02-24 23:29:30
  * @ Description:
  * 
  * Some basic event handlers for Unix.
@@ -15,8 +15,12 @@
 
 #include <stdio.h>
 
+typedef void (*p_event_handler)(char);  // Creates a template for event handlers
+
 /**
- * Handles key presses.
+ * Listens for key presses.
+ * 
+ * @param   { p_obj }   pArgs   The event manager responsible for dispatching events in this context.
 */
 void *EventListener_keyPressed(p_obj pArgs) {
   EventManager *this = (EventManager *) pArgs;
@@ -24,6 +28,21 @@ void *EventListener_keyPressed(p_obj pArgs) {
   EventManager_createEvent(this, EVENT_KEY, IO_readChar());
 
   return NULL;
+}
+
+/**
+ * Handles key presses.
+ * Honestly, this is just a wrapper function for event handlers.
+ * This just guides the progammer using this library on how to go about 
+ *    implementing event handlers. This function is not needed for the library
+ *    to work, but makes it easier to understand how everything else ties
+ *    together.
+ * 
+ * @param   { p_event_handler }   eventHandler  A callback to be executed when resolving an event.
+ * @param   { char }              cState        The input to the callback function.
+*/
+void EventHandler_keyPressed(p_event_handler eventHandler, char cState) {
+  eventHandler(cState);
 }
 
 #endif
