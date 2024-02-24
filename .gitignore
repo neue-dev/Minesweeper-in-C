@@ -1,5 +1,6 @@
 # Ignore all executables and the working vscode directory
 .vscode/
+.VSCodeCounter/
 *.exe
 *.o
 

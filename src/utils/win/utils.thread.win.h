@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-02-24 17:21:43
+ * @ Modified time: 2024-02-24 22:17:22
  * @ Description:
  * 
  * A utility library for implementing threads in Windows.
@@ -45,6 +45,14 @@ typedef struct Mutex {
   void *hMutex;             // A handle to the actual mutex
 
 } Mutex;
+
+/**
+ * //
+ * ////
+ * //////    Constructors and destructors
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Allocates memory for a new instance of the mutex class.
@@ -91,6 +99,14 @@ void Mutex_kill(Mutex *this) {
 
   free(this);
 }
+
+/**
+ * //
+ * ////
+ * //////    State methods
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Locks a mutex.
@@ -172,6 +188,14 @@ void Thread_kill(Thread *this);
 void ThreadHandler(void *pThread);
 
 /**
+ * //
+ * ////
+ * //////    Constructors and destructors
+ * ////////
+ * ////////// 
+*/
+
+/**
  * Allocates memory for a new thread object instance.
  * Note that this does not allocate memory for a thread but rather a *thread object*.
  *    The thread object refers to the struct above, which stores information about
@@ -246,6 +270,14 @@ void Thread_kill(Thread *this) {
   // Deallocate the object instance
   free(this);
 }
+
+/**
+ * //
+ * ////
+ * //////    Callback template
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Executes the callback function assigned to the thread.

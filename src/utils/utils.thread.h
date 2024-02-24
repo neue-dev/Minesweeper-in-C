@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-24 14:05:57
+ * @ Modified time: 2024-02-24 22:23:19
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -33,7 +33,8 @@
 /**
  * The ThreadManager struct stores information related to all currently existing threads.
  * If ever we want to do anything involving threads, we must interact with this struct 
- *    instead of calling any of the Thread methods defined above. 
+ *    instead of calling any of the Thread methods defined above; this is similar to how the
+ *    EventManager abstracts some methods of the Event class.
  * It allows us to do this without having to pollute the global namespace with variables.
  * Note that this also uses the implementations we defined for both Windows and Unix, without
  *    it having to know the stuff they do under the hood. This keeps our code clean. You can think
@@ -235,7 +236,7 @@ void ThreadManager_killThread(ThreadManager *this, char *sThreadName) {
  * @param   { ThreadManager * }   this        A reference to an instance of ThreadManager to modify.
  * @param   { int }               dMutexId    The id of the thread whose mutex we will lock.
 */
-void ThreadManager_LockMutex(ThreadManager *this, int dMutexId) {
+void ThreadManager_lockMutex(ThreadManager *this, int dMutexId) {
   Mutex_lock(this->pMutexArray[dMutexId]);
 }
 
@@ -245,7 +246,7 @@ void ThreadManager_LockMutex(ThreadManager *this, int dMutexId) {
  * @param   { ThreadManager * }   this        A reference to an instance of ThreadManager to modify.
  * @param   { int }               dMutexId    The id of the thread whose mutex we will unlock.
 */
-void ThreadManager_UnlockMutex(ThreadManager *this, int dMutexId) {
+void ThreadManager_unlockMutex(ThreadManager *this, int dMutexId) {
   Mutex_unlock(this->pMutexArray[dMutexId]);
 }
 

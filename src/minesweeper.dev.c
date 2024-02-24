@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-24 18:24:55
+ * @ Modified time: 2024-02-24 22:49:24
  * @ Description:
  * 
  * The main game file.
@@ -19,11 +19,11 @@
 #include <stdio.h>
 
 void dummy(p_obj pArgs) {
-  printf("This is printing from a thread\n");
+  // printf("This is printing from a thread\n");
 }
 
 void dummy2(p_obj pArgs) {
-  printf("This is printing from another thread\n");
+  // printf("This is printing from another thread\n");
 }
 
 int main() {
@@ -42,6 +42,11 @@ int main() {
   int mutexId2 = ThreadManager_createMutex(&threadManager, "hello2-mutex");
   int threadId = ThreadManager_createThread(&threadManager, "hello", "hello-mutex", dummy, NULL);
   int threadId2 = ThreadManager_createThread(&threadManager, "hello2", "hello2-mutex", dummy2, NULL);
+
+  int i = 3;
+  while(i--) {
+    printf("%c", IO_readChar());
+  }
 
   // // Buffers
   // Buffer *test = Buffer_create(IO_getWidth(), IO_getHeight());
