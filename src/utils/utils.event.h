@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-24 23:05:29
+ * @ Modified time: 2024-02-24 23:19:18
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -246,18 +246,18 @@ void EventManager_resolveEvent(EventManager *this) {
 /**
  * //
  * ////
- * //////    Event listeners 
+ * //////    Event listener imports
  * ////////
  * ////////// 
 */
 
 // You are in Windows
 #ifdef _WIN32
-#include "./win/utils.event.handlers.win.h"
+#include "./win/utils.event.win.h"
 
 // Not in Windows
 #else
-#include "./unix/utils.event.handlers.unix.h"
+#include "./unix/utils.event.unix.h"
 #endif
 
 #endif
