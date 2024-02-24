@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-24 18:18:50
+ * @ Modified time: 2024-02-24 18:23:43
  * @ Description:
  * 
  * An event object struct. Note that this struct is not instantiable since we don't 
@@ -26,6 +26,7 @@ typedef enum EventState {
   EVENT_WAITING,    // Event is now waiting (possibly after EVENT_RESOLVED)
   EVENT_FIRED,      // Event was fired after the EVENT_WAITING state
   EVENT_RESOLVED,   // Event was resolved after the EVENT_FIRED state
+  EVENT_TERMINATE,  // The event has been terminated, meaning no new triggers will occur
   EVENT_ERROR,      // An error occured
 } EventState;
 
@@ -126,7 +127,14 @@ void Event_resolve(Event *this) {
  * @param   { Event * }   this  The event object to clean up.
 */
 void Event_exit(Event *this) {
-  
+  int i;
+
+  // Free all the strings first
+  for(i = 0; i < this->dLogs; i++)
+    free(this->sLogArray[i]);
+
+  // Terminate the event
+  this->eState = EVENT_TERMINATE;
 }
 
 /**

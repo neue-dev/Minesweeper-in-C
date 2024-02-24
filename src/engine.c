@@ -1,16 +1,16 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-24 17:28:17
+ * @ Modified time: 2024-02-24 18:26:52
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
  * This file is only meant to be included once, thus the lack of inclusion guards.
  */
 
-#include <utils.events.h>
-#include <utils.thread.h>
-#include <utils.types.h>
+#include "./utils/utils.events.h"
+#include "./utils/utils.thread.h"
+#include "./utils/utils.types.h"
 
 #define ENGINE_EVENT_KEY_NAME "engine-event-key"
 #define ENGINE_EVENT_KEY_MUTEX "engine-event-key-mutex"
@@ -33,7 +33,7 @@ typedef struct Engine {
  * ! move this functionality over to the events file (implement it for windows and unix)
 */
 int Engine_keyPressed(p_obj pArgs) {
-  
+  return 1;
 }
 
 /**
@@ -45,7 +45,7 @@ void Engine_init(Engine *this) {
 
   // Create an event for key events
   // ! replace Engine_keyPressed with something from the events.h header
-  Event_init(this->eventKey, ENGINE_EVENT_KEY_NAME, Engine_keyPressed);
+  Event_init(&this->eventKey, ENGINE_EVENT_KEY_NAME, Engine_keyPressed);
 
   // Initialize the thread manager first
   ThreadManager_init(&this->threadManager);
@@ -74,6 +74,6 @@ void Engine_run(Engine* this) {
 */
 void Engine_exit(Engine *this) {
 
-  ThreadManager_exit(this->threadManager);
+  ThreadManager_exit(&this->threadManager);
 
 }

@@ -1,12 +1,13 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-24 14:09:42
+ * @ Modified time: 2024-02-24 18:24:55
  * @ Description:
  * 
  * The main game file.
  */
 
+#include "./engine.c"
 #include "game/field.obj.h"
 
 #include "utils/utils.graphics.h"
