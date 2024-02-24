@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-24 22:49:24
+ * @ Modified time: 2024-02-24 23:13:47
  * @ Description:
  * 
  * The main game file.
@@ -33,20 +33,24 @@ int main() {
   IO_init(&io);
   IO_setSize(60, 30);
   
+  Engine engine;
+  Engine_init(&engine);
+  Engine_run(&engine);
+  
   // Thread pool
-  ThreadManager threadManager;
-  ThreadManager_init(&threadManager);
+  // ThreadManager threadManager;
+  // ThreadManager_init(&threadManager);
 
-  printf("hmmm\n");
-  int mutexId = ThreadManager_createMutex(&threadManager, "hello-mutex");
-  int mutexId2 = ThreadManager_createMutex(&threadManager, "hello2-mutex");
-  int threadId = ThreadManager_createThread(&threadManager, "hello", "hello-mutex", dummy, NULL);
-  int threadId2 = ThreadManager_createThread(&threadManager, "hello2", "hello2-mutex", dummy2, NULL);
+  // printf("hmmm\n");
+  // int mutexId = ThreadManager_createMutex(&threadManager, "hello-mutex");
+  // int mutexId2 = ThreadManager_createMutex(&threadManager, "hello2-mutex");
+  // int threadId = ThreadManager_createThread(&threadManager, "hello", "hello-mutex", dummy, NULL);
+  // int threadId2 = ThreadManager_createThread(&threadManager, "hello2", "hello2-mutex", dummy2, NULL);
 
-  int i = 3;
-  while(i--) {
-    printf("%c", IO_readChar());
-  }
+  // int i = 3;
+  // while(i--) {
+  //   printf("%c", IO_readChar());
+  // }
 
   // // Buffers
   // Buffer *test = Buffer_create(IO_getWidth(), IO_getHeight());
@@ -77,18 +81,19 @@ int main() {
 
   // // Buffer_print(test);
   
-  #ifndef _WIN32
-    int i = 99999999;
-    do{}while(--i);
-    ThreadManager_killThread(&threadManager, "hello");  
-    i = 99999999;
-    do{}while(1);
-  #else
-    do {} while(_getch() != 'q');
-    ThreadManager_killThread(&threadManager, "hello");
-    do {} while(_getch() != 'q');
-  #endif
+  // #ifndef _WIN32
+  //   int i = 99999999;
+  //   do{}while(--i);
+  //   ThreadManager_killThread(&threadManager, "hello");  
+  //   i = 99999999;
+  //   do{}while(1);
+  // #else
+  //   do {} while(_getch() != 'q');
+  //   ThreadManager_killThread(&threadManager, "hello");
+  //   do {} while(_getch() != 'q');
+  // #endif
 
+  Engine_exit(&engine);
   IO_exit(&io);
 
   return 0;

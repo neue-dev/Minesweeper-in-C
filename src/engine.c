@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-24 22:49:50
+ * @ Modified time: 2024-02-24 23:15:16
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -12,9 +12,9 @@
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
 
-#define ENGINE_EVENT_KEY_NAME "engine-event-key"
-#define ENGINE_EVENT_KEY_MUTEX "engine-event-key-mutex"
-#define ENGINE_EVENT_KEY_THREAD "engine-event-key-thread"
+#define ENGINE_KEY_EVENTS "engine-key-events"
+#define ENGINE_KEY_EVENTS_MUTEX "engine-key-events-mutex"
+#define ENGINE_KEY_EVENTS_THREAD "engine-key-events-thread"
 
 /**
  * The engine struct handles the interactions between the different utility libraries.
@@ -43,18 +43,21 @@ int Engine_keyPressed(p_obj pArgs) {
 */
 void Engine_init(Engine *this) {
 
-  // Create an event for key events
-  // ! replace Engine_keyPressed with something from the events.h header
-  // Event_init(&this->eventKey, ENGINE_EVENT_KEY_NAME, Engine_keyPressed);
-
-  // Initialize the thread manager first
+  // Initialize the managers
+  EventManager_init(&this->eventManager);
   ThreadManager_init(&this->threadManager);
 
-  // Create a mutex and a thread for events
-  ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_KEY_MUTEX);
+  // Create a mutex
+  ThreadManager_createMutex(&this->threadManager, 
+    ENGINE_KEY_EVENTS_MUTEX);             // The name of the mutex
+
+  // Create a thread for the events
   ThreadManager_createThread(&this->threadManager, 
-    ENGINE_EVENT_KEY_THREAD, 
-    ENGINE_EVENT_KEY_MUTEX, NULL, NULL);
+    ENGINE_KEY_EVENTS_THREAD,             // The name of the thread
+    ENGINE_KEY_EVENTS_MUTEX,              // The name of the mutex
+    
+    EventListener_keyPressed,             // The callback to be executed by the thread
+    &this->eventManager);                 // An input to that callback
 }
 
 /**
@@ -63,7 +66,11 @@ void Engine_init(Engine *this) {
  * @param   { Engine * }  this  The engine object.
 */
 void Engine_run(Engine* this) {
-  
+  // ! WHEN RESOLVING EVENTS, MAKE SURE TO LOCK THE MUTEX TO THE EVENTS FIRST
+
+  while(1) {
+    printf("%d", this->eventManager.dEventCount);
+  }
 }
 
 /**

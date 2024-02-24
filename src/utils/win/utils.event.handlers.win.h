@@ -1,10 +1,12 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:04:52
- * @ Modified time: 2024-02-24 22:54:49
+ * @ Modified time: 2024-02-24 23:08:04
  * @ Description:
  * 
- * Some basic event handlers for Windows.
+ * Some basic event listeners for Windows.
+ * Note that event listeners must call the createEvent() function inside of their implementations.
+ * Also, they must return void on Windows and void * on Unix.
  */
 
 #ifndef UTILS_EVENTS_WIN_
@@ -18,15 +20,10 @@
 /**
  * Handles key presses.
 */
-int EventHandler_keyPressed(p_obj pArgs) {
-  return 1;
-}
+void EventListener_keyPressed(p_obj pArgs) {
+  EventManager *this = (EventManager *) pArgs;
 
-/**
- * Handles key releases.
-*/
-int EventHandler_keyReleased(p_obj pArgs) {
-  return 1;
+  EventManager_createEvent(this, EVENT_KEY, IO_readChar());
 }
 
 #endif

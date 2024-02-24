@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-24 22:54:05
+ * @ Modified time: 2024-02-24 23:05:29
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -187,6 +187,8 @@ void EventManager_exit() {
  * Creates an event and appends it to the event chain.
 */
 void EventManager_createEvent(EventManager *this, EventType eType, char cState) {
+
+  // The new event
   Event *pEvent = Event_create(NULL, eType, cState);
 
   // The queue of events is currently empty
@@ -244,7 +246,7 @@ void EventManager_resolveEvent(EventManager *this) {
 /**
  * //
  * ////
- * //////    Event handler imports
+ * //////    Event listeners 
  * ////////
  * ////////// 
 */

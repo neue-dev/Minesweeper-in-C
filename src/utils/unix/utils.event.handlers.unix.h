@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:05:03
- * @ Modified time: 2024-02-24 22:55:04
+ * @ Modified time: 2024-02-24 23:05:49
  * @ Description:
  * 
  * Some basic event handlers for Unix.
@@ -18,14 +18,9 @@
 /**
  * Handles key presses.
 */
-int EventHandler_keyPressed(p_obj pArgs) {
-  return 1;
-}
+void *EventListener_keyPressed(p_obj pArgs) {
+  IO_readChar();
 
-/**
- * Handles key releases.
-*/
-int EventHandler_keyReleased(p_obj pArgs) {
   return 1;
 }
 
