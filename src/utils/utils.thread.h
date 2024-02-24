@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-23 14:37:56
+ * @ Modified time: 2024-02-24 13:41:27
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -24,13 +24,13 @@
 /**
  * //
  * ////
- * //////    ThreadPool struct
+ * //////    ThreadManager struct
  * ////////
  * ////////// 
 */
 
 /**
- * The ThreadPool struct stores information related to all currently existing threads.
+ * The ThreadManager struct stores information related to all currently existing threads.
  * If ever we want to do anything involving threads, we must interact with this struct 
  *    instead of calling any of the Thread methods defined above. 
  * It allows us to do this without having to pollute the global namespace with variables.
@@ -40,7 +40,7 @@
  * 
  * @struct
 */
-typedef struct ThreadPool {
+typedef struct ThreadManager {
 
   Thread *pThreadArray[THREAD_MAX_COUNT];             // Stores references to all the threads
   Mutex *pStateArray[THREAD_MAX_COUNT];               // For each thread, we have a state mutex to tell it to keep running        
@@ -49,15 +49,15 @@ typedef struct ThreadPool {
   int dThreadCount;                                   // Stores the length of the threads array
   int dMutexCount;                                    // Stores the length of the mutexes array
 
-} ThreadPool;
+} ThreadManager;
 
 /**
- * Initializes the thread pool variables.
+ * Initializes the thread manager variables.
  * 
- * @param   { ThreadPool * }  this  The thread pool to be initialized.
- * @return  { ThreadPool * }        The initialized thread pool struct.
+ * @param   { ThreadManager * }  this  The thread manager to be initialized.
+ * @return  { ThreadManager * }        The initialized thread manager struct.
 */
-ThreadPool *ThreadPool_init(ThreadPool *this) {
+ThreadManager *ThreadManager_init(ThreadManager *this) {
 
   // Set the array sizes to 0
   this->dThreadCount = 0;
@@ -67,11 +67,11 @@ ThreadPool *ThreadPool_init(ThreadPool *this) {
 }
 
 /**
- * Cleans up the state of the thread pool.
+ * Cleans up the state of the thread manager.
  * 
- * @param   { ThreadPool * }  The thread pool to exit.
+ * @param   { ThreadManager * }  The thread manager to exit.
 */
-void ThreadPool_exit(ThreadPool *this) {
+void ThreadManager_exit(ThreadManager *this) {
 
   // Kill all the threads first
   while(this->dThreadCount) {
@@ -105,15 +105,15 @@ void ThreadPool_exit(ThreadPool *this) {
  * Returns the index of the thread within that array. 
  * Returns -1 if there are too many threads already or something else happened.
  * 
- * @param   { ThreadPool * }  this              A reference to the thread manager object.
- * @param   { char * }        sName             The identifier for the thread and its data mutex.
- * @param   { char * }        sMutexName        The name of the mutex to be associated with.
- * @param   { Mutex * }       pDataMutex        A handle to the mutex that tells the thread whether it can modify its resource.
- * @param   { param_func }    pCallee           A pointer to the callback to be executed by the thread.
- * @param   { param_obj }     pArgs             A pointer to the arguments to be passed to the callback
- * @return  { int }                             The index of the created thread within the array of the manager.
+ * @param   { ThreadManager * }   this              A reference to the thread manager object.
+ * @param   { char * }            sName             The identifier for the thread and its data mutex.
+ * @param   { char * }            sMutexName        The name of the mutex to be associated with.
+ * @param   { Mutex * }           pDataMutex        A handle to the mutex that tells the thread whether it can modify its resource.
+ * @param   { param_func }        pCallee           A pointer to the callback to be executed by the thread.
+ * @param   { param_obj }         pArgs             A pointer to the arguments to be passed to the callback
+ * @return  { int }                                 The index of the created thread within the array of the manager.
 */
-int ThreadPool_createThread(ThreadPool *this, char *sName, char *sMutexName, param_func pCallee, param_obj pArgs) {
+int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, param_func pCallee, param_obj pArgs) {
   int i = 0, dIndex = 0, dMutexIndex = 0;
   
   // Find an empty spot in our array first
@@ -161,15 +161,15 @@ int ThreadPool_createThread(ThreadPool *this, char *sName, char *sMutexName, par
  * Creates a new mutex object instance and adds it to the array.
  * Note that once a mutex has been created, it cannot be destroyed unless we wish to destroy
  *    all the mutexes. This is a safety feature to prevent any undefined behaviour. (We don't
- *    have a function for the ThreadPool struct that deletes a single Mutex).
+ *    have a function for the ThreadManager struct that deletes a single Mutex).
  * 
  * Returns the index of the mutex within that array. 
  * Returns -1 if there are too many mutexes already.
  * 
- * @param   { ThreadPool * }  this    A reference to the thread manager object.
- * @param   { char * }        sName   The identifier for the mutex.
+ * @param   { ThreadManager * }   this    A reference to the thread manager object.
+ * @param   { char * }            sName   The identifier for the mutex.
 */
-int ThreadPool_createMutex(ThreadPool *this, char *sName) {
+int ThreadManager_createMutex(ThreadManager *this, char *sName) {
 
   // If we don't have too many mutexes yet
   if(this->dMutexCount >= MUTEX_MAX_COUNT)
@@ -193,10 +193,10 @@ int ThreadPool_createMutex(ThreadPool *this, char *sName) {
  *    (3) The thread, upon realizing that its state mutex is free, cleans up after itself and deletes its instance.
  *          It does this by using the Thread_kill() function, which it calls thereafter.
  * 
- * @param   { ThreadPool * }  this          A reference to the thread manager object.
- * @param   { char * }        sThreadName   The name of thread to be terminated.
+ * @param   { ThreadManager * }   this          A reference to the thread manager object.
+ * @param   { char * }            sThreadName   The name of thread to be terminated.
 */
-void ThreadPool_killThread(ThreadPool *this, char *sThreadName) {
+void ThreadManager_killThread(ThreadManager *this, char *sThreadName) {
   int i, dThreadId = 0, dThreadLast = this->dThreadCount;
 
   // Look for the index of the thread
@@ -231,20 +231,20 @@ void ThreadPool_killThread(ThreadPool *this, char *sThreadName) {
  * Locks the mutex with a given id.
  * Note that this function does not terminate until it gets a handle to the mutex.
  * 
- * @param   { ThreadPool * }  this        A reference to an instance of ThreadPool to modify.
- * @param   { int }           dMutexId    The id of the thread whose mutex we will lock.
+ * @param   { ThreadManager * }   this        A reference to an instance of ThreadManager to modify.
+ * @param   { int }               dMutexId    The id of the thread whose mutex we will lock.
 */
-void ThreadPool_LockMutex(ThreadPool *this, int dMutexId) {
+void ThreadManager_LockMutex(ThreadManager *this, int dMutexId) {
   Mutex_lock(this->pMutexArray[dMutexId]);
 }
 
 /**
  * Unlocks the data mutex of the thread with a given index.
  * 
- * @param   { ThreadPool * }  this        A reference to an instance of ThreadPool to modify.
- * @param   { int }           dMutexId    The id of the thread whose mutex we will unlock.
+ * @param   { ThreadManager * }   this        A reference to an instance of ThreadManager to modify.
+ * @param   { int }               dMutexId    The id of the thread whose mutex we will unlock.
 */
-void ThreadPool_UnlockMutex(ThreadPool *this, int dMutexId) {
+void ThreadManager_UnlockMutex(ThreadManager *this, int dMutexId) {
   Mutex_unlock(this->pMutexArray[dMutexId]);
 }
 

@@ -1,13 +1,13 @@
 src\minesweeper.dev.c: In function 'main':
 src\minesweeper.dev.c:43:7: warning: unused variable 'threadId2' [-Wunused-variable]
-   int threadId2 = ThreadPool_createThread(&threadPool, "hello2", "hello2-mutex", dummy2, NULL);
+   int threadId2 = ThreadManager_createThread(&threadManager, "hello2", "hello2-mutex", dummy2, NULL);
        ^~~~~~~~~
 src\minesweeper.dev.c:42:7: warning: unused variable 'threadId' [-Wunused-variable]
-   int threadId = ThreadPool_createThread(&threadPool, "hello", "hello-mutex", dummy, NULL);
+   int threadId = ThreadManager_createThread(&threadManager, "hello", "hello-mutex", dummy, NULL);
        ^~~~~~~~
 src\minesweeper.dev.c:41:7: warning: unused variable 'mutexId2' [-Wunused-variable]
-   int mutexId2 = ThreadPool_createMutex(&threadPool, "hello2-mutex");
+   int mutexId2 = ThreadManager_createMutex(&threadManager, "hello2-mutex");
        ^~~~~~~~
 src\minesweeper.dev.c:40:7: warning: unused variable 'mutexId' [-Wunused-variable]
-   int mutexId = ThreadPool_createMutex(&threadPool, "hello-mutex");
+   int mutexId = ThreadManager_createMutex(&threadManager, "hello-mutex");
        ^~~~~~~
