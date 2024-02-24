@@ -1,14 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-24 13:41:27
+ * @ Modified time: 2024-02-24 13:44:40
  * @ Description:
  *    
  * A utility library for implementing threads.
  */
 
-#ifndef UTILS_THREAD
-#define UTILS_THREAD
+#ifndef UTILS_THREAD_
+#define UTILS_THREAD_
 
 // You are in Windows
 #ifdef _WIN32

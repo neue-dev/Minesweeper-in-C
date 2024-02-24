@@ -1,14 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-24 13:37:32
+ * @ Modified time: 2024-02-24 13:44:07
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
  */
 
-#ifndef UTILS_BUFFER
-#define UTILS_BUFFER
+#ifndef UTILS_BUFFER_
+#define UTILS_BUFFER_
 
 #include <string.h>
 #include <stdio.h>

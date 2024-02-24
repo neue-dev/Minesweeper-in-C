@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-02-21 12:28:15
+ * @ Modified time: 2024-02-24 13:44:29
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
@@ -9,8 +9,8 @@
 
 
 
-#ifndef UTILS_GRID
-#define UTILS_GRID
+#ifndef UTILS_GRID_
+#define UTILS_GRID_
 
 #include "../utils/utils.types.h"
 

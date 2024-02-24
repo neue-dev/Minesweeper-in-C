@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-23 14:29:21
+ * @ Modified time: 2024-02-24 13:45:10
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -10,8 +10,8 @@
  *    (2) pThread is a pointer to an instance of the Thread class
  */
 
-#ifndef UTILS_THREAD_UNIX
-#define UTILS_THREAD_UNIX
+#ifndef UTILS_THREAD_UNIX_
+#define UTILS_THREAD_UNIX_
 
 #include <pthread.h>
 #include <time.h>

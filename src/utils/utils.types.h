@@ -1,15 +1,15 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-23 11:26:58
+ * @ Modified time: 2024-02-24 13:44:46
  * @ Description:
  *    
  * Typedefs some custom types.   
  * We will be using lowercase letters and underscores to denote that something is a data type.
  */
 
-#ifndef UTILS_TYPES
-#define UTILS_TYPES
+#ifndef UTILS_TYPES_
+#define UTILS_TYPES_
 
 // Some primitives
 // Gives us fixed-width data types

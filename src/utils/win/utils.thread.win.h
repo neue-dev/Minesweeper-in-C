@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-02-23 14:37:48
+ * @ Modified time: 2024-02-24 13:45:00
  * @ Description:
  * 
  * A utility library for implementing threads in Windows.
@@ -10,8 +10,8 @@
  *    (2) pThread is a pointer to an instance of the Thread class
  */
 
-#ifndef UTILS_THREAD_WIN
-#define UTILS_THREAD_WIN
+#ifndef UTILS_THREAD_WIN_
+#define UTILS_THREAD_WIN_
 
 
 #include <windows.h>
