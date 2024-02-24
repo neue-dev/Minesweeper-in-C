@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-24 23:19:18
+ * @ Modified time: 2024-02-24 23:40:10
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -46,6 +46,8 @@ struct Event {
   Event *pNextEvent;                // The next event in the event chain
   EventType eType;                  // What type of event it is
 
+  p_event_handler pEventHandler;    // A pointer to a function that resolves the event.
+
   char cState;                      // The information stored by the event
                                     // A character suffices to store any key press / a binary mouse press / smth else
                                     // We will not be dealing with more complicated events anyway
@@ -73,17 +75,21 @@ Event *Event_new() {
 /**
  * Initializes an event instance
  * 
- * @param   { Event * }     this        The event instance to be initialized.
- * @param   { Event * }     pNextEvent  The event after the current instance.
- * @param   { EventType }   eType       The type of the event.
- * @param   { char }        cState      What value is stored by the event.
- * @return  { Event * }                 A pointer to the initialized instance.
+ * @param   { Event * }           this            The event instance to be initialized.
+ * @param   { Event * }           pNextEvent      The event after the current instance.
+ * @param   { EventType }         eType           The type of the event.
+ * @param   { p_event_handler }   pEventHandler   A callback function that resolves the event.
+ * @param   { char }              cState          What value is stored by the event.
+ * @return  { Event * }                           A pointer to the initialized instance.
 */
-Event *Event_init(Event *this, Event *pNextEvent, EventType eType, char cState) {
+Event *Event_init(Event *this, Event *pNextEvent, EventType eType, p_event_handler pEventHandler, char cState) {
   
   // Store the reference to the next event
   this->pNextEvent = pNextEvent;
   this->eType = eType;
+
+  // Store the event handler
+  this->pEventHandler = pEventHandler;
 
   // Set the data value stored by the event
   this->cState = cState;
@@ -94,13 +100,14 @@ Event *Event_init(Event *this, Event *pNextEvent, EventType eType, char cState) 
 /**
  * Creates a new initialized event.
  * 
- * @param   { Event * }     pNextEvent  The event after the current instance.
- * @param   { EventType }   eType       The type of the event.
- * @param   { char }        cState      What value is stored by the event.
- * @return  { Event * }                 A pointer to the initialized instance.
+ * @param   { Event * }           pNextEvent      The event after the current instance.
+ * @param   { EventType }         eType           The type of the event.
+ * @param   { p_event_handler }   pEventHandler   A callback function that resolves the event.
+ * @param   { char }              cState          What value is stored by the event.
+ * @return  { Event * }                           A pointer to the initialized instance.
 */
-Event *Event_create(Event *pNextEvent, EventType eType, char cState) {
-  return Event_init(Event_new(), pNextEvent, eType, cState);
+Event *Event_create(Event *pNextEvent, EventType eType, p_event_handler pEventHandler, char cState) {
+  return Event_init(Event_new(), pNextEvent, eType, pEventHandler, cState);
 }
 
 /**
@@ -136,7 +143,7 @@ void Event_chain(Event *this, Event *pNextEvent) {
  * @param   { Event * }   this  The current event.
 */
 void Event_resolve(Event *this) {
-  // ! do something here
+  this->pEventHandler(this->cState);
 }
 
 /**
@@ -185,11 +192,13 @@ void EventManager_exit() {
 
 /**
  * Creates an event and appends it to the event chain.
+ * 
+ * // ! put the jsdoc hereee
 */
-void EventManager_createEvent(EventManager *this, EventType eType, char cState) {
+void EventManager_createEvent(EventManager *this, EventType eType, p_event_handler pEventHandler, char cState) {
 
   // The new event
-  Event *pEvent = Event_create(NULL, eType, cState);
+  Event *pEvent = Event_create(NULL, eType, pEventHandler, cState);
 
   // The queue of events is currently empty
   if(this->pHead == NULL) {
