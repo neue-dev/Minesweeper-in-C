@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-24 13:42:24
+ * @ Modified time: 2024-02-24 14:09:42
  * @ Description:
  * 
  * The main game file.
@@ -17,11 +17,11 @@
 
 #include <stdio.h>
 
-void dummy(void *pArgs) {
+void dummy(p_obj pArgs) {
   printf("This is printing from a thread\n");
 }
 
-void dummy2(void *pArgs) {
+void dummy2(p_obj pArgs) {
   printf("This is printing from another thread\n");
 }
 

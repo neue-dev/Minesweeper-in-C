@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-24 13:44:46
+ * @ Modified time: 2024-02-24 13:59:32
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -24,10 +24,9 @@
 //    for representing the arguments to a callback function.
 
 // Parameter object pointers
-typedef void *param;                      // A pointer to a collection of function parameters
-typedef param param_int;                  // An integer to be passed as an argument
-typedef param param_str;                  // A string to be passed as an argument
-typedef param param_obj;                  // A pointer to a struct to be passed to a function
-typedef void (*param_func)(void *pArgs);  // A pointer to a callback function
+typedef void *p;                            // A pointer to a collection of function parameters
+typedef p p_obj;                            // A pointer to a struct to be passed to a function
+typedef void (*p_void_func)(void *pArgs);   // A pointer to a callback function that returns void
+typedef int (*p_bool_func)(void *pArgs);    // A pointer to a callback function that returns a bool
 
 #endif

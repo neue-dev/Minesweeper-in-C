@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-24 13:45:10
+ * @ Modified time: 2024-02-24 14:00:33
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -153,16 +153,16 @@ void Mutex_unlock(Mutex *this) {
 */
 typedef struct Thread {
 
-  char *sName;              // The name of the thread
-                            // TBH, this is only here for convenience and debugging
+  char *sName;                // The name of the thread
+                              // TBH, this is only here for convenience and debugging
 
-  pthread_t *hThread;       // A handle to the actual thread instance
-  Mutex *pStateMutex;       // A pointer to the mutex that tells the thread to keep running
-  Mutex *pDataMutex;        // A pointer to the mutex that tells the thread if it can 
-                            //    modify the shared resource
+  pthread_t *hThread;         // A handle to the actual thread instance
+  Mutex *pStateMutex;         // A pointer to the mutex that tells the thread to keep running
+  Mutex *pDataMutex;          // A pointer to the mutex that tells the thread if it can 
+                              //    modify the shared resource
 
-  param_func pCallee;        // A pointer to the routine to be run by the thread
-  param_obj pArgs;           // The arguments to the callee
+  p_void_func pCallee;        // A pointer to the routine to be run by the thread
+  p_obj pArgs;                // The arguments to the callee
 
 } Thread;
 
@@ -171,9 +171,9 @@ typedef struct Thread {
 */
 Thread *Thread_new();
 
-Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, param_func pCallee, param_obj pArgs);
+Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, p_void_func pCallee, p_obj pArgs);
 
-Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, param_func pCallee, param_obj pArgs);
+Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, p_void_func pCallee, p_obj pArgs);
 
 void Thread_kill(Thread *this);
 
@@ -184,7 +184,7 @@ void Thread_kill(Thread *this);
  *    on Windows, this function should return void
  *    on Unix, it should return void *
 */
-void *Thread_caller(void *pThread);
+void *ThreadHandler(void *pThread);
 
 /**
  * Allocates memory for a new thread object instance.
@@ -204,15 +204,15 @@ Thread *Thread_new() {
  * Initializes an instance of the thread class.
  * Returns the initialized instance.
  * 
- * @param   { Thread * }      this          A pointer to the thread object to be initialized.
- * @param   { char * }        sName         The name of the thread instance.
- * @param   { Mutex * }       pStateMutex   A handle to the state mutex.
- * @param   { Mutex * }       pDataMutex    A handle to the data mutex.
- * @param   { param_func }    pCallee       A pointer to the callback to be executed by the thread.
- * @param   { param_obj }     pArgs         A pointer to the arguments to be passed to the callback.
- * @return  { Thread * }                    A pointer to the initialized thread object.
+ * @param   { Thread * }          this          A pointer to the thread object to be initialized.
+ * @param   { char * }            sName         The name of the thread instance.
+ * @param   { Mutex * }           pStateMutex   A handle to the state mutex.
+ * @param   { Mutex * }           pDataMutex    A handle to the data mutex.
+ * @param   { p_void_func }       pCallee       A pointer to the callback to be executed by the thread.
+ * @param   { p_obj }             pArgs         A pointer to the arguments to be passed to the callback.
+ * @return  { Thread * }                        A pointer to the initialized thread object.
 */
-Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, param_func pCallee, param_obj pArgs) {
+Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, p_void_func pCallee, p_obj pArgs) {
   
   // Update its name
   this->sName = sName;
@@ -227,7 +227,7 @@ Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataM
 
   // Spawn a new thread
   this->hThread = calloc(1, sizeof(*(this->hThread)));
-  pthread_create(this->hThread, NULL, Thread_caller, this);
+  pthread_create(this->hThread, NULL, ThreadHandler, this);
 
   return this;
 }
@@ -236,14 +236,14 @@ Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataM
  * Creates a new thread object with initialized parameters.
  * Returns the initialized instance.
  * 
- * @param   { char * }        sName         The name of the thread instance.
- * @param   { Mutex * }       pStateMutex   A handle to the state mutex.
- * @param   { Mutex * }       pDataMutex    A handle to the data mutex.
- * @param   { param_func }    pCallee       A pointer to the callback to be executed by the thread.
- * @param   { param_obj }     pArgs         A pointer to the arguments to be passed to the callback.
- * @return  { Thread * }                    A pointer to the initialized thread object.
+ * @param   { char * }            sName         The name of the thread instance.
+ * @param   { Mutex * }           pStateMutex   A handle to the state mutex.
+ * @param   { Mutex * }           pDataMutex    A handle to the data mutex.
+ * @param   { p_void_func }       pCallee       A pointer to the callback to be executed by the thread.
+ * @param   { p_obj }             pArgs         A pointer to the arguments to be passed to the callback.
+ * @return  { Thread * }                        A pointer to the initialized thread object.
 */
-Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, param_func pCallee, param_obj pArgs) {
+Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, p_void_func pCallee, p_obj pArgs) {
   return Thread_init(Thread_new(), sName, pStateMutex, pDataMutex, pCallee, pArgs);
 }
 
@@ -268,7 +268,7 @@ void Thread_kill(Thread *this) {
  * 
  * @param   { void * }  pThread   A reference to the Thread object whose info we need.
 */
-void *Thread_caller(void *pThread) {
+void *ThreadHandler(void *pThread) {
 
   // Note we have to do this because pthread_create expects a function of type void (*)(void *)
   Thread *this = (Thread *) pThread;

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-24 13:44:40
+ * @ Modified time: 2024-02-24 14:05:57
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -9,6 +9,9 @@
 
 #ifndef UTILS_THREAD_
 #define UTILS_THREAD_
+
+#include "./utils.types.h"
+#include <string.h>
 
 // You are in Windows
 #ifdef _WIN32
@@ -18,8 +21,6 @@
 #else
 #include "./unix/utils.thread.unix.h"
 #endif
-
-#include <string.h>
 
 /**
  * //
@@ -109,11 +110,11 @@ void ThreadManager_exit(ThreadManager *this) {
  * @param   { char * }            sName             The identifier for the thread and its data mutex.
  * @param   { char * }            sMutexName        The name of the mutex to be associated with.
  * @param   { Mutex * }           pDataMutex        A handle to the mutex that tells the thread whether it can modify its resource.
- * @param   { param_func }        pCallee           A pointer to the callback to be executed by the thread.
- * @param   { param_obj }         pArgs             A pointer to the arguments to be passed to the callback
+ * @param   { p_void_func }       pCallee           A pointer to the callback to be executed by the thread.
+ * @param   { p_obj }             pArgs             A pointer to the arguments to be passed to the callback
  * @return  { int }                                 The index of the created thread within the array of the manager.
 */
-int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, param_func pCallee, param_obj pArgs) {
+int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, p_void_func pCallee, p_obj pArgs) {
   int i = 0, dIndex = 0, dMutexIndex = 0;
   
   // Find an empty spot in our array first
