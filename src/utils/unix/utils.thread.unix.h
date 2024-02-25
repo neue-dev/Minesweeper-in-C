@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-25 09:51:22
+ * @ Modified time: 2024-02-25 11:12:53
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -178,8 +178,8 @@ typedef struct Thread {
                               //    modify the shared resource
 
   f_void_callback fCallee;    // A pointer to the routine to be run by the thread
-  p_obj pArgs;                // The arguments to the callee
-  int tArg;                   // An optional argument to the callee
+  p_obj pArgs_ANY;            // The arguments to the callee
+  int tArg_ANY;               // An optional argument to the callee
 
 } Thread;
 
@@ -188,9 +188,9 @@ typedef struct Thread {
 */
 Thread *Thread_new();
 
-Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs, int tArg);
+Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY);
 
-Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs, int tArg);
+Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY);
 
 void Thread_kill(Thread *this);
 
@@ -234,11 +234,11 @@ Thread *Thread_new() {
  * @param   { Mutex * }           pStateMutex   A handle to the state mutex.
  * @param   { Mutex * }           pDataMutex    A handle to the data mutex.
  * @param   { f_void_callback }   fCallee       A pointer to the callback to be executed by the thread.
- * @param   { p_obj }             pArgs         A pointer to the arguments to be passed to the callback.
- * @param   { int }               tArg          An argument that might be needed by the callback function.
+ * @param   { p_obj }             pArgs_ANY     A pointer to the arguments to be passed to the callback.
+ * @param   { int }               tArg_ANY      An argument that might be needed by the callback function.
  * @return  { Thread * }                        A pointer to the initialized thread object.
 */
-Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs, int tArg) {
+Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY) {
   
   // Update its name
   this->sName = sName;
@@ -249,8 +249,8 @@ Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataM
 
   // Store the callback and its argument object
   this->fCallee = fCallee;
-  this->pArgs = pArgs;
-  this->tArg = tArg;
+  this->pArgs_ANY = pArgs_ANY;
+  this->tArg_ANY = tArg_ANY;
 
   // Spawn a new thread
   this->hThread = calloc(1, sizeof(*(this->hThread)));
@@ -267,12 +267,12 @@ Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataM
  * @param   { Mutex * }           pStateMutex   A handle to the state mutex.
  * @param   { Mutex * }           pDataMutex    A handle to the data mutex.
  * @param   { f_void_callback }   fCallee       A pointer to the callback to be executed by the thread.
- * @param   { p_obj }             pArgs         A pointer to the arguments to be passed to the callback.
- * @param   { int }               tArg          An argument that might be needed by the callback function.
+ * @param   { p_obj }             pArgs_ANY     A pointer to the arguments to be passed to the callback.
+ * @param   { int }               tArg_ANY      An argument that might be needed by the callback function.
  * @return  { Thread * }                        A pointer to the initialized thread object.
 */
-Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs, int tArg) {
-  return Thread_init(Thread_new(), sName, pStateMutex, pDataMutex, fCallee, pArgs, tArg);
+Thread *Thread_create(char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY) {
+  return Thread_init(Thread_new(), sName, pStateMutex, pDataMutex, fCallee, pArgs_ANY, tArg_ANY);
 }
 
 /**
@@ -315,7 +315,7 @@ void *ThreadHandler(void *pThread) {
     Mutex_lock(this->pDataMutex);
 
     // Call the callback function
-    this->fCallee(this->pArgs, this->tArg);
+    this->fCallee(this->pArgs_ANY, this->tArg_ANY);
 
     // Unlock the mutex after use
     Mutex_unlock(this->pDataMutex);

@@ -1,7 +1,7 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-25 09:56:54
+ * @ Modified time: 2024-02-25 11:16:21
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -11,8 +11,8 @@
  * Note that this library relies on the utils.thread.h implementation
  */
 
-#ifndef UTILS_EVENTS_
-#define UTILS_EVENTS_
+#ifndef UTILS_EVENT_
+#define UTILS_EVENT_
 
 #include "./utils.types.h"
 #include "./utils.string.h"
@@ -289,7 +289,7 @@ void Event_chain(Event *this, Event *pNextEvent) {
  * 
  * @param   { Event * }   this  The current event.
 */
-void Event_resolve(Event *this) {
+void Event_resolve(Event *this, p_obj Args2_ANY) {
 
   // While we have handlers on the chain
   while(this->pHeadHandler != NULL) {
@@ -298,7 +298,7 @@ void Event_resolve(Event *this) {
     // Note that we DON'T free the handlers from memory BECAUSE
     //    these are the same handlers other events of the same type
     //    will refer to
-    this->pHeadHandler->fEventHandler(this);
+    this->pHeadHandler->fEventHandler(this, Args2_ANY);
     this->pHeadHandler = this->pHeadHandler->pNextHandler;
   }
 }
@@ -319,8 +319,8 @@ void Event_resolve(Event *this) {
  *    be accessed directly. The design pattern we follow here is similar to how our thread 
  *    implementation works too.
 */
-typedef struct EventManager {
-  
+typedef struct EventManager {  
+
   Event *pHead;                                             // A reference to the head so we can resolve the oldest event
   Event *pTail;                                             // A reference so we know where to append new events
   
@@ -329,21 +329,25 @@ typedef struct EventManager {
   EventHandler *pHandlerTails[EVENT_MAX_HANDLER_CHAINS];    // We need these references to be able to append to the queue
 
   int dEventCount;                                          // How many events there are at the moment
+  p_obj Args2_ANY;                                          // State manager: what object handlers mutate to manage state
 
 } EventManager;
 
 /**
  * Initializes the event manager object.
  * 
- * @param   { EventManager * }  this  The EventManager to initialize.
+ * @param   { EventManager * }  this        The EventManager to initialize.
+ * @param   { p_obj }           Args2_ANY   An object that stores state.
 */
-void EventManager_init(EventManager *this) {
+void EventManager_init(EventManager *this, p_obj Args2_ANY) {
   int i;
 
   // No events yet
   this->pHead = NULL;
   this->pTail = NULL;
+
   this->dEventCount = 0;
+  this->Args2_ANY = Args2_ANY;
 
   // No listeners yet
   for(i = 0; i < EVENT_MAX_LISTENERS; i++)
@@ -430,12 +434,12 @@ void EventManager_createEvent(EventManager *this, EventType eType, char cState) 
  * Note that we specify event type here so that we can pass this function into different threads
  *    for each event type. That way, different event types dont block each other when triggering.
  * 
- * @param   { p_obj }   pArgs   The event manager that will trigger events.
- * @param   { int }     eType   The event type to watch out for.
+ * @param   { p_obj }   pArgs_EventManager  The event manager that will trigger events.
+ * @param   { int }     tArg_eType          The event type to watch out for.
 */
-void EventManager_triggerEvent(p_obj pArgs, int tArg) {
-  EventManager *this = (EventManager *) pArgs;
-  EventType eType = (EventType) tArg;
+void EventManager_triggerEvent(p_obj pArgs_EventManager, int tArg_eType) {
+  EventManager *this = (EventManager *) pArgs_EventManager;
+  EventType eType = (EventType) tArg_eType;
 
   // There is no event listener for the event type
   if(this->pListeners[eType] == NULL)
@@ -452,20 +456,20 @@ void EventManager_triggerEvent(p_obj pArgs, int tArg) {
 /**
  * Resolves the head event of the chain.
  * 
- * @param   { p_obj }   pArgs  The event manager that will resolve events.
- * @param   { int }     tArg   A dummy variable we don't need. Specifying event types is not
- *                                needed here since we're resolving the entire event chain in 
- *                                order without any bias for the event type.
+ * @param   { p_obj }   pArgs_EventManager  The event manager that will resolve events.
+ * @param   { int }     tArg_NULL           A dummy variable we don't need. Specifying event types is not
+ *                                            needed here since we're resolving the entire event chain in 
+ *                                            order without any bias for the event type.
 */
-void EventManager_resolveEvent(p_obj pArgs, int tArg) {
-  EventManager *this = (EventManager *) pArgs;
+void EventManager_resolveEvent(p_obj pArgs_EventManager, int tArg_NULL) {
+  EventManager *this = (EventManager *) pArgs_EventManager;
   
   // We don't have events at the moment
   if(!this->dEventCount)
     return;
 
   // Resolve the head
-  Event_resolve(this->pHead);
+  Event_resolve(this->pHead, this->Args2_ANY);
 
   // If the tail and head were one, set them to NULL since we can't move the pointers forward
   if(this->dEventCount == 1) {
@@ -540,22 +544,5 @@ void EventManager_createEventListener(EventManager *this, EventType eType, f_eve
     this->pListeners[eType] = pEventListener;
   }
 }
-
-/**
- * //
- * ////
- * //////    Event listener imports
- * ////////
- * ////////// 
-*/
-
-// You are in Windows
-#ifdef _WIN32
-#include "./win/utils.event.win.h"
-
-// Not in Windows
-#else
-#include "./unix/utils.event.unix.h"
-#endif
 
 #endif

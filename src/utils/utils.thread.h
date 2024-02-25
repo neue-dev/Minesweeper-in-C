@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-25 09:47:22
+ * @ Modified time: 2024-02-25 11:35:26
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -112,11 +112,11 @@ void ThreadManager_exit(ThreadManager *this) {
  * @param   { char * }            sMutexName        The name of the mutex to be associated with.
  * @param   { Mutex * }           pDataMutex        A handle to the mutex that tells the thread whether it can modify its resource.
  * @param   { f_void_callback }   fCallee           A pointer to the callback to be executed by the thread.
- * @param   { p_obj }             pArgs             A pointer to the arguments to be passed to the callback
- * @param   { int }               tArg              A parameter that the callback function might need (ie, an enum).
+ * @param   { p_obj }             pArgs_ANY         A pointer to the arguments to be passed to the callback
+ * @param   { int }               tArg_ANY          A parameter that the callback function might need (ie, an enum).
  * @return  { int }                                 The index of the created thread within the array of the manager.
 */
-int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, f_void_callback fCallee, p_obj pArgs, int tArg) {
+int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY) {
   int i = 0, dIndex = 0, dMutexIndex = 0;
   
   // Find an empty spot in our array first
@@ -152,7 +152,7 @@ int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexNam
   Mutex_lock(pStateMutex);
 
   // Create then save the thread and its state mutex
-  Thread *pThread = Thread_create(sName, pStateMutex, pDataMutex, fCallee, pArgs, tArg);
+  Thread *pThread = Thread_create(sName, pStateMutex, pDataMutex, fCallee, pArgs_ANY, tArg_ANY);
   this->pThreadArray[dIndex] = pThread;
   this->pStateArray[dIndex] = pStateMutex;
 
@@ -233,22 +233,60 @@ void ThreadManager_killThread(ThreadManager *this, char *sThreadName) {
 /**
  * Locks the mutex with a given id.
  * Note that this function does not terminate until it gets a handle to the mutex.
+ * This function returns 1 on success, and 0 on failure.
  * 
  * @param   { ThreadManager * }   this        A reference to an instance of ThreadManager to modify.
- * @param   { int }               dMutexId    The id of the thread whose mutex we will lock.
+ * @param   { char * }            sMutexName  The name of the mutex we will lock.
+ * @return  { int }                           Whether or not the operation was successful.
 */
-void ThreadManager_lockMutex(ThreadManager *this, int dMutexId) {
+int ThreadManager_lockMutex(ThreadManager *this, char *sMutexName) {
+  int i, dMutexId = 0;
+
+  // Look for the index of the thread
+  for(i = 0; i < MUTEX_MAX_COUNT; i++) {
+
+    // If its null, there are no mutexes to check
+    if(this->pMutexArray[i] == NULL)
+      return 0;
+
+    // We found the mutex
+    if(!strcmp(this->pMutexArray[i]->sName, sMutexName)) {
+      dMutexId = i;
+      i = MUTEX_MAX_COUNT;
+    }
+  }
+
   Mutex_lock(this->pMutexArray[dMutexId]);
+  return 1;
 }
 
 /**
  * Unlocks the data mutex of the thread with a given index.
+ * This function returns 1 on success, and 0 on failure.
  * 
  * @param   { ThreadManager * }   this        A reference to an instance of ThreadManager to modify.
- * @param   { int }               dMutexId    The id of the thread whose mutex we will unlock.
+ * @param   { char * }            sMutexName  The name of the mutex we will unlock.
+ * @return  { int }                           Whether or not the operation was successful.
 */
-void ThreadManager_unlockMutex(ThreadManager *this, int dMutexId) {
+int ThreadManager_unlockMutex(ThreadManager *this, char *sMutexName) {
+  int i, dMutexId = 0;
+
+  // Look for the index of the thread
+  for(i = 0; i < MUTEX_MAX_COUNT; i++) {
+
+    // If its null, there are no mutexes to check
+    if(this->pMutexArray[i] == NULL)
+      return 0;
+
+    // We found the mutex
+    if(!strcmp(this->pMutexArray[i]->sName, sMutexName)) {
+      dMutexId = i;
+      i = MUTEX_MAX_COUNT;
+    }
+  }
+
   Mutex_unlock(this->pMutexArray[dMutexId]);
+  return 1;
 }
 
 #endif

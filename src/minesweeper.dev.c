@@ -1,7 +1,7 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-24 23:13:47
+ * @ Modified time: 2024-02-25 11:47:38
  * @ Description:
  * 
  * The main game file.
@@ -35,7 +35,8 @@ int main() {
   
   Engine engine;
   Engine_init(&engine);
-  Engine_run(&engine);
+
+  while(1) {};
   
   // Thread pool
   // ThreadManager threadManager;
