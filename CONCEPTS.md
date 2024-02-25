@@ -47,6 +47,7 @@ You can also think of it this way: when we include header files, what we're basi
 
 Technically speaking, there's a step before linking called **assembling**, but we don't need to know that here. Just know that at this point in time, the C file has effectively been transformed into something that can run on your computer.
 
+---
 > **Chapter 1: Compiling a C Program**
 > 
 > ***How this Concept Relates to the Implementation***
@@ -106,7 +107,7 @@ gcc -o main main.c header1.c header2.c header3.c header4.c ...
 
 ## 2. Program Memory
 
-Understanding the how memory is used by a program is essential not only to be able to code better in C but also to be able to find bugs much faster (for a succint overview, check [this](https://craftofcoding.files.wordpress.com/2015/12/stackmemory31.jpg)).
+Programs have a specific way of managing memory (for a succint overview, check [this](https://craftofcoding.wordpress.com/2015/12/07/memory-in-c-the-stack-the-heap-and-static/)).
 
 <p style="text-align:center;">
   <img src="https://craftofcoding.files.wordpress.com/2015/12/stackmemory4.jpg?w=450">
@@ -153,6 +154,11 @@ Whenever you allocate memory using `calloc()` or `malloc()` be sure to call `fre
 
 If some things are still a bit fuzzy, [here's a short thread](https://www.reddit.com/r/AskProgramming/comments/12kr0pp/comment/jg3l4ge/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) I found with some neat insights into program memory.
 
+### 2.3 Static Memory
+
+This is a separate region for storing global variables. But because we won't be using these, we can safely pretend this guy doesn't exist.
+
+---
 > **Chapter 2: Program Memory**
 > 
 > ***How this Concept Relates to the Implementation***
@@ -213,6 +219,7 @@ void Person_kill(Person *this) {
 >
 > How do you know if a function uses `calloc()` or `malloc()`? Fear not! The world wide web is full of documentation on basically everything, so you can easily know if a function uses one of these things.
 
+
 ## 3. Threads and Mutexes
 
 When you run a C program, a single **thread** of execution is created wherein all the instructions you provide execute one after the other. If one process takes too long to finish, everything else the program has to do gets delayed. Unfortunately, once your program gets large enough, you can't avoid having to deal with one of these **blocking processes** that clogs up the whole line of execution. It's like those shared dormitory bathrooms in the morning: there's always that one mf who takes an hour in the shower.
@@ -255,6 +262,8 @@ I won't list all the functions here, but Microsoft provides some documentation a
 
 The process of doing this in Linux systems is pretty much the same, although the name of the functions are different because the people who made Windows are not the people who made Linux. I'll get more into why this is a massive pain in the ass in a later chapter; for now just know that although a C standard exists which is supposed to make C behave the same anywhere, this is not always the case. Additionally, things not being covered by the standard means we have to implement some stuff ourselves, like we did with threads.
 
+---
+
 > **Chapter 3: Threads and Mutexes**
 > 
 > ***How this Concept Relates to the Implementation***
@@ -289,6 +298,34 @@ The process of doing this in Linux systems is pretty much the same, although the
 > Now because all the functions in `utils.thread.win.h` and `utils.thread.unix.h` have the same name (these are the functions / classes we used to wrap around the differences between the Windows and Unix stuff), we can call something like `Mutex_unlock()` (which ***we*** defined), and it won't matter whether or not `utils.thread.win.h` or `utils.thread.unix.h` was included because both files defined this function (just with different stuff inside the definitions).
 
 ## 4. Callbacks
+
+A **callback** is just a function that is passed as an input to another function. Usually, it gets called after being passed as an argument (otherwise, why would you pass it).
+
+Like other more complicated data types, functions are usually passed through pointers. And honestly, it's quite similar to how arrays behave. Remember how an array is kinda like a pointer? A function behaves similarly when its passed as an argument.
+
+### 4.1 Typedefs for Callbacks (or Functions in General)
+
+Specifying the "template" of a function when we want to use one as an argument looks rather verbose. I mean, look at this guy:
+```C
+void parentFunction(char *(*callbackFunction)(int a, int b)) {
+  printf("%s", callbackFunction(1, 2));
+}
+```
+I don't want to have to write this monstrosity of a line `char *(*callbackFunction)(int a, int b)` every time I want a pointer to a function that returns a string from two int inputs.
+
+Just like other data types, we can typedef our functions. It may look confusing at first, but it'll spare us headaches down the line (especially when we decide to change the function inputs / outputs: we won't have to change a hundred lines of `char *(*callbackFunction)(int a, int b)` or whatever just because we decided `callbackFunction` needs three int inputs, not two).
+
+<!-- ! ADD MORE TO THIS SECTION, HOW TO TYPEDEF -->
+
+---
+
+> **Chapter 4: Callbacks**
+> 
+> ***How this Concept Relates to the Implementation***
+>
+> #### 1. Where do we need callbacks?
+>
+> The next chapter actually has our answer to this question, but as a sneak peek, we need callbacks in order to be able to implement events. With events, we want something to happen after a certain trigger occurs. This "something" is usually given as a callback to an event (the trigger).
 
 ## 5. Events
 
