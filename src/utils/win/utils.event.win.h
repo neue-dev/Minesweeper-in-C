@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:04:52
- * @ Modified time: 2024-02-25 08:22:40
+ * @ Modified time: 2024-02-25 09:57:52
  * @ Description:
  * 
  * Some basic event listeners for Windows.
@@ -21,34 +21,57 @@
 /**
  * Key pressed listener and handler
 */
-void EventListener_keyPressed(p_obj pArgs);
+char EventListener_keyPressed(void);
 
-void EventHandler_keyPressed(char cState);
+void EventHandler_keyPressed(p_obj pArgs);
 
 /**
  * Listens for key presses.
+ * This function can wait for a key press or just return 0 when nothing happens.
+ * In this case, it waits for a key press but the implementation can vary.
  * 
- * @param   { p_obj }   pArgs   The event manager responsible for dispatching events in this context.
+ * @return  { char }  The outcome of the event.
 */
-void EventListener_keyPressed(p_obj pArgs) {
-  EventManager *this = (EventManager *) pArgs;
-
-  EventManager_createEvent(this, EVENT_KEY, IO_readChar());
+char EventListener_keyPressed(void) {
+  return IO_readChar();
 }
 
 /**
  * Handles key presses.
  * Basically, what happens after a key is pressed.
  * 
- * @param   { char }              cState        The input to the callback function.
+ * @param   { p_obj }   pArgs   The actual event object to be handled.
 */
-void EventHandler_keyPressed(char cState) {
+void EventHandler_keyPressed(p_obj pArgs) {
+  
+  // This line is always required
+  Event *pEvent = (Event *) pArgs;
+
   
   // ! make it be able to store this somewhere or idkk
   // ! give a way for the programmer to be able to add eventhandlers at runtime
   // ! maybe turn eventHandler into its own class?
 
-  printf("%c", cState);
+  printf("%c\n", pEvent->cState);
+}
+
+/**
+ * Handles key presses.
+ * Basically, what happens after a key is pressed.
+ * 
+ * @param   { p_obj }   pArgs   The actual event object to be handled.
+*/
+void EventHandler_keyPressed2(p_obj pArgs) {
+  
+  // This line is always required
+  Event *pEvent = (Event *) pArgs;
+
+  
+  // ! make it be able to store this somewhere or idkk
+  // ! give a way for the programmer to be able to add eventhandlers at runtime
+  // ! maybe turn eventHandler into its own class?
+
+  printf("%c%c\n", pEvent->cState, pEvent->cState);
 }
 
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-25 08:23:12
+ * @ Modified time: 2024-02-25 09:47:33
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -24,10 +24,11 @@
 //    for representing the arguments to a callback function.
 
 // Parameter object pointers
-typedef void *p;                                // A pointer to a collection of function parameters
-typedef p p_obj;                                // A pointer to a struct to be passed to a function
+typedef void *p;                                          // A pointer to a collection of function parameters
+typedef p p_obj;                                          // A pointer to a struct to be passed to a function
 
-typedef void (*f_void_callback)(void *pArgs);   // A pointer to a callback function that returns void
-typedef void (*f_event_handler)(void *pArgs);   // Creates a template for event handlers
+typedef void (*f_void_callback)(void *pArgs, int tArg);   // A pointer to a callback function that returns void
+typedef void (*f_event_handler)(void *pArgs);             // Creates a template for event handlers
+typedef char (*f_event_listener)(void);                   // Creates a template for event listeners
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-25 08:23:59
+ * @ Modified time: 2024-02-25 09:57:48
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -12,9 +12,13 @@
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
 
-#define ENGINE_KEY_EVENTS "engine-key-events"
-#define ENGINE_KEY_EVENTS_MUTEX "engine-key-events-mutex"
-#define ENGINE_KEY_EVENTS_THREAD "engine-key-events-thread"
+#define ENGINE_EVENT_LISTENERS "engine-event-listeners"
+#define ENGINE_EVENT_LISTENERS_MUTEX "engine-events-listeners-mutex"
+#define ENGINE_EVENT_LISTENERS_THREAD "engine-event-listeners-thread"
+
+#define ENGINE_EVENT_HANDLERS "engine-event-handlers"
+#define ENGINE_EVENT_HANDLERS_MUTEX "engine-events-handlers-mutex"
+#define ENGINE_EVENT_HANDLERS_THREAD "engine-event-handlers-thread"
 
 /**
  * The engine struct handles the interactions between the different utility libraries.
@@ -30,13 +34,6 @@ typedef struct Engine {
 } Engine;
 
 /**
- * ! move this functionality over to the events file (implement it for windows and unix)
-*/
-int Engine_keyPressed(p_obj pArgs) {
-  return 1;
-}
-
-/**
  * Initializes the engine.
  * 
  * @param   { Engine * }  this  The engine object.
@@ -47,17 +44,30 @@ void Engine_init(Engine *this) {
   EventManager_init(&this->eventManager);
   ThreadManager_init(&this->threadManager);
 
-  // Create a mutex
-  ThreadManager_createMutex(&this->threadManager, 
-    ENGINE_KEY_EVENTS_MUTEX);             // The name of the mutex
+  // Create event handlers
+  EventManager_createEventListener(&this->eventManager, EVENT_KEY, EventListener_keyPressed);
+  EventManager_createEventHandler(&this->eventManager, EVENT_KEY, EventHandler_keyPressed);
+  EventManager_createEventHandler(&this->eventManager, EVENT_KEY, EventHandler_keyPressed2);
 
-  // Create a thread for the events
+  // Create a mutex for event listeners and event handlers
+  ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_LISTENERS_MUTEX);              
+  ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_HANDLERS_MUTEX);              
+
+  // Create a thread for the event listeners
   ThreadManager_createThread(&this->threadManager, 
-    ENGINE_KEY_EVENTS_THREAD,             // The name of the thread
-    ENGINE_KEY_EVENTS_MUTEX,              // The name of the mutex
+    ENGINE_EVENT_LISTENERS_THREAD,              // The name of the thread
+    ENGINE_EVENT_LISTENERS_MUTEX,               // The name of the mutex
     
-    EventListener_keyPressed,             // The callback to be executed by the thread
-    &this->eventManager);                 // An input to that callback
+    EventManager_triggerEvent,                  // The callback to be executed by the thread
+    &this->eventManager, EVENT_KEY);            // An input to that callback
+
+  // Create a thread for the event handlers
+  ThreadManager_createThread(&this->threadManager,
+    ENGINE_EVENT_HANDLERS_THREAD,
+    ENGINE_EVENT_HANDLERS_MUTEX,
+
+    EventManager_resolveEvent,
+    &this->eventManager, 0);
 }
 
 /**
@@ -69,7 +79,7 @@ void Engine_run(Engine* this) {
   // ! WHEN RESOLVING EVENTS, MAKE SURE TO LOCK THE MUTEX TO THE EVENTS FIRST
 
   while(1) {
-    printf("%d", this->eventManager.dEventCount);
+    // printf("%d", this->eventManager.dEventCount);
   }
 }
 
