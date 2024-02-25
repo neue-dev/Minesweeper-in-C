@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-02-25 12:01:03
+ * @ Modified time: 2024-02-25 12:03:46
  * @ Description:
  * 
  * This file contains definitions for event listeners and event handlers.
@@ -18,6 +18,14 @@
 #include "./utils/utils.types.h"
 
 #define EVENTS_MAX_HISTORY 32
+
+/**
+ * //
+ * ////
+ * //////    KeyEvents struct
+ * ////////
+ * ////////// 
+*/
 
 /**
  * A struct that stores key events and other pertinent information
@@ -58,6 +66,14 @@ void KeyEvents_init(KeyEvents *this) {
 void KeyEvents_read(KeyEvents *this) {
   this->bHasBeenRead = 1;
 }
+
+/**
+ * //
+ * ////
+ * //////    Event listener and handler implementations
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Key pressed listener and handler
