@@ -1,13 +1,11 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-02-24 13:44:29
+ * @ Modified time: 2024-02-25 13:18:54
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
  */
-
-
 
 #ifndef UTILS_GRID_
 #define UTILS_GRID_
@@ -17,6 +15,14 @@
 #include <stdlib.h>
 
 #define GRID_MAX_SIZE 32
+
+/**
+ * //
+ * ////
+ * //////    Grid class
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Grid class yes

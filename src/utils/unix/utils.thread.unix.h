@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-25 11:12:53
+ * @ Modified time: 2024-02-25 13:19:43
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -46,14 +46,6 @@ typedef struct Mutex {
   pthread_mutex_t *hMutex;  // A handle to the actual mutex
 
 } Mutex;
-
-/**
- * //
- * ////
- * //////    Constructors and destructors
- * ////////
- * ////////// 
-*/
 
 /**
  * Allocates memory for a new instance of the mutex class.
@@ -105,14 +97,6 @@ void Mutex_kill(Mutex *this) {
 
   free(this);
 }
-
-/**
- * //
- * ////
- * //////    State methods
- * ////////
- * ////////// 
-*/
 
 /**
  * Locks a mutex.
@@ -202,14 +186,6 @@ void Thread_kill(Thread *this);
  *    on Unix, it should return void *
 */
 void *ThreadHandler(void *pThread);
-
-/**
- * //
- * ////
- * //////    Constructors and destructors
- * ////////
- * ////////// 
-*/
 
 /**
  * Allocates memory for a new thread object instance.
