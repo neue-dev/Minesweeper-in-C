@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-25 15:01:27
+ * @ Modified time: 2024-02-25 15:06:31
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -40,12 +40,15 @@ typedef struct Engine {
   ThreadManager threadManager;  // Manages the different threads of the program
   
   KeyEvents keyEvents;          // Deals with key events
+  TimeEvents timeEvents;        // Deals with timer related events
 
   int dummy; // ! remov
+  int dWidth;                   // The width of the console
+  int dHeight;                  // The height of the console
 
 } Engine;
 
-void Engine_init(Engine *this);
+void Engine_init(Engine *this, int dWidth, int dHeight);
 
 void Engine_main(p_obj pArgs_Engine, int tArg_NULL);
 
@@ -54,11 +57,15 @@ void Engine_exit(Engine *this);
 /**
  * Initializes the engine.
  * 
- * @param   { Engine * }  this  The engine object.
+ * @param   { Engine * }  this      The engine object.
+ * @param   { int }       dWidth    The width of the console.
+ * @param   { int }       dHeight   The height of the console.
 */
-void Engine_init(Engine *this) {
+void Engine_init(Engine *this, int dWidth, int dHeight) {
 
   this->dummy = 0;  // !remove
+  this->dWidth = dWidth;
+  this->dHeight = dHeight;
 
   // Initialize user-defined state manager
   KeyEvents_init(&this->keyEvents);
@@ -135,7 +142,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   Engine *this = (Engine *) pArgs_Engine;
 
   // Create a buffer
-  Buffer *pBuffer = Buffer_create(64, 32);
+  Buffer *pBuffer = Buffer_create(this->dWidth, this->dHeight);
   
   char *s = calloc(64, sizeof(char));
   char *s2 = calloc(64, sizeof(char));
