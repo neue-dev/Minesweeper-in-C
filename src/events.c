@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-02-25 14:24:24
+ * @ Modified time: 2024-02-25 14:54:13
  * @ Description:
  * 
  * This file contains definitions for event listeners and event handlers.
@@ -70,6 +70,26 @@ void KeyEvents_read(KeyEvents *this) {
 /**
  * //
  * ////
+ * //////    Time events struct
+ * ////////
+ * ////////// 
+*/
+
+/**
+ * A struct that stores key events and other pertinent information
+ * 
+ * @struct 
+*/
+typedef struct TimeEvents {
+
+  int bHasBeenRead;                   // A boolean indicating whether or not the latest tick has been read
+  int dCurrentTime;                   // Number of seconds elapsed since thread launch
+
+} TimeEvents;
+
+/**
+ * //
+ * ////
  * //////    Event listener and handler implementations
  * ////////
  * ////////// 
@@ -81,6 +101,13 @@ void KeyEvents_read(KeyEvents *this) {
 char EventListener_keyPressed(void);
 
 void EventHandler_keyPressed(p_obj pArgs_Event, p_obj pArgs2_KeyEvents);
+
+/**
+ * Timer listener and handler
+*/
+char EventListener_timerTick(void);
+
+void EventHandler_timerTick(p_obj pArgs_Event, p_obj pArgs2_TimeEvents);
 
 /**
  * Listens for key presses.

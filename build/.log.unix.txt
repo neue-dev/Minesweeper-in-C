@@ -1,5 +1,6 @@
-In file included from ./src/minesweeper.dev.c:15:
-./src/utils/utils.buffer.h: In function ‘Buffer_print’:
-./src/utils/utils.buffer.h:154:3: warning: format not a string literal and no format arguments [-Wformat-security]
+In file included from ./src/./engine.c:12,
+                 from ./src/minesweeper.dev.c:10:
+./src/././utils/utils.buffer.h: In function ‘Buffer_print’:
+./src/././utils/utils.buffer.h:154:3: warning: format not a string literal and no format arguments [-Wformat-security]
   154 |   printf(sBlob);
       |   ^~~~~~

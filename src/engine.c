@@ -1,13 +1,15 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-25 14:26:11
+ * @ Modified time: 2024-02-25 15:01:27
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
  * This file is only meant to be included once, thus the lack of inclusion guards.
  */
 
+#include "./utils/utils.graphics.h"
+#include "./utils/utils.buffer.h"
 #include "./utils/utils.event.h"
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
@@ -39,11 +41,13 @@ typedef struct Engine {
   
   KeyEvents keyEvents;          // Deals with key events
 
+  int dummy; // ! remov
+
 } Engine;
 
 void Engine_init(Engine *this);
 
-void Engine_main(p_obj pArgs_ENGINE, int tArg_NULL);
+void Engine_main(p_obj pArgs_Engine, int tArg_NULL);
 
 void Engine_exit(Engine *this);
 
@@ -53,6 +57,8 @@ void Engine_exit(Engine *this);
  * @param   { Engine * }  this  The engine object.
 */
 void Engine_init(Engine *this) {
+
+  this->dummy = 0;  // !remove
 
   // Initialize user-defined state manager
   KeyEvents_init(&this->keyEvents);
@@ -112,23 +118,51 @@ void Engine_init(Engine *this) {
 void Engine_exit(Engine *this) {
 
   ThreadManager_exit(&this->threadManager);
+  // ! make sure to exit the event manager too
 
 }
 
 /**
  * The main thread of the engine.
  * 
- * @param   { Engine * }  this  The engine object.
+ * @param   { p_obj * }   pArgs_Engine  The engine object.
+ * @param   { int }       tArg_NULL     A dummy value.
 */
-void Engine_main(p_obj pArgs_ENGINE, int tArg_NULL) {
-  
+void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
+  int i;
+
   // Get the engine
-  Engine *this = (Engine *) pArgs_ENGINE;
+  Engine *this = (Engine *) pArgs_Engine;
+
+  // Create a buffer
+  Buffer *pBuffer = Buffer_create(64, 32);
+  
+  char *s = calloc(64, sizeof(char));
+  char *s2 = calloc(64, sizeof(char));
 
   if(!this->keyEvents.bHasBeenRead) {
-    IO_clear();
-    
-    printf("%s", this->keyEvents.cHistory);
     KeyEvents_read(&this->keyEvents);
   }
+
+  for(i = 0; i < this->keyEvents.dHistoryLength; i++)
+    s[i] = this->keyEvents.cHistory[i];
+    
+  Buffer_append(pBuffer, s);
+
+  sprintf(s2, "%d", this->dummy % (1 << 24));
+  Buffer_append(pBuffer, "%s%s", 
+    Graphics_getCodeFG(0xffffff), 
+    Graphics_getCodeBG(this->dummy % (1 << 24)));
+
+  int speed = 5;
+
+  this->dummy += speed;
+  this->dummy += (this->dummy >> 8) ? (1 << 8) * speed : 0;
+  this->dummy += (this->dummy >> 16) ? (1 << 16) * speed : 0;
+
+  if(this->dummy >= (1 << 24)) 
+    this->dummy = 0;
+
+  IO_clear();
+  Buffer_print(pBuffer);  
 }
