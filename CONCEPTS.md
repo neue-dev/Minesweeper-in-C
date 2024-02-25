@@ -337,9 +337,7 @@ Just like other data types, we can typedef our functions. It may look confusing 
 
 ### 7.2 What are ANSI Escape Sequences
 
-### 7.3 What is `<windows.h>` and `<conio.h>`
-
-### 7.4 The Problem with C: Compatibility
+### 7.3 The Problem with C: Compatibility
 
 > why we have our main file compiling the game
 
