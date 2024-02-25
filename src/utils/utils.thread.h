@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-24 22:23:19
+ * @ Modified time: 2024-02-25 07:39:01
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -111,11 +111,11 @@ void ThreadManager_exit(ThreadManager *this) {
  * @param   { char * }            sName             The identifier for the thread and its data mutex.
  * @param   { char * }            sMutexName        The name of the mutex to be associated with.
  * @param   { Mutex * }           pDataMutex        A handle to the mutex that tells the thread whether it can modify its resource.
- * @param   { p_void_func }       pCallee           A pointer to the callback to be executed by the thread.
+ * @param   { f_void_callback }   fCallee           A pointer to the callback to be executed by the thread.
  * @param   { p_obj }             pArgs             A pointer to the arguments to be passed to the callback
  * @return  { int }                                 The index of the created thread within the array of the manager.
 */
-int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, p_void_func pCallee, p_obj pArgs) {
+int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexName, f_void_callback fCallee, p_obj pArgs) {
   int i = 0, dIndex = 0, dMutexIndex = 0;
   
   // Find an empty spot in our array first
@@ -151,7 +151,7 @@ int ThreadManager_createThread(ThreadManager *this, char *sName, char *sMutexNam
   Mutex_lock(pStateMutex);
 
   // Create then save the thread and its state mutex
-  Thread *pThread = Thread_create(sName, pStateMutex, pDataMutex, pCallee, pArgs);
+  Thread *pThread = Thread_create(sName, pStateMutex, pDataMutex, fCallee, pArgs);
   this->pThreadArray[dIndex] = pThread;
   this->pStateArray[dIndex] = pStateMutex;
 

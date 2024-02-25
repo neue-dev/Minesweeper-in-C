@@ -1,8 +1,8 @@
 // IMPLEMENT BUFFER CLASS
 
-MAKE the resolve function a member of the event class? hmm maybe thats a better idea
+REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them when not needed in a  file ?)
 
-1. Make sure to foward declare all your functions
+1. Make sure to foward declare all your functions AND typedefs (follow the utils.event.h file structure)
 2. Make the main file cleaner sheesh
 4. Create a warning on the terminal in case the program doesnt run properly (in case conhost doesnt execute for some reason)
     > in this case, tell the user to execute main.exe with an argument or smthh

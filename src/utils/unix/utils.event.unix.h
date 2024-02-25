@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-24 14:05:03
- * @ Modified time: 2024-02-24 23:46:06
+ * @ Modified time: 2024-02-25 08:22:44
  * @ Description:
  * 
  * Some basic event handlers for Unix.
@@ -31,7 +31,7 @@ void EventHandler_keyPressed(char cState);
 void EventListener_keyPressed(p_obj pArgs) {
   EventManager *this = (EventManager *) pArgs;
 
-  EventManager_createEvent(this, EVENT_KEY, EventHandler_keyPressed, IO_readChar());
+  EventManager_createEvent(this, EVENT_KEY, IO_readChar());
 }
 
 /**

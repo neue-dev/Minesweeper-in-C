@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-24 23:32:47
+ * @ Modified time: 2024-02-25 08:23:12
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -27,9 +27,7 @@
 typedef void *p;                                // A pointer to a collection of function parameters
 typedef p p_obj;                                // A pointer to a struct to be passed to a function
 
-typedef void (*p_void_func)(void *pArgs);       // A pointer to a callback function that returns void
-typedef int (*p_bool_func)(void *pArgs);        // A pointer to a callback function that returns a bool
-
-typedef void (*p_event_handler)(char cState);   // Creates a template for event handlers
+typedef void (*f_void_callback)(void *pArgs);   // A pointer to a callback function that returns void
+typedef void (*f_event_handler)(void *pArgs);   // Creates a template for event handlers
 
 #endif
