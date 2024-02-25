@@ -1,3 +1,8 @@
+In file included from ./src/minesweeper.dev.c:10:
+./src/./engine.c: In function ‘Engine_main’:
+./src/./engine.c:128:7: warning: unused variable ‘i’ [-Wunused-variable]
+  128 |   int i;
+      |       ^
 In file included from ./src/minesweeper.dev.c:15:
 ./src/utils/utils.buffer.h: In function ‘Buffer_print’:
 ./src/utils/utils.buffer.h:154:3: warning: format not a string literal and no format arguments [-Wformat-security]

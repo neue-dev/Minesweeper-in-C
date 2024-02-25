@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-25 13:19:43
+ * @ Modified time: 2024-02-25 14:20:18
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -13,7 +13,11 @@
 #ifndef UTILS_THREAD_UNIX_
 #define UTILS_THREAD_UNIX_
 
+#define _POSIX_TIMERS
+#define _REENTRANT
+
 #include <pthread.h>
+#include <errno.h>
 #include <time.h>
 
 #define MUTEX_MAX_COUNT 16                              // Maximum number of mutexes we can have for our program
@@ -116,16 +120,22 @@ void Mutex_lock(Mutex *this) {
  * @param   { int }             Returns whether or not the timeout happened first or the mutex was locked.
 */
 int Mutex_lockTimed(Mutex *this, int dMillis) {
-  clock_t dStart;
-  dStart = clock();
+  struct timespec timeout;
+  clock_gettime(CLOCK_REALTIME, &timeout);
 
-  // Try to lock the thing while timeout hasn't happened
-  while(clock() - dStart < dMillis) {
-    if(!pthread_mutex_trylock(this->hMutex))
-      return 0;
-  }
+  // Add the difference
+  timeout.tv_nsec += (long long)(dMillis) * 1000000LL;
   
-  return WAIT_TIMEOUT;
+  // In case it overflows
+  if(timeout.tv_nsec >= 1000000000LL) {
+    timeout.tv_nsec -= 1000000000LL;
+    timeout.tv_sec++;
+  }
+
+  // Try to lock the mutex in that interval
+  if(pthread_mutex_timedlock(this->hMutex, &timeout) == ETIMEDOUT)
+    return WAIT_TIMEOUT;
+  return 0;
 }
 
 /**

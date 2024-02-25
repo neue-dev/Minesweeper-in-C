@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-02-25 13:19:23
+ * @ Modified time: 2024-02-25 13:45:55
  * @ Description:
  * 
  * A utility library for implementing threads in Windows.
@@ -53,7 +53,6 @@ typedef struct Mutex {
 */
 Mutex *Mutex_new() {
   Mutex *pMutex = calloc(1, sizeof(*pMutex));
-
   return pMutex;
 }
 

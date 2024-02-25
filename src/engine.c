@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-25 12:02:59
+ * @ Modified time: 2024-02-25 13:45:03
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -67,7 +67,10 @@ void Engine_init(Engine *this) {
 
   // Create a mutex for event listeners and event handlers
   ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_LISTENERS_MUTEX);              
-  ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_HANDLERS_MUTEX);              
+  ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_HANDLERS_MUTEX);    
+
+  // ! remove dummy-mutex
+  ThreadManager_createMutex(&this->threadManager, "dummy-mutex");          
 
   // Create a thread for the event listeners
   ThreadManager_createThread(
@@ -95,7 +98,8 @@ void Engine_init(Engine *this) {
   ThreadManager_createThread(
     &this->threadManager,
     ENGINE_MAIN_THREAD,                           // The main thread
-    ENGINE_EVENT_HANDLERS_MUTEX,                  // It will share a mutex with the event handlers to prevent it from
+    // ! change back to event handler mutex
+    "dummy-mutex",                    // It will share a mutex with the event handlers to prevent it from
                                                   //    reading the shared state while the handlers are changing this.
 
     Engine_main,                                  // The main routine
@@ -126,9 +130,16 @@ void Engine_main(p_obj pArgs_ENGINE, int tArg_NULL) {
   // Get the engine
   Engine *this = (Engine *) pArgs_ENGINE;
 
-  if(!this->keyEvents.bHasBeenRead) {
+
+
+  // if(!this->keyEvents.bHasBeenRead) {
     IO_clear();
-    printf("%s", this->keyEvents.cHistory);
-    KeyEvents_read(&this->keyEvents);
-  }
+
+  //   // for(i = 0; i < this->keyEvents.dHistoryLength; i++)
+  //     printf("%c", this->keyEvents.cLatest);
+  //   KeyEvents_read(&this->keyEvents);
+  // }
+
+  printf("%s", this->keyEvents.cHistory);
+  KeyEvents_read(&this->keyEvents);
 }

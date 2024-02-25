@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:12:12
- * @ Modified time: 2024-02-24 21:52:32
+ * @ Modified time: 2024-02-25 13:24:50
  * @ Description:
  * 
  * Low level handling of IO functionalities on Unix environments.
@@ -44,7 +44,7 @@ void IO_init(struct IO *this) {
   // By disabling both we can mimic getch behaviour in a Unix environment!
   this->overrideSettings.c_lflag &= ~(ICANON | ECHO);
 
-  tcsetattr(0, TCSAFLUSH, &this->overrideSettings);
+  tcsetattr(0, TCSANOW, &this->overrideSettings);
 }
 
 /**
