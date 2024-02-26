@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-26 17:40:17
+ * @ Modified time: 2024-02-26 23:47:41
  * @ Description:
  * 
  * The main game file.
@@ -20,21 +20,36 @@
 
 int main() {
 
-  // Some IO stuff
-  IO io;
-  IO_init(&io);
-  IO_setSize(60, 30);
-  
-  // Set up the engine
-  Engine engine;
-  Engine_init(&engine);
+  Buffer *pBuffer = Buffer_create(
+    IO_getWidth(), 
+    IO_getHeight(), 
+    Graphics_getCodeFG(0x000000), 
+    Graphics_getCodeBG(0xffffff));
 
-  // Keep the main thread open while the engine is running
-  while(Engine_getState(&engine)) {};
+  char *block[8] = {
+    "hello world!aaaaaaaaaaaa",
+    "this is an array of strings",
+    "idk man10101010aaaaa",
+    "yeppers10101010aaaa",
+    "idk man10101010aaa",
+    "idk man10101010aaaaa",
+    "yeppers10101010aaaa",
+    "idk man10101010aaa",
+  };
+  Buffer_write(pBuffer, 10, 10, strlen(Graphics_getCodeFG(0xff0000)), 8, block);
+  Buffer_context(pBuffer, 10, 10, 10, 10, Graphics_getCodeFGBG(0xff0000, 0x0000dd));
 
-  // Clean up some stuff
-  Engine_exit(&engine);
-  IO_exit(&io);
+  IO_clear();
+  Buffer_print(pBuffer);
+
+  // for(int i = 0; i < pBuffer->dHeight; i++) {
+  //   for(int j = 0; j < pBuffer->dWidth; j++) {
+  //     printf("%d",pBuffer->dContextMask[i][j]);
+  //   }
+  //   printf("\n");
+  // }
+
+  while(1);
 
   return 0;
 }

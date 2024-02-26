@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-26 18:34:28
+ * @ Modified time: 2024-02-26 23:15:25
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -142,7 +142,9 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   if(!this->keyEvents.bHasBeenRead || 1) {
     Buffer *pBuffer = Buffer_create(
       IO_getWidth(), 
-      IO_getHeight());
+      IO_getHeight(),
+      Graphics_getCodeFG(0xffffff),
+      Graphics_getCodeBG(0x000000));
 
     char *block[6] = {
       "hello world!aaaaaaaaaaaa",
@@ -154,6 +156,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     };
 
     Buffer_write(pBuffer, 10, 10, strlen(Graphics_getCodeFG(0xff0000)), 6, block);
+    Buffer_context(pBuffer, 10, 10, 3, 3, Graphics_getCodeBG(0xffffff));
+    Buffer_context(pBuffer, 20, 22, 3, 3, Graphics_getCodeBG(0x000000));
 
     IO_clear();
     Buffer_print(pBuffer);

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-26 18:29:02
+ * @ Modified time: 2024-02-26 23:42:19
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -17,70 +17,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define BUFFER_MAX_WIDTH 1 << 10
-#define BUFFER_MAX_HEIGHT 1 << 7
-
-typedef struct Context Context;
-typedef struct Buffer Buffer;
-
-/**
- * //
- * ////
- * //////    Context class
- * ////////
- * ////////// 
-*/
-
-/**
- * The context class provides us with a way to insert ANSI escape codes into our buffer.
- * 
- * @class
-*/
-struct Context {
-  char sContext[32];        // At most 32 characters of an ANSI escape code
-  
-  Context *pPrevContext;    // A reference to the next context
-  Context *pNextContext;    // A reference to the previous context
-};
-
-/**
- * Allocates memory for an instance of the Context class.
- * 
- * @return	{ Context * }		A pointer to the allocated memory.
-*/
-Context *Context_new() {
-  Context *pContext = calloc(1, sizeof(*pContext));
-  return pContext;
-}
-
-/**
- * Initializes an instance of the Context class.
- * 
- * @param		{ Context * }		this	A pointer to the instance to initialize.
- * @return	{ Context * }					A pointer to the initialized instance.
-*/
-Context *Context_init(Context *this) {
-
-  return this;
-}
-
-/**
- * Creates an initialized instance of the Context class.
- * 
- * @return	{ Context * }		A pointer to the newly created initialized instance.
-*/
-Context *Context_create() {
-  return Context_init(Context_new());
-}
-
-/**
- * Deallocates the memory of an instance of the Context class.
- * 
- * @param		{ Context * }		this	A pointer to the instance to deallocate.
-*/
-Context *Context_kill(Context *this) {
-  free(this);
-}
+#define BUFFER_MAX_WIDTH 1 << 8
+#define BUFFER_MAX_HEIGHT 1 << 6
+#define BUFFER_MAX_CONTEXTS 1 << 10
 
 /**
  * //
@@ -94,11 +33,22 @@ Context *Context_kill(Context *this) {
  * Buffer class yes
  * @class
 */
-struct Buffer {
-  int dWidth;                                         // The maximum width of the buffer (in characters).
-  int dHeight;                                        // The maximum height of the buffer (in lines).
+typedef struct Buffer Buffer;
 
-  char cArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];   // An array that stores the string contents of each of the lines in the buffer.
+struct Buffer {
+  int dWidth;                                                         // The maximum width of the buffer (in characters).
+  int dHeight;                                                        // The maximum height of the buffer (in lines).
+
+  char *sDefaultFG;                                                   // The default foreground color of the buffer
+  char *sDefaultBG;                                                   // The default background color of the buffer
+
+  char cContentArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];            // An array that stores the string contents of each of the lines in the buffer.
+
+  int dContextLength;                                                 // How many contexts we currently have
+  char *sContextArray[BUFFER_MAX_CONTEXTS];                           // Stores the different contexts we will be using  
+  unsigned short dContextMask[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];   // Stores the contexts that define the styling of the entire buffer
+                                                                      // Note that this is unsigned so we don't waste space; we need the extra memory LMOO
+                                                                      // Because of this, 0 has to mean smth like NULL and 1 -> 0, 2 -> 1, etc.
 };
 
 /**
@@ -115,21 +65,33 @@ Buffer *Buffer_new() {
  * Initializes an instance of the buffer class.
  * Sets its current length to 0.
  * 
- * @param   { Buffer * }  this      A pointer to the instance we're going to init.
- * @param   { Buffer * }  dWidth    The width of each of the buffer lines.
- * @param   { Buffer * }  dHeight   The height of the buffer.
- * @return  { Buffer * }            The pointer to the initialized instance.
+ * @param   { Buffer * }  this        A pointer to the instance we're going to init.
+ * @param   { int }       dWidth      The width of each of the buffer lines.
+ * @param   { int }       dHeight     The height of the buffer.
+ * @param   { char * }    sDefaultFG  The default foreground color of the buffer.
+ * @param   { char * }    sDefaultBG  The default background color of the buffer.
+ * @return  { Buffer * }              The pointer to the initialized instance.
 */
-Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight) {
+Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, char *sDefaultFG, char *sDefaultBG) {
   int i, j;
 
   this->dWidth = dWidth < BUFFER_MAX_WIDTH ? dWidth : BUFFER_MAX_WIDTH;
   this->dHeight = dHeight < BUFFER_MAX_HEIGHT ? dHeight : BUFFER_MAX_HEIGHT;
 
+  this->sDefaultFG = sDefaultFG;
+  this->sDefaultBG = sDefaultBG;
+
+  // No contexts at the moment
+  this->dContextLength = 0;
+
   // Initialize everything to a space character
-  for(i = 0; i < BUFFER_MAX_HEIGHT; i++)
-    for(j = 0; j < BUFFER_MAX_WIDTH; j++)
-      this->cArray[i][j] = 32;
+  // Also, initialize the context mask values to 0
+  for(i = 0; i < BUFFER_MAX_HEIGHT; i++) {
+    for(j = 0; j < BUFFER_MAX_WIDTH; j++) {
+      this->cContentArray[i][j] = 32;
+      this->dContextMask[i][j] = 0;
+    }
+  }
 
   return this;
 }
@@ -138,12 +100,14 @@ Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight) {
  * Creates an initialized instance of the buffer class.
  * Sets its current length to 0.
  * 
- * @param   { Buffer * }  dWidth    The width of each of the buffer lines.
- * @param   { Buffer * }  dHeight   The height of the buffer.
+ * @param   { int }       dWidth      The width of each of the buffer lines.
+ * @param   { int }       dHeight     The height of the buffer.
+ * @param   { char * }    sDefaultFG  The default foreground color of the buffer.
+ * @param   { char * }    sDefaultBG  The default background color of the buffer.
  * @return  { Buffer * }            The pointer to the initialized instance.
 */
-Buffer *Buffer_create(int dWidth, int dHeight) {
-  return Buffer_init(Buffer_new(), dWidth, dHeight);
+Buffer *Buffer_create(int dWidth, int dHeight, char *sDefaultFG, char *sDefaultBG) {
+  return Buffer_init(Buffer_new(), dWidth, dHeight, sDefaultFG, sDefaultBG);
 }
 
 /**
@@ -171,23 +135,145 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
   // Copy the characters onto the buffer, as long as it doesn't go beyond the edges
   for(i = y; i < y + h && i < this->dHeight; i++)
     for(j = x; j < x + w && j < this->dWidth; j++)
-      this->cArray[i][j] = sBlock[i - y][j - x];
+      this->cContentArray[i][j] = sBlock[i - y][j - x];
+}
+
+/**
+ * Creates a context within the buffer.
+ * A context is a basically a rectangular slice of the 2d array where a certain style
+ *    (be it a color change or something else) is applied to that slice.
+ * 
+ * @param   { Buffer * }  this      The buffer to modify.
+ * @param   { int }       x         The x-coordinate where the context begins in the buffer.
+ * @param   { int }       y         The y-coordinate where the context begins in the buffer.
+ * @param   { int }       w         The width of the context area.
+ * @param   { int }       h         The height of the context area.
+ * @param   { char * }    sContext  The style to apply to the area, usually an ANSI escape sequence.
+*/
+void Buffer_context(Buffer *this, int x, int y, int w, int h, char *sContext) {
+  int i;
+
+  // Can't overload ourselves
+  if(this->dContextLength >= BUFFER_MAX_CONTEXTS)
+    return;
+
+  // Append the new context
+  this->sContextArray[this->dContextLength] = sContext;
+
+  // Increment the context length
+  this->dContextLength++;
+
+  // Set the appropriate context values to the index + 1 of the created context
+  for(i = y; i < y + h && i < this->dHeight; i++) {
+    if(x < this->dWidth)
+      this->dContextMask[i][x] = this->dContextLength;
+
+    if(x + w - 1 < this->dWidth)
+      this->dContextMask[i][x + w - 1] = this->dContextLength;
+  }
 }
 
 /**
  * Outputs the buffer to the screen as one massive blob.
  * 
+ * @param   { Buffer * }  this  The buffer to modify.
 */
 void Buffer_print(Buffer *this) {
-  int i;
+  int x, y, i;
 
-  // ! change the size of this later to account for ANSI sequences
-  char *sBlob = calloc((this->dWidth + 1) * this->dHeight * 2, sizeof(char));
+  // The current length of the blob
+  // and the blob itself
+  int dLen = 0;   
+  char *sBlob = calloc((this->dWidth + 1) * this->dHeight * 4, sizeof(char));
+
+  // Set the defaults first
+  i = 0;
+  while(this->sDefaultFG[i]) {
+    sBlob[dLen] = this->sDefaultFG[i];
+    dLen++; i++;   
+  }
+
+  i = 0;
+  while(this->sDefaultBG[i]) {
+    sBlob[dLen] = this->sDefaultBG[i];
+    dLen++; i++;   
+  }
 
   // Iterate through the lines
-  for(i = 0; i < this->dHeight; i++) {
-    strncat(sBlob, this->cArray[i], this->dWidth);
-    strcat(sBlob, "\n");
+  for(y = 0; y < this->dHeight; y++) {
+
+    // Context stack
+    int dContextStackSize = 0, bShouldUpdateContext = 0;
+    short dContextStack[BUFFER_MAX_WIDTH];
+
+    // Loop through each character in the row
+    // Check context shifting too
+    for(x = 0; x < this->dWidth; x++) {
+
+      // No need to update
+      bShouldUpdateContext = 0;
+
+      // Check through the context mask
+      if(this->dContextMask[y][x]) {
+        
+        // If it's not the first context
+        if(dContextStackSize) {
+
+          // If it's the start of a new context
+          if(dContextStack[dContextStackSize - 1] != this->dContextMask[y][x] - 1) {
+            dContextStack[dContextStackSize] = this->dContextMask[y][x] - 1;
+            dContextStackSize++;
+          
+          // It's the end of the current context
+          // The top of the stack is just left alone (it just becomes a garbage value essentially)
+          } else {
+            dContextStackSize--;
+          }
+
+        // Otherwise, just append the context (it's the first on that line)
+        } else {
+          dContextStack[dContextStackSize] = this->dContextMask[y][x] - 1;
+          dContextStackSize++;
+        }
+
+        // Something happened, we need to update
+        bShouldUpdateContext = 1;
+      }
+
+      // Add the context string to the blob
+      if(bShouldUpdateContext) {
+        i = 0;
+        
+        // Just copy the string char by char
+        if(dContextStackSize) {
+          while(this->sContextArray[dContextStack[dContextStackSize - 1]][i]) {
+            sBlob[dLen] = this->sContextArray[dContextStack[dContextStackSize - 1]][i];
+            dLen++; i++;   
+          }
+
+        // If we're going back to "normal", we'll just put back the defaults
+        } else {
+          while(this->sDefaultFG[i] != 0) {
+            sBlob[dLen] = this->sDefaultFG[i];
+            dLen++; i++;   
+          }
+
+          i = 0;
+          while(this->sDefaultBG[i] != 0) {
+            sBlob[dLen] = this->sDefaultBG[i];
+            dLen++; i++;   
+          }
+        }
+      }
+      
+      
+
+      sBlob[dLen] = this->cContentArray[y][x];
+      dLen++;
+    }
+
+    sBlob[dLen] = '\n';
+    dLen++;
   }
 
   // Set the buffer size and print using puts(), then do garbage collection

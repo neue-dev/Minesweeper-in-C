@@ -6,7 +6,7 @@ REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them wh
 2. Make the main file cleaner sheesh
 4. Create a warning on the terminal in case the program doesnt run properly (in case conhost doesnt execute for some reason)
     > in this case, tell the user to execute main.exe with an argument or smthh
-
+5. SET THE FONT SIZE + FONT FAMILY OF THE TERMINAL TO PREVENT HAVING A BIGGER BUFFER SIZE BECAUSE OF SMALL FONTS
 
 ehmm pretend we didnt see this LMAO
 [Char Arrays vs Char Pointers]            https://www.reddit.com/r/C_Programming/comments/rxqp8u/when_to_use_char_array_vs_char_pointer/
