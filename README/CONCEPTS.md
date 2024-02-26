@@ -473,15 +473,34 @@ There are some other stuff out there like `signed char`, but they're honestly qu
 
 Whenever we say something is `unsigned`, it just means we won't be storing negative values there. In other words, we won't interpret the bits as a 2's complement encoding (CCICOMP coming back fr), but rather as a standard binary representation. This is important because if we want to do arithmetic with our bits (like adding them), there might be a difference between `unsigned` and `signed` types (or maybe I'm just tripping).
 
-You might also see that we actually have quite a selection of different possible data type sizes to choose from. We have characters with 1 byte and long integers with 8.
+You might also see that we actually have quite a selection of different possible data type sizes to choose from. We have characters with 1 byte and long integers with 8. This is really cool and it allows us to be more precise with the variables we're making.
 
 ### 6.4 Fixed-width Data Types
 
+When we're actually using these data types in our program, it feels kinda weird using `char` when all we want is just an 8-bit variable. To fix this, other people have decided to abstract the data types we listed above with different names. When we include the `<inttypes.h>` library, we're provided with the following types:
+
+```C
+uint8_t;    // An unsigned int of width 8 bits
+uint16_t;   // An unsigned int of width 16 bits
+uint32_t;   // An unsigned int of width 32 bits
+uint64_t;   // An unsigned int of width 64 bits
+```
+
+Again, the data types have to be instances of `unsigned int` in order to behave properly when doing arithmetic. Actually, there's also another reason we'd rather use these data types instead of typing `char` or `long`.
+
+Across different systems, certain data types may *vary in width*. The `int` data type, for example, might actually have just 2 bytes on other systems (usually, this happens on older computers). We don't usually have to worry about these, but why worry when you can use **fixed-width** data types instead? These make it so that when you say something like `uint32_t`, you're sure that it will always have 32 bits (or 4 bytes).
 
 > **Chapter 6: Reducing Data Types: It's All Bits!**
 > 
 > ***How this Concept Relates to the Implementation***
 >
+> #### 1. Where Exactly Did We Use Fixed-width Data Types?
+>
+> Whenever we want to store a state that's either just on or off (a 1 or a 0), it's best to use a single bit to represent that state. Not that we'd actually get an amazing performance boost by using a single bit instead of 32 for a boolean, but if we consider a `uint64_t` as if it were an array of bits, that's where bit manipulation becomes powerful for us.
+>
+> Since we're doing minesweeper, we're definitely going to have a 2d grid containing stuff inside. Wouldn't it be cool if that 2d grid was just a 1d grid with a bunch of `uint64_t` inside? That way, it's like we have a 2d array of bits! 
+>
+> In our case, we'd probably have two of these grids during each game: one for storing bombs, and another for storing the flags placed by a user. And to implement something that can count the bombs around each cell, its as easy as adding all the bits around that cell! If we wanna check whether or not the flags placed by a user appear on top of the bombs, we can just check if the ^ (XOR) of each row of bits evaluate to 0. In short, this makes our lives easier, and it also makes our code way lighter.
 
 ## 7. Miscellaneous Ideas
 
