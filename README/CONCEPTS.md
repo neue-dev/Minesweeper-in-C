@@ -473,7 +473,7 @@ There are some other stuff out there like `signed char`, but they're honestly qu
 
 Whenever we say something is `unsigned`, it just means we won't be storing negative values there. In other words, we won't interpret the bits as a 2's complement encoding (CCICOMP coming back fr), but rather as a standard binary representation. This is important because if we want to do arithmetic with our bits (like adding them), there might be a difference between `unsigned` and `signed` types (or maybe I'm just tripping).
 
-You might also see that we actually have quite a selection of different possible data type sizes to choose from. We have characters with 1 byte and long integers with 8. Unfortunately, because of how computer hardware behaves, we actually can't do reliable bit manipulation on any variable with more than 4 bytes, so the most we'll have is a 32-bit variable (which for our case should suffice already). If you're curious as to why we can't manipulate a `long` without breaking some things, you can check [this](https://stackoverflow.com/questions/10499104/is-shifting-more-than-32-bits-of-a-uint64-t-integer-on-an-x86-machine-undefined) out (TLDR it's because most peoples' CPUs, mine included, have a **word** width of 32 bits. A word just refers to the smallest unit of instruction processed by a computer; if you're computer can't hold information with more than 32 bits in its CPU, then it probably can't reliably shift the bits of a thing with more than 32 bits).
+You might also see that we actually have quite a selection of different possible data type sizes to choose from. We have characters with 1 byte and long integers with 8.
 
 ### 6.4 Fixed-width Data Types
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-25 11:13:00
+ * @ Modified time: 2024-02-26 14:40:40
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -16,7 +16,7 @@
 //    (1) uint8_t
 //    (2) uint16_t
 //    (3) uint32_t
-#include <stdint.h>
+#include <inttypes.h>
 
 // FOR THE CODE BELOW (parameter object pointers):
 // Note that we have to do this because some of the Windows API requires us to pass
