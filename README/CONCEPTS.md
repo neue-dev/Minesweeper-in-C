@@ -506,7 +506,24 @@ Across different systems, certain data types may *vary in width*. The `int` data
 
 ### 7.1 Why We Use a Buffer Class
 
+Whenever we print stuff using `printf()`, there's a bit of a delay incurred by the function. Usually we're all fine with using `printf()` per line of text we want to output, but imagine calling `printf()` *per character* we want to print. This would be extremely slow. On the opposite end, imagine calling `printf()` just once to print everything right away. We wouldn't see the screen take a while printing everything in sequence. That would be extremely fast.
+
+To be able to pull of the second idea (calling `printf()` once), we have to have a way to create the output before rendering it to the screen. This is what the buffer class is for: all it does is it provides us with a tool with which to craft our output before we finally put it to the screen.
+
 ### 7.2 What are ANSI Escape Sequences
+
+ANSI Escape Sequences (or more commonly, Escape Codes) are just sequences of characters that tell consoles and terminals to change their behaviour. They can let us change the color of our outputs, or place the cursor some place else.
+
+This [documentation on github](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797) actually provides a comprehensive overview of the escape codes available to programmers like us.
+
+Now another thing to note is that the Windows console may sometimes have a hard time knowing whether or not the characters we're printing to the screen are ASCII, UNICODE, or something else. This means that there are times when the Windows console can misinterpret our ANSI sequences. To fix this, the Windows OS actually provides us with a function that can help us configure the console. Inside the `win/utils.io.win.h` file, we have this line:
+```C
+SetConsoleMode(
+  GetStdHandle(STD_OUTPUT_HANDLE), 
+  ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING
+);
+```
+The console mode is actually just an array of bits, with each bit storing whether or not a certain parameter is enabled. `SetConsoleMode()` allows us to specify which of those bits to turn on or turn off. The first parameter just tells us that we're modifying the console mode of the output device (the console we see); the second parameter tells the function which bits to turn on or off. `ENABLE_PROCESSED_OUTPUT` and `ENABLE_VIRTUAL_TERMINAL_PROCESSING` are just constants with one of their bits set to 1. By passing the `|` of the two of them, we're telling `SetConsoleMode()` that we want the bits at those locations to be equal to 1.
 
 ### 7.3 The Problem with C: Compatibility
 
@@ -514,7 +531,9 @@ Across different systems, certain data types may *vary in width*. The `int` data
   <img src="https://miro.medium.com/v2/resize:fit:500/1*9nMBMt-OugnruBr_M-WuEQ.png">
 </p>
 
-> why we have our main file compiling the game
+The C standard isn't actually all that bad. It's just that we're using an older version of C (C99) that hasn't adapted to a lot of the changes in technology we've seen in the last 25 years. Because of this, we have to rely on the things people created to fill the gaps of the C standard (the gaps before the more modern versions of C came out). Thankfully, our operating systems provide solutions to these problems.
+
+However, operating systems vary considerably. While there's a whole rich history behind Windows and Unix (Unix actually came first, by a long shot! Although Linux came about some five years after Windows), it's not worth it going through that here. Just know that both technologies took very different paths and subsequently have very different solutions to similar problems. This is rather painful, because programmers constantly have to account for these differences when working cross-platform. Windows wants to use its own standards; Linux wants to use its own standards; and Apple wants to look like it knows what tf it's doing with its standards but actually doesn't (jk these days they sometimes do).
 
 ### 8. Regarding Our Implementation
 
