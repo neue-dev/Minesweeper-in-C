@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-26 23:15:25
+ * @ Modified time: 2024-02-26 23:53:10
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -156,8 +156,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     };
 
     Buffer_write(pBuffer, 10, 10, strlen(Graphics_getCodeFG(0xff0000)), 6, block);
-    Buffer_context(pBuffer, 10, 10, 3, 3, Graphics_getCodeBG(0xffffff));
-    Buffer_context(pBuffer, 20, 22, 3, 3, Graphics_getCodeBG(0x000000));
+    Buffer_context(pBuffer, 5, 5, 10, 5, Graphics_getCodeBG(0xff0000));
+    Buffer_context(pBuffer, 15, 5, 10, 5, Graphics_getCodeBG(0x0000ff));
 
     IO_clear();
     Buffer_print(pBuffer);

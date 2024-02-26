@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-26 23:42:19
+ * @ Modified time: 2024-02-26 23:57:51
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -142,6 +142,9 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
  * Creates a context within the buffer.
  * A context is a basically a rectangular slice of the 2d array where a certain style
  *    (be it a color change or something else) is applied to that slice.
+ * 
+ * Note that the way this function is implemented means that it will only work for non-overlapping
+ *    recatngles (contexts). When they overlap, things MAY break.
  * 
  * @param   { Buffer * }  this      The buffer to modify.
  * @param   { int }       x         The x-coordinate where the context begins in the buffer.
