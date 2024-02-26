@@ -490,6 +490,8 @@ Again, the data types have to be instances of `unsigned int` in order to behave 
 
 Across different systems, certain data types may *vary in width*. The `int` data type, for example, might actually have just 2 bytes on other systems (usually, this happens on older computers). We don't usually have to worry about these, but why worry when you can use **fixed-width** data types instead? These make it so that when you say something like `uint32_t`, you're sure that it will always have 32 bits (or 4 bytes).
 
+---
+
 > **Chapter 6: Reducing Data Types: It's All Bits!**
 > 
 > ***How this Concept Relates to the Implementation***
