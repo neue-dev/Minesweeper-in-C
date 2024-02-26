@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-25 11:16:21
+ * @ Modified time: 2024-02-26 16:11:00
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -372,11 +372,8 @@ void EventManager_exit(EventManager *this) {
   // No new events should be coming in, they should be resolved by the handler thread
   // If there is no handler thread, they should be manually resolved by calling EventManager_resolveEvent();
   //    before calling EventManager_exit();
-  while(this->dEventCount) { 
-
-    // Wait for the events to run out 
-    // No code here
-  }
+  // We wait for all the events to get resolved in the separate thread
+  while(this->dEventCount);
 
   // In this case, we just deal with the event handlers and clean them up
   for(i = 0; i < EVENT_MAX_HANDLER_CHAINS; i++) {

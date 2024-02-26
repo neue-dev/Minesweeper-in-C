@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:12:12
- * @ Modified time: 2024-02-25 13:24:50
+ * @ Modified time: 2024-02-26 18:02:25
  * @ Description:
  * 
  * Low level handling of IO functionalities on Unix environments.
@@ -89,6 +89,24 @@ int IO_getHeight() {
 int IO_setSize(int dWidth, int dHeight) {
   return 0;
 } 
+
+/**
+ * Set the buffer size of the output stream.
+ * 
+ * @param   { int }   dSize   The size of the buffer in bytes.
+*/
+void IO_setBuffer(int dSize) {
+  
+  // This is another thing I found elsewhere which speeds printf up
+  // Console output by default is buffered per line, which means everytime we counter a \n things slow down
+  // In other words, in only prints in chunks of lines
+  // In order to circumvent that hindrance, we set the buffer size ourselves
+
+  // _IOFBF means data is written to the output stream once the buffer is full
+  // _IOLBF (the default) writes data once a newline is encountered
+  // We don't need to do this for Unix anymore cuz it's already quite fast for some reason.
+  setvbuf(stdout, NULL, _IOFBF, dSize);
+}
 
 /**
  * Helper function that clears the console.

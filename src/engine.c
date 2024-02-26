@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-25 15:06:31
+ * @ Modified time: 2024-02-26 18:03:26
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -42,13 +42,11 @@ typedef struct Engine {
   KeyEvents keyEvents;          // Deals with key events
   TimeEvents timeEvents;        // Deals with timer related events
 
-  int dummy; // ! remov
-  int dWidth;                   // The width of the console
-  int dHeight;                  // The height of the console
+  int bState;                   // The state of the engine
 
 } Engine;
 
-void Engine_init(Engine *this, int dWidth, int dHeight);
+void Engine_init(Engine *this);
 
 void Engine_main(p_obj pArgs_Engine, int tArg_NULL);
 
@@ -58,14 +56,11 @@ void Engine_exit(Engine *this);
  * Initializes the engine.
  * 
  * @param   { Engine * }  this      The engine object.
- * @param   { int }       dWidth    The width of the console.
- * @param   { int }       dHeight   The height of the console.
 */
-void Engine_init(Engine *this, int dWidth, int dHeight) {
-
-  this->dummy = 0;  // !remove
-  this->dWidth = dWidth;
-  this->dHeight = dHeight;
+void Engine_init(Engine *this) {
+  
+  // The engine is currently running
+  this->bState = 1;
 
   // Initialize user-defined state manager
   KeyEvents_init(&this->keyEvents);
@@ -124,8 +119,11 @@ void Engine_init(Engine *this, int dWidth, int dHeight) {
 */
 void Engine_exit(Engine *this) {
 
+  // Exit the event manager first, since it relies on the threads
+  EventManager_exit(&this->eventManager);
+
+  // Exit the thread manager last
   ThreadManager_exit(&this->threadManager);
-  // ! make sure to exit the event manager too
 
 }
 
@@ -136,40 +134,45 @@ void Engine_exit(Engine *this) {
  * @param   { int }       tArg_NULL     A dummy value.
 */
 void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
-  int i;
 
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
 
-  // Create a buffer
-  Buffer *pBuffer = Buffer_create(this->dWidth, this->dHeight);
-  
-  char *s = calloc(64, sizeof(char));
-  char *s2 = calloc(64, sizeof(char));
+  // Because IO operations are expensive, we want to do them only when a change occurs
+  if(!this->keyEvents.bHasBeenRead || 1) {
+    Buffer *pBuffer = Buffer_create(IO_getWidth(), IO_getHeight());
 
-  if(!this->keyEvents.bHasBeenRead) {
+    char *block[6] = {
+      "hello world!",
+      "this is an array of strings",
+      "idk man",
+      "yeppers",
+      "now wonder asd",
+      "well well mfff",
+    };
+
+    Buffer_write(pBuffer, 10, 10, 6, 6, block);
+
+    // printf("%s", Graphics_getCodeFG(0xffffff));
+    // printf("%s", Graphics_getCodeBG(0x000000));
+    IO_clear();
+    Buffer_print(pBuffer);
+
     KeyEvents_read(&this->keyEvents);
   }
 
-  for(i = 0; i < this->keyEvents.dHistoryLength; i++)
-    s[i] = this->keyEvents.cHistory[i];
-    
-  Buffer_append(pBuffer, s);
+  if(this->keyEvents.cLatest == 'q')
+    this->bState = 0;
+}
 
-  sprintf(s2, "%d", this->dummy % (1 << 24));
-  Buffer_append(pBuffer, "%s%s", 
-    Graphics_getCodeFG(0xffffff), 
-    Graphics_getCodeBG(this->dummy % (1 << 24)));
-
-  int speed = 5;
-
-  this->dummy += speed;
-  this->dummy += (this->dummy >> 8) ? (1 << 8) * speed : 0;
-  this->dummy += (this->dummy >> 16) ? (1 << 16) * speed : 0;
-
-  if(this->dummy >= (1 << 24)) 
-    this->dummy = 0;
-
-  IO_clear();
-  Buffer_print(pBuffer);  
+/**
+ * Returns the state of the engine.
+ * Returns a 1 when the engine is currently running.
+ * Returns a 0 when all its processes have exited.
+ * 
+ * @param   { Engine * }  this  The engine object.
+ * @return  { int }             Whether or not the engine is still running.
+*/
+int Engine_getState(Engine *this) {
+  return this->bState;
 }

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-24 13:44:07
+ * @ Modified time: 2024-02-26 18:11:40
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -10,25 +10,96 @@
 #ifndef UTILS_BUFFER_
 #define UTILS_BUFFER_
 
+#include "./utils.io.h"
+#include "./utils.string.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-#define BUFFER_MAX_WIDTH 1024
-#define BUFFER_MAX_HEIGHT 1024
+#define BUFFER_MAX_WIDTH 1 << 10
+#define BUFFER_MAX_HEIGHT 1 << 7
+
+typedef struct Context Context;
+typedef struct Buffer Buffer;
+
+/**
+ * //
+ * ////
+ * //////    Context class
+ * ////////
+ * ////////// 
+*/
+
+/**
+ * The context class provides us with a way to insert ANSI escape codes into our buffer.
+ * 
+ * @class
+*/
+struct Context {
+  char sContext[32];        // At most 32 characters of an ANSI escape code
+  
+  Context *pPrevContext;    // A reference to the next context
+  Context *pNextContext;    // A reference to the previous context
+};
+
+/**
+ * Allocates memory for an instance of the Context class.
+ * 
+ * @return	{ Context * }		A pointer to the allocated memory.
+*/
+Context *Context_new() {
+  Context *pContext = calloc(1, sizeof(*pContext));
+  return pContext;
+}
+
+/**
+ * Initializes an instance of the Context class.
+ * 
+ * @param		{ Context * }		this	A pointer to the instance to initialize.
+ * @return	{ Context * }					A pointer to the initialized instance.
+*/
+Context *Context_init(Context *this) {
+
+  return this;
+}
+
+/**
+ * Creates an initialized instance of the Context class.
+ * 
+ * @return	{ Context * }		A pointer to the newly created initialized instance.
+*/
+Context *Context_create() {
+  return Context_init(Context_new());
+}
+
+/**
+ * Deallocates the memory of an instance of the Context class.
+ * 
+ * @param		{ Context * }		this	A pointer to the instance to deallocate.
+*/
+Context *Context_kill(Context *this) {
+  free(this);
+}
+
+/**
+ * //
+ * ////
+ * //////    Buffer class
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Buffer class yes
  * @class
 */
-typedef struct Buffer {
-  int dLength;                      // The current length of the buffer (in lines).
-  int dWidth;                       // The maximum width of the buffer (in characters).
-  int dHeight;                      // The maximum height of the buffer (in lines).
+struct Buffer {
+  int dWidth;                                         // The maximum width of the buffer (in characters).
+  int dHeight;                                        // The maximum height of the buffer (in lines).
 
-  char *sArray[BUFFER_MAX_HEIGHT];  // An array that stores the string contents of each of the lines in the buffer.
-  int dArray[BUFFER_MAX_HEIGHT];    // An array that stores the lengths of each of the lines in the buffer.
-} Buffer;
+  char cArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];   // An array that stores the string contents of each of the lines in the buffer.
+};
 
 /**
  * Allocates memory for a new instance of the buffer class.
@@ -50,10 +121,15 @@ Buffer *Buffer_new() {
  * @return  { Buffer * }            The pointer to the initialized instance.
 */
 Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight) {
-  this->dLength = 0;
+  int i, j;
 
   this->dWidth = dWidth < BUFFER_MAX_WIDTH ? dWidth : BUFFER_MAX_WIDTH;
   this->dHeight = dHeight < BUFFER_MAX_HEIGHT ? dHeight : BUFFER_MAX_HEIGHT;
+
+  // Initialize everything to a space character
+  for(i = 0; i < BUFFER_MAX_HEIGHT; i++)
+    for(j = 0; j < BUFFER_MAX_WIDTH; j++)
+      this->cArray[i][j] = 32;
 
   return this;
 }
@@ -80,54 +156,22 @@ void Buffer_kill(Buffer *this) {
 }
 
 /**
- * The function appends a string to the array of the buffer and doesn't count format specifiers
- *    in its length.
- * Note the format specifiers should only be used for escape sequences.
- * Woah this actually worked?
+ * Writes onto a rectangular section of the buffer, starting on (x, y).
  * 
- * @param   { Buffer * }  this    The buffer to be modified.
- * @param   { char * }    sEntry  The format string to use.
- * @param   { char * }    ...     Any ANSI escape sequences we wish to embed into the format string.
+ * @param   { Buffer * }  this    The buffer to modify.
+ * @param   { int }       x       The x-coordinate where to start writing in the buffer.
+ * @param   { int }       y       The y-coordinate where to start writing in the buffer.
+ * @param   { int }       w       The width of the area to write on.
+ * @param   { int }       h       The height of the area to write on.
+ * @param   { char * }    sBlock  The text content to write onto the area.
 */
-void Buffer_append(Buffer *this, char *sEntry, ...) {
-  int i = 0;
-  int dEntryLen = 0, dFormats = 0;
+void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
+  int i, j;
 
-  // Because our function is variadic, ie, has a variable number of arguments
-  va_list pArg;
-  va_start(pArg, sEntry);
-
-  // Can't have too many lines now can we?
-  if(this->dLength >= this->dHeight)
-    return;
-
-  // This counts the length of the string excluding format basic specifiers.
-  // By basic format specifiers we mean %n; format specifiers with a . or 
-  // other numbers will not be excluded.
-  do {
-    if(sEntry[i] == '%') {
-      dFormats++;
-    } else {
-      if(i > 0) {
-        if(sEntry[i - 1] != '%') {
-          dEntryLen++;
-        }
-      } else {
-        dEntryLen++;
-      }
-    }
-  
-  // Iterate through the entire string
-  } while(sEntry[++i]);
-
-  // Copy the format string first
-  char *sFormattedEntry = calloc(this->dWidth + dFormats, sizeof(char));
-  vsnprintf(sFormattedEntry, this->dWidth + dFormats, sEntry, pArg);
-
-  // Final save it into the buffer
-  this->sArray[this->dLength] = sFormattedEntry;
-  this->dArray[this->dLength] = dEntryLen;
-  this->dLength++;
+  // Copy the characters onto the buffer, as long as it doesn't go beyond the edges
+  for(i = y; i < y + h && i < this->dHeight; i++)
+    for(j = x; j < x + w && j < this->dWidth; j++)
+      this->cArray[i][j] = sBlock[i - y][j - x];
 }
 
 /**
@@ -136,22 +180,19 @@ void Buffer_append(Buffer *this, char *sEntry, ...) {
 */
 void Buffer_print(Buffer *this) {
   int i;
-  int dMaxSize = BUFFER_MAX_HEIGHT * BUFFER_MAX_WIDTH;
 
-  // Note that we use max height and max width instead of the instance's dimensions because
-  //    we need extra space for any ANSI escape sequences that might be stored in the buffer.
-  char *sBlob = calloc(dMaxSize, sizeof(char));
+  // ! change the size of this later to account for ANSI sequences
+  char *sBlob = calloc((this->dWidth + 1) * this->dHeight, sizeof(char));
 
   // Iterate through the lines
-  for(i = 0; i < this->dLength; i++) {
-    if(strlen(sBlob) + strlen(this->sArray[i]) < dMaxSize)
-      strcat(sBlob, this->sArray[i]);
-
-    if(strlen(sBlob) + 1 < dMaxSize)
-      strcat(sBlob, "\n");
+  for(i = 0; i < this->dHeight; i++) {
+    strncat(sBlob, this->cArray[i], this->dWidth);
+    strcat(sBlob, "\n");
   }
 
-  printf(sBlob);
+  // Set the buffer size and print using puts()
+  IO_setBuffer(sizeof(sBlob));
+  puts(sBlob);
 }
 
 #endif

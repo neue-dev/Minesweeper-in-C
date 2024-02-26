@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-26 16:00:02
+ * @ Modified time: 2024-02-26 18:10:08
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -21,7 +21,7 @@
  * For the sake of not breaking things, both implementations will have this struct defined.
 */
 typedef struct IO {
-  int dummy;
+  
 } IO;
 
 /**
@@ -50,7 +50,7 @@ int IO_getWidth() {
   
   // Some library functions from windows.h that return the dimensions of the console
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &consoleScreenBufferInfo);
-
+  
   // Note the plus one is needed to get the inclusive value of the difference
   return consoleScreenBufferInfo.srWindow.Right - consoleScreenBufferInfo.srWindow.Left + 1;
 }
@@ -91,25 +91,43 @@ int IO_getHeight() {
 */
 int IO_setSize(int dWidth, int dHeight) {
 
-    // Create some objects to define console properties
-    COORD const size = { dWidth, dHeight };
+  // Create some objects to define console properties
+  COORD const size = { dWidth, dHeight };
 
-    // Set the console window to the smallest possible size first
-    SMALL_RECT const minWindowSize = { 0, 0, 1, 1 };
-    SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &minWindowSize);
-    
-    // Modify the buffer size 
-    // This stores the text on the console and does not reflect the actual console size
-    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), size);
-    
-    // Update the actual console size into the new window size
-    SMALL_RECT const newWindowSize = { 0, 0, dWidth - 1, dHeight - 1 };
-    SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &newWindowSize);
+  // Set the console window to the smallest possible size first
+  SMALL_RECT const minWindowSize = { 0, 0, 1, 1 };
+  SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &minWindowSize);
+  
+  // Modify the buffer size 
+  // This stores the text on the console and does not reflect the actual console size
+  SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), size);
+  
+  // Update the actual console size into the new window size
+  SMALL_RECT const newWindowSize = { 0, 0, dWidth - 1, dHeight - 1 };
+  SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &newWindowSize);
 
-    // The screen size was changed
-    // Note that the unix version of the function returns 0 since it does nothing
-    return 1;
+  // The screen size was changed
+  // Note that the unix version of the function returns 0 since it does nothing
+  return 1;
 } 
+
+/**
+ * Set the buffer size of the output stream.
+ * 
+ * @param   { int }   dSize   The size of the buffer in bytes.
+*/
+void IO_setBuffer(int dSize) {
+  
+  // This is another thing I found elsewhere which speeds printf up
+  // Console output by default is buffered per line, which means everytime we counter a \n things slow down
+  // In other words, in only prints in chunks of lines
+  // In order to circumvent that hindrance, we set the buffer size ourselves
+
+  // _IOFBF means data is written to the output stream once the buffer is full
+  // _IOLBF (the default) writes data once a newline is encountered
+  // We don't need to do this for Unix anymore cuz it's already quite fast for some reason.
+  setvbuf(stdout, NULL, _IOFBF, dSize);
+}
 
 /**
  * Helper function that clears the console.
