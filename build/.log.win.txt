@@ -1,0 +1,8 @@
+src\minesweeper.dev.c: In function 'main':
+src\minesweeper.dev.c:37:3: error: too few arguments to function 'Engine_init'
+   Engine_init(&engine);
+   ^~~~~~~~~~~
+In file included from src\minesweeper.dev.c:10:0:
+src\./engine.c:64:6: note: declared here
+ void Engine_init(Engine *this, int dWidth, int dHeight) {
+      ^~~~~~~~~~~
