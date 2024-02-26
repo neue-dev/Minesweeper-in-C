@@ -360,15 +360,17 @@ It looks way cleaner, right? It's also better for us developers because we only 
 
 ## 5. Events
 
-Events refer to things that can happen while your main program is running. Usually, events are unpredictable and demand immediate attention; they need to be handled when they occur. But if our main thread is busy doing something else, it can't just stop what it's doing to deal with new events.
+Events refer to things that can happen while your main program is running. Usually, events are unpredictable and demand immediate attention; they need to be **handled** when they occur. But if our main thread is busy doing something else, it can't just stop what it's doing to deal with new events.
 
 The solution is to have a separate thread dedicated to handling events. In this way, even if our main process isn't available for dealing with events, we can have another thread do that for us.
+
+Additionally, to actually **listen** for events, we can't just tell the main thread to do that too. If it did, it wouldn't be able to do anything else because it would be waiting for events to occur just so it can take note of them. Thus, it makes sense to have another thread of execution dedicated to listening for events.
 
 Other programming languages (like Java and Javascript) support events more or less natively. In C, we kind of have to do it ourselves. 
 
 ---
 
-> **Chapter 5: Callbacks**
+> **Chapter 5: Events**
 > 
 > ***How this Concept Relates to the Implementation***
 >
@@ -378,7 +380,7 @@ Other programming languages (like Java and Javascript) support events more or le
 >
 > ![our-events-implementation](our-events_page.jpg)
 >
-> It is important to note that the event manager has its own thread of execution and runs the event handlers within that thread. The event triggers also have their own thread of execution. All in all, our program has three important threads: (1) the main thread, (2) the event listener thread, and (3) the event handler thread. I'll try to explain more about the nuances of this structure when we meet again.
+> It is important to note that, as stated above, the event handlers have their own thread of execution. The event listeners (event triggers) also have their own separate thread. All in all, our program has three major threads: (1) the main thread, (2) the event listener thread, and (3) the event handler thread. I'll try to explain more about the nuances of this structure when we meet again.
 
 ## 6. Reducing Data Types: It's All Bits! 
 
