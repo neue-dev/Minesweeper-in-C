@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-26 18:03:26
+ * @ Modified time: 2024-02-26 18:34:28
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -140,21 +140,21 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
 
   // Because IO operations are expensive, we want to do them only when a change occurs
   if(!this->keyEvents.bHasBeenRead || 1) {
-    Buffer *pBuffer = Buffer_create(IO_getWidth(), IO_getHeight());
+    Buffer *pBuffer = Buffer_create(
+      IO_getWidth(), 
+      IO_getHeight());
 
     char *block[6] = {
-      "hello world!",
+      "hello world!aaaaaaaaaaaa",
       "this is an array of strings",
-      "idk man",
-      "yeppers",
-      "now wonder asd",
-      "well well mfff",
+      "idk man10101010aaaaa",
+      "yeppers10101010aaaa",
+      "idk man10101010aaa",
+      Graphics_getCodeFG(0xff0000),
     };
 
-    Buffer_write(pBuffer, 10, 10, 6, 6, block);
+    Buffer_write(pBuffer, 10, 10, strlen(Graphics_getCodeFG(0xff0000)), 6, block);
 
-    // printf("%s", Graphics_getCodeFG(0xffffff));
-    // printf("%s", Graphics_getCodeBG(0x000000));
     IO_clear();
     Buffer_print(pBuffer);
 

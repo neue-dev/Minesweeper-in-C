@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-26 18:11:40
+ * @ Modified time: 2024-02-26 18:29:02
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -182,7 +182,7 @@ void Buffer_print(Buffer *this) {
   int i;
 
   // ! change the size of this later to account for ANSI sequences
-  char *sBlob = calloc((this->dWidth + 1) * this->dHeight, sizeof(char));
+  char *sBlob = calloc((this->dWidth + 1) * this->dHeight * 2, sizeof(char));
 
   // Iterate through the lines
   for(i = 0; i < this->dHeight; i++) {
@@ -190,9 +190,10 @@ void Buffer_print(Buffer *this) {
     strcat(sBlob, "\n");
   }
 
-  // Set the buffer size and print using puts()
+  // Set the buffer size and print using puts(), then do garbage collection
   IO_setBuffer(sizeof(sBlob));
   puts(sBlob);
+  free(sBlob);
 }
 
 #endif
