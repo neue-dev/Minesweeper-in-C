@@ -360,7 +360,19 @@ It looks way cleaner, right? It's also better for us developers because we only 
 
 ## 5. Events
 
+Other programming languages (like Java and Javascript) support events more or less natively. In C, we kind of have to do it ourselves. 
+
+### 5.1 Our Event Model
+
+There are different ways to go about handling events, although for our case I came up with a neat structure. I don't think I can explain it that well without having to illustrate it, so here's a neat little infographic I made to depict how we handle events in our program.
+
+![our-events-implementation](our-events_page.jpg)
+
+It is important to note that the thread manager has its own thread of execution and runs the event handlers within that thread. The event triggers also have their own thread of execution. All in all, our program has three important thread: (1) the main thread, (2) the event listener thread, and (3) the event handler thread. I'll try to explain more about the nuances of this structure when we meet again.
+
 ## 6. Reducing Data Types: It's All Bits! 
+
+
 
 ## 7. Miscellaneous Ideas
 
