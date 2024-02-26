@@ -384,7 +384,104 @@ Other programming languages (like Java and Javascript) support events more or le
 
 ## 6. Reducing Data Types: It's All Bits! 
 
-All data t
+All data types are basically just groups of bits we decided to interpret in certain way. For example, in an `int` data type a given sequence of bits just stores a decimal number in binary, while the same sequence of bits in a `char` data type would probably represent something else.
+
+But if we're being really clever, we can completely ignore the actual data type we're dealing with and work directly with the bits stored by any variable. In this way, based on how we read these bits, it's almost as if we have our own custom data type--we interpret the sequences of bits in our own way.
+
+### 6.1 Bitwise Operators
+
+The C language provides us with operators to directly manipulate the bits of a piece of data. Let's pretend we have the following declaration:
+```C
+// An char has 1 byte
+// So in total it has 8 bits
+char bits = 1;                // 0000 0001
+char bits2 = 15;              // 0000 1111
+char bits3 = 0;               // 0000 0000
+char bits4 = 30;              // 0001 1110
+
+// This is also valid and is equal to bits4
+char bits5 = 0b00011110; 
+
+```
+Given the code above, we currently have three variables, each with 8 bits. If we want to do stuff with those bits, we can use the following operators:
+```C
+char result;
+
+// (1) The & operator
+// It checks each pair of bits between the two variables
+// For each pair, it produces 1 if both are true (the AND of the two bits)
+
+result = bits2 & bits4;         // 0000 1110
+
+
+// (2) The | operator
+// Produces the OR of each pair of bits
+
+result = bits2 | bits4;         // 0001 1111
+
+
+// (3) The ^ operator
+// Produces the XOR of each pair of bits
+
+result = bits2 ^ bits4;         // 0001 0001
+
+
+// (4) The ~ operator
+// Flips all the bits in a variable
+
+result = ~bits4;                // 1110 0001
+
+
+// (5) The >> operator
+// Shifts all the bits to the right by the specified amount
+// Bits that go past the rightmost position basically disappear
+
+result = bits4 >> 4;            // 0000 0001
+
+
+// (6) The << operator
+// Shifts all the bits to the left by the specified amount
+// Again, bits that "fall off the left edge" are discarded
+
+result = bits4 << 4;            // 1110 0000
+
+```
+
+None of these bitwise operations modify the original variable. You have to store the result elsewhere (or use it in an expression) if you want the operation to be meaningful.
+
+### 6.2 Differences with `&&` and `||`
+
+The differences of our bitwise operators with the traditional operators `&&` and `||` are actually quite simple: whereas `&&` and `||` interpret the variables based on their data type, `&` and `|` perform actions on variables *one bit at a time*; in other words, `&&` and `||` consider all the bits as a whole while `&` and `|` consider them individually. The same is true for `!` and `~`.
+
+### 6.3 Valid Data Types to Use For Bit Manipulation
+
+Now although all data types are essentially just sequences of bits, the operators C gives us to manipulate bits are not applicable to certain data types. Only **int-based data types** are allowed to be manipulated with these  (the other class of types, which are **float-based data types**, cannot be subjected to bit manipulations because of the way they store their bits). The available int-based types are:
+```C
+char;           // 1 byte
+
+short;          // 2 bytes
+unsigned short;
+
+int;            // 4 bytes
+unsigned int;
+
+long;           // 8 bytes
+unsigned long;
+```
+
+There are some other stuff out there like `signed char`, but they're honestly quite pointless to consider. The main data types listed above are the most important ones we'll be looking at.
+
+Whenever we say something is `unsigned`, it just means we won't be storing negative values there. In other words, we won't interpret the bits as a 2's complement encoding (CCICOMP coming back fr), but rather as a standard binary representation. This is important because if we want to do arithmetic with our bits (like adding them), there might be a difference between `unsigned` and `signed` types (or maybe I'm just tripping).
+
+You might also see that we actually have quite a selection of different possible data type sizes to choose from. We have characters with 1 byte and long integers with 8. Unfortunately, because of how computer hardware behaves, we actually can't do reliable bit manipulation on any variable with more than 4 bytes, so the most we'll have is a 32-bit variable (which for our case should suffice already). If you're curious as to why we can't manipulate a `long` without breaking some things, you can check [this](https://stackoverflow.com/questions/10499104/is-shifting-more-than-32-bits-of-a-uint64-t-integer-on-an-x86-machine-undefined) out (TLDR it's because most peoples' CPUs, mine included, have a **word** width of 32 bits. A word just refers to the smallest unit of instruction processed by a computer; if you're computer can't hold information with more than 32 bits in its CPU, then it probably can't reliably shift the bits of a thing with more than 32 bits).
+
+### 6.4 Fixed-width Data Types
+
+
+> **Chapter 6: Reducing Data Types: It's All Bits!**
+> 
+> ***How this Concept Relates to the Implementation***
+>
 
 ## 7. Miscellaneous Ideas
 
