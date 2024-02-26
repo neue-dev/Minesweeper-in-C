@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-26 14:40:40
+ * @ Modified time: 2024-02-26 14:42:38
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -16,6 +16,7 @@
 //    (1) uint8_t
 //    (2) uint16_t
 //    (3) uint32_t
+//    (4) uint64_t
 #include <inttypes.h>
 
 // FOR THE CODE BELOW (parameter object pointers):

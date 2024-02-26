@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-02-25 13:18:54
+ * @ Modified time: 2024-02-26 14:47:50
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#define GRID_MAX_SIZE 32
+#define GRID_MAX_SIZE 64
 
 /**
  * //
@@ -32,7 +32,7 @@ typedef struct Grid {
   int dWidth;                         // The width of the grid (in bits).
   int dHeight;                        // The height of the grid (in lines).
 
-  uint32_t dBitArray[GRID_MAX_SIZE];  // A 32 x 32 grid of bits
+  uint64_t dBitArray[GRID_MAX_SIZE];  // A 32 x 32 grid of bits
                                       // This means that our grid can have a maximum size of 32 x 32,
                                       //    although the project specifications call for much less.
 } Grid;
@@ -103,7 +103,7 @@ void Grid_kill(Grid *this) {
  * @return  { int }           Whether or not the bit is a 1 or 0.
 */
 int Grid_getBit(Grid *this, int x, int y) {
-  uint32_t dMask = 1 << (GRID_MAX_SIZE - 1);
+  uint64_t dMask = 1ULL << (GRID_MAX_SIZE - 1);
 
   return (this->dBitArray[y] & dMask >> x) ? 1 : 0;
 }
@@ -117,7 +117,7 @@ int Grid_getBit(Grid *this, int x, int y) {
  * @param   { int }     n     The new value we want to set the bit to.
 */
 void Grid_setBit(Grid *this, int x, int y, int n) {
-  uint32_t dMask = 1 << (GRID_MAX_SIZE - 1);
+  uint64_t dMask = 1ULL << (GRID_MAX_SIZE - 1);
 
   if(n) this->dBitArray[y] |= dMask >> x;     // If we're making the bit truthy, we need an |=
   else this->dBitArray[y] &= ~(dMask >> x);   // Otherwise, an &= with the inverse of the mask works
