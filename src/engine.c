@@ -1,13 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 09:16:02
+ * @ Modified time: 2024-02-27 09:28:31
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
  * This file is only meant to be included once, thus the lack of inclusion guards.
  */
 
+#include "./utils/utils.animation.h"
 #include "./utils/utils.buffer.h"
 #include "./utils/utils.event.h"
 #include "./utils/utils.thread.h"

@@ -10,3 +10,4 @@ REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them wh
 
 ehmm pretend we didnt see this LMAO
 [Char Arrays vs Char Pointers]            https://www.reddit.com/r/C_Programming/comments/rxqp8u/when_to_use_char_array_vs_char_pointer/
+[Pragma Comment]                          https://learn.microsoft.com/en-us/cpp/preprocessor/comment-c-cpp?view=msvc-170

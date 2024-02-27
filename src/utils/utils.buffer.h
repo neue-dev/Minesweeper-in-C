@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-27 09:12:03
+ * @ Modified time: 2024-02-27 09:41:21
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -42,7 +42,7 @@ struct Buffer {
 
   char cContentArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];            // An array that stores the string contents of each of the lines in the buffer.
 
-  int dContextLength;                                                 // How many contexts we currently have
+  int dContextCount;                                                  // How many contexts we currently have
   char *sDefaultContext;                                              // The default ANSI escape sequence for the FG and BG color of the buffer
   char *sContextArray[BUFFER_MAX_CONTEXTS];                           // Stores the different contexts we will be using  
   unsigned short dContextMask[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];   // Stores the contexts that define the styling of the entire buffer
@@ -80,7 +80,7 @@ Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, int dDefaultFG, int d
   this->sDefaultContext = Graphics_getCodeFGBG(dDefaultFG, dDefaultBG);
 
   // No contexts at the moment
-  this->dContextLength = 0;
+  this->dContextCount = 0;
 
   // Initialize everything to a space character
   // Also, initialize the context mask values to 0
@@ -156,7 +156,7 @@ void Buffer_context(Buffer *this, int x, int y, int w, int h, int colorFG, int c
   int i, j;
 
   // Can't overload ourselves
-  if(this->dContextLength >= BUFFER_MAX_CONTEXTS)
+  if(this->dContextCount >= BUFFER_MAX_CONTEXTS)
     return;
 
   // The user didn't specify anything to define the context
@@ -165,19 +165,19 @@ void Buffer_context(Buffer *this, int x, int y, int w, int h, int colorFG, int c
 
   // Append the new context
   if(colorFG < 0)
-    this->sContextArray[this->dContextLength] = Graphics_getCodeBG(colorBG);
+    this->sContextArray[this->dContextCount] = Graphics_getCodeBG(colorBG);
   else if(colorBG < 0)
-    this->sContextArray[this->dContextLength] = Graphics_getCodeFG(colorFG);
+    this->sContextArray[this->dContextCount] = Graphics_getCodeFG(colorFG);
   else
-    this->sContextArray[this->dContextLength] = Graphics_getCodeFGBG(colorFG, colorBG);
+    this->sContextArray[this->dContextCount] = Graphics_getCodeFGBG(colorFG, colorBG);
 
   // Increment the context length
-  this->dContextLength++;
+  this->dContextCount++;
 
   // Set the appropriate context values to the index + 1 of the created context
   for(i = y; i < y + h && i < this->dHeight; i++) 
     for(j = x; j < x + w && j < this->dWidth; j++) 
-      this->dContextMask[i][j] = this->dContextLength;
+      this->dContextMask[i][j] = this->dContextCount;
 
 }
       
@@ -261,7 +261,7 @@ void Buffer_print(Buffer *this) {
   puts(sBlob);
   
   // Clean up all the stuff we used
-  for(i = 0; i < this->dContextLength; i++)
+  for(i = 0; i < this->dContextCount; i++)
     Graphics_delCode(this->sContextArray[i]);
 
   free(sBlob);
