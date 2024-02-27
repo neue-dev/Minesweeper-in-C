@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-02-27 08:50:18
+ * @ Modified time: 2024-02-27 09:00:17
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -25,7 +25,7 @@ char *Graphics_getCodeFG(int color);
 
 char *Graphics_getCodeBG(int color);
 
-char *Graphics_getCodeBoth(int color);
+char *Graphics_getCodeFGBG(int colorFG, int colorBG);
 
 /**
  * //

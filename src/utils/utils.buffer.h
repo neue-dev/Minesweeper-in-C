@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-27 08:50:10
+ * @ Modified time: 2024-02-27 09:12:03
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -12,6 +12,7 @@
 
 #include "./utils.io.h"
 #include "./utils.string.h"
+#include "./utils.graphics.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -39,12 +40,10 @@ struct Buffer {
   int dWidth;                                                         // The maximum width of the buffer (in characters).
   int dHeight;                                                        // The maximum height of the buffer (in lines).
 
-  char *sDefaultFG;                                                   // The default foreground color of the buffer
-  char *sDefaultBG;                                                   // The default background color of the buffer
-
   char cContentArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];            // An array that stores the string contents of each of the lines in the buffer.
 
   int dContextLength;                                                 // How many contexts we currently have
+  char *sDefaultContext;                                              // The default ANSI escape sequence for the FG and BG color of the buffer
   char *sContextArray[BUFFER_MAX_CONTEXTS];                           // Stores the different contexts we will be using  
   unsigned short dContextMask[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];   // Stores the contexts that define the styling of the entire buffer
                                                                       // Note that this is unsigned so we don't waste space; we need the extra memory LMOO
@@ -68,18 +67,17 @@ Buffer *Buffer_new() {
  * @param   { Buffer * }  this        A pointer to the instance we're going to init.
  * @param   { int }       dWidth      The width of each of the buffer lines.
  * @param   { int }       dHeight     The height of the buffer.
- * @param   { char * }    sDefaultFG  The default foreground color of the buffer.
- * @param   { char * }    sDefaultBG  The default background color of the buffer.
+ * @param   { int }       dDefaultFG  The default foreground color of the buffer.
+ * @param   { int }       dDefaultBG  The default background color of the buffer.
  * @return  { Buffer * }              The pointer to the initialized instance.
 */
-Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, char *sDefaultFG, char *sDefaultBG) {
+Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, int dDefaultFG, int dDefaultBG) {
   int i, j;
 
   this->dWidth = dWidth < BUFFER_MAX_WIDTH ? dWidth : BUFFER_MAX_WIDTH;
   this->dHeight = dHeight < BUFFER_MAX_HEIGHT ? dHeight : BUFFER_MAX_HEIGHT;
 
-  this->sDefaultFG = sDefaultFG;
-  this->sDefaultBG = sDefaultBG;
+  this->sDefaultContext = Graphics_getCodeFGBG(dDefaultFG, dDefaultBG);
 
   // No contexts at the moment
   this->dContextLength = 0;
@@ -102,12 +100,12 @@ Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, char *sDefaultFG, cha
  * 
  * @param   { int }       dWidth      The width of each of the buffer lines.
  * @param   { int }       dHeight     The height of the buffer.
- * @param   { char * }    sDefaultFG  The default foreground color of the buffer.
- * @param   { char * }    sDefaultBG  The default background color of the buffer.
- * @return  { Buffer * }            The pointer to the initialized instance.
+ * @param   { int }       dDefaultFG  The default foreground color of the buffer.
+ * @param   { int }       dDefaultBG  The default background color of the buffer.
+ * @return  { Buffer * }              The pointer to the initialized instance.
 */
-Buffer *Buffer_create(int dWidth, int dHeight, char *sDefaultFG, char *sDefaultBG) {
-  return Buffer_init(Buffer_new(), dWidth, dHeight, sDefaultFG, sDefaultBG);
+Buffer *Buffer_create(int dWidth, int dHeight, int dDefaultFG, int dDefaultBG) {
+  return Buffer_init(Buffer_new(), dWidth, dHeight, dDefaultFG, dDefaultBG);
 }
 
 /**
@@ -151,17 +149,27 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
  * @param   { int }       y         The y-coordinate where the context begins in the buffer.
  * @param   { int }       w         The width of the context area.
  * @param   { int }       h         The height of the context area.
- * @param   { char * }    sContext  The style to apply to the area, usually an ANSI escape sequence.
+ * @param   { int }       colorFG   The color of the foreground within the context.
+ * @param   { int }       colorBG   The color of the background within the context.
 */
-void Buffer_context(Buffer *this, int x, int y, int w, int h, char *sContext) {
+void Buffer_context(Buffer *this, int x, int y, int w, int h, int colorFG, int colorBG) {
   int i, j;
 
   // Can't overload ourselves
   if(this->dContextLength >= BUFFER_MAX_CONTEXTS)
     return;
 
+  // The user didn't specify anything to define the context
+  if(colorBG < 0 && colorBG < 0)
+    return;
+
   // Append the new context
-  this->sContextArray[this->dContextLength] = sContext;
+  if(colorFG < 0)
+    this->sContextArray[this->dContextLength] = Graphics_getCodeBG(colorBG);
+  else if(colorBG < 0)
+    this->sContextArray[this->dContextLength] = Graphics_getCodeFG(colorFG);
+  else
+    this->sContextArray[this->dContextLength] = Graphics_getCodeFGBG(colorFG, colorBG);
 
   // Increment the context length
   this->dContextLength++;
@@ -192,14 +200,8 @@ void Buffer_print(Buffer *this) {
 
   // Set the defaults first
   i = 0;
-  while(this->sDefaultFG[i]) {
-    sBlob[dLen] = this->sDefaultFG[i];
-    dLen++; i++;   
-  }
-
-  i = 0;
-  while(this->sDefaultBG[i]) {
-    sBlob[dLen] = this->sDefaultBG[i];
+  while(this->sDefaultContext[i]) {
+    sBlob[dLen] = this->sDefaultContext[i];
     dLen++; i++;   
   }
 
@@ -239,14 +241,8 @@ void Buffer_print(Buffer *this) {
 
         // If we're going back to "normal", we'll just put back the defaults
         } else {
-          while(this->sDefaultFG[i] != 0) {
-            sBlob[dLen] = this->sDefaultFG[i];
-            dLen++; i++;   
-          }
-
-          i = 0;
-          while(this->sDefaultBG[i] != 0) {
-            sBlob[dLen] = this->sDefaultBG[i];
+          while(this->sDefaultContext[i] != 0) {
+            sBlob[dLen] = this->sDefaultContext[i];
             dLen++; i++;   
           }
         }
@@ -267,7 +263,7 @@ void Buffer_print(Buffer *this) {
   // Clean up all the stuff we used
   for(i = 0; i < this->dContextLength; i++)
     Graphics_delCode(this->sContextArray[i]);
-    
+
   free(sBlob);
 }
 

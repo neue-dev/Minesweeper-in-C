@@ -1,14 +1,13 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 08:51:33
+ * @ Modified time: 2024-02-27 09:16:02
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
  * This file is only meant to be included once, thus the lack of inclusion guards.
  */
 
-#include "./utils/utils.graphics.h"
 #include "./utils/utils.buffer.h"
 #include "./utils/utils.event.h"
 #include "./utils/utils.thread.h"
@@ -146,8 +145,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     Buffer *pBuffer = Buffer_create(
       IO_getWidth(), 
       IO_getHeight(),
-      Graphics_getCodeFG(0xffffff),
-      Graphics_getCodeBG(0x555555));
+      0xffffff,
+      0x555555);
 
     char *block[8] = {
       "hello world!aaaaaaaaaaaa",
@@ -161,8 +160,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     };
 
     Buffer_write(pBuffer, 10, 10, 15, 8, block);
-    Buffer_context(pBuffer, 10, 10, 10, 10, Graphics_getCodeFGBG(this->dummy % 256, 0x0000dd));
-    Buffer_context(pBuffer, 12, 12, 10, 5, Graphics_getCodeFGBG(0x00ff00, 0xff00dd));
+    Buffer_context(pBuffer, 10, 10, 10, 10, this->dummy % 256, 0x0000dd);
+    Buffer_context(pBuffer, 12, 12, 10, 5, 0x00ff00, 0xff00dd);
 
     IO_clear();
     Buffer_print(pBuffer);

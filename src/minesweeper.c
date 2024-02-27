@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-02-26 23:16:08
+ * @ Modified time: 2024-02-27 08:56:58
  * @ Description:
  */
 
@@ -21,7 +21,7 @@ int main() {
   // Some IO stuff
   IO io;
   IO_init(&io);
-  IO_setSize(60, 30);
+  IO_setSize(128, 32);
   
   // Set up the engine
   Engine engine;
