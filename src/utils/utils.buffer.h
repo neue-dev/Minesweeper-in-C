@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-27 09:41:21
+ * @ Modified time: 2024-02-27 11:13:14
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -198,15 +198,15 @@ void Buffer_print(Buffer *this) {
   int dLen = 0;   
   char *sBlob = calloc((this->dWidth + 1) * this->dHeight * 4, sizeof(char));
 
-  // Set the defaults first
-  i = 0;
-  while(this->sDefaultContext[i]) {
-    sBlob[dLen] = this->sDefaultContext[i];
-    dLen++; i++;   
-  }
-
   // Iterate through the lines
   for(y = 0; y < this->dHeight; y++) {
+
+    // Set the defaults at the start of every line
+    i = 0;
+    while(this->sDefaultContext[i]) {
+      sBlob[dLen] = this->sDefaultContext[i];
+      dLen++; i++;   
+    }
 
     // The last mask value we had
     dLastMask = 0;
