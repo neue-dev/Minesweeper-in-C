@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-26 23:57:51
+ * @ Modified time: 2024-02-27 08:50:10
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -154,7 +154,7 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
  * @param   { char * }    sContext  The style to apply to the area, usually an ANSI escape sequence.
 */
 void Buffer_context(Buffer *this, int x, int y, int w, int h, char *sContext) {
-  int i;
+  int i, j;
 
   // Can't overload ourselves
   if(this->dContextLength >= BUFFER_MAX_CONTEXTS)
@@ -167,15 +167,12 @@ void Buffer_context(Buffer *this, int x, int y, int w, int h, char *sContext) {
   this->dContextLength++;
 
   // Set the appropriate context values to the index + 1 of the created context
-  for(i = y; i < y + h && i < this->dHeight; i++) {
-    if(x < this->dWidth)
-      this->dContextMask[i][x] = this->dContextLength;
+  for(i = y; i < y + h && i < this->dHeight; i++) 
+    for(j = x; j < x + w && j < this->dWidth; j++) 
+      this->dContextMask[i][j] = this->dContextLength;
 
-    if(x + w - 1 < this->dWidth)
-      this->dContextMask[i][x + w - 1] = this->dContextLength;
-  }
 }
-
+      
 /**
  * Outputs the buffer to the screen as one massive blob.
  * 
@@ -183,6 +180,10 @@ void Buffer_context(Buffer *this, int x, int y, int w, int h, char *sContext) {
 */
 void Buffer_print(Buffer *this) {
   int x, y, i;
+
+  // Some stuff to use for context finding
+  int dLastMask;
+  int bShouldUpdateContext;
 
   // The current length of the blob
   // and the blob itself
@@ -205,39 +206,21 @@ void Buffer_print(Buffer *this) {
   // Iterate through the lines
   for(y = 0; y < this->dHeight; y++) {
 
-    // Context stack
-    int dContextStackSize = 0, bShouldUpdateContext = 0;
-    short dContextStack[BUFFER_MAX_WIDTH];
+    // The last mask value we had
+    dLastMask = 0;
 
     // Loop through each character in the row
-    // Check context shifting too
+    // Check context changes too
     for(x = 0; x < this->dWidth; x++) {
 
-      // No need to update
+      // Whether or not to update into a new context
       bShouldUpdateContext = 0;
 
       // Check through the context mask
-      if(this->dContextMask[y][x]) {
+      if(dLastMask != this->dContextMask[y][x]) {
         
-        // If it's not the first context
-        if(dContextStackSize) {
-
-          // If it's the start of a new context
-          if(dContextStack[dContextStackSize - 1] != this->dContextMask[y][x] - 1) {
-            dContextStack[dContextStackSize] = this->dContextMask[y][x] - 1;
-            dContextStackSize++;
-          
-          // It's the end of the current context
-          // The top of the stack is just left alone (it just becomes a garbage value essentially)
-          } else {
-            dContextStackSize--;
-          }
-
-        // Otherwise, just append the context (it's the first on that line)
-        } else {
-          dContextStack[dContextStackSize] = this->dContextMask[y][x] - 1;
-          dContextStackSize++;
-        }
+        // Update the last mask we had
+        dLastMask = this->dContextMask[y][x];
 
         // Something happened, we need to update
         bShouldUpdateContext = 1;
@@ -247,10 +230,10 @@ void Buffer_print(Buffer *this) {
       if(bShouldUpdateContext) {
         i = 0;
         
-        // Just copy the string char by char
-        if(dContextStackSize) {
-          while(this->sContextArray[dContextStack[dContextStackSize - 1]][i]) {
-            sBlob[dLen] = this->sContextArray[dContextStack[dContextStackSize - 1]][i];
+        // Just copy the new context string char by char
+        if(dLastMask) {
+          while(this->sContextArray[dLastMask - 1][i]) {
+            sBlob[dLen] = this->sContextArray[dLastMask - 1][i];
             dLen++; i++;   
           }
 
@@ -269,8 +252,6 @@ void Buffer_print(Buffer *this) {
         }
       }
       
-      
-
       sBlob[dLen] = this->cContentArray[y][x];
       dLen++;
     }
@@ -282,6 +263,11 @@ void Buffer_print(Buffer *this) {
   // Set the buffer size and print using puts(), then do garbage collection
   IO_setBuffer(sizeof(sBlob));
   puts(sBlob);
+  
+  // Clean up all the stuff we used
+  for(i = 0; i < this->dContextLength; i++)
+    Graphics_delCode(this->sContextArray[i]);
+    
   free(sBlob);
 }
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-26 23:47:41
+ * @ Modified time: 2024-02-27 08:50:40
  * @ Description:
  * 
  * The main game file.
@@ -38,9 +38,11 @@ int main() {
   };
   Buffer_write(pBuffer, 10, 10, strlen(Graphics_getCodeFG(0xff0000)), 8, block);
   Buffer_context(pBuffer, 10, 10, 10, 10, Graphics_getCodeFGBG(0xff0000, 0x0000dd));
+  Buffer_context(pBuffer, 12, 12, 10, 5, Graphics_getCodeFGBG(0x00ff00, 0xff00dd));
 
   IO_clear();
   Buffer_print(pBuffer);
+  free(pBuffer);
 
   // for(int i = 0; i < pBuffer->dHeight; i++) {
   //   for(int j = 0; j < pBuffer->dWidth; j++) {

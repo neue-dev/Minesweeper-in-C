@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-26 23:53:10
+ * @ Modified time: 2024-02-27 08:51:33
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -43,6 +43,7 @@ typedef struct Engine {
   TimeEvents timeEvents;        // Deals with timer related events
 
   int bState;                   // The state of the engine
+  int dummy;  // !rmeove
 
 } Engine;
 
@@ -58,7 +59,7 @@ void Engine_exit(Engine *this);
  * @param   { Engine * }  this      The engine object.
 */
 void Engine_init(Engine *this) {
-  
+  this->dummy = 0; // ! remvoe
   // The engine is currently running
   this->bState = 1;
 
@@ -138,29 +139,34 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
 
+  this->dummy++;
+
   // Because IO operations are expensive, we want to do them only when a change occurs
   if(!this->keyEvents.bHasBeenRead || 1) {
     Buffer *pBuffer = Buffer_create(
       IO_getWidth(), 
       IO_getHeight(),
       Graphics_getCodeFG(0xffffff),
-      Graphics_getCodeBG(0x000000));
+      Graphics_getCodeBG(0x555555));
 
-    char *block[6] = {
+    char *block[8] = {
       "hello world!aaaaaaaaaaaa",
       "this is an array of strings",
       "idk man10101010aaaaa",
       "yeppers10101010aaaa",
       "idk man10101010aaa",
-      Graphics_getCodeFG(0xff0000),
+      "idk man10101010aaaaa",
+      "yeppers10101010aaaa",
+      "idk man10101010aaa",
     };
 
-    Buffer_write(pBuffer, 10, 10, strlen(Graphics_getCodeFG(0xff0000)), 6, block);
-    Buffer_context(pBuffer, 5, 5, 10, 5, Graphics_getCodeBG(0xff0000));
-    Buffer_context(pBuffer, 15, 5, 10, 5, Graphics_getCodeBG(0x0000ff));
+    Buffer_write(pBuffer, 10, 10, 15, 8, block);
+    Buffer_context(pBuffer, 10, 10, 10, 10, Graphics_getCodeFGBG(this->dummy % 256, 0x0000dd));
+    Buffer_context(pBuffer, 12, 12, 10, 5, Graphics_getCodeFGBG(0x00ff00, 0xff00dd));
 
     IO_clear();
     Buffer_print(pBuffer);
+    Buffer_kill(pBuffer);
 
     KeyEvents_read(&this->keyEvents);
   }
