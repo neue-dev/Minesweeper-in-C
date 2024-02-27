@@ -1,6 +1,0 @@
-In file included from src\./engine.c:11:0,
-                 from src\minesweeper.dev.c:10:
-src\././utils/utils.animation.h: In function 'Animation_kill':
-src\././utils/utils.animation.h:95:1: warning: control reaches end of non-void function [-Wreturn-type]
- }
- ^

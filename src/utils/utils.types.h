@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-02-26 14:42:38
+ * @ Modified time: 2024-02-27 10:12:03
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -40,5 +40,7 @@ typedef void (*f_event_handler)(p_obj pArgs, p_obj pArgs2);   // Creates a templ
                                                               //    (2) pArgs2  =>  An object we modify as a result of the event
 
 typedef char (*f_event_listener)(void);                       // Creates a template for event listeners
+
+typedef void (*f_animation_handler)(p_obj pArgs);             // Creates a template for animation handlers
 
 #endif

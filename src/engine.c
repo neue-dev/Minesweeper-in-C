@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 09:28:31
+ * @ Modified time: 2024-02-27 10:39:06
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -14,6 +14,7 @@
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
 
+#include "./animations.c"
 #include "./events.c"
 
 // Some definitions for identifiers
@@ -36,14 +37,17 @@
 */
 typedef struct Engine {
 
+  // Animations
+  Animation *pAnimation_Intro;
+
   EventManager eventManager;    // Deals with events
   ThreadManager threadManager;  // Manages the different threads of the program
   
+  // Events
   KeyEvents keyEvents;          // Deals with key events
   TimeEvents timeEvents;        // Deals with timer related events
 
   int bState;                   // The state of the engine
-  int dummy;  // !rmeove
 
 } Engine;
 
@@ -59,9 +63,16 @@ void Engine_exit(Engine *this);
  * @param   { Engine * }  this      The engine object.
 */
 void Engine_init(Engine *this) {
-  this->dummy = 0; // ! remvoe
+  
   // The engine is currently running
   this->bState = 1;
+
+  // Initialize the animations
+  this->pAnimation_Intro = Animation_create(
+    AnimationHandler_intro, 
+    1,              // 1 state
+    'i', 0xffff00   // an integer initially set to 32
+  );
 
   // Initialize user-defined state manager
   KeyEvents_init(&this->keyEvents);
@@ -139,7 +150,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
 
-  this->dummy++;
+  Animation_update(this->pAnimation_Intro);
 
   // Because IO operations are expensive, we want to do them only when a change occurs
   if(!this->keyEvents.bHasBeenRead || 1) {
@@ -161,7 +172,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     };
 
     Buffer_write(pBuffer, 10, 10, 15, 8, block);
-    Buffer_context(pBuffer, 10, 10, 10, 10, this->dummy % 256, 0x0000dd);
+    Buffer_context(pBuffer, 10, 10, 10, 10, this->pAnimation_Intro->dStates[0], 0x0000dd);
     Buffer_context(pBuffer, 12, 12, 10, 5, 0x00ff00, 0xff00dd);
 
     IO_clear();

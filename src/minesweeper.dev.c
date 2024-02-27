@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-27 10:04:34
+ * @ Modified time: 2024-02-27 10:37:13
  * @ Description:
  * 
  * The main game file.
@@ -21,11 +21,14 @@
 
 int main() {
 
-  Animation *pAnim = Animation_create(4, 
-    'i', 420,
-    'i', 69,
-    'f', 0.123,
-    'f', 0.456);
+  Animation *pAnim = Animation_create(
+    AnimationHandler_intro, 
+    
+    4,            // 4 states to initialize
+    'i', 420,     // first int state, 420 initial value
+    'i', 69,      // second int state, 69 initial value
+    'f', 0.123,   // first float state, 0.123 initial value
+    'f', 0.456);  // second float state, 0.456 initial value
 
   for(int i = 0; i < pAnim->dFloatStateCount; i++)
     printf("%f hmm", pAnim->fStates[i]);
@@ -34,6 +37,15 @@ int main() {
   for(int i = 0; i < pAnim->dIntStateCount; i++)
     printf("%d aha", pAnim->dStates[i]);
   printf("\n");
+
+  while(pAnim->dStates[0] < 430) {
+    Animation_update(pAnim);
+
+    for(int i = 0; i < pAnim->dIntStateCount; i++)
+      printf("%d ", pAnim->dStates[i]);
+    printf("\n");
+
+  };
 
   while(1);
 

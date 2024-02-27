@@ -1,5 +1,6 @@
 // IMPLEMENT BUFFER CLASS
 
+STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
 REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them when not needed in a  file ?)
 
 1. Make sure to foward declare all your functions AND typedefs (follow the utils.event.h file structure)

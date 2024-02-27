@@ -1,17 +1,11 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-02-27 08:56:58
+ * @ Modified time: 2024-02-27 10:24:24
  * @ Description:
  */
 
 #include "./engine.c"
-#include "game/field.obj.h"
-
-#include "utils/utils.graphics.h"
-#include "utils/utils.thread.h"
-#include "utils/utils.buffer.h"
-#include "utils/utils.grid.h"
 #include "utils/utils.io.h"
 
 #include <stdio.h>

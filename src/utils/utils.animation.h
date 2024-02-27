@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-27 10:04:23
+ * @ Modified time: 2024-02-27 10:30:30
  * @ Description:
  * 
  * An animation class.
@@ -9,6 +9,8 @@
 
 #ifndef UTILS_ANIMATION_
 #define UTILS_ANIMATION_
+
+#include "./utils.types.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -21,6 +23,11 @@
  * @class
 */
 typedef struct Animation {
+
+  unsigned long long dT;                // Tells us the current time state of the animation (not to be
+                                        //    confused with differential calculus notation of small changes)
+
+  f_animation_handler fHandler;         // The function to update the animation over time
 
   int dFloatStateCount;
   int dIntStateCount;
@@ -43,12 +50,20 @@ Animation *Animation_new() {
 /**
  * Initializes an instance of the Animation class.
  * 
- * @param		{ Animation * }		this	A pointer to the instance to initialize.
- * @return	{ Animation * }					A pointer to the initialized instance.
+ * @param		{ Animation * }		        this	    A pointer to the instance to initialize.
+ * @param   { f_animation_handler }   fHandler  The function to handle updating the animation over time.
+ * @param   { int }                   dStates   How many states we're going to initialize at first.
+ * @param   { va_list }   vArgs                 The type of states to initialize, as well as their initial values, stored in a vector.
+ * @return	{ Animation * }					            A pointer to the initialized instance.
 */
-Animation *Animation_init(Animation *this, int dStates, va_list vArgs) {
+Animation *Animation_init(Animation *this, f_animation_handler fHandler, int dStates, va_list vArgs) {
   int i;
 
+  // Store the handler
+  this->fHandler = fHandler;
+
+  // Set the states to 0
+  this->dT = 0ULL;
   this->dFloatStateCount = 0;
   this->dIntStateCount = 0;
 
@@ -70,14 +85,17 @@ Animation *Animation_init(Animation *this, int dStates, va_list vArgs) {
 /**
  * Creates an initialized instance of the Animation class.
  * 
- * @return	{ Animation * }		A pointer to the newly created initialized instance.
+ * @param   { f_animation_handler }   fHandler  The function to handle updating the animation over time.
+ * @param   { int }                   dStates   How many states we're going to initialize at first.
+ * @param   { (char, int & float) }   ...       The type of states to initialize, as well as their initial values.
+ * @return	{ Animation * }		                  A pointer to the newly created initialized instance.
 */
-Animation *Animation_create(int dStates, ...) {
+Animation *Animation_create(f_animation_handler fHandler, int dStates, ...) {
   
   va_list vArgs;              // Create a pointer to the vector of arguments
   va_start(vArgs, dStates);   // Set the pointer to the first arg after dStates
 
-  Animation *pAnimation = Animation_init(Animation_new(), dStates, vArgs);
+  Animation *pAnimation = Animation_init(Animation_new(), fHandler, dStates, vArgs);
   va_end(vArgs);              // We need to call this for clean up
 
   return pAnimation;
@@ -88,8 +106,18 @@ Animation *Animation_create(int dStates, ...) {
  * 
  * @param		{ Animation * }		this	A pointer to the instance to deallocate.
 */
-Animation *Animation_kill(Animation *this) {
+void Animation_kill(Animation *this) {
   free(this);
+}
+
+/**
+ * Updates an animation.
+ * 
+ * @param   { Animation * }   this  The animation to update.
+*/
+void Animation_update(Animation *this) {
+  this->fHandler(this);
+  this->dT++;
 }
 
 
