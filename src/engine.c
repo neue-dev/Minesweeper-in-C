@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 12:22:37
+ * @ Modified time: 2024-02-27 12:36:48
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -70,9 +70,12 @@ void Engine_init(Engine *this) {
   // Initialize the animations
   this->pAnimation_Intro = Animation_create(
     AnimationHandler_intro, 
-    8,  // 8 states
+    13,  // 13 states
     'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
-    'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0
+    'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
+    'f', -100.0, 'f', 10.0, 'i', 24, 'i', 12,
+
+    'i', 0x000000
   );
 
   // Initialize user-defined state manager
@@ -178,9 +181,11 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       this->pAnimation_Intro->dRoundStates[2], 
       this->pAnimation_Intro->dRoundStates[3],
       10, 5, -1, 0xdd0000);
-
-    Buffer_write(pBuffer, (IO_getWidth() - strlen(block[0])) / 2, 10, strlen(block[0]), 5, block);
-    Buffer_context(pBuffer, 0, 9, IO_getWidth(), 8, 0x000000, 0xffffff);
+    Buffer_write(pBuffer, 
+      this->pAnimation_Intro->dRoundStates[4], 
+      this->pAnimation_Intro->dRoundStates[5], 
+      strlen(block[0]), 5, block);
+    Buffer_context(pBuffer, 0, 11 - this->pAnimation_Intro->dStates[6] / 2, IO_getWidth(), this->pAnimation_Intro->dStates[6] + 8, 0x000000, 0xffffff);
 
     IO_clear();
     Buffer_print(pBuffer);

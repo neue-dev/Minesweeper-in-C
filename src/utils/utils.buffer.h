@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-27 12:04:49
+ * @ Modified time: 2024-02-27 12:37:43
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -131,9 +131,14 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
   int i, j;
 
   // Copy the characters onto the buffer, as long as it doesn't go beyond the edges
-  for(i = y; i < y + h && i < this->dHeight; i++)
-    for(j = x; j < x + w && j < this->dWidth; j++)
-      this->cContentArray[i][j] = sBlock[i - y][j - x];
+  for(i = y; i < y + h && i < this->dHeight; i++) {
+    for(j = x; j < x + w && j < this->dWidth; j++) {
+
+      // We will permit negative passing values for cooler animations
+      if(i - y >= 0 && j - x >= 0)
+        this->cContentArray[i][j] = sBlock[i - y][j - x];
+    }
+  }
 }
 
 /**
