@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-26 18:10:08
+ * @ Modified time: 2024-02-27 11:35:38
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -134,7 +134,7 @@ void IO_setBuffer(int dSize) {
 */
 void IO_clear() {
 
-  // I know calling system is bad BUT...
+  // I know system is bad but...
   system("cls");
 }
 

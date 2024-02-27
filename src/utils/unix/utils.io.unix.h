@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:12:12
- * @ Modified time: 2024-02-26 18:02:25
+ * @ Modified time: 2024-02-27 11:24:28
  * @ Description:
  * 
  * Low level handling of IO functionalities on Unix environments.
@@ -117,6 +117,7 @@ void IO_clear() {
   // \e[H   Puts the cursor at the home position 
   // \e[2J  Erases entire screen
   // \e[3J  Erases saved lines
+  setvbuf(stdout, NULL, _IOLBF, 0);
   printf("\e[H\e[2J\e[3J");
 }
 

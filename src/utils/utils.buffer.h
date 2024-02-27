@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-27 11:13:14
+ * @ Modified time: 2024-02-27 11:35:00
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -252,8 +252,11 @@ void Buffer_print(Buffer *this) {
       dLen++;
     }
 
-    sBlob[dLen] = '\n';
-    dLen++;
+    // The condition here fixed a massive problem WTF im so stupid
+    if(y + 1 < this->dHeight ) {
+      sBlob[dLen] = '\n';
+      dLen++;
+    } 
   }
 
   // Set the buffer size and print using puts(), then do garbage collection
