@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     printf("    (2) Run the program inside conhost (ie. type \"conhost\" first then run main.exe)\n\n");
     printf("If you select the second option, the program display might not fit\nwithin the console window.\n\n");
   #else
-    sprintf(command, "gcc -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.log.unix.txt -lrt", filename);
+    sprintf(command, "gcc -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.log.unix.txt -lrt -lm", filename);
     system(command);
     system("./build/minesweeper.unix.o");
   #endif

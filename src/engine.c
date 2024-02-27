@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 11:09:18
+ * @ Modified time: 2024-02-27 12:22:37
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -159,20 +159,16 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       IO_getWidth(), 
       IO_getHeight(),
       0xffffff,
-      0x555555);
+      0x000000);
 
-    char *block[8] = {
-      "hello world!aaaaaaaaaaaa",
-      "this is an array of strings",
-      "idk man10101010aaaaa",
-      "yeppers10101010aaaa",
-      "idk man10101010aaa",
-      "idk man10101010aaaaa",
-      "yeppers10101010aaaa",
-      "idk man10101010aaa",
+    char *block[5] = {
+      "    __  ________   ______________       __________________  __________ ",
+      "   /  |/  /  _/ | / / ____/ ___/ |     / / ____/ ____/ __ \\/ ____/ __ \\",
+      "  / /|_/ // //  |/ / __/  \\__ \\| | /| / / __/ / __/ / /_/ / __/ / /_/ /",
+      " / /  / // // /|  / /___ ___/ /| |/ |/ / /___/ /___/ ____/ /___/ _, _/ ",
+      "/_/  /_/___/_/ |_/_____//____/ |__/|__/_____/_____/_/   /_____/_/ |_|  ",
     };
 
-    Buffer_write(pBuffer, 10, 10, 15, 8, block);
     Buffer_context(pBuffer, 
       this->pAnimation_Intro->dRoundStates[0], 
       this->pAnimation_Intro->dRoundStates[1],
@@ -183,7 +179,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       this->pAnimation_Intro->dRoundStates[3],
       10, 5, -1, 0xdd0000);
 
-    Buffer_context(pBuffer, 12, 12, 10, 5, 0x00ff00, 0xff00dd);
+    Buffer_write(pBuffer, (IO_getWidth() - strlen(block[0])) / 2, 10, strlen(block[0]), 5, block);
+    Buffer_context(pBuffer, 0, 9, IO_getWidth(), 8, 0x000000, 0xffffff);
 
     IO_clear();
     Buffer_print(pBuffer);

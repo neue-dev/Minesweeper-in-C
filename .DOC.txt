@@ -1,6 +1,7 @@
 // Temporary acknowledgements and resources
 
 [ANSI Escape Sequences]                   https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+[Differences of unicode and utf8]         https://stackoverflow.com/questions/50067263/how-to-printf-a-unicode-string-with-s-specifier
 [Enable Virtual Terminal Processing]      https://stackoverflow.com/questions/52015837/trouble-enable-virtual-terminal-processing-for-windows-in-c
 [FuncA vs FuncW in Windows libs]          https://comp.os.ms-windows.programmer.narkive.com/4ADwdQBR/regarding-createmutexw-and-createmutexa
 [Function Pointers]                       https://stackoverflow.com/questions/840501/how-do-function-pointers-in-c-work
@@ -11,6 +12,7 @@
 [Multithreading in C Windows Demo]        https://learn.microsoft.com/en-us/cpp/parallel/sample-multithread-c-program
 [Multithreading in Linux without Posix]   https://stackoverflow.com/questions/13283294/how-to-make-thread-in-c-without-using-posix-library-pthread-h
 [Passing Arguments to _beginthread]       https://stackoverflow.com/questions/20412633/calling-beginthreadx-with-passing-function-pointers
+[Printing Unicode in C]                   https://stackoverflow.com/questions/43834315/printing-a-unicode-symbol-in-c
 [puts() is Apparerntly So Fast]           https://cboard.cprogramming.com/c-programming/179502-best-way-print-large-amount-text.html
 [Timeouts in C Unix]                      https://stackoverflow.com/questions/46365448/pthread-mutex-timedlock-exiting-prematurely-without-waiting-for-timeout
 [Windows Data Types]                      https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
