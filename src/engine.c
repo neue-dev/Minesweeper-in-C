@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 10:39:06
+ * @ Modified time: 2024-02-27 11:05:44
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -70,8 +70,12 @@ void Engine_init(Engine *this) {
   // Initialize the animations
   this->pAnimation_Intro = Animation_create(
     AnimationHandler_intro, 
-    1,              // 1 state
-    'i', 0xffff00   // an integer initially set to 32
+    4,              // 4 states
+    
+    'f', 0.0,        // two int states initially set to 0
+    'f', 0.0,         
+    'i', 0,         // two float states initially set to 0
+    'i', 0
   );
 
   // Initialize user-defined state manager
@@ -172,7 +176,11 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     };
 
     Buffer_write(pBuffer, 10, 10, 15, 8, block);
-    Buffer_context(pBuffer, 10, 10, 10, 10, this->pAnimation_Intro->dStates[0], 0x0000dd);
+    Buffer_context(pBuffer, 
+      this->pAnimation_Intro->dRoundStates[0], 
+      this->pAnimation_Intro->dRoundStates[1],
+      10, 5, 
+      0xffffff, 0x0000dd);
     Buffer_context(pBuffer, 12, 12, 10, 5, 0x00ff00, 0xff00dd);
 
     IO_clear();

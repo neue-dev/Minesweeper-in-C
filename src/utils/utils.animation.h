@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-27 10:30:30
+ * @ Modified time: 2024-02-27 11:05:24
  * @ Description:
  * 
  * An animation class.
@@ -12,6 +12,7 @@
 
 #include "./utils.types.h"
 
+#include <math.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
@@ -24,16 +25,18 @@
 */
 typedef struct Animation {
 
-  unsigned long long dT;                // Tells us the current time state of the animation (not to be
-                                        //    confused with differential calculus notation of small changes)
+  unsigned long long dT;                    // Tells us the current time state of the animation (not to be
+                                            //    confused with differential calculus notation of small changes)
 
-  f_animation_handler fHandler;         // The function to update the animation over time
+  f_animation_handler fHandler;             // The function to update the animation over time
 
   int dFloatStateCount;
   int dIntStateCount;
 
-  int dStates[ANIMATION_MAX_STATES];    // The maximum number of integer states to be stored by the object
-  float fStates[ANIMATION_MAX_STATES];  // The maximum number of float states to be stored by the object
+  int dStates[ANIMATION_MAX_STATES];        // The integer states to be stored by the object
+
+  float fStates[ANIMATION_MAX_STATES];      // The float states to be stored by the object
+  int dRoundStates[ANIMATION_MAX_STATES];   // The float states (rounded off) to be stored by the object
   
 } Animation;
 
@@ -71,12 +74,17 @@ Animation *Animation_init(Animation *this, f_animation_handler fHandler, int dSt
     char cType = va_arg(vArgs, int);
 
     // We're retrieving a float
-    if(cType == 'f' && this->dFloatStateCount < ANIMATION_MAX_STATES)
-      this->fStates[this->dFloatStateCount++] = (float) va_arg(vArgs, double);
+    if(cType == 'f' && this->dFloatStateCount < ANIMATION_MAX_STATES) {
+      float fState = (float) va_arg(vArgs, double);
+
+      this->dRoundStates[this->dFloatStateCount] = round(fState);
+      this->fStates[this->dFloatStateCount++] = fState;
+    }
 
     // We're retrieving an int
-    if(cType == 'i' && this->dIntStateCount < ANIMATION_MAX_STATES)
+    if(cType == 'i' && this->dIntStateCount < ANIMATION_MAX_STATES) {
       this->dStates[this->dIntStateCount++] = va_arg(vArgs, int);
+    }
   }
 
   return this;
@@ -116,7 +124,16 @@ void Animation_kill(Animation *this) {
  * @param   { Animation * }   this  The animation to update.
 */
 void Animation_update(Animation *this) {
+  int i;
+
+  // Execute the callback
   this->fHandler(this);
+
+  // Perform some fixins
+  for(i = 0; i < this->dFloatStateCount; i++)
+    this->dRoundStates[i] = round(this->fStates[i]);
+    
+  // Increment time state
   this->dT++;
 }
 
