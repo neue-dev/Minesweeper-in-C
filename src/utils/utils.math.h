@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-02-28 22:05:23
+ * @ Modified time: 2024-02-28 22:32:38
  * @ Description:
  * 
  * Some helper math functions.
@@ -50,11 +50,21 @@ int Math_hash(char *sKey, int dMax) {
 
 /**
  * Linear interpolation function.
+ * 
+ * @param   { float }   fStart    The first value to use interpolation with.
+ * @param   { float }   fEnd      The second value to use interpolation with.
+ * @param   { float }   fAmount   How much "mixing" there is between the two values.
+ *                                0 means we return fStart.
+ *                                1 means we return fEnd.
+ *                                0.5 means we return their average.
+ * @return  { float }             The interpolation of fStart and fEnd, according to fAmount.
 */
 float Math_lerp(float fStart, float fEnd, float fAmount) {
-  //! to implement
 
-  return 0;
+  if(fAmount >= 1) fAmount = 1.0;
+  if(fAmount <= 0) fAmount = 0.0;
+
+  return fStart + (fEnd - fStart) * fAmount;
 }
 
 /**
@@ -76,7 +86,7 @@ float Math_ease(float fValue, float fTarget, float fSpeed) {
 
   fSpeed = 1 - log(fSpeed * fSpeed) * 4;  // The * 4 here is an arbitrary constant used to scale the speed
                                           // The + 1 is because fSpeed should be in the interval [1, +infinity) 
-                                          
+
   fValue -= (fValue - fTarget) / fSpeed;  // This brings the value of fValue closer to fTarget
 
   return fValue;

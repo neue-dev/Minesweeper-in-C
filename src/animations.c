@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-02-28 22:17:06
+ * @ Modified time: 2024-02-28 22:28:31
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically,
@@ -32,12 +32,9 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
   Buffer *pBuffer = (Buffer *) Args2_Buffer;
 
   for(i = 0; i < 6; i++)
-    this->fStates[i] = Math_ease(this->fStates[i], this->dStates[i], 0.1);
+    this->fStates[i] = Math_ease(this->fStates[i], this->dStates[i], 0.69);
 
-  // Once text is centered
-  if(this->dRoundStates[4] == this->dStates[4] && this->dStates[6] < 32)
-    this->dStates[6]++;
-
+  // Randomize square positions
   if(this->dT % 24 == 0) {
     this->dStates[0] = rand() % IO_getWidth();
     this->dStates[1] = rand() % IO_getHeight();
@@ -59,27 +56,31 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
       "                                                                  ",
     };
 
-  Buffer_context(pBuffer, 0, 10 - this->dStates[6] / 2, IO_getWidth(), this->dStates[6] + 10, 0x000000, 0xffffff);
+  Buffer_context(pBuffer, 
+    0, 0,
+    dWidth, dHeight - 5, 
+    0x000000, 0x000000);
 
   Buffer_context(pBuffer, 
     10, 5,
     dWidth - 20, dHeight - 10, 
-    0xffffff, 0xdd0000);
+    0xdd2121, 0xdd2121);
 
   Buffer_context(pBuffer, 
     12, 6,
     dWidth - 24, dHeight - 12, 
     0x000000, 0xffffff);
 
-  Buffer_context(pBuffer, 
-    this->dRoundStates[0], 
-    this->dRoundStates[1],
-    10, 5, 0xffffff, 0x0000dd);
+  // Fun squares
+  // Buffer_context(pBuffer, 
+  //   this->dRoundStates[0], 
+  //   this->dRoundStates[1],
+  //   10, 5, 0xffffff, 0x0000dd);
 
-  Buffer_context(pBuffer, 
-    this->dRoundStates[2], 
-    this->dRoundStates[3],
-    10, 5, 0xffffff, 0xdd0000);
+  // Buffer_context(pBuffer, 
+  //   this->dRoundStates[2], 
+  //   this->dRoundStates[3],
+  //   10, 5, 0xffffff, 0xdd0000);
 
   Buffer_write(pBuffer, 
     this->dRoundStates[4], 
