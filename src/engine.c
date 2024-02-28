@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-28 19:36:58
+ * @ Modified time: 2024-02-28 22:15:41
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -160,11 +160,17 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       13,  // 13 states
       'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
       'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
-      'f', -100.0, 'f', 10.0, 'i', 24, 'i', 12,
+      'f', -100.0, 'f', 12.0, 'i', 30, 'i', 12,
 
       'i', 0x000000
     );
-    AnimationManager_updateAnimation(&this->animationManager, "intro-animation");
+    AnimationManager_updateAll(&this->animationManager);
+
+    char *sSigature[1] = {
+      " [ MMMM @2024 ] "
+    };
+
+    Buffer_write(pBuffer, 108, 30, strlen(sSigature[0]), 1, sSigature);
 
     IO_clear();
     Buffer_print(pBuffer);
