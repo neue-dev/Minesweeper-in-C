@@ -29,7 +29,7 @@ int main() {
     sprintf(sKey, "%dasd%d", i, i);
     
     Animation *pTest = Animation_create(sKey, NULL, 0);
-    HashMap_createEntry(pMyHashMap, sKey, pTest);
+    HashMap_add(pMyHashMap, sKey, pTest);
   }
 
   for(int i = 0; i < pMyHashMap->dEntryCount; i++) {
@@ -38,10 +38,10 @@ int main() {
 
     if(i % 2) {
       Animation *pTest = Animation_create("test", NULL, 0);
-      HashMap_setEntry(pMyHashMap, sKey, pTest);  
+      HashMap_set(pMyHashMap, sKey, pTest);  
     }
 
-    Animation *pTest = (Animation *) HashMap_getEntry(pMyHashMap, sKey);
+    Animation *pTest = (Animation *) HashMap_get(pMyHashMap, sKey);
     printf("key: %s\n", sKey);
     printf("nam: %s\n", pTest->sName);
   }

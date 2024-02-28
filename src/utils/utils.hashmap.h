@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:17:17
- * @ Modified time: 2024-02-28 16:54:41
+ * @ Modified time: 2024-02-28 17:07:12
  * @ Description:
  * 
  * A utility library for creating hash tables with a max size of 1 << 16 (2^16) elements.
@@ -262,7 +262,7 @@ void HashMap_resize(HashMap *this) {
  * @param   { char * }      sKey      The key of the entry we want.
  * @param   { p_obj }       pObject   A reference to the actual object we're going to store.
  */
-void HashMap_createEntry(HashMap *this, char *sKey, p_obj pObject) {
+void HashMap_add(HashMap *this, char *sKey, p_obj pObject) {
   int dLoadFactor, dHash;
   HashMapEntry *pEntry, *pNewEntry;
 
@@ -318,7 +318,7 @@ void HashMap_createEntry(HashMap *this, char *sKey, p_obj pObject) {
  * @param   { char * }      sKey  The key to look for in the hashmap.
  * @return  { p_obj }             A reference to the object in the entry or NULL if the key does not exist.    
  */
-p_obj HashMap_getEntry(HashMap *this, char *sKey) {
+p_obj HashMap_get(HashMap *this, char *sKey) {
   int dHash;
   HashMapEntry *pEntry;
 
@@ -346,7 +346,7 @@ p_obj HashMap_getEntry(HashMap *this, char *sKey) {
  * @param   { char * }      sKey      The key to look for in the hashmap.
  * @param   { p_obj }       pObject   A reference to the object to put in the entry.
  */
-void HashMap_setEntry(HashMap *this, char *sKey, p_obj pObject) {
+void HashMap_set(HashMap *this, char *sKey, p_obj pObject) {
   int dHash;
   HashMapEntry *pEntry;
 
@@ -380,7 +380,7 @@ void HashMap_setEntry(HashMap *this, char *sKey, p_obj pObject) {
  * 
  * @param		{ HashMap * }		this	A pointer to an instance of the HashMap class.
  */
-void HashMap_deleteEntry(HashMap *this, char *sKey) {
+void HashMap_del(HashMap *this, char *sKey) {
   int dHash;
   HashMapEntry *pEntry, *pPrevEntry;
 
