@@ -1,21 +1,22 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:17:17
- * @ Modified time: 2024-02-28 17:07:12
+ * @ Modified time: 2024-02-28 17:56:22
  * @ Description:
  * 
  * A utility library for creating hash tables with a max size of 1 << 16 (2^16) elements.
  *    (Technically, we can have more because once collisions occur we implement
  *    linked lists to add more elements, but 2^16 is the most the array will expand to).
  *   
- * The array we use begins with 1024 elements, but we double when the load factor goes above
- *    0.7, as is recommended by most sources.
+ * The array we use begins with 16 elements, but we double when the load factor goes above
+ *    0.25 and the average linked list length goes above 1.333.
  */
 
 #ifndef UTILS_HASHMAP_
 #define UTILS_HASHMAP_
 
 #include "./utils.math.h"
+#include "./utils.string.h"
 #include "./utils.types.h"
 
 #include <stdlib.h>
@@ -24,7 +25,7 @@
 typedef struct HashMapEntry HashMapEntry;
 typedef struct HashMap HashMap;
 
-#define HASHMAP_INITIAL_SIZE 1 << 2
+#define HASHMAP_INITIAL_SIZE 1 << 4
 #define HASHMAP_MAX_SIZE 1 << 16
 
 /**
@@ -340,7 +341,8 @@ p_obj HashMap_get(HashMap *this, char *sKey) {
 
 /**
  * This function changes what object the entry with a certain key points to.
- * Whatever object it used to point to is freed.
+ * Note that the original object must be freed first; otherwise, a memory leak
+ *    will occur.
  * 
  * @param		{ HashMap * }		this	    A pointer to an instance of the HashMap class.
  * @param   { char * }      sKey      The key to look for in the hashmap.
@@ -359,10 +361,6 @@ void HashMap_set(HashMap *this, char *sKey, p_obj pObject) {
     
     // It's a match
     if(!strcmp(pEntry->sKey, sKey)) {
-      
-      // Free it first
-      if(pEntry->pObject != NULL) 
-        free(pEntry->pObject);
 
       // Set the new object
       pEntry->pObject = pObject;
@@ -408,8 +406,11 @@ void HashMap_del(HashMap *this, char *sKey) {
       else
         pPrevEntry->pNext = pEntry->pNext;
 
-      // Delete the entry
+      // Delete the entry and its object
+      if(pEntry->pObject != NULL)
+        free(pEntry->pObject);
       free(pEntry);
+      
       return;
     }
     
@@ -420,6 +421,32 @@ void HashMap_del(HashMap *this, char *sKey) {
     // Move to the next in the linked list
     pPrevEntry = pEntry;
     pEntry = pEntry->pNext;
+  }
+}
+
+/**
+ * Returns all the keys in the hashmap.
+ * It is not advisable to call this function a lot, unless necessary (such as deleting all elements
+ *    in the hashmap during clean up); this function defeats the purpose of using a hashmap because
+ *    it iterates through all elements.
+ * This function assumes the target array is big enough to hold all keys.
+ * 
+ * @param		{ HashMap * }		this	      A pointer to an instance of the HashMap class.
+ * @param   { char *[] }    sKeyArray   Where the keys will be outputted to.
+ */
+void HashMap_getKeys(HashMap *this, char *sKeyArray[]) {
+  int i, dOutputIndex = 0;
+  HashMapEntry *pEntry;
+
+  // Go through entire array
+  for(i = 0; i < this->dEntryMaxSlots; i++) {
+    pEntry = this->pEntries[i];
+
+    // Go down the linked list
+    while(pEntry != NULL) {
+      sKeyArray[dOutputIndex++] = String_create(pEntry->sKey);
+      pEntry = pEntry->pNext;
+    }
   }
 }
 
