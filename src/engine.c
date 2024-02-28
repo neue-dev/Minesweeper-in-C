@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-28 10:44:09
+ * @ Modified time: 2024-02-28 12:17:40
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -29,13 +29,15 @@
 #define ENGINE_MAIN "engine-main"
 #define ENGINE_MAIN_THREAD "engine-main-thread"
 
+typedef struct Engine Engine;
+
 /**
  * The engine struct handles the interactions between the different utility libraries.
  * It only deals with the libraries that have backend functionality.
  * 
  * @struct 
 */
-typedef struct Engine {
+struct Engine {
 
   // Animations
   Animation *pAnimation_Intro;
@@ -49,7 +51,7 @@ typedef struct Engine {
 
   int bState;                   // The state of the engine
 
-} Engine;
+};
 
 void Engine_init(Engine *this);
 
