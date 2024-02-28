@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-27 10:37:13
+ * @ Modified time: 2024-02-28 10:44:21
  * @ Description:
  * 
  * The main game file.
@@ -22,6 +22,8 @@
 int main() {
 
   Animation *pAnim = Animation_create(
+    "intro-animation",
+    
     AnimationHandler_intro, 
     
     4,            // 4 states to initialize

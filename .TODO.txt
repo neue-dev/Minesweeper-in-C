@@ -1,5 +1,7 @@
 // IMPLEMENT BUFFER CLASS
 
+REFACTOR THE CODE TO USE HASHMAPS WHEN APPROPRIATE
+
 1. STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
 2. CREATE A HELPER FUCNTION FOR SHORTCUTS TO INITIALIZE ANIMATION INSTANCE
     > function to set first n states to 0
@@ -20,5 +22,7 @@ REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them wh
 also consider not using puts() on Linux? maybe its slower there or smth hm
 
 ehmm pretend we didnt see this LMAO
+[semaphores]                              https://www.reddit.com/r/compsci/comments/5e08s5/eli5_semaphores_and_the_producerconsumer_problem/
+[sempahores2]                             https://stackoverflow.com/questions/3993790/producer-consumer-model-binary-semaphore-or-mutex/4003740#4003740
 [Char Arrays vs Char Pointers]            https://www.reddit.com/r/C_Programming/comments/rxqp8u/when_to_use_char_array_vs_char_pointer/
 [Pragma Comment]                          https://learn.microsoft.com/en-us/cpp/preprocessor/comment-c-cpp?view=msvc-170

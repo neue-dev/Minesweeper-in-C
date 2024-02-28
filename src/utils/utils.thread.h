@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-25 13:39:10
+ * @ Modified time: 2024-02-28 11:40:26
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -10,7 +10,9 @@
 #ifndef UTILS_THREAD_
 #define UTILS_THREAD_
 
+#include "./utils.hashmap.h"
 #include "./utils.types.h"
+
 #include <string.h>
 
 // You are in Windows

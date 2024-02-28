@@ -1,10 +1,13 @@
 // Temporary acknowledgements and resources
 
+[_beginthreadex vs CreateThread]          https://stackoverflow.com/questions/331536/windows-threading-beginthread-vs-beginthreadex-vs-createthread-c
 [ANSI Escape Sequences]                   https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+[C runtime library]                       https://stackoverflow.com/questions/2766233/what-is-the-c-runtime-library
 [Differences of unicode and utf8]         https://stackoverflow.com/questions/50067263/how-to-printf-a-unicode-string-with-s-specifier
 [Enable Virtual Terminal Processing]      https://stackoverflow.com/questions/52015837/trouble-enable-virtual-terminal-processing-for-windows-in-c
 [FuncA vs FuncW in Windows libs]          https://comp.os.ms-windows.programmer.narkive.com/4ADwdQBR/regarding-createmutexw-and-createmutexa
 [Function Pointers]                       https://stackoverflow.com/questions/840501/how-do-function-pointers-in-c-work
+[Interesting Hash Functions]              http://www.cse.yorku.ca/~oz/hash.html
 [Make Windows Use ANSI Esc Sequences]     https://stackoverflow.com/questions/16755142/how-to-make-win32-console-recognize-ansi-vt100-escape-sequences-in-c
 [Using swprintf_s]                        https://www.educative.io/answers/what-is-swprintfs-in-c
 [Multithreading in C Linux]               https://linux.die.net/man/2/clone

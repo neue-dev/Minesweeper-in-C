@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-27 12:36:48
+ * @ Modified time: 2024-02-28 10:44:09
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -69,6 +69,7 @@ void Engine_init(Engine *this) {
 
   // Initialize the animations
   this->pAnimation_Intro = Animation_create(
+    "intro-animation",
     AnimationHandler_intro, 
     13,  // 13 states
     'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,

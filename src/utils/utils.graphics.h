@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-02-27 09:00:17
+ * @ Modified time: 2024-02-28 11:51:11
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -11,6 +11,8 @@
 
 #ifndef UTILS_GRAPHICS_
 #define UTILS_GRAPHICS_
+
+#include "./utils.string.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -43,7 +45,7 @@ char *Graphics_getCodeFGBG(int colorFG, int colorBG);
 */
 char *Graphics_getCodeFG(int color) {
   int i;
-  char *sANSISequence = calloc(GRAPHICS_STD_SEQ, sizeof(char));
+  char *sANSISequence = String_alloc(GRAPHICS_STD_SEQ);
 
   // Create the ANSI escape sequence and parse the RGB values from the int
   // Note that 
@@ -71,7 +73,7 @@ char *Graphics_getCodeFG(int color) {
 */
 char *Graphics_getCodeBG(int color) {
   int i;
-  char *sANSISequence = calloc(GRAPHICS_STD_SEQ, sizeof(char));
+  char *sANSISequence = String_alloc(GRAPHICS_STD_SEQ);
 
   // Create the ANSI escape sequence and parse the RGB values from the int
   // Note that 
@@ -100,7 +102,7 @@ char *Graphics_getCodeBG(int color) {
 */
 char *Graphics_getCodeFGBG(int colorFG, int colorBG) {
   int i;
-  char *sANSISequence = calloc(GRAPHICS_STD_SEQ * 2, sizeof(char));
+  char *sANSISequence = String_alloc(GRAPHICS_STD_SEQ * 2);
 
   // A combination of the two methods above
   snprintf(sANSISequence, GRAPHICS_STD_SEQ * 2, "\x1b[38;2;%d;%d;%dm\x1b[48;2;%d;%d;%dm", 
@@ -126,7 +128,7 @@ char *Graphics_getCodeFGBG(int colorFG, int colorBG) {
  * @param   { char * }  sCode   A pointer to the memory we're gonna free.
 */
 void Graphics_delCode(char *sCode) {
-  free(sCode);
+  String_kill(sCode);
 }
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-26 16:11:00
+ * @ Modified time: 2024-02-28 11:40:09
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -14,6 +14,7 @@
 #ifndef UTILS_EVENT_
 #define UTILS_EVENT_
 
+#include "./utils.hashmap.h"
 #include "./utils.types.h"
 #include "./utils.string.h"
 
@@ -318,6 +319,8 @@ void Event_resolve(Event *this, p_obj Args2_ANY) {
  *    that class; this is also true for the EventHandler class--all its methods should not
  *    be accessed directly. The design pattern we follow here is similar to how our thread 
  *    implementation works too.
+ * 
+ * @struct
 */
 typedef struct EventManager {  
 

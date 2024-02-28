@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-27 11:05:24
+ * @ Modified time: 2024-02-28 11:46:55
  * @ Description:
  * 
  * An animation class.
@@ -10,6 +10,7 @@
 #ifndef UTILS_ANIMATION_
 #define UTILS_ANIMATION_
 
+#include "./utils.hashmap.h"
 #include "./utils.types.h"
 
 #include <math.h>
@@ -17,6 +18,15 @@
 #include <stdlib.h>
 
 #define ANIMATION_MAX_STATES 32
+#define ANIMATION_MAX_COUNT 256
+
+/**
+ * //
+ * ////
+ * //////    Animation class
+ * ////////
+ * ////////// 
+*/
 
 /**
  * A class that helps us create animations on the screen.
@@ -24,6 +34,8 @@
  * @class
 */
 typedef struct Animation {
+
+  char *sName;                              // An identifier for the animation object
 
   unsigned long long dT;                    // Tells us the current time state of the animation (not to be
                                             //    confused with differential calculus notation of small changes)
@@ -54,13 +66,17 @@ Animation *Animation_new() {
  * Initializes an instance of the Animation class.
  * 
  * @param		{ Animation * }		        this	    A pointer to the instance to initialize.
+ * @param   { char * }                sName     An identifier for the animation object.
  * @param   { f_animation_handler }   fHandler  The function to handle updating the animation over time.
  * @param   { int }                   dStates   How many states we're going to initialize at first.
  * @param   { va_list }   vArgs                 The type of states to initialize, as well as their initial values, stored in a vector.
  * @return	{ Animation * }					            A pointer to the initialized instance.
 */
-Animation *Animation_init(Animation *this, f_animation_handler fHandler, int dStates, va_list vArgs) {
+Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHandler, int dStates, va_list vArgs) {
   int i;
+
+  // Store the name
+  this->sName = sName;
 
   // Store the handler
   this->fHandler = fHandler;
@@ -94,16 +110,17 @@ Animation *Animation_init(Animation *this, f_animation_handler fHandler, int dSt
  * Creates an initialized instance of the Animation class.
  * 
  * @param   { f_animation_handler }   fHandler  The function to handle updating the animation over time.
+ * @param   { char * }                sName     An identifier for the animation object.
  * @param   { int }                   dStates   How many states we're going to initialize at first.
  * @param   { (char, int & float) }   ...       The type of states to initialize, as well as their initial values.
  * @return	{ Animation * }		                  A pointer to the newly created initialized instance.
 */
-Animation *Animation_create(f_animation_handler fHandler, int dStates, ...) {
+Animation *Animation_create(char *sName, f_animation_handler fHandler, int dStates, ...) {
   
   va_list vArgs;              // Create a pointer to the vector of arguments
   va_start(vArgs, dStates);   // Set the pointer to the first arg after dStates
 
-  Animation *pAnimation = Animation_init(Animation_new(), fHandler, dStates, vArgs);
+  Animation *pAnimation = Animation_init(Animation_new(), sName, fHandler, dStates, vArgs);
   va_end(vArgs);              // We need to call this for clean up
 
   return pAnimation;
@@ -137,5 +154,25 @@ void Animation_update(Animation *this) {
   this->dT++;
 }
 
+/**
+ * //
+ * ////
+ * //////    AnimationManager struct
+ * ////////
+ * ////////// 
+*/
+
+/**
+ * Handles all our APIs for creating and doing stuff with animations.
+ * 
+ * @struct
+*/
+typedef struct AnimationManager {
+  Animation *pAnimationArray[ANIMATION_MAX_COUNT];  // All the animations we'll ever need
+} AnimationManager;
+
+void AnimationManager_createAnimation() {
+  
+}
 
 #endif

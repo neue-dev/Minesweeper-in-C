@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-27 12:37:43
+ * @ Modified time: 2024-02-28 11:51:21
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -201,7 +201,7 @@ void Buffer_print(Buffer *this) {
   // The current length of the blob
   // and the blob itself
   int dLen = 0;   
-  char *sBlob = calloc((this->dWidth + 1) * this->dHeight * 4, sizeof(char));
+  char *sBlob = String_alloc((this->dWidth + 1) * this->dHeight * 4);
 
   // Iterate through the lines
   for(y = 0; y < this->dHeight; y++) {
@@ -272,7 +272,7 @@ void Buffer_print(Buffer *this) {
   for(i = 0; i < this->dContextCount; i++)
     Graphics_delCode(this->sContextArray[i]);
 
-  free(sBlob);
+  String_kill(sBlob);
 }
 
 #endif
