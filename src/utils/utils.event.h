@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-28 11:40:09
+ * @ Modified time: 2024-02-28 12:11:42
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -26,16 +26,19 @@
 #define EVENT_MAX_HANDLER_CHAINS 8
 #define EVENT_MAX_LISTENERS 8
 
-typedef enum EventType {
-  EVENT_KEY,                // Key events
-  EVENT_MOUSE,              // Not even sure if i'll implement mouse events
-                            //    Consider it just a placeholder so the enum
-                            //    doesn't have a single lonely type ahahaha
-} EventType;
+typedef enum EventType EventType;
 
 typedef struct Event Event;
 typedef struct EventHandler EventHandler;
 typedef struct EventListener EventListener;
+typedef struct EventManager EventManager;
+
+enum EventType {
+  EVENT_KEY,                // Key events
+  EVENT_MOUSE,              // Not even sure if i'll implement mouse events
+                            //    Consider it just a placeholder so the enum
+                            //    doesn't have a single lonely type ahahaha
+};
 
 /**
  * //
@@ -322,7 +325,7 @@ void Event_resolve(Event *this, p_obj Args2_ANY) {
  * 
  * @struct
 */
-typedef struct EventManager {  
+struct EventManager {  
 
   Event *pHead;                                             // A reference to the head so we can resolve the oldest event
   Event *pTail;                                             // A reference so we know where to append new events
@@ -334,7 +337,7 @@ typedef struct EventManager {
   int dEventCount;                                          // How many events there are at the moment
   p_obj Args2_ANY;                                          // State manager: what object handlers mutate to manage state
 
-} EventManager;
+};
 
 /**
  * Initializes the event manager object.

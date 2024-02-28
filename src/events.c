@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-02-27 10:25:10
+ * @ Modified time: 2024-02-28 12:06:30
  * @ Description:
  * 
  * This file contains definitions for event listeners and event handlers.
@@ -19,6 +19,9 @@
 
 #define EVENTS_MAX_HISTORY 32
 
+typedef struct KeyEvents KeyEvents;
+typedef struct TimeEvents TimeEvents;
+
 /**
  * //
  * ////
@@ -32,7 +35,7 @@
  * 
  * @struct 
 */
-typedef struct KeyEvents {
+struct KeyEvents {
 
   int bHasBeenRead;                   // A boolean indicating whether or not the latest press has been read
 
@@ -40,7 +43,7 @@ typedef struct KeyEvents {
   char cHistory[EVENTS_MAX_HISTORY];  // The history of key presses
   int dHistoryLength;                 // How long the history currently is
 
-} KeyEvents;
+};
 
 /**
  * Initializes the key events struct.
@@ -80,12 +83,12 @@ void KeyEvents_read(KeyEvents *this) {
  * 
  * @struct 
 */
-typedef struct TimeEvents {
+struct TimeEvents {
 
   int bHasBeenRead;                   // A boolean indicating whether or not the latest tick has been read
   int dCurrentTime;                   // Number of seconds elapsed since thread launch
 
-} TimeEvents;
+};
 
 /**
  * //

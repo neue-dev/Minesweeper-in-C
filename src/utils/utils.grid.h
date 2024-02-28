@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-02-26 14:47:50
+ * @ Modified time: 2024-02-28 12:10:19
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
@@ -16,6 +16,8 @@
 
 #define GRID_MAX_SIZE 64
 
+typedef struct Grid Grid;
+
 /**
  * //
  * ////
@@ -28,14 +30,14 @@
  * Grid class yes
  * @class
 */
-typedef struct Grid {
+struct Grid {
   int dWidth;                         // The width of the grid (in bits).
   int dHeight;                        // The height of the grid (in lines).
 
   uint64_t dBitArray[GRID_MAX_SIZE];  // A 32 x 32 grid of bits
                                       // This means that our grid can have a maximum size of 32 x 32,
                                       //    although the project specifications call for much less.
-} Grid;
+};
 
 /**
  * Allocates memory for a new instance of the grid class.

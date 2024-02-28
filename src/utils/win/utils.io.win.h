@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-27 11:35:38
+ * @ Modified time: 2024-02-28 12:12:54
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -15,14 +15,16 @@
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004   // fOr sOmE ReASon Its nOt dEfInED?
                                                     // >:OO
 
+typedef struct IO IO;
+
 /**
  * A struct to hold some variables so we don't pollute the global namespace.
  * This has to be here because the Unix implementation of this struct actually has stuff in it.
  * For the sake of not breaking things, both implementations will have this struct defined.
 */
-typedef struct IO {
+struct IO {
   
-} IO;
+};
 
 /**
  * Stuff to set up for Windows.

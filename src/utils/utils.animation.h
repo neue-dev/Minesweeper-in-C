@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-28 11:46:55
+ * @ Modified time: 2024-02-28 12:11:27
  * @ Description:
  * 
  * An animation class.
@@ -20,6 +20,9 @@
 #define ANIMATION_MAX_STATES 32
 #define ANIMATION_MAX_COUNT 256
 
+typedef struct Animation Animation;
+typedef struct AnimationManager AnimationManager;
+
 /**
  * //
  * ////
@@ -33,7 +36,7 @@
  * 
  * @class
 */
-typedef struct Animation {
+struct Animation {
 
   char *sName;                              // An identifier for the animation object
 
@@ -50,7 +53,7 @@ typedef struct Animation {
   float fStates[ANIMATION_MAX_STATES];      // The float states to be stored by the object
   int dRoundStates[ANIMATION_MAX_STATES];   // The float states (rounded off) to be stored by the object
   
-} Animation;
+};
 
 /**
  * Allocates memory for an instance of the Animation class.
@@ -167,9 +170,9 @@ void Animation_update(Animation *this) {
  * 
  * @struct
 */
-typedef struct AnimationManager {
+struct AnimationManager {
   Animation *pAnimationArray[ANIMATION_MAX_COUNT];  // All the animations we'll ever need
-} AnimationManager;
+};
 
 void AnimationManager_createAnimation() {
   

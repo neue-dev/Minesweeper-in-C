@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-02-27 11:19:08
+ * @ Modified time: 2024-02-28 12:13:53
  * @ Description:
  * 
  * A utility library for implementing threads in Windows.
@@ -26,6 +26,9 @@
                                                         //    that deals with the timeout only accepts numbers of 
                                                         //    type long for some reason
 
+typedef struct Mutex Mutex;
+typedef struct Thread Thread;
+
 /**
  * //
  * ////
@@ -39,12 +42,12 @@
  * 
  * @class
 */
-typedef struct Mutex {
+struct Mutex {
   
   char *sName;              // The name of the mutex
   void *hMutex;             // A handle to the actual mutex
 
-} Mutex;
+};
 
 /**
  * Allocates memory for a new instance of the mutex class.
@@ -135,7 +138,7 @@ void Mutex_unlock(Mutex *this) {
  * It helps abstract some of the finer details of implementing threads.
  * @class
 */
-typedef struct Thread {
+struct Thread {
 
   char *sName;                // The name of the thread
                               // TBH, this is only here for convenience and debugging
@@ -149,7 +152,7 @@ typedef struct Thread {
   p_obj pArgs_ANY;            // The arguments to the callee
   int tArg_ANY;               // An optinal argument to the callee
 
-} Thread;
+};
 
 /**
  * Constructors and destructors

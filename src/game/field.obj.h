@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-02-22 06:58:11
+ * @ Modified time: 2024-02-28 12:07:17
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -16,11 +16,13 @@
 #include <stdlib.h>
 #include <time.h>
 
+typedef struct Field Field;
+
 /**
  * The field object.
  * This is not a class (because it doesn't need to be instantiated for the game).
 */
-typedef struct Field {
+Field {
 
   int dWidth;       // The width of the grid
   int dHeight;      // The height of the grid

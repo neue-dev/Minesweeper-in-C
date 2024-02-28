@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-28 11:40:26
+ * @ Modified time: 2024-02-28 12:12:18
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -24,6 +24,8 @@
 #include "./unix/utils.thread.unix.h"
 #endif
 
+typedef struct ThreadManager ThreadManager;
+
 /**
  * //
  * ////
@@ -44,7 +46,7 @@
  * 
  * @struct
 */
-typedef struct ThreadManager {
+struct ThreadManager {
 
   Thread *pThreadArray[THREAD_MAX_COUNT];             // Stores references to all the threads
   Mutex *pStateArray[THREAD_MAX_COUNT];               // For each thread, we have a state mutex to tell it to keep running        
@@ -53,7 +55,7 @@ typedef struct ThreadManager {
   int dThreadCount;                                   // Stores the length of the threads array
   int dMutexCount;                                    // Stores the length of the mutexes array
 
-} ThreadManager;
+};
 
 /**
  * Initializes the thread manager variables.

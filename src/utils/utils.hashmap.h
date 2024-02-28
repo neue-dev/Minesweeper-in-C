@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-28 11:17:17
- * @ Modified time: 2024-02-28 11:56:58
+ * @ Modified time: 2024-02-28 12:15:13
  * @ Description:
  * 
  * A utility library for creating hash tables with a max size of 1 << 16 (2^16) elements.
@@ -18,6 +18,11 @@
 #include "./utils.math.h"
 #include "./utils.types.h"
 
+#include <stdlib.h>
+
+typedef struct HashMapEntry HashMapEntry;
+typedef struct HashMap HashMap;
+
 /**
  * //
  * ////
@@ -31,11 +36,17 @@
  * 
  * @class
 */
-typedef struct HashMapEntry {
+struct HashMapEntry {
   
-  p_obj pObject;  // A pointer to the actual data we want to index
+  char *sKey;           // The we're feeding into the hash function
+                        // We don't really need this here, but this becomes handy when collisions occur and
+                        //    we want to iterate through a linked list to find an entry with a given key
 
-} HashMapEntry;
+  p_obj pObject;        // A pointer to the actual data we want to index
+
+  HashMapEntry *pNext;  // A pointer to the next entry, in case a collision occurs at this location
+
+};
 
 /**
  * Allocates memory for an instance of the HashMapEntry class.
@@ -53,7 +64,7 @@ HashMapEntry *HashMapEntry_new() {
  * @param		{ HashMapEntry * }		this	A pointer to the instance to initialize.
  * @return	{ HashMapEntry * }					A pointer to the initialized instance.
 */
-HashMapEntry *HashMapEntry_init(HashMapEntry *this) {
+HashMapEntry *HashMapEntry_init(HashMapEntry *this, p_obj pObject) {
 
   return this;
 }
@@ -63,8 +74,8 @@ HashMapEntry *HashMapEntry_init(HashMapEntry *this) {
  * 
  * @return	{ HashMapEntry * }		A pointer to the newly created initialized instance.
 */
-HashMapEntry *HashMapEntry_create() {
-  return HashMapEntry_init(HashMapEntry_new());
+HashMapEntry *HashMapEntry_create(p_obj pObject) {
+  return HashMapEntry_init(HashMapEntry_new(), pObject);
 }
 
 /**
@@ -89,9 +100,9 @@ void HashMapEntry_kill(HashMapEntry *this) {
  * 
  * @class
 */
-typedef struct HashMap {
+struct HashMap {
   HashMapEntry **pEntries;  // Ah yes, a rather unsettling array of pointers
-} HashMap;
+};
 
 /**
  * Allocates memory for an instance of the HashMap class.

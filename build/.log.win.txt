@@ -6,3 +6,15 @@ src\././utils/././utils.math.h: In function 'Math_hash':
 src\././utils/././utils.math.h:42:3: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
    while (c = *sKey++)
    ^~~~~
+In file included from src\././utils/./utils.hashmap.h:18:0,
+                 from src\././utils/utils.animation.h:13,
+                 from src\./engine.c:11,
+                 from src\minesweeper.c:8:
+src\././utils/././utils.math.h: In function 'Math_lerp':
+src\././utils/././utils.math.h:53:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+src\././utils/././utils.math.h: In function 'Math_ease':
+src\././utils/././utils.math.h:62:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^

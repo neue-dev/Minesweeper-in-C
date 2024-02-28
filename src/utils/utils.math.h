@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-02-28 11:46:03
+ * @ Modified time: 2024-02-28 12:02:14
  * @ Description:
  * 
  * Some helper math functions.
@@ -43,6 +43,22 @@ int Math_hash(char *sKey, int dMax) {
     dHash = c + (dHash << 6) + (dHash << 16) - dHash;
 
   return (int) (dHash % dMax);
+}
+
+/**
+ * Linear interpolation function.
+*/
+float Math_lerp(float fStart, float fEnd, float fAmount) {
+  //! to implement
+}
+
+/**
+ * An easing function used to make a value approach another value smoothly.
+ * We use a logarithmic speed system (since the rate of change here is proportional to 1/x,
+ *    and the integral of that happens to be ln(x)).
+*/
+float Math_ease(float fValue, float fTarget, float fSpeed) {
+  // ! to implement
 }
 
 #endif

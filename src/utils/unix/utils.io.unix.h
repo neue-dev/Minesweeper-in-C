@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:12:12
- * @ Modified time: 2024-02-27 11:24:28
+ * @ Modified time: 2024-02-28 12:12:35
  * @ Description:
  * 
  * Low level handling of IO functionalities on Unix environments.
@@ -14,14 +14,16 @@
 #include <termios.h>
 #include <unistd.h>
 
+typedef struct IO IO;
+
 /**
  * A struct to hold some variables so we don't pollute the global namespace.
  * Stores the original settings of the terminal so we can revert them back after the program exuts.
 */
-typedef struct IO {
+struct IO {
   struct termios defaultSettings;
   struct termios overrideSettings;
-} IO;
+};
 
 /**
  * Sets up some stuff for IO handling.

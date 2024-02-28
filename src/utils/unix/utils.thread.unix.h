@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-27 11:19:06
+ * @ Modified time: 2024-02-28 12:13:30
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -31,6 +31,9 @@
 
 #define WAIT_TIMEOUT 0x00000102                         // This is defined in Windows but we just redefined it here for convenience
 
+typedef struct Mutex Mutex;
+typedef struct Thread Thread;
+
 /**
  * //
  * ////
@@ -44,12 +47,12 @@
  * 
  * @class
 */
-typedef struct Mutex {
+struct Mutex {
   
   char *sName;              // The name of the mutex
   pthread_mutex_t *hMutex;  // A handle to the actual mutex
 
-} Mutex;
+};
 
 /**
  * Allocates memory for a new instance of the mutex class.
@@ -161,7 +164,7 @@ void Mutex_unlock(Mutex *this) {
  * It helps abstract some of the finer details of implementing threads.
  * @class
 */
-typedef struct Thread {
+struct Thread {
 
   char *sName;                // The name of the thread
                               // TBH, this is only here for convenience and debugging
@@ -175,7 +178,7 @@ typedef struct Thread {
   p_obj pArgs_ANY;            // The arguments to the callee
   int tArg_ANY;               // An optional argument to the callee
 
-} Thread;
+};
 
 /**
  * Constructors and destructors
