@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-28 12:11:42
+ * @ Modified time: 2024-02-28 18:15:08
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -14,7 +14,6 @@
 #ifndef UTILS_EVENT_
 #define UTILS_EVENT_
 
-#include "./utils.hashmap.h"
 #include "./utils.types.h"
 #include "./utils.string.h"
 

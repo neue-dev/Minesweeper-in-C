@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-28 16:45:18
+ * @ Modified time: 2024-02-28 18:15:32
  * @ Description:
  * 
  * An animation class.

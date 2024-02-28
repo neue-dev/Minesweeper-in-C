@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-28 17:59:45
+ * @ Modified time: 2024-02-28 18:13:43
  * @ Description:
  * 
  * The main game file.
@@ -22,10 +22,21 @@
 
 int main() {
 
-  ThreadManager tm;
-  ThreadManager_init(&tm);
+  HashMap *pMyHashMap = HashMap_create();
 
-  ThreadManager_createMutex(&tm, "mutex");
+  for(int i = 0; i < 16; i++) {
+    char *sKey = calloc(16, 1);
+    sprintf(sKey, "%dasd%d", i, i);
+    
+    Animation *pTest = Animation_create(sKey, NULL, 0);
+    HashMap_add(pMyHashMap, sKey, pTest);
+  }
+  
+  char *sKeys[16];
+  HashMap_getKeys(pMyHashMap, sKeys);
+
+  for(int i = 0; i < 16; i++)
+    printf("%s\n", sKeys[i]);
 
   while(1);
 
