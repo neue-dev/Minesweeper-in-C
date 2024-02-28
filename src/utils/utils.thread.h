@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-28 18:08:23
+ * @ Modified time: 2024-02-28 19:33:28
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -83,6 +83,10 @@ ThreadManager *ThreadManager_init(ThreadManager *this) {
  * @param   { ThreadManager * }  The thread manager to exit.
 */
 void ThreadManager_exit(ThreadManager *this) {
+  char *sThreadKey, *sMutexKey;
+
+  // Since the only time we need these is when cleaning up the manager
+  //    we don't need to store this as part of the manager's state
   char *sThreadKeyArray[THREAD_MAX_COUNT];
   char *sMutexKeyArray[MUTEX_MAX_COUNT];
 
@@ -92,7 +96,7 @@ void ThreadManager_exit(ThreadManager *this) {
 
   // Kill all the threads first
   while(this->dThreadCount) {
-    char *sThreadKey = String_create(sThreadKeyArray[this->dThreadCount]);
+    sThreadKey = String_create(sThreadKeyArray[this->dThreadCount]);
 
     // This tells the thread to terminate
     Mutex_unlock((Mutex *) HashMap_get(this->pStateMap, sThreadKey));
@@ -101,19 +105,25 @@ void ThreadManager_exit(ThreadManager *this) {
     // We don't "kill" them here because the threads do that on their own automatically
     HashMap_set(this->pThreadMap, sThreadKey, NULL);
 
+    // Memory clean up
+    String_kill(sThreadKey);
+
     // Decrement the size of the array
     this->dThreadCount--;
   }
 
   // Kill all the mutexes after killing the threads
   while(this->dMutexCount) {
-    char *sMutexKey = String_create(sMutexKeyArray[this->dMutexCount]);
+    sMutexKey = String_create(sMutexKeyArray[this->dMutexCount]);
 
     // Kill the mutex
     Mutex_kill((Mutex *) HashMap_get(this->pMutexMap, sMutexKey));
 
     // Get rid of the references
     HashMap_set(this->pMutexMap, sMutexKey, NULL);
+
+    // Memory clean up
+    String_kill(sMutexKey);
 
     // Decrement the size of the array
     this->dMutexCount--;
@@ -132,6 +142,12 @@ void ThreadManager_exit(ThreadManager *this) {
  * @param   { int }               tArg_ANY          A parameter that the callback function might need (ie, an enum).
 */
 void ThreadManager_createThread(ThreadManager *this, char *sThreadKey, char *sMutexKey, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY) {
+  Mutex *pStateMutex = (Mutex *) HashMap_get(this->pStateMap, sThreadKey), *pDataMutex;
+  Thread *pThread = (Thread *) HashMap_get(this->pThreadMap, sThreadKey);
+
+  // Duplicate key
+  if(pThread != NULL)
+    return;
 
   // If we don't have too many threads yet
   if(this->dThreadCount >= THREAD_MAX_COUNT)
@@ -140,24 +156,26 @@ void ThreadManager_createThread(ThreadManager *this, char *sThreadKey, char *sMu
   // The data mutex is the mutex at the specified index
   // Also, we have a new state mutex specifically for the new thread (these are not saved in the array of mutexes)
   // We have to lock this immediately to prevent the thread from terminating upon creation
-  Mutex *pDataMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+  pDataMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
 
-  // If the mutex is invalid
+  // If the mutex does not exist
   if(pDataMutex == NULL)
     return;
 
   // The state mutex keeps the thread alive
   // The thread always checks whether or not this mutex is still locked
   // The moment the mutex unlocks, the thread terminates its routine
-  Mutex *pStateMutex = Mutex_create(sThreadKey);
+  pStateMutex = Mutex_create(sThreadKey);
   Mutex_lock(pStateMutex);
 
   // Create then save the thread and its state mutex
-  Thread *pThread = Thread_create(sThreadKey, pStateMutex, pDataMutex, fCallee, pArgs_ANY, tArg_ANY);
+  pThread = Thread_create(sThreadKey, pStateMutex, pDataMutex, fCallee, pArgs_ANY, tArg_ANY);
 
   // Save them to the respective hashmaps
   HashMap_add(this->pThreadMap, sThreadKey, pThread);
   HashMap_add(this->pStateMap, sThreadKey, pStateMutex);
+
+  this->dThreadCount++;
 }
 
 /**
@@ -170,14 +188,21 @@ void ThreadManager_createThread(ThreadManager *this, char *sThreadKey, char *sMu
  * @param   { char * }            sMutexKey   The identifier for the mutex.
 */
 void ThreadManager_createMutex(ThreadManager *this, char *sMutexKey) {
+  Mutex *pMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+
+  // Duplicate key
+  if(pMutex != NULL)
+    return;
 
   // If we don't have too many mutexes yet
   if(this->dMutexCount >= MUTEX_MAX_COUNT)
     return;
 
   // Create and save the new mutex
-  Mutex *pMutex = Mutex_create(sMutexKey);
+  pMutex = Mutex_create(sMutexKey);
   HashMap_add(this->pMutexMap, sMutexKey, pMutex); 
+
+  this->dMutexCount++;
 }
 
 /**
@@ -200,9 +225,12 @@ void ThreadManager_killThread(ThreadManager *this, char *sThreadKey) {
   //    thread routine terminates
   Mutex_unlock((Mutex *) HashMap_get(this->pStateMap, sThreadKey));
 
-  // Update the array
-  HashMap_set(this->pThreadMap, sThreadKey, NULL);
-  HashMap_set(this->pStateMap, sThreadKey, NULL);
+  // Wait for thread to die
+  while(HashMap_get(this->pStateMap, sThreadKey) != NULL);
+
+  // Update the hashmap
+  HashMap_del(this->pThreadMap, sThreadKey);
+  HashMap_del(this->pStateMap, sThreadKey);
 
   // Shorten the length of the list
   // We can execute this before the loop because of the i + 1
@@ -217,10 +245,10 @@ void ThreadManager_killThread(ThreadManager *this, char *sThreadKey) {
  * @param   { char * }            sMutexKey   The name of the mutex we will lock.
 */
 void ThreadManager_lockMutex(ThreadManager *this, char *sMutexKey) {
-  if(HashMap_get(this->pMutexMap, sMutexKey) == NULL)
-    return;
+  Mutex *pMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
 
-  Mutex_lock((Mutex *) HashMap_get(this->pMutexMap, sMutexKey));
+  if(HashMap_get(this->pMutexMap, sMutexKey) != NULL)
+    Mutex_lock(pMutex);
 }
 
 /**
@@ -232,10 +260,10 @@ void ThreadManager_lockMutex(ThreadManager *this, char *sMutexKey) {
  * @return  { int }                           Whether or not the operation was successful.
 */
 void ThreadManager_unlockMutex(ThreadManager *this, char *sMutexKey) {
-  if(HashMap_get(this->pMutexMap, sMutexKey) == NULL)
-    return;
+  Mutex *pMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
 
-  Mutex_unlock((Mutex *) HashMap_get(this->pMutexMap, sMutexKey));
+  if(HashMap_get(this->pMutexMap, sMutexKey) != NULL)
+    Mutex_unlock(pMutex);
 }
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-28 12:18:35
+ * @ Modified time: 2024-02-28 19:36:58
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -39,11 +39,9 @@ typedef struct Engine Engine;
 */
 struct Engine {
 
-  // Animations
-  Animation *pAnimation_Intro;
-
-  EventManager eventManager;    // Deals with events
-  ThreadManager threadManager;  // Manages the different threads of the program
+  AnimationManager animationManager;  // Deals with anims
+  EventManager eventManager;          // Deals with events
+  ThreadManager threadManager;        // Manages the different threads of the program
   
   // Events
   KeyEvents keyEvents;          // Deals with key events
@@ -69,22 +67,11 @@ void Engine_init(Engine *this) {
   // The engine is currently running
   this->bState = 1;
 
-  // Initialize the animations
-  this->pAnimation_Intro = Animation_create(
-    "intro-animation",
-    AnimationHandler_intro, 
-    13,  // 13 states
-    'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
-    'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
-    'f', -100.0, 'f', 10.0, 'i', 24, 'i', 12,
-
-    'i', 0x000000
-  );
-
   // Initialize user-defined state manager
   KeyEvents_init(&this->keyEvents);
 
   // Initialize the managers
+  AnimationManager_init(&this->animationManager);
   EventManager_init(&this->eventManager, &this->keyEvents);
   ThreadManager_init(&this->threadManager);
 
@@ -157,8 +144,6 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
 
-  Animation_update(this->pAnimation_Intro);
-
   // Because IO operations are expensive, we want to do them only when a change occurs
   if(!this->keyEvents.bHasBeenRead || 1) {
     Buffer *pBuffer = Buffer_create(
@@ -167,28 +152,19 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       0xffffff,
       0x000000);
 
-    char *block[5] = {
-      "    __  ________   ______________       __________________  __________ ",
-      "   /  |/  /  _/ | / / ____/ ___/ |     / / ____/ ____/ __ \\/ ____/ __ \\",
-      "  / /|_/ // //  |/ / __/  \\__ \\| | /| / / __/ / __/ / /_/ / __/ / /_/ /",
-      " / /  / // // /|  / /___ ___/ /| |/ |/ / /___/ /___/ ____/ /___/ _, _/ ",
-      "/_/  /_/___/_/ |_/_____//____/ |__/|__/_____/_____/_/   /_____/_/ |_|  ",
-    };
+    AnimationManager_createAnimation(
+      &this->animationManager,
+      "intro-animation",
+      AnimationHandler_intro,
+      pBuffer, 
+      13,  // 13 states
+      'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
+      'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
+      'f', -100.0, 'f', 10.0, 'i', 24, 'i', 12,
 
-    Buffer_context(pBuffer, 
-      this->pAnimation_Intro->dRoundStates[0], 
-      this->pAnimation_Intro->dRoundStates[1],
-      10, 5, -1, 0x0000dd);
-
-    Buffer_context(pBuffer, 
-      this->pAnimation_Intro->dRoundStates[2], 
-      this->pAnimation_Intro->dRoundStates[3],
-      10, 5, -1, 0xdd0000);
-    Buffer_write(pBuffer, 
-      this->pAnimation_Intro->dRoundStates[4], 
-      this->pAnimation_Intro->dRoundStates[5], 
-      strlen(block[0]), 5, block);
-    Buffer_context(pBuffer, 0, 11 - this->pAnimation_Intro->dStates[6] / 2, IO_getWidth(), this->pAnimation_Intro->dStates[6] + 8, 0x000000, 0xffffff);
+      'i', 0x000000
+    );
+    AnimationManager_updateAnimation(&this->animationManager, "intro-animation");
 
     IO_clear();
     Buffer_print(pBuffer);

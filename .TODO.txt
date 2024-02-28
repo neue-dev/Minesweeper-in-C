@@ -1,9 +1,5 @@
 
-pThreadArray
-pStateArray
-pMutexArray
-
-REFACTOR THE CODE TO USE HASHMAPS WHEN APPROPRIATE
+make sure to check if key is duplicated before adding stuff to hash maps in manager (dont rely on hashmap doing that because)
 
 1. STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
 2. CREATE A HELPER FUCNTION FOR SHORTCUTS TO INITIALIZE ANIMATION INSTANCE
