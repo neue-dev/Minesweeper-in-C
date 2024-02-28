@@ -1,7 +1,7 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-28 12:11:27
+ * @ Modified time: 2024-02-28 16:45:18
  * @ Description:
  * 
  * An animation class.

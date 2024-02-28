@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-28 10:44:21
+ * @ Modified time: 2024-02-28 17:03:03
  * @ Description:
  * 
  * The main game file.
@@ -11,6 +11,7 @@
 #include "game/field.obj.h"
 
 #include "utils/utils.animation.h"
+#include "utils/utils.hashmap.h"
 #include "utils/utils.graphics.h"
 #include "utils/utils.thread.h"
 #include "utils/utils.buffer.h"
@@ -21,33 +22,33 @@
 
 int main() {
 
-  Animation *pAnim = Animation_create(
-    "intro-animation",
+  HashMap *pMyHashMap = HashMap_create();
+
+  for(int i = 0; i < 8; i++) {
+    char *sKey = calloc(16, 1);
+    sprintf(sKey, "%dasd%d", i, i);
     
-    AnimationHandler_intro, 
-    
-    4,            // 4 states to initialize
-    'i', 420,     // first int state, 420 initial value
-    'i', 69,      // second int state, 69 initial value
-    'f', 0.123,   // first float state, 0.123 initial value
-    'f', 0.456);  // second float state, 0.456 initial value
+    Animation *pTest = Animation_create(sKey, NULL, 0);
+    HashMap_createEntry(pMyHashMap, sKey, pTest);
+  }
 
-  for(int i = 0; i < pAnim->dFloatStateCount; i++)
-    printf("%f hmm", pAnim->fStates[i]);
-  printf("\n");
+  for(int i = 0; i < pMyHashMap->dEntryCount; i++) {
+    char *sKey = calloc(16, 1);
+    sprintf(sKey, "%dasd%d", i, i);
 
-  for(int i = 0; i < pAnim->dIntStateCount; i++)
-    printf("%d aha", pAnim->dStates[i]);
-  printf("\n");
+    if(i % 2) {
+      Animation *pTest = Animation_create("test", NULL, 0);
+      HashMap_setEntry(pMyHashMap, sKey, pTest);  
+    }
 
-  while(pAnim->dStates[0] < 430) {
-    Animation_update(pAnim);
+    Animation *pTest = (Animation *) HashMap_getEntry(pMyHashMap, sKey);
+    printf("key: %s\n", sKey);
+    printf("nam: %s\n", pTest->sName);
+  }
 
-    for(int i = 0; i < pAnim->dIntStateCount; i++)
-      printf("%d ", pAnim->dStates[i]);
-    printf("\n");
+  printf("%d\n", pMyHashMap->dEntryMaxSlots);
 
-  };
+  printf("hello");
 
   while(1);
 

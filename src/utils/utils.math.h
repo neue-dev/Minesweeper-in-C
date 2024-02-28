@@ -1,7 +1,7 @@
 /**
- * @ Author: Mo David
+ * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-02-28 12:02:14
+ * @ Modified time: 2024-02-28 16:45:13
  * @ Description:
  * 
  * Some helper math functions.
@@ -21,7 +21,7 @@
 */
 
 /**
- * This is a hash function adopted from here: 
+ * This is a hash function that extends one of the ones given here: 
  *    http://www.cse.yorku.ca/~oz/hash.html
  * 
  * @param   { char * }  sKey  The string to perform a hash on.
@@ -30,17 +30,20 @@
 */
 int Math_hash(char *sKey, int dMax) {
   unsigned long long dHash = 0;
-  char c;
-
+  
   // Increment the pointer so we iterate over the string
-  // Note that all this does is multiply hash by 65599 (a large prime number that works well for hashing)
-  // Essentially, we have
-  //    (1) << 6 means * 2^6 or 64, multtiplied to hash
-  //    (2) << 16 means * 2^16 or 65536, multiplied to hash
-  //    (3) - hash
-  // All in all we have (64 + 65536 - 1) * hash or 65599 * hash
-  while (c = *sKey++)
-    dHash = c + (dHash << 6) + (dHash << 16) - dHash;
+  while (*sKey) {
+    
+    // Note that all this does is multiply hash by 65599 (a large prime number that works well for hashing)
+    // Essentially, we have
+    //    (1) << 6 means * 2^6 or 64, multtiplied to hash
+    //    (2) << 16 means * 2^16 or 65536, multiplied to hash
+    //    (3) - hash
+    // All in all we have (64 + 65536 - 1) * hash or 65599 * hash
+    dHash = (dHash << 6) + (dHash << 16) - dHash + 
+      (*sKey) * (dHash % 2 ? (*sKey << 1) + (*sKey) + 1 : (*sKey) >> 1);
+    sKey++;
+  }
 
   return (int) (dHash % dMax);
 }
@@ -50,6 +53,8 @@ int Math_hash(char *sKey, int dMax) {
 */
 float Math_lerp(float fStart, float fEnd, float fAmount) {
   //! to implement
+
+  return 0;
 }
 
 /**
@@ -59,6 +64,8 @@ float Math_lerp(float fStart, float fEnd, float fAmount) {
 */
 float Math_ease(float fValue, float fTarget, float fSpeed) {
   // ! to implement
+
+  return 0;
 }
 
 #endif

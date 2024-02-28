@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-02-28 12:07:17
+ * @ Modified time: 2024-02-28 12:27:39
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -22,7 +22,7 @@ typedef struct Field Field;
  * The field object.
  * This is not a class (because it doesn't need to be instantiated for the game).
 */
-Field {
+struct Field {
 
   int dWidth;       // The width of the grid
   int dHeight;      // The height of the grid
@@ -30,7 +30,7 @@ Field {
   Grid *pMineGrid;  // Where we store the mines
   Grid *pFlagGrid;  // Where we store the flags
 
-} Field;
+};
 
 /**
  * Initializes the field object.
