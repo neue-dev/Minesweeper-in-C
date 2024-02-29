@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-02-29 23:57:54
+ * @ Modified time: 2024-03-01 00:38:47
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically,
@@ -24,20 +24,102 @@
 */
 
 void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
-  int i;
+  int i, cumulativeLen = 0;
   int dWidth = IO_getWidth();
   int dHeight = IO_getHeight();
   
   Animation *this = (Animation *) Args_Animation;
   Buffer *pBuffer = (Buffer *) Args2_Buffer;
 
-  char *title[6] = {
-    "              _                                                   ",
-    "   ____ ___  (_)___  ___  ______      _____  ___  ____  ___  _____",
-    "  / __ `__ \\/ / __ \\/ _ \\/ ___/ | /| / / _ \\/ _ \\/ __ \\/ _ \\/ ___/",
-    " / / / / / / / / / /  __(__  )| |/ |/ /  __/  __/ /_/ /  __/ /    ",
-    "/_/ /_/ /_/_/_/ /_/\\___/____/ |__/|__/\\___/\\___/ .___/\\___/_/     ",
-    "                                              /_/                 ",
+  char *title[11][6] = {
+    {
+      "              ",
+      "   ____ ___   ",
+      "  / __ `__ \\  ",
+      " / / / / / /  ",
+      "/_/ /_/ /_/   ",
+      "              ",
+    },
+    {
+      "    _ ",
+      "   (_)",
+      "  / / ",
+      " / /  ",
+      "/_/   ",
+      "      ",
+    },
+    {
+      "           ",
+      "   ____    ",
+      "  / __ \\   ",
+      " / / / /   ",
+      "/_/ /_/    ",
+      "           ",
+    },
+    {
+      "        ",
+      "  ___   ",
+      " / _ \\  ",
+      "/  __/  ",
+      "\\___/   ",
+      "        ",
+    },
+    {
+      "           ",
+      "   _____   ",
+      "  / ___/   ",
+      " (__  )    ",
+      "/____/     ",
+      "           ",
+    },
+    {
+      "            ",
+      " _      __  ",
+      "| | /| / /  ",
+      "| |/ |/ /   ",
+      "|__/|__/    ",
+      "            ",
+    },
+    {
+      "         ",
+      "  ___    ",
+      " / _ \\   ",
+      "/  __/   ",
+      "\\___/    ",
+      "         ",
+    },
+    {
+      "       ",
+      "  ___  ",
+      " / _ \\ ",
+      "/  __/ ",
+      "\\___/  ",
+      "       ",
+    },
+    {
+      "            ",
+      "    ____    ",
+      "   / __ \\   ",
+      "  / /_/ /   ",
+      " / .___/    ",
+      "/_/         ",
+    },
+    {
+      "        ",
+      "  ___   ",
+      " / _ \\  ",
+      "/  __/  ",
+      "\\___/   ",
+      "        ",
+    },
+    {
+      "        ",
+      "   _____",
+      "  / ___/",
+      " / /    ",
+      "/_/     ",
+      "        ",
+    }
   };
 
   // Initialization stage
@@ -49,19 +131,24 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
       this->dStates[i] = 0;
     }
 
-    this->fStates[4] = 0.0;
-    this->fStates[5] = 12.0;
+    for(i = 0; i < 11; i++) {
+      this->dStates[i * 2 + 4] = cumulativeLen + 24;
+      this->fStates[i * 2 + 4] = 0;
+      
+      this->dStates[i * 2 + 1 + 4] = 12;
+      this->fStates[i * 2 + 1 + 4] = i * i * i * 10.0 + 100.0;
 
-    this->dStates[4] = 24;
-    this->dStates[5] = 12;
+      cumulativeLen += strlen(title[i][0]) - 4;
+    }
+
 
     // You have to manually set these cuz u didnt pass a statecount in the constuctor
-    this->dFloatStateCount = 6;
-    this->dIntStateCount = 6;
+    this->dFloatStateCount = 26;
+    this->dIntStateCount = 26;
 
   // Running the animation
   } else {
-    for(i = 0; i < 6; i++)
+    for(i = 0; i < 26; i++)
       this->fStates[i] = Math_ease(this->fStates[i], this->dStates[i], 0.69);
 
     // Randomize square positions
@@ -74,21 +161,9 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
       this->dStates[3] = rand() % IO_getHeight();
     }
 
-    // Display update
-    char *block[8] = {
-        "              _                                                   ",
-        "   ____ ___  (_)___  ___  ______      _____  ___  ____  ___  _____",
-        "  / __ `__ \\/ / __ \\/ _ \\/ ___/ | /| / / _ \\/ _ \\/ __ \\/ _ \\/ ___/",
-        " / / / / / / / / / /  __(__  )| |/ |/ /  __/  __/ /_/ /  __/ /    ",
-        "/_/ /_/ /_/_/_/ /_/\\___/____/ |__/|__/\\___/\\___/ .___/\\___/_/     ",
-        "                                              /_/                 ",
-        "                                                                  ",
-        "                                                                  ",
-      };
-
     Buffer_context(pBuffer, 
       0, 0,
-      dWidth, dHeight - 5, 
+      dWidth, dHeight, 
       0x000000, 0x000000);
 
     Buffer_context(pBuffer, 
@@ -102,19 +177,20 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
       0x000000, 0xffffff);
 
     // Fun squares
-    Buffer_context(pBuffer, 
-      this->dRoundStates[0], 
-      this->dRoundStates[1],
-      10, 5, 0xffffff, 0x0000dd);
+    // Buffer_context(pBuffer, 
+    //   this->dRoundStates[0], 
+    //   this->dRoundStates[1],
+    //   10, 5, 0xffffff, 0x0000dd);
 
-    Buffer_context(pBuffer, 
-      this->dRoundStates[2], 
-      this->dRoundStates[3],
-      10, 5, 0xffffff, 0xdd0000);
+    // Buffer_context(pBuffer, 
+    //   this->dRoundStates[2], 
+    //   this->dRoundStates[3],
+    //   10, 5, 0xffffff, 0xdd0000);
 
-    Buffer_write(pBuffer, 
-      this->dRoundStates[4], 
-      this->dRoundStates[5], 
-      strlen(block[0]), 8, block);
+    for(i = 10; i >= 0; i--) {
+      Buffer_write(pBuffer, 
+        this->dRoundStates[4 + i * 2], this->dRoundStates[4 + i * 2 + 1], 
+        strlen(title[i][0]), 6, title[i]);
+    }
   }
 }

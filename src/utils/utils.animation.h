@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-29 23:53:49
+ * @ Modified time: 2024-03-01 00:35:29
  * @ Description:
  * 
  * An animation class.
@@ -21,7 +21,7 @@
 #define ANIMATION_FLOAT_STATE 'f'
 #define ANIMATION_INT_STATE 'i'
 
-#define ANIMATION_MAX_STATES 32
+#define ANIMATION_MAX_STATES 256
 #define ANIMATION_MAX_COUNT 256
 
 typedef struct Animation Animation;
@@ -101,6 +101,14 @@ Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHan
   this->dT = 0ULL;
   this->dFloatStateCount = 0;
   this->dIntStateCount = 0;
+
+  // Just so they dont have garbage values
+  for(i = 0; i < ANIMATION_MAX_STATES; i++) {
+    this->dStates[i] = 0;
+    this->fStates[i] = 0.0;
+
+    this->dRoundStates[i] = 0;
+  }
 
   for(i = 0; i < dStates; i++) {
     cType = va_arg(vArgs, int);
