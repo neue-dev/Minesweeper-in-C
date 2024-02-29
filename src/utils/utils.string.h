@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-02-28 11:50:53
+ * @ Modified time: 2024-02-29 21:42:27
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -56,6 +56,15 @@ char *String_alloc(int dLength) {
 void String_kill(char *sString) {
   free(sString);
 }
+
+// You are in Windows
+#ifdef _WIN32
+#include "./win/utils.string.win.h"
+
+// Not in Windows
+#else
+#include "./unix/utils.string.unix.h"
+#endif
 
 #endif
 

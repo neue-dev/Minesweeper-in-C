@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:12:12
- * @ Modified time: 2024-02-28 12:12:35
+ * @ Modified time: 2024-02-29 21:29:34
  * @ Description:
  * 
  * Low level handling of IO functionalities on Unix environments.
@@ -111,6 +111,13 @@ void IO_setBuffer(int dSize) {
 }
 
 /**
+ * Resets the cursor position to the start of the terminal.
+*/
+void IO_resetCursor() {
+  printf("\x1b[0;0H");
+}
+
+/**
  * Helper function that clears the console.
 */
 void IO_clear() {
@@ -119,7 +126,6 @@ void IO_clear() {
   // \e[H   Puts the cursor at the home position 
   // \e[2J  Erases entire screen
   // \e[3J  Erases saved lines
-  setvbuf(stdout, NULL, _IOLBF, 0);
   printf("\e[H\e[2J\e[3J");
 }
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-28 12:08:10
+ * @ Modified time: 2024-02-29 21:42:43
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -267,7 +267,9 @@ void Buffer_print(Buffer *this) {
 
   // Set the buffer size and print using puts(), then do garbage collection
   IO_setBuffer(sizeof(sBlob));
-  puts(sBlob);
+
+  // Windows and Unix have different preferences over which output functions are faster
+  String_print(sBlob);
   
   // Clean up all the stuff we used
   for(i = 0; i < this->dContextCount; i++)

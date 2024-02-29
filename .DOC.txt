@@ -3,6 +3,7 @@
 [_beginthreadex vs CreateThread]          https://stackoverflow.com/questions/331536/windows-threading-beginthread-vs-beginthreadex-vs-createthread-c
 [ANSI Escape Sequences]                   https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 [C runtime library]                       https://stackoverflow.com/questions/2766233/what-is-the-c-runtime-library
+[Checking for Windows 11]                 https://stackoverflow.com/questions/74645458/how-to-detect-windows-11-programmatically
 [Differences of unicode and utf8]         https://stackoverflow.com/questions/50067263/how-to-printf-a-unicode-string-with-s-specifier
 [Enable Virtual Terminal Processing]      https://stackoverflow.com/questions/52015837/trouble-enable-virtual-terminal-processing-for-windows-in-c
 [FuncA vs FuncW in Windows libs]          https://comp.os.ms-windows.programmer.narkive.com/4ADwdQBR/regarding-createmutexw-and-createmutexa

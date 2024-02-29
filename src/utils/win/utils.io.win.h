@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-28 12:12:54
+ * @ Modified time: 2024-02-29 22:30:36
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -120,7 +120,7 @@ int IO_setSize(int dWidth, int dHeight) {
 */
 void IO_setBuffer(int dSize) {
   
-  // This is another thing I found elsewhere which speeds printf up
+  // This is another thing I found elsewhere which speeds  up
   // Console output by default is buffered per line, which means everytime we counter a \n things slow down
   // In other words, in only prints in chunks of lines
   // In order to circumvent that hindrance, we set the buffer size ourselves
@@ -129,6 +129,25 @@ void IO_setBuffer(int dSize) {
   // _IOLBF (the default) writes data once a newline is encountered
   // We don't need to do this for Unix anymore cuz it's already quite fast for some reason.
   setvbuf(stdout, NULL, _IOFBF, dSize);
+}
+
+/**
+ * Resets the cursor position to the start of the terminal.
+*/
+void IO_resetCursor() {
+
+  // In case the latter doesn't work
+  // printf("\x1b[1K");
+  // printf("\x1b[3J");
+  // printf("\x1b[0;0H");
+
+  // For some reason, this works on Windows conhost and
+  //    printf("\x1b[0;0H"); SOMETIMES doesn't???
+  // For Windows terminal, on the other (Windows 11),
+  //    the previous solution works?????
+  // I can't check for the Windows build version programatically,
+  //    so Im kinda fcked
+  system("ECHO !ESC![0;0H");
 }
 
 /**

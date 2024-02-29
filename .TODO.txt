@@ -1,5 +1,5 @@
 
-make sure to check if key is duplicated before adding stuff to hash maps in manager (dont rely on hashmap doing that because)
+add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 
 1. STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
 2. CREATE A HELPER FUCNTION FOR SHORTCUTS TO INITIALIZE ANIMATION INSTANCE

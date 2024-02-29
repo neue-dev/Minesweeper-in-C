@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-28 12:13:30
+ * @ Modified time: 2024-02-29 21:44:49
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -12,9 +12,6 @@
 
 #ifndef UTILS_THREAD_UNIX_
 #define UTILS_THREAD_UNIX_
-
-#define _POSIX_TIMERS
-#define _REENTRANT
 
 #include <pthread.h>
 #include <errno.h>

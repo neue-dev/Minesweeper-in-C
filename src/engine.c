@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-28 22:15:41
+ * @ Modified time: 2024-02-29 21:24:59
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -172,7 +172,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
 
     Buffer_write(pBuffer, 108, 30, strlen(sSigature[0]), 1, sSigature);
 
-    IO_clear();
+    IO_resetCursor();
     Buffer_print(pBuffer);
     Buffer_kill(pBuffer);
 
