@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-29 22:30:36
+ * @ Modified time: 2024-02-29 22:35:47
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -147,7 +147,7 @@ void IO_resetCursor() {
   //    the previous solution works?????
   // I can't check for the Windows build version programatically,
   //    so Im kinda fcked
-  system("ECHO !ESC![0;0H");
+  system("ECHO \"^<ESC^>[0;0H\"");
 }
 
 /**

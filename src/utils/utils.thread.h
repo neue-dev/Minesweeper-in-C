@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-28 19:33:28
+ * @ Modified time: 2024-02-29 23:18:00
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -84,6 +84,7 @@ ThreadManager *ThreadManager_init(ThreadManager *this) {
 */
 void ThreadManager_exit(ThreadManager *this) {
   char *sThreadKey, *sMutexKey;
+  Mutex *pStateMutex, *pDataMutex;
 
   // Since the only time we need these is when cleaning up the manager
   //    we don't need to store this as part of the manager's state
@@ -97,9 +98,11 @@ void ThreadManager_exit(ThreadManager *this) {
   // Kill all the threads first
   while(this->dThreadCount) {
     sThreadKey = String_create(sThreadKeyArray[this->dThreadCount]);
+    pStateMutex = (Mutex *) HashMap_get(this->pStateMap, sThreadKey);
 
     // This tells the thread to terminate
-    Mutex_unlock((Mutex *) HashMap_get(this->pStateMap, sThreadKey));
+    if(pStateMutex != NULL)
+      Mutex_unlock(pStateMutex);
 
     // Get rid of the references
     // We don't "kill" them here because the threads do that on their own automatically
@@ -115,9 +118,12 @@ void ThreadManager_exit(ThreadManager *this) {
   // Kill all the mutexes after killing the threads
   while(this->dMutexCount) {
     sMutexKey = String_create(sMutexKeyArray[this->dMutexCount]);
+    pDataMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
 
     // Kill the mutex
-    Mutex_kill((Mutex *) HashMap_get(this->pMutexMap, sMutexKey));
+
+    if(pDataMutex != NULL)
+      Mutex_kill(pDataMutex);
 
     // Get rid of the references
     HashMap_set(this->pMutexMap, sMutexKey, NULL);

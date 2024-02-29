@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-02-28 22:21:55
+ * @ Modified time: 2024-02-29 23:19:38
  * 
  *               _                                                   
  *    ____ ___  (_)___  ___  ______      _____  ___  ____  ___  _____
@@ -32,23 +32,42 @@ int main(int argc, char *argv[]) {
     system(command);
 
     // Execute using conhost or just execute with the system default shell
+    // I don't think itll work
     if(argc > 1 ? !strcmp(argv[1], "force") : 0) {
-      system("%windiw%\\SysNative\\conhost.exe build\\minesweeper.win.exe");
-      system("%windiw%\\System32\\conhost.exe build\\minesweeper.win.exe");
-    } else {
-      system("build\\minesweeper.win.exe");
-    }
+      system("C: && C:\\Windows\\SysNative\\conhost.exe"); //build\\minesweeper.win.exe");
+      system("C: && C:\\Windows\\System32\\conhost.exe");
+    } else if (argc > 1 ? !strcmp(argv[1], "run") : 0) {
 
-    // Warning, in case conhost doesn't execute
-    system("cls");
-    printf("\n\nIf you do not see the program running, do either of the following:\n\n");
-    printf("    (1) Run the program in the C:\\ drive.\n");
-    printf("    (2) Run the program inside conhost (ie. type \"conhost\" first then run main.exe)\n\n");
-    printf("If you select the second option, the program display might not fit\nwithin the console window.\n\n");
+      // Just so the user doesn't get irritated
+      system("cls");
+      printf("\n\n\tThe game is loading...");
+      system("build\\minesweeper.win.exe");
+
+      // After playing
+      system("cls");
+      printf("\n\n\tThank you for playing!\n\n\n");
+    } else {
+      
+      // Warning, in case conhost doesn't execute
+      system("cls");
+      printf("\n\n\tThe game has been compiled! If you are currently on Windows 11:\n\n");
+      printf("\t\t(1) Launch the Windows Terminal.\n");
+      printf("\t\t(2) Type \"conhost\".\n");
+      printf("\t\t(3) Type \"main run\" after launching conhost.\n\n");
+      printf("\tNote that we need conhost because the program kinda breaks on Windows 11.\n\n");
+    }
   #else
     sprintf(command, "gcc -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.log.unix.txt -lrt -lm", filename);
     system(command);
+
+    // Just so the user doesn't get irritated
+    printf("\e[H\e[2J\e[3J");
+    printf("\n\n\tThe game is loading...\n");
     system("./build/minesweeper.unix.o");
+
+    // After the game exits
+    printf("\e[H\e[2J\e[3J");
+    printf("\n\n\tThank you for playing!\n\n\n");
   #endif
 
   return 0;
