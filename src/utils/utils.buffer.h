@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-02-29 23:29:46
+ * @ Modified time: 2024-03-01 00:41:01
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -136,7 +136,7 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
     for(j = x; j < x + w && j < this->dWidth; j++) {
 
       // We will permit negative passing values for cooler animations
-      if(i - y >= 0 && j - x >= 0)
+      if(i >= 0 && j >= 0)
         
         // This way, we can have text blocks that arent strictly rectangular
         if(sBlock[i - y][j - x] != 32)
