@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-02-29 21:44:49
+ * @ Modified time: 2024-03-01 00:48:06
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -20,7 +20,7 @@
 #define MUTEX_MAX_COUNT 16                              // Maximum number of mutexes we can have for our program
 #define THREAD_MAX_COUNT 16                             // Maximum number of threads we can have for our program
 
-#define THREAD_FRAME_RATE 24                            // Number of frames per second
+#define THREAD_FRAME_RATE 30                            // Number of frames per second
 #define THREAD_TIMEOUT (long) 1000 / THREAD_FRAME_RATE  // Length of the execution cycle (in ms) per thread
                                                         // Note that it has to be a long because the Windows API
                                                         //    that deals with the timeout only accepts numbers of 

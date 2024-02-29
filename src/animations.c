@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-01 00:43:35
+ * @ Modified time: 2024-03-01 00:51:29
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically,
@@ -133,7 +133,7 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
 
     for(i = 0; i < 11; i++) {
       this->dStates[i * 2 + 4] = cumulativeLen + 24;
-      this->fStates[i * 2 + 4] = cumulativeLen * 5.0 - 100.0;
+      this->fStates[i * 2 + 4] = cumulativeLen * 5.0 - 50.0;
       
       this->dStates[i * 2 + 1 + 4] = 12;
       this->fStates[i * 2 + 1 + 4] = i * i * i * 10.0 - 128.0;
@@ -159,6 +159,13 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
     } else if(this->dT % 24 == 12) {
       this->dStates[2] = rand() % IO_getWidth();
       this->dStates[3] = rand() % IO_getHeight();
+      
+    } else if(this->dT % 60 == 59) {
+      
+      for(i = 0; i < 11; i++) {
+        this->fStates[i * 2 + 4] = rand() % IO_getWidth() + IO_getWidth() * ((rand() % 2) * 2 - 1);
+        this->fStates[i * 2 + 1 + 4] = rand() % IO_getHeight() + IO_getHeight() * ((rand() % 2) * 2 - 1);
+      }
     }
 
     Buffer_context(pBuffer, 
