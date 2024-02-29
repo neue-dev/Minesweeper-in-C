@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-02-28 19:54:54
+ * @ Modified time: 2024-02-29 23:53:49
  * @ Description:
  * 
  * An animation class.
@@ -16,6 +16,10 @@
 #include <math.h>
 #include <stdarg.h>
 #include <stdlib.h>
+
+// Useful for passing arguments into animation constructors
+#define ANIMATION_FLOAT_STATE 'f'
+#define ANIMATION_INT_STATE 'i'
 
 #define ANIMATION_MAX_STATES 32
 #define ANIMATION_MAX_COUNT 256
@@ -43,6 +47,8 @@ struct Animation {
   unsigned long long dT;                    // Tells us the current time state of the animation (not to be
                                             //    confused with differential calculus notation of small changes)
 
+  int bIsInitted;                           // This allows us to init stuff during the first frame
+
   f_animation_handler fHandler;             // The function to update the animation over time
   p_obj pArgs2_ANY;                         // The argument to the handler
 
@@ -50,7 +56,6 @@ struct Animation {
   int dIntStateCount;
 
   int dStates[ANIMATION_MAX_STATES];        // The integer states to be stored by the object
-
   float fStates[ANIMATION_MAX_STATES];      // The float states to be stored by the object
   int dRoundStates[ANIMATION_MAX_STATES];   // The float states (rounded off) to be stored by the object
   
@@ -85,6 +90,9 @@ Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHan
   // Store the name
   this->sName = sName;
 
+  // For the first animation frame
+  this->bIsInitted = 0;
+
   // Store the handler
   this->fHandler = fHandler;
   this->pArgs2_ANY = pArgs2_ANY;
@@ -98,7 +106,7 @@ Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHan
     cType = va_arg(vArgs, int);
 
     // We're retrieving a float
-    if(cType == 'f' && this->dFloatStateCount < ANIMATION_MAX_STATES) {
+    if(cType == ANIMATION_FLOAT_STATE && this->dFloatStateCount < ANIMATION_MAX_STATES) {
       fState = (float) va_arg(vArgs, double);
 
       this->dRoundStates[this->dFloatStateCount] = round(fState);
@@ -106,7 +114,7 @@ Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHan
     }
 
     // We're retrieving an int
-    if(cType == 'i' && this->dIntStateCount < ANIMATION_MAX_STATES) {
+    if(cType == ANIMATION_INT_STATE && this->dIntStateCount < ANIMATION_MAX_STATES) {
       this->dStates[this->dIntStateCount++] = va_arg(vArgs, int);
     }
   }
@@ -151,6 +159,10 @@ void Animation_update(Animation *this) {
   // Perform some fixins
   for(i = 0; i < this->dFloatStateCount; i++)
     this->dRoundStates[i] = round(this->fStates[i]);
+
+  // The first frame has been executed
+  if(!this->bIsInitted)
+    this->bIsInitted = 1;
     
   // Increment time state
   this->dT++;

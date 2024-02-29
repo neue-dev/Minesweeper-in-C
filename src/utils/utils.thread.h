@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-29 23:18:00
+ * @ Modified time: 2024-02-29 23:23:21
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -121,7 +121,6 @@ void ThreadManager_exit(ThreadManager *this) {
     pDataMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
 
     // Kill the mutex
-
     if(pDataMutex != NULL)
       Mutex_kill(pDataMutex);
 

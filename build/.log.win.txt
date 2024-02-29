@@ -1,0 +1,6 @@
+In file included from src\./engine.c:17:0,
+                 from src\minesweeper.c:8:
+src\././animations.c: In function 'AnimationHandler_intro':
+src\././animations.c:34:9: warning: unused variable 'title' [-Wunused-variable]
+   char *title[6] = {
+         ^~~~~

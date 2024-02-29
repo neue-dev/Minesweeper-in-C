@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-29 23:13:45
+ * @ Modified time: 2024-02-29 23:55:41
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -153,17 +153,9 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       0x000000);
 
     AnimationManager_createAnimation(
-      &this->animationManager,
-      "intro-animation",
-      AnimationHandler_intro,
-      pBuffer, 
-      13,  // 13 states
-      'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
-      'f', 0.0, 'f', 0.0, 'i', 0, 'i', 0,
-      'f', -100.0, 'f', 12.0, 'i', 30, 'i', 12,
-
-      'i', 0x000000
-    );
+      &this->animationManager, "intro-animation",
+      AnimationHandler_intro, pBuffer, 0);
+    
     AnimationManager_updateAll(&this->animationManager);
 
     char *sSigature[1] = {

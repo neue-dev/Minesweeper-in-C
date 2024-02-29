@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-29 22:35:47
+ * @ Modified time: 2024-02-29 23:38:49
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -141,12 +141,9 @@ void IO_resetCursor() {
   // printf("\x1b[3J");
   // printf("\x1b[0;0H");
 
-  // For some reason, this works on Windows conhost and
-  //    printf("\x1b[0;0H"); SOMETIMES doesn't???
-  // For Windows terminal, on the other (Windows 11),
-  //    the previous solution works?????
-  // I can't check for the Windows build version programatically,
-  //    so Im kinda fcked
+  // For some reason, this works on Windows conhost and printf("\x1b[0;0H"); SOMETIMES doesn't???
+  // For Windows terminal, on the other (Windows 11), the previous solution works?????
+  // I can't check for the Windows build version programatically, so Im kinda fcked but oh well
   system("ECHO \"^<ESC^>[0;0H\"");
 }
 
