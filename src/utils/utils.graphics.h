@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-02-28 12:16:12
+ * @ Modified time: 2024-03-01 08:41:24
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -13,6 +13,7 @@
 #define UTILS_GRAPHICS_
 
 #include "./utils.string.h"
+#include "./utils.math.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -120,6 +121,33 @@ char *Graphics_getCodeFGBG(int colorFG, int colorBG) {
     sANSISequence[i++] = 32;
 
   return sANSISequence;
+}
+
+/**
+ * Returns the insigned integer associated with a set of rgb values.
+*/
+int Graphics_RGB(int r, int g, int b) {
+  return (r << 16) + (g << 8) + b;
+}
+
+/**
+ * Lerps between two colors by the specified amount.
+ * 
+ * @param   { int }     color1    The first (start) color.
+ * @param   { int }     color2    The second (end) color.
+ * @param   { float }   fAmount   How much to lerp between the two colors.
+ * @return  { int }               The new color.
+*/
+int Graphics_lerp(int color1, int color2, float fAmount) {
+  int r1 = (color1 >> 16) % (1 << 8), r2 = (color2 >> 16) % (1 << 8);
+  int g1 = (color1 >> 8) % (1 << 8), g2 = (color2 >> 8) % (1 << 8);
+  int b1 = (color1 >> 0) % (1 << 8), b2 = (color2 >> 0) % (1 << 8);
+
+  return Graphics_RGB(
+    round(Math_lerp(r1 * 1.0, r2 * 1.0, fAmount)),
+    round(Math_lerp(g1 * 1.0, g2 * 1.0, fAmount)),
+    round(Math_lerp(b1 * 1.0, b2 * 1.0, fAmount))
+  );
 }
 
 /**

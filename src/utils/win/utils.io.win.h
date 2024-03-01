@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-02-29 23:38:49
+ * @ Modified time: 2024-03-01 09:10:41
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -36,6 +36,9 @@ void IO_init(struct IO *this) {
   SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 
     ENABLE_PROCESSED_OUTPUT |                       // We have to enable this first if we want Virtual Terminal Processing
     ENABLE_VIRTUAL_TERMINAL_PROCESSING);            // Virtual Terminal Processing lets us use ANSI escape sequences
+
+  // Enable Unicode character output
+  SetConsoleOutputCP(CP_UTF8);
 }
 
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-02-29 23:55:41
+ * @ Modified time: 2024-03-01 08:50:08
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -149,8 +149,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
     Buffer *pBuffer = Buffer_create(
       IO_getWidth(), 
       IO_getHeight(),
-      0xffffff,
-      0x000000);
+      0x000000,
+      0xffffff);
 
     AnimationManager_createAnimation(
       &this->animationManager, "intro-animation",

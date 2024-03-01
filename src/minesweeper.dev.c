@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-02-29 22:01:58
+ * @ Modified time: 2024-03-01 09:10:58
  * @ Description:
  * 
  * The main game file.
@@ -19,6 +19,7 @@
 #include "utils/utils.io.h"
 
 #include <stdio.h>
+#include <wchar.h>
 
 int main() {
 
@@ -40,6 +41,12 @@ int main() {
 
   IO io;
   IO_init(&io);
+
+  wchar_t *testString = L"Hello world ███╗   ███╗██╗███╗   ██╗███████╗███████╗██╗    ██╗███████╗███████╗██████╗ ███████╗██████╗ ";
+
+
+  wprintf(testString);
+
 
   while(1);
 

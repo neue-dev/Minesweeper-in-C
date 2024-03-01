@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-01 00:41:01
+ * @ Modified time: 2024-03-01 08:57:14
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -41,6 +41,9 @@ struct Buffer {
   int dWidth;                                                         // The maximum width of the buffer (in characters).
   int dHeight;                                                        // The maximum height of the buffer (in lines).
 
+  int dDefaultFG;
+  int dDefaultBG;
+
   char cContentArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];            // An array that stores the string contents of each of the lines in the buffer.
 
   int dContextCount;                                                  // How many contexts we currently have
@@ -78,6 +81,9 @@ Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, int dDefaultFG, int d
   this->dWidth = dWidth < BUFFER_MAX_WIDTH ? dWidth : BUFFER_MAX_WIDTH;
   this->dHeight = dHeight < BUFFER_MAX_HEIGHT ? dHeight : BUFFER_MAX_HEIGHT;
 
+  // Set the default config of the styling
+  this->dDefaultFG = dDefaultFG;
+  this->dDefaultBG = dDefaultBG;
   this->sDefaultContext = Graphics_getCodeFGBG(dDefaultFG, dDefaultBG);
 
   // No contexts at the moment
@@ -147,11 +153,8 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
 
 /**
  * Creates a context within the buffer.
- * A context is a basically a rectangular slice of the 2d array where a certain style
+ * In this case, a context is a basically a rectangular slice of the 2d array where a certain style
  *    (be it a color change or something else) is applied to that slice.
- * 
- * Note that the way this function is implemented means that it will only work for non-overlapping
- *    recatngles (contexts). When they overlap, things MAY break.
  * 
  * @param   { Buffer * }  this      The buffer to modify.
  * @param   { int }       x         The x-coordinate where the context begins in the buffer.
@@ -161,7 +164,7 @@ void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
  * @param   { int }       colorFG   The color of the foreground within the context.
  * @param   { int }       colorBG   The color of the background within the context.
 */
-void Buffer_context(Buffer *this, int x, int y, int w, int h, int colorFG, int colorBG) {
+void Buffer_contextRect(Buffer *this, int x, int y, int w, int h, int colorFG, int colorBG) {
   int i, j;
 
   // Can't overload ourselves
@@ -169,24 +172,113 @@ void Buffer_context(Buffer *this, int x, int y, int w, int h, int colorFG, int c
     return;
 
   // The user didn't specify anything to define the context
-  if(colorBG < 0 && colorBG < 0)
+  if(colorFG < 0 && colorBG < 0)
     return;
 
   // Append the new context
   if(colorFG < 0)
-    this->sContextArray[this->dContextCount] = Graphics_getCodeBG(colorBG);
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeBG(colorBG);
   else if(colorBG < 0)
-    this->sContextArray[this->dContextCount] = Graphics_getCodeFG(colorFG);
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFG(colorFG);
   else
-    this->sContextArray[this->dContextCount] = Graphics_getCodeFGBG(colorFG, colorBG);
-
-  // Increment the context length
-  this->dContextCount++;
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFGBG(colorFG, colorBG);
 
   // Set the appropriate context values to the index + 1 of the created context
   for(i = y; i < y + h && i < this->dHeight; i++) 
     for(j = x; j < x + w && j < this->dWidth; j++) 
-      this->dContextMask[i][j] = this->dContextCount;
+      if(i >= 0 && j >= 0)
+        this->dContextMask[i][j] = this->dContextCount;
+
+}
+
+/**
+ * Creates a circular context within the buffer.
+ * A context here is a basically a circular slice of the 2d array where a certain style
+ *    (be it a color change or something else) is applied to that slice.
+ * 
+ * @param   { Buffer * }  this      The buffer to modify.
+ * @param   { int }       x         The x-coordinate where the context is centered in the buffer.
+ * @param   { int }       y         The y-coordinate where the context is centered in the buffer.
+ * @param   { int }       w         The radius of the context area.
+ * @param   { int }       colorFG   The color of the foreground within the context.
+ * @param   { int }       colorBG   The color of the background within the context.
+*/
+void Buffer_contextCircle(Buffer *this, int x, int y, int r, int colorFG, int colorBG) {
+  int i, j;
+
+  // Minimum radius would be 1
+  if(r < 1)
+    return;
+
+  // Can't overload ourselves
+  // The plus 2 is cuz we're adding three new contexts
+  if(this->dContextCount + 2 >= BUFFER_MAX_CONTEXTS)
+    return;
+
+  // The user didn't specify anything to define the context
+  if(colorFG < 0 && colorBG < 0)
+    return;
+
+  // Append the new contexts
+  if(colorFG < 0) {
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeBG(colorBG);
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeBG(Graphics_lerp(this->dDefaultBG, colorBG, 0.8));
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeBG(Graphics_lerp(this->dDefaultBG, colorBG, 0.5));
+
+  } else if(colorBG < 0) {
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFG(colorFG);
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFG(Graphics_lerp(this->dDefaultFG, colorFG, 0.8));
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFG(Graphics_lerp(this->dDefaultFG, colorFG, 0.5));
+
+  } else {
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFGBG(colorFG, colorBG);
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFGBG(
+      Graphics_lerp(this->dDefaultFG, colorBG, 0.8),
+      Graphics_lerp(this->dDefaultBG, colorBG, 0.8));
+    this->sContextArray[this->dContextCount++] = Graphics_getCodeFGBG(
+      Graphics_lerp(this->dDefaultFG, colorBG, 0.5),
+      Graphics_lerp(this->dDefaultBG, colorBG, 0.5));
+      
+  }
+
+  // Set the appropriate context values to the index + 1 of the created context
+  // Note that we do r * 2 along the x because the height of a character is twice its width
+  for(i = y - r; i < y + r && i < this->dHeight; i++) 
+    for(j = x - r * 2; j < x + r * 2 && j < this->dWidth; j++) 
+      if(i >= 0 && j >= 0) {
+        
+        // I find it weird how / 5.0 produces better results than / 4.0, even though
+        //    mathematically / 4.0 makes more sense in this context.
+        if(
+          round(
+            (i - y + 0.5) * (i - y + 0.5) + 
+            (j - x + 0.5) * (j - x + 0.5) / 5.0
+          ) 
+          <= (r - 1) * (r - 1))
+          
+          this->dContextMask[i][j] = this->dContextCount - 2;
+        
+        // Don't mind the unorthodox formatting; this is just to see the form of the expressions
+        //    much more clearly. Also, these are just here to shade the circles differently.
+        else if(
+          round(
+            (i - y + 0.5) * (i - y + 0.5) + 
+            (j - x + 0.5) * (j - x + 0.5) / 4.0
+          ) 
+          < r * r)
+          
+          this->dContextMask[i][j] = this->dContextCount - 1;
+        
+        // The outermost edges of the circle bleed off into the background.
+        else if(
+          round(
+            (i - y + 0.5) * (i - y + 0.5) + 
+            (j - x + 0.5) * (j - x + 0.5) / 5.0
+          ) 
+          <= r * r)
+          
+          this->dContextMask[i][j] = this->dContextCount;
+      }
 
 }
       

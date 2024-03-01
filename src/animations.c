@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-01 00:51:29
+ * @ Modified time: 2024-03-01 08:57:29
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically,
@@ -168,31 +168,36 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
       }
     }
 
-    Buffer_context(pBuffer, 
+    Buffer_contextRect(pBuffer, 
+      0, 0,
+      dWidth, dHeight, 
+      0xffffff, 0x000000);
+
+    Buffer_contextRect(pBuffer, 
       0, 0,
       dWidth - 1, dHeight, 
       0x000000, 0x000000);
 
-    Buffer_context(pBuffer, 
+    Buffer_contextRect(pBuffer, 
       10, 5,
       dWidth - 20, dHeight - 10, 
       0xdd2121, 0xdd2121);
 
-    Buffer_context(pBuffer, 
+    Buffer_contextRect(pBuffer, 
       12, 6,
       dWidth - 24, dHeight - 12, 
       0x000000, 0xffffff);
 
     // Fun squares
-    // Buffer_context(pBuffer, 
-    //   this->dRoundStates[0], 
-    //   this->dRoundStates[1],
-    //   10, 5, 0xffffff, 0x0000dd);
+    Buffer_contextRect(pBuffer, 
+      this->dRoundStates[0], 
+      this->dRoundStates[1],
+      10, 5, 0xffffff, 0x0000dd);
 
-    // Buffer_context(pBuffer, 
-    //   this->dRoundStates[2], 
-    //   this->dRoundStates[3],
-    //   10, 5, 0xffffff, 0xdd0000);
+    Buffer_contextCircle(pBuffer, 
+      this->dRoundStates[2], 
+      this->dRoundStates[3],
+      3, 0x000000, 0xcccccc);
 
     for(i = 10; i >= 0; i--) {
       Buffer_write(pBuffer, 
