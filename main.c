@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-02-29 23:19:38
+ * @ Modified time: 2024-03-02 10:15:49
  * 
  *               _                                                   
  *    ____ ___  (_)___  ___  ______      _____  ___  ____  ___  _____
@@ -50,11 +50,14 @@ int main(int argc, char *argv[]) {
       
       // Warning, in case conhost doesn't execute
       system("cls");
-      printf("\n\n\tThe game has been compiled! If you are currently on Windows 11:\n\n");
-      printf("\t\t(1) Launch the Windows Terminal.\n");
-      printf("\t\t(2) Type \"conhost\".\n");
-      printf("\t\t(3) Type \"main run\" after launching conhost.\n\n");
-      printf("\tNote that we need conhost because the program kinda breaks on Windows 11.\n\n");
+      printf("\x1b[0;0m");
+      printf("\n\n\tThe game has been compiled! If you are on \x1b[1;34mWindows 10\x1b[0;0m, just do:\n\n");
+      printf("\t\t(1) \x1b[38;5;111m\"main run\"\x1b[0;0m\n\n");
+      printf("\n\n\tOtherwise, if you are currently on \x1b[1;34mWindows 11\x1b[0;0m:\n\n");
+      printf("\t\t(1) Launch the \x1b[38;5;111mWindows Terminal.\x1b[0;0m\n");
+      printf("\t\t(2) Type \x1b[38;5;111m\"conhost\"\x1b[0;0m.\n");
+      printf("\t\t(3) Type \x1b[38;5;111m\"main run\"\x1b[0;0m after launching conhost.\n\n");
+      printf("\t\tNote that we need conhost because the program kinda breaks on Windows 11.\n\n");
     }
   #else
     sprintf(command, "gcc -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.log.unix.txt -lrt -lm", filename);
