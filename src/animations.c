@@ -1,15 +1,20 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-02 21:34:59
+ * @ Modified time: 2024-03-02 23:23:30
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically,
  *    functions that increment the animation over time).
  */
 
+#ifndef ANIMATIONS_
+#define ANIMATIONS_
+
+#include "./utils/utils.asset.h"
 #include "./utils/utils.animation.h"
 #include "./utils/utils.buffer.h"
+#include "./utils/utils.page.h"
 #include "./utils/utils.types.h"
 
 #include <math.h>
@@ -23,103 +28,27 @@
  * ////////// 
 */
 
-void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
+void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
   int i, cumulativeLen = 0;
   int dWidth = IO_getWidth();
   int dHeight = IO_getHeight();
   
   Animation *this = (Animation *) Args_Animation;
-  Buffer *pBuffer = (Buffer *) Args2_Buffer;
+  Page *pPage = (Page *) Args2_Page;
 
-  char *title[11][6] = {
-    {
-      "███╗   ███╗",
-      "████╗ ████║",
-      "██╔████╔██║",
-      "██║╚██╔╝██║",
-      "██║ ╚═╝ ██║",
-      "╚═╝     ╚═╝",
-    },
-    {
-      "██╗",
-      "██║",
-      "██║",
-      "██║",
-      "██║",
-      "╚═╝",
-    },
-    {
-      "███╗   ██╗",
-      "████╗  ██║",
-      "██╔██╗ ██║",
-      "██║╚██╗██║",
-      "██║ ╚████║",
-      "╚═╝  ╚═══╝",
-    },
-    {
-      "███████╗",
-      "██╔════╝",
-      "█████╗  ",
-      "██╔══╝  ",
-      "███████╗",
-      "╚══════╝",
-    },
-    {
-      "███████╗",
-      "██╔════╝",
-      "███████╗",
-      "╚════██║",
-      "███████║",
-      "╚══════╝",
-    },
-    {
-      "██╗    ██╗",
-      "██║    ██║",
-      "██║ █╗ ██║",
-      "██║███╗██║",
-      "╚███╔███╔╝",
-      " ╚══╝╚══╝ ",
-    },
-    {
-      "███████╗",
-      "██╔════╝",
-      "█████╗  ",
-      "██╔══╝  ",
-      "███████╗",
-      "╚══════╝",
-    },
-    {
-      "███████╗",
-      "██╔════╝",
-      "█████╗  ",
-      "██╔══╝  ",
-      "███████╗",
-      "╚══════╝",
-    },
-    {
-      "██████╗ ",
-      "██╔══██╗",
-      "██████╔╝",
-      "██╔═══╝ ",
-      "██║     ",
-      "╚═╝     ",
-    },
-    {
-      "███████╗",
-      "██╔════╝",
-      "█████╗  ",
-      "██╔══╝  ",
-      "███████╗",
-      "╚══════╝",
-    },
-    {
-      "██████╗ ",
-      "██╔══██╗",
-      "██████╔╝",
-      "██╔══██╗",
-      "██║  ██║",
-      "╚═╝  ╚═╝",
-    }
+  char **titleSymbol;
+  char *titleGlyphs[11] = {
+    "title-font-m",
+    "title-font-i",
+    "title-font-n",
+    "title-font-e",
+    "title-font-s",
+    "title-font-w",
+    "title-font-e",
+    "title-font-e",
+    "title-font-p",
+    "title-font-e",
+    "title-font-r",
   };
 
   // Initialization stage
@@ -138,7 +67,8 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
       this->dStates[i * 2 + 1 + 4] = 12;
       this->fStates[i * 2 + 1 + 4] = i * i * i * 10.0 - 128.0;
 
-      cumulativeLen += String_length(title[i][0]);
+      titleSymbol = AssetManager_getAssetText(pPage->pSharedAssetManager, titleGlyphs[i]);
+      cumulativeLen += String_length(titleSymbol[0]);
     }
 
 
@@ -167,42 +97,45 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Buffer) {
         this->fStates[i * 2 + 1 + 4] = rand() % IO_getHeight() + IO_getHeight() * ((rand() % 2) * 2 - 1);
       }
     }
-
-    Buffer_contextRect(pBuffer, 
+    
+    Buffer_contextRect(pPage->pPageBuffer, 
       0, 0,
       dWidth, dHeight, 
       0xffffff, 0x000000);
 
-    Buffer_contextRect(pBuffer, 
+    Buffer_contextRect(pPage->pPageBuffer, 
       0, 0,
       dWidth - 1, dHeight, 
       0x000000, 0x000000);
 
-    Buffer_contextRect(pBuffer, 
+    Buffer_contextRect(pPage->pPageBuffer, 
       10, 5,
       dWidth - 20, dHeight - 10, 
       0xdd2121, 0xdd2121);
 
-    Buffer_contextRect(pBuffer, 
+    Buffer_contextRect(pPage->pPageBuffer, 
       12, 6,
       dWidth - 24, dHeight - 12, 
       0x000000, 0xffffff);
 
     // Fun squares
-    Buffer_contextRect(pBuffer, 
+    Buffer_contextRect(pPage->pPageBuffer, 
       this->dRoundStates[0], 
       this->dRoundStates[1],
       10, 5, 0xffffff, 0x0000dd);
 
-    Buffer_contextCircle(pBuffer, 
+    Buffer_contextCircle(pPage->pPageBuffer, 
       this->dRoundStates[2], 
       this->dRoundStates[3],
       3, 0x000000, 0xcccccc);
 
     for(i = 0; i < 11; i++) {
-      Buffer_write(pBuffer, 
+      Buffer_write(pPage->pPageBuffer, 
         this->dStates[4 + i * 2], this->dRoundStates[4 + i * 2 + 1], 
-        6, title[i]);
+        AssetManager_getAssetHeight(pPage->pSharedAssetManager, titleGlyphs[i]), 
+        AssetManager_getAssetText(pPage->pSharedAssetManager, titleGlyphs[i]));
     }
   }
 }
+
+#endif

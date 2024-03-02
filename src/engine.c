@@ -1,13 +1,17 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-02 21:55:31
+ * @ Modified time: 2024-03-02 23:22:12
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
  * This file is only meant to be included once, thus the lack of inclusion guards.
  */
 
+#ifndef ENGINE_
+#define ENGINE_
+
+#include "./utils/utils.page.h"
 #include "./utils/utils.animation.h"
 #include "./utils/utils.asset.h"
 #include "./utils/utils.buffer.h"
@@ -16,7 +20,7 @@
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
 
-#include "./animations.c"
+#include "./pages.c"
 #include "./events.c"
 
 // Some definitions for identifiers
@@ -41,8 +45,11 @@ typedef struct Engine Engine;
 */
 struct Engine {
 
-  AnimationManager animationManager;  // Deals with anims
-  AssetManager assetManager;          // Deals with the game assets
+  // Some front end managers
+  AssetManager assetManager;          // Deals with the game assets; this is shared across pages
+  PageManager pageManager;            // The page manager
+
+  // Some back end managers
   EventManager eventManager;          // Deals with events
   ThreadManager threadManager;        // Manages the different threads of the program
   
@@ -78,8 +85,9 @@ void Engine_init(Engine *this) {
   /**
    * Initialize the managers
   */
-  AnimationManager_init(&this->animationManager);
   AssetManager_init(&this->assetManager);
+  PageManager_init(&this->pageManager, &this->assetManager);
+
   EventManager_init(&this->eventManager, &this->keyEvents);
   ThreadManager_init(&this->threadManager);
 
@@ -87,6 +95,11 @@ void Engine_init(Engine *this) {
    * Creates all our assets
   */
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/title-font.txt");
+
+  /**
+   * Creates all our pages
+  */
+  PageManager_createPage(&this->pageManager, "intro", PageConfigurer_intro);
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
@@ -165,27 +178,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
 
   // Because IO operations are expensive, we want to do them only when a change occurs
   if(!this->keyEvents.bHasBeenRead || 1) {
-    Buffer *pBuffer = Buffer_create(
-      IO_getWidth(), 
-      IO_getHeight(),
-      0x000000,
-      0xffffff);
-
-    AnimationManager_createAnimation(
-      &this->animationManager, "intro-animation",
-      AnimationHandler_intro, pBuffer, 0);
-    
-    AnimationManager_updateAll(&this->animationManager);
-
-    char *sSigature[1] = {
-      " [ MMMM @2024 ] "
-    };
-
-    Buffer_write(pBuffer, 108, 30, 1, sSigature);
-
-    IO_resetCursor();
-    Buffer_print(pBuffer);
-    Buffer_kill(pBuffer);
+    PageManager_updatePage(&this->pageManager, "intro");
 
     KeyEvents_read(&this->keyEvents);
   }
@@ -205,3 +198,5 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
 int Engine_getState(Engine *this) {
   return this->bState;
 }
+
+#endif

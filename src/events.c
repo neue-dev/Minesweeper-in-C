@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-02 16:57:53
+ * @ Modified time: 2024-03-02 23:09:45
  * @ Description:
  * 
  * This file contains definitions for event listeners and event handlers.
@@ -12,6 +12,9 @@
  *    of utils.event.h (its up to the programmer how to define the state stored after
  *    events are fired and handled).
  */
+
+#ifndef EVENTS_
+#define EVENTS_
 
 #include "./utils/utils.io.h"
 #include "./utils/utils.event.h"
@@ -161,3 +164,5 @@ void EventHandler_keyPressed(p_obj pArgs_Event, p_obj pArgs2_KeyEvents) {
   // Change the boolean to say it hasnt been read
   pKeyEvents->bHasBeenRead = 0;
 }
+
+#endif

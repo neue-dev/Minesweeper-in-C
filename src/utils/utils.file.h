@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-02 21:54:56
+ * @ Modified time: 2024-03-02 22:28:57
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
