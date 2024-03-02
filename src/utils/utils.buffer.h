@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-02 00:59:28
+ * @ Modified time: 2024-03-02 16:25:38
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -18,9 +18,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define BUFFER_MAX_WIDTH 1 << 8
-#define BUFFER_MAX_HEIGHT 1 << 6
-#define BUFFER_MAX_CONTEXTS 1 << 10
+#define BUFFER_MAX_WIDTH (1 << 8)
+#define BUFFER_MAX_HEIGHT (1 << 6)
+#define BUFFER_MAX_CONTEXTS (1 << 10)
 
 typedef struct Buffer Buffer;
 
@@ -36,7 +36,6 @@ typedef struct Buffer Buffer;
  * Buffer class yes
  * @class
 */
-
 struct Buffer {
   int dWidth;                                                         // The maximum width of the buffer (in characters).
   int dHeight;                                                        // The maximum height of the buffer (in lines).

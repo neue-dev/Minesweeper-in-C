@@ -1,15 +1,15 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-02-28 12:27:39
+ * @ Modified time: 2024-03-02 16:17:54
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
  *    generating mines, comparing flags, and computing adjacent mines.
  */
 
-#ifndef GAME_FIELD
-#define GAME_FIELD
+#ifndef GAME_FIELD_
+#define GAME_FIELD_
 
 #include "../utils/utils.grid.h"
 

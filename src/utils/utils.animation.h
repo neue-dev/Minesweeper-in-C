@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-03-01 00:35:29
+ * @ Modified time: 2024-03-02 16:25:13
  * @ Description:
  * 
  * An animation class.
@@ -21,8 +21,8 @@
 #define ANIMATION_FLOAT_STATE 'f'
 #define ANIMATION_INT_STATE 'i'
 
-#define ANIMATION_MAX_STATES 256
-#define ANIMATION_MAX_COUNT 256
+#define ANIMATION_MAX_STATES (1 << 8)
+#define ANIMATION_MAX_COUNT (1 << 8)
 
 typedef struct Animation Animation;
 typedef struct AnimationManager AnimationManager;

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-02-28 18:15:08
+ * @ Modified time: 2024-03-02 16:12:03
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -37,6 +37,7 @@ enum EventType {
   EVENT_MOUSE,              // Not even sure if i'll implement mouse events
                             //    Consider it just a placeholder so the enum
                             //    doesn't have a single lonely type ahahaha
+  EVENT_TIME,
 };
 
 /**
