@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-02 18:23:54
+ * @ Modified time: 2024-03-02 20:26:04
  * @ Description:
  * 
  * The main game file.
@@ -10,6 +10,7 @@
 #include "./engine.c"
 #include "game/field.obj.h"
 
+#include "utils/utils.asset.h"
 #include "utils/utils.file.h"
 #include "utils/utils.debug.h"
 #include "utils/utils.animation.h"
@@ -45,17 +46,29 @@ int main() {
   // IO_init(&io);
   // IO_exit(&io);
 
-  File *pFile = File_create("./src/assets/title-font.txt");
+  char *test[10] = {
+    "Hello world",
+    "ello worldH",
+    "Hello world",
+    "ello worldH",
+    "Hello world",
+    "ello worldH",
+    "Hello world",
+    "ello worldH",
+    "Hello world",
+    "ello worldH",
+  };
 
-  int i = 0;
-  char *sOutput[10];
-  
-  File_read(pFile, 10, sOutput);
+  AssetManager am;
+  AssetManager_init(&am);
 
+  AssetManager_createAsset(&am, "test", 10, test);
+  AssetManager_readAssetFile(&am, "//", "./src/assets/title-font.txt");
 
-  for(i = 0; i < 10; i++)
-    printf("%s", sOutput[i]);
+  char **testOutput = AssetManager_getAssetText(&am, "title-font-m");
 
+  for(int i = 0; i < 6; i++)
+    printf("\n%s", testOutput[i]);
 
   while(1);
 

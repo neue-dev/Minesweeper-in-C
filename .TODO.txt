@@ -1,8 +1,8 @@
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 
-REMOVE THE DEBUGGER FILE, BUT SPECIFY THAT IT WAS USED OR SMTH (?)
-
+LOOK FOR ALL PLACES WHERE WE INCREMENT someCount++ AFTER ADDING TO A HASHMAP OR SMTH, AND MAKE HashMap_add() return a boolean
+this way, if HashMap_add fails, we dont increment someCount++
 
 1. STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
 2  Instead of using IO_getWidth each time, have an event listener and store the state in the engine OR 

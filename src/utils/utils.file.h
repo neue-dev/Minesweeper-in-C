@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-02 18:27:02
+ * @ Modified time: 2024-03-02 19:41:57
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -86,9 +86,10 @@ void File_kill(File *this) {
  * 
  * @param   { File * }    this            The file to read from.
  * @param   { int }       n               How many lines we have in our output buffer.
+ * @param   { int * }     h               The actual height of the output buffer.
  * @param   { char ** }   sOutputBuffer   We're to store the file contents.
 */
-void File_read(File *this, int n, char **sOutputBuffer) {
+void File_read(File *this, int n, int *h, char **sOutputBuffer) {
   int i = 0;
   char *s = String_alloc(FILE_MAX_LINE_LEN);
 
@@ -104,10 +105,19 @@ void File_read(File *this, int n, char **sOutputBuffer) {
 
     // We shouldn't overflow our output buffer OR read too many lines
     if(i >= n || i >= FILE_MAX_LINES) {
+      sOutputBuffer[i - 1] = "\0";
+
       fclose(this->pFile);
       return;
     }
   }
+
+  // Always set the last line to a null string
+  if(i + 1 < n) sOutputBuffer[i + 1] = "\0";
+  else sOutputBuffer[i] = "\0";
+
+  // Set the height
+  *h = i;
 
   // Close the file
   fclose(this->pFile);
