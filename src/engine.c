@@ -1,11 +1,13 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-02 23:22:12
+ * @ Modified time: 2024-03-02 23:31:58
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
- * This file is only meant to be included once, thus the lack of inclusion guards.
+ * Note that this file is annotated differently (demarcated with more comments) because of how
+ *    verbose some of our APIs are... theyre kinda bulky so it looks prettier having a lot
+ *    of separators around.
  */
 
 #ifndef ENGINE_
@@ -38,6 +40,14 @@
 typedef struct Engine Engine;
 
 /**
+ * //
+ * ////
+ * //////    Engine struct
+ * ////////
+ * ////////// 
+*/
+
+/**
  * The engine struct handles the interactions between the different utility libraries.
  * It only deals with the libraries that have backend functionality.
  * 
@@ -66,6 +76,14 @@ void Engine_init(Engine *this);
 void Engine_main(p_obj pArgs_Engine, int tArg_NULL);
 
 void Engine_exit(Engine *this);
+
+/**
+ * //
+ * ////
+ * //////    Engine init
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Initializes the engine.
@@ -151,6 +169,14 @@ void Engine_init(Engine *this) {
 }
 
 /**
+ * //
+ * ////
+ * //////    Engine exit
+ * ////////
+ * ////////// 
+*/
+
+/**
  * Do some clean up after the entire program runs.
  * Frees whatever was allocated.
  * 
@@ -164,6 +190,14 @@ void Engine_exit(Engine *this) {
   // Exit the thread manager last
   ThreadManager_exit(&this->threadManager);
 }
+
+/**
+ * //
+ * ////
+ * //////    Engine main
+ * ////////
+ * ////////// 
+*/
 
 /**
  * The main thread of the engine.
@@ -186,6 +220,14 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   if(this->keyEvents.cLatest == 'q')
     this->bState = 0;
 }
+
+/**
+ * //
+ * ////
+ * //////    Engine getState
+ * ////////
+ * ////////// 
+*/
 
 /**
  * Returns the state of the engine.

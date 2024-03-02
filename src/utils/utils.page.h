@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-02 23:21:37
+ * @ Modified time: 2024-03-02 23:29:02
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, and an animation manager. 
@@ -18,6 +18,14 @@
 
 typedef struct Page Page;
 typedef struct PageManager PageManager;
+
+/**
+ * //
+ * ////
+ * //////    Page class
+ * ////////
+ * ////////// 
+*/
 
 /**
  * The page class bundles together a buffer, a shared asset manager, and its own animation manager.
@@ -101,6 +109,14 @@ void Page_update(Page *this) {
   Buffer_print(this->pPageBuffer);
   Buffer_kill(this->pPageBuffer);
 }
+
+/**
+ * //
+ * ////
+ * //////    PageManager struct
+ * ////////
+ * ////////// 
+*/
 
 /**
  * The page manager struct just abstracts page creation and handling for us.

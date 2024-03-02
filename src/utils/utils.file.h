@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-02 22:28:57
+ * @ Modified time: 2024-03-02 23:28:04
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -21,7 +21,15 @@
 typedef struct File File;
 
 /**
- * This file helps abstract the functions and services offered by the stdio library
+ * //
+ * ////
+ * //////    File class
+ * ////////
+ * ////////// 
+*/
+
+/**
+ * This file helps encapsulate  the functions and services offered by the stdio library
  *    with regard to file handling. This makes things more convenient and customizable
  *    for us developers. 
  * 

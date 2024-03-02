@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-03-02 22:47:01
+ * @ Modified time: 2024-03-02 23:29:45
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -11,6 +11,14 @@
 #ifndef UTILS_TYPES_
 #define UTILS_TYPES_
 
+/**
+ * //
+ * ////
+ * //////    Standard library types
+ * ////////
+ * ////////// 
+*/
+
 // Some primitives
 // Gives us fixed-width data types
 //    (1) uint8_t
@@ -18,6 +26,14 @@
 //    (3) uint32_t
 //    (4) uint64_t
 #include <inttypes.h>
+
+/**
+ * //
+ * ////
+ * //////    Custom type definitions
+ * ////////
+ * ////////// 
+*/
 
 // FOR THE CODE BELOW (parameter object pointers):
 // Note that we have to do this because some of the Windows API requires us to pass
