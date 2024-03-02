@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-02 00:53:37
+ * @ Modified time: 2024-03-02 18:23:54
  * @ Description:
  * 
  * The main game file.
@@ -10,6 +10,8 @@
 #include "./engine.c"
 #include "game/field.obj.h"
 
+#include "utils/utils.file.h"
+#include "utils/utils.debug.h"
 #include "utils/utils.animation.h"
 #include "utils/utils.hashmap.h"
 #include "utils/utils.graphics.h"
@@ -39,18 +41,21 @@ int main() {
   // for(int i = 0; i < 16; i++)
   //   printf("%s\n", sKeys[i]);
 
-  IO io;
-  IO_init(&io);
+  // IO io;
+  // IO_init(&io);
+  // IO_exit(&io);
 
-  char *testString = "╗█";
-  char *c = testString;
+  File *pFile = File_create("./src/assets/title-font.txt");
 
-  while(*c)
-    printf("%d ", (unsigned char) *c >> 6) && c++;
+  int i = 0;
+  char *sOutput[10];
+  
+  File_read(pFile, 10, sOutput);
 
-  // Debug_log("%s", "test");
 
-  IO_exit(&io);
+  for(i = 0; i < 10; i++)
+    printf("%s", sOutput[i]);
+
 
   while(1);
 

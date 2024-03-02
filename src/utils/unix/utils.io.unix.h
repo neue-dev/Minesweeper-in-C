@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:12:12
- * @ Modified time: 2024-02-29 21:29:34
+ * @ Modified time: 2024-03-02 17:07:00
  * @ Description:
  * 
  * Low level handling of IO functionalities on Unix environments.
@@ -127,6 +127,13 @@ void IO_clear() {
   // \e[2J  Erases entire screen
   // \e[3J  Erases saved lines
   printf("\e[H\e[2J\e[3J");
+}
+
+/**
+ * Flush the current output buffer, if ever there's still stuff there.
+*/
+void IO_flushBuffer() {
+  fflush(stdout);
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-17 20:09:01
- * @ Modified time: 2024-03-01 09:10:41
+ * @ Modified time: 2024-03-02 17:06:38
  * @ Description:
  * 
  * Low level handling of IO functionalities on Windows.
@@ -157,6 +157,13 @@ void IO_clear() {
 
   // I know system is bad but...
   system("cls");
+}
+
+/**
+ * Flush the current output buffer, if ever there's still stuff there.
+*/
+void IO_flushBuffer() {
+  fflush(stdout);
 }
 
 /**
