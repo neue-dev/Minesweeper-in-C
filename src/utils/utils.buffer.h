@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-02 17:11:15
+ * @ Modified time: 2024-03-02 21:34:44
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -411,9 +411,6 @@ void Buffer_print(Buffer *this) {
 
   // Windows and Unix have different preferences over which output functions are faster
   String_print(sBlob);
-
-  // In case (for some reason) it hasnt flushed everything in the buffer
-  IO_flushBuffer();
   
   // Clean up all the stuff we used
   for(i = 0; i < this->dContextCount; i++)

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-02 20:26:04
+ * @ Modified time: 2024-03-02 21:36:38
  * @ Description:
  * 
  * The main game file.
@@ -65,10 +65,12 @@ int main() {
   AssetManager_createAsset(&am, "test", 10, test);
   AssetManager_readAssetFile(&am, "//", "./src/assets/title-font.txt");
 
-  char **testOutput = AssetManager_getAssetText(&am, "title-font-m");
+  printf("heloo dord");
 
-  for(int i = 0; i < 6; i++)
-    printf("\n%s", testOutput[i]);
+  // char **testOutput = AssetManager_getAssetText(&am, "title-font-m");
+
+  // for(int i = 0; i < 6; i++)
+  //   printf("\n%s", testOutput[i]);
 
   while(1);
 

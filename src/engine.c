@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-02 16:55:09
+ * @ Modified time: 2024-03-02 21:55:31
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -42,6 +42,7 @@ typedef struct Engine Engine;
 struct Engine {
 
   AnimationManager animationManager;  // Deals with anims
+  AssetManager assetManager;          // Deals with the game assets
   EventManager eventManager;          // Deals with events
   ThreadManager threadManager;        // Manages the different threads of the program
   
@@ -61,6 +62,7 @@ void Engine_exit(Engine *this);
 
 /**
  * Initializes the engine.
+ * This function is annotated differently because it does a lot of things.
  * 
  * @param   { Engine * }  this      The engine object.
 */
@@ -69,23 +71,35 @@ void Engine_init(Engine *this) {
   // The engine is currently running
   this->bState = 1;
 
+  // ! remove this and embed it into the engine itself (?)
   // Initialize user-defined state manager
   KeyEvents_init(&this->keyEvents);
 
-  // Initialize the managers
+  /**
+   * Initialize the managers
+  */
   AnimationManager_init(&this->animationManager);
+  AssetManager_init(&this->assetManager);
   EventManager_init(&this->eventManager, &this->keyEvents);
   ThreadManager_init(&this->threadManager);
 
-  // Create event listeners and handlers
+  /**
+   * Creates all our assets
+  */
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/title-font.txt");
+
+  /**
+   * Creates event listeners and handlers, alongside their mutexes
+  */
   EventManager_createEventListener(&this->eventManager, EVENT_KEY, EventListener_keyPressed);
   EventManager_createEventHandler(&this->eventManager, EVENT_KEY, EventHandler_keyPressed);
 
-  // Create a mutex for event listeners and event handlers
   ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_LISTENERS_MUTEX);              
   ThreadManager_createMutex(&this->threadManager, ENGINE_EVENT_HANDLERS_MUTEX);              
 
-  // Create a thread for the event listeners
+  /**
+   * Thread for event listeners
+  */
   ThreadManager_createThread(
     &this->threadManager, 
     
@@ -96,7 +110,9 @@ void Engine_init(Engine *this) {
     &this->eventManager,                          // The event manager
     EVENT_KEY);                                   // What type of event the thread triggers
 
-  // Create a thread for the event handlers
+  /**
+   * Thread for event handlers
+  */
   ThreadManager_createThread(
     &this->threadManager,
 
@@ -107,7 +123,9 @@ void Engine_init(Engine *this) {
     &this->eventManager,                          // The event manager
     0);                                           // A dummy value
 
-  // Create a thread for the main thread of the program
+  /**
+   * Thread for the main program
+  */
   ThreadManager_createThread(
     &this->threadManager,
     ENGINE_MAIN_THREAD,                           // The main thread
@@ -132,7 +150,6 @@ void Engine_exit(Engine *this) {
 
   // Exit the thread manager last
   ThreadManager_exit(&this->threadManager);
-
 }
 
 /**

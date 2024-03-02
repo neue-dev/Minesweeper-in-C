@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-02 20:25:11
+ * @ Modified time: 2024-03-02 21:55:10
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -245,7 +245,8 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
     bIsComment = 1;
 
     // Check if it isn't a comment
-    for(j = 0; j < dDelimeterLength; j++)
+    k = strlen(sAssetFileBuffer[i]);
+    for(j = 0; j < dDelimeterLength && j < k; j++)
       if(sDelimeter[j] != sAssetFileBuffer[i][j])
         bIsComment = 0;
 
@@ -254,7 +255,7 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
 
       // It's the end of an asset sprite
       if(strlen(sAssetFileBuffer[i]) <= dDelimeterLength + 1) {
-        
+
         // Create the asset
         AssetManager_createAsset(this, sName, dAssetInstanceBufferLength, sAssetInstanceBuffer);
 
@@ -297,7 +298,8 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
     String_kill(sAssetInstanceBuffer[i]);
 
   // Garbage collection
-  File_kill(pAssetFile);
+  if(pAssetFile != NULL)
+    File_kill(pAssetFile);
 }
 
 

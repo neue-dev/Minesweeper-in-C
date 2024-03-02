@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-02 19:41:57
+ * @ Modified time: 2024-03-02 21:54:56
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -73,11 +73,6 @@ File *File_create(char *sPath) {
  * @param		{ File * }		this	A pointer to the instance to deallocate.
 */
 void File_kill(File *this) {
-  
-  // Close the file before attempting to free
-  if(this->pFile != NULL)
-    fclose(this->pFile);
-
   free(this);
 }
 
