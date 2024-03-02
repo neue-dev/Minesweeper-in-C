@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-01 08:50:08
+ * @ Modified time: 2024-03-01 19:28:57
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -162,7 +162,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
       " [ MMMM @2024 ] "
     };
 
-    Buffer_write(pBuffer, 108, 30, strlen(sSigature[0]), 1, sSigature);
+    Buffer_write(pBuffer, 108, 30, 1, sSigature);
 
     IO_resetCursor();
     Buffer_print(pBuffer);

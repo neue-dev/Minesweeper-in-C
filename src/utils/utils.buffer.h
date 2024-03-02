@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-01 08:57:14
+ * @ Modified time: 2024-03-02 00:59:28
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -44,7 +44,10 @@ struct Buffer {
   int dDefaultFG;
   int dDefaultBG;
 
-  char cContentArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH];            // An array that stores the string contents of each of the lines in the buffer.
+  char cContentArray[BUFFER_MAX_HEIGHT][BUFFER_MAX_WIDTH][4];         // An array that stores the string contents of each of the lines in the buffer.
+                                                                      // The reason we multiply the width by 4 is because we have to account for the fact that
+                                                                      //    some of the characters we will be using might need more than 8 bytes to be
+                                                                      //    represented (in other words, more than one char unit).
 
   int dContextCount;                                                  // How many contexts we currently have
   char *sDefaultContext;                                              // The default ANSI escape sequence for the FG and BG color of the buffer
@@ -78,8 +81,8 @@ Buffer *Buffer_new() {
 Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, int dDefaultFG, int dDefaultBG) {
   int i, j;
 
-  this->dWidth = dWidth < BUFFER_MAX_WIDTH ? dWidth : BUFFER_MAX_WIDTH;
-  this->dHeight = dHeight < BUFFER_MAX_HEIGHT ? dHeight : BUFFER_MAX_HEIGHT;
+  this->dWidth = dWidth < BUFFER_MAX_WIDTH ? dWidth : BUFFER_MAX_WIDTH;       // The number of characters along each row
+  this->dHeight = dHeight < BUFFER_MAX_HEIGHT ? dHeight : BUFFER_MAX_HEIGHT;  // The number of rows for the buffer
 
   // Set the default config of the styling
   this->dDefaultFG = dDefaultFG;
@@ -93,7 +96,13 @@ Buffer *Buffer_init(Buffer *this, int dWidth, int dHeight, int dDefaultFG, int d
   // Also, initialize the context mask values to 0
   for(i = 0; i < BUFFER_MAX_HEIGHT; i++) {
     for(j = 0; j < BUFFER_MAX_WIDTH; j++) {
-      this->cContentArray[i][j] = 32;
+      this->cContentArray[i][j][0] = 32;
+    }
+  }
+  
+  // Initialize the contest mask and offset arrays to 0
+  for(i = 0; i < BUFFER_MAX_HEIGHT; i++) {
+    for(j = 0; j < BUFFER_MAX_WIDTH; j++) {
       this->dContextMask[i][j] = 0;
     }
   }
@@ -134,19 +143,52 @@ void Buffer_kill(Buffer *this) {
  * @param   { int }       h       The height of the area to write on.
  * @param   { char * }    sBlock  The text content to write onto the area.
 */
-void Buffer_write(Buffer *this, int x, int y, int w, int h, char *sBlock[]) {
-  int i, j;
+void Buffer_write(Buffer *this, int x, int y, int h, char *sBlock[]) {
+  int i, j, j2, k, w;  // j2 is the second iterator we will use in sBlock
 
   // Copy the characters onto the buffer, as long as it doesn't go beyond the edges
   for(i = y; i < y + h && i < this->dHeight; i++) {
-    for(j = x; j < x + w && j < this->dWidth; j++) {
+    w = strlen(sBlock[i - y]);
 
-      // We will permit negative passing values for cooler animations
-      if(i >= 0 && j >= 0)
-        
-        // This way, we can have text blocks that arent strictly rectangular
-        if(sBlock[i - y][j - x] != 32)
-          this->cContentArray[i][j] = sBlock[i - y][j - x];
+    // In case i is negative, since we're allowing that
+    if(i >= 0) {
+
+      // Go through each character
+      for(j = x, j2 = 0; j < this->dWidth && j2 < w; j++) {
+
+        // We will permit negative passing values for cooler animations
+        // So this check becomes necessary
+        if(j >= 0) {
+          
+          // This way, we can have text blocks that arent strictly rectangular
+          if(sBlock[i - y][j2] != 32) {
+            
+            // Copy the char
+            if(String_isChar(sBlock[i - y][j2])) {
+              this->cContentArray[i][j][0] = sBlock[i - y][j2++];
+
+            // The char occupies more than 1 byte
+            } else {
+              k = 0;
+              
+              // While we're within a compound character
+              do {
+                this->cContentArray[i][j][k++] = sBlock[i - y][j2++];
+                
+              } while(
+                !String_isChar(sBlock[i - y][j2]) &&
+                !String_isStartChar(sBlock[i - y][j2]));
+
+              while(k < 4)
+                this->cContentArray[i][j][k++] = 0;
+            }
+
+          // It's just a whitespace
+          } else {
+            j2++;
+          }
+        }
+      }
     }
   }
 }
@@ -297,7 +339,7 @@ void Buffer_print(Buffer *this) {
   // The current length of the blob
   // and the blob itself
   int dLen = 0;   
-  char *sBlob = String_alloc((this->dWidth + 1) * this->dHeight * 4);
+  char *sBlob = String_alloc(((this->dWidth) + 1) * this->dHeight << 3);
 
   // Iterate through the lines
   for(y = 0; y < this->dHeight; y++) {
@@ -349,15 +391,20 @@ void Buffer_print(Buffer *this) {
         }
       }
       
-      sBlob[dLen] = this->cContentArray[y][x];
-      dLen++;
+      if(String_isChar(this->cContentArray[y][x][0])) {
+        sBlob[dLen++] = this->cContentArray[y][x][0];
+
+      } else {
+        i = 0;
+
+        while(i < 4 && this->cContentArray[y][x][i])
+          sBlob[dLen++] = this->cContentArray[y][x][i++];
+      }
     }
 
     // The condition here fixed a massive problem WTF im so stupid
-    if(y + 1 < this->dHeight ) {
-      sBlob[dLen] = '\n';
-      dLen++;
-    } 
+    if(y + 1 < this->dHeight)
+      sBlob[dLen++] = '\n';
   }
 
   // Set the buffer size and print using puts(), then do garbage collection

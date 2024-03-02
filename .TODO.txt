@@ -1,6 +1,9 @@
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 
+REMOVE THE DEBUGGER FILE, BUT SPECIFY THAT IT WAS USED OR SMTH (?)
+
+
 1. STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
 2  Instead of using IO_getWidth each time, have an event listener and store the state in the engine OR 
     Just store the state in the engine

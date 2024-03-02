@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-01 09:10:58
+ * @ Modified time: 2024-03-02 00:53:37
  * @ Description:
  * 
  * The main game file.
@@ -42,11 +42,15 @@ int main() {
   IO io;
   IO_init(&io);
 
-  wchar_t *testString = L"Hello world ███╗   ███╗██╗███╗   ██╗███████╗███████╗██╗    ██╗███████╗███████╗██████╗ ███████╗██████╗ ";
+  char *testString = "╗█";
+  char *c = testString;
 
+  while(*c)
+    printf("%d ", (unsigned char) *c >> 6) && c++;
 
-  wprintf(testString);
+  // Debug_log("%s", "test");
 
+  IO_exit(&io);
 
   while(1);
 

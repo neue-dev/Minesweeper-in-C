@@ -3,6 +3,8 @@
 .VSCodeCounter/
 *.exe
 *.o
+.debug.txt
+utils.debug.h
 
 # Don't ignore the build files
 !build/
