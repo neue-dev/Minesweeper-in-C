@@ -1,19 +1,20 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-03 11:08:29
+ * @ Modified time: 2024-03-03 15:22:57
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
  *    a new event is fired. The events are stored as a chain (a queue / linked list)
  *    where only the reference to the head is stored and each event is resolved
  *    one after the other (FIFO).
- * Note that this library relies on the utils.thread.h implementation
+ * Note that this library is best coupled with the utils.thread.h library
  */
 
 #ifndef UTILS_EVENT_
 #define UTILS_EVENT_
 
+#include "./utils.hashmap.h"
 #include "./utils.types.h"
 #include "./utils.string.h"
 
@@ -25,9 +26,13 @@
 #define EVENT_MAX_HANDLER_CHAINS 8
 #define EVENT_MAX_LISTENERS 8
 
+// How much data we're willing to chain in an event store object
+#define EVENT_MAX_HISTORY_LEN (1 << 8)
+
 typedef enum EventType EventType;
 
 typedef struct Event Event;
+typedef struct EventStore EventStore;
 typedef struct EventHandler EventHandler;
 typedef struct EventListener EventListener;
 typedef struct EventManager EventManager;
@@ -291,9 +296,10 @@ void Event_chain(Event *this, Event *pNextEvent) {
 /**
  * Resolves an event.
  * 
- * @param   { Event * }   this  The current event.
+ * @param   { Event * }       this          The current event.
+ * @param   { EventStore * }  pEventStore   A state manager that changes based on events.
 */
-void Event_resolve(Event *this, p_obj Args2_ANY) {
+void Event_resolve(Event *this, EventStore *pEventStore) {
 
   // While we have handlers on the chain
   while(this->pHeadHandler != NULL) {
@@ -302,9 +308,133 @@ void Event_resolve(Event *this, p_obj Args2_ANY) {
     // Note that we DON'T free the handlers from memory BECAUSE
     //    these are the same handlers other events of the same type
     //    will refer to
-    this->pHeadHandler->fEventHandler(this, Args2_ANY);
+    this->pHeadHandler->fEventHandler(this, pEventStore);
     this->pHeadHandler = this->pHeadHandler->pNextHandler;
   }
+}
+
+/**
+ * //
+ * ////
+ * //////    EventStore class
+ * ////////
+ * ////////// 
+*/
+
+/**
+ * A struct that helps us store values updated by events.
+ * This is basically just a wrapper around a HashMap but specifically for events.
+ * 
+ * @struct
+*/
+typedef struct EventStore {
+  
+  HashMap *pValueStore;       // Where we will store the values updated by events
+  HashMap *pValueHistories;   // A history of the values taken on by a certain parameter
+
+  int dValueCount;            // The number of values we have stored at the moment.
+
+} EventStore;
+
+/**
+ * Initializes the event store.
+ * 
+ * @param		{ EventStore * }		this	A pointer to the instance to initialize.
+*/
+void EventStore_init(EventStore *this) {
+  this->pValueStore = HashMap_create();
+  this->pValueHistories = HashMap_create();
+
+  this->dValueCount = 0;
+}
+
+/**
+ * Cleans up after the event store.
+ * 
+ * @param		{ EventStore * }		this	A pointer to the instance to initialize.
+*/
+void EventStore_exit(EventStore *this) {
+  // ! todo   
+}
+
+/**
+ * This function sets the value of a certain entry to a given int.
+ * If the entry does not exist, a new entry is created. The values we store
+ *    must be non-negative because the EventStore_get() function returns -1
+ *    upon encountering an error.
+ * 
+ * @param   { EventStore * }  this    The event store instance to modify.
+ * @param   { char * }        sKey    The key of the object we want to modify.
+ * @param   { int }           cValue  The value we want to store at the location of the provided key.
+*/
+void EventStore_set(EventStore *this, char *sKey, char cValue) {
+  int i;
+  char *pChar = String_alloc(1);
+  char *sHistory, sNewHistory[EVENT_MAX_HISTORY_LEN + 1];
+  
+  // Copy the value unto the pointer first
+  *pChar = cValue;
+
+  // Delete old entry if its still there
+  if(HashMap_get(this->pValueStore, sKey) != NULL) {
+    sHistory = (char * ) HashMap_get(this->pValueHistories, sKey);
+
+    // We shift everything by 1 to the left
+    if(strlen(sHistory) >= EVENT_MAX_HISTORY_LEN) {
+      strcpy(sNewHistory, sHistory);
+
+      for(i = 1; i < EVENT_MAX_HISTORY_LEN; i++)
+        sNewHistory[i - 1] = sNewHistory[i];
+      sNewHistory[i - 1] = cValue;
+
+    // We just append it to the end of the array
+    } else {
+      sHistory[strlen(sHistory)] = cValue;
+    }
+
+    HashMap_del(this->pValueStore, sKey);
+  } else {
+    HashMap_add(this->pValueHistories, sKey, String_alloc(EVENT_MAX_HISTORY_LEN));
+
+    this->dValueCount++;
+  }
+
+  // Add a new entry
+  HashMap_add(this->pValueStore, sKey, pChar);
+}
+
+/**
+ * This function gets the value stored by the entry with a given key.
+ * 
+ * @param   { EventStore * }  this  The event store instance to modify.
+ * @param   { char * }        sKey  The key of the object we want to modify.
+ * @return  { char }                The current value stored with the provided key.
+*/
+char EventStore_get(EventStore *this, char *sKey) {
+  char *pChar = (char *) HashMap_get(this->pValueStore, sKey);
+
+  // The entry doesn't exist
+  if(pChar == NULL)
+    return 0;
+
+  return *pChar;
+}
+
+/**
+ * This function gets the value stored by the entry with a given key.
+ * 
+ * @param   { EventStore * }  this  The event store instance to modify.
+ * @param   { char * }        sKey  The key of the object we want to modify.
+ * @return  { char * }              A string of characters that represents the history of values stored by that key.
+*/
+char *EventStore_getHistory(EventStore *this, char *sKey) {
+  char *sHistory = (char *) HashMap_get(this->pValueHistories, sKey);
+
+  // The entry doesn't exist
+  if(sHistory == NULL)
+    return NULL;
+
+  return sHistory;
 }
 
 /**
@@ -335,17 +465,17 @@ struct EventManager {
   EventHandler *pHandlerTails[EVENT_MAX_HANDLER_CHAINS];    // We need these references to be able to append to the queue
 
   int dEventCount;                                          // How many events there are at the moment
-  p_obj Args2_ANY;                                          // State manager: what object handlers mutate to manage state
+  EventStore *pEventStore;                                  // A atate manager: what object handlers mutate to manage state
 
 };
 
 /**
  * Initializes the event manager object.
  * 
- * @param   { EventManager * }  this        The EventManager to initialize.
- * @param   { p_obj }           Args2_ANY   An object that stores state.
+ * @param   { EventManager * }  this          The EventManager to initialize.
+ * @param   { EventStore * }    pEventStore   An object that stores state.
 */
-void EventManager_init(EventManager *this, p_obj Args2_ANY) {
+void EventManager_init(EventManager *this, EventStore *pEventStore) {
   int i;
 
   // No events yet
@@ -353,7 +483,7 @@ void EventManager_init(EventManager *this, p_obj Args2_ANY) {
   this->pTail = NULL;
 
   this->dEventCount = 0;
-  this->Args2_ANY = Args2_ANY;
+  this->pEventStore = pEventStore;
 
   // No listeners yet
   for(i = 0; i < EVENT_MAX_LISTENERS; i++)
@@ -461,8 +591,8 @@ void EventManager_triggerEvent(p_obj pArgs_EventManager, int tArg_eEventType) {
  * 
  * @param   { p_obj }   pArgs_EventManager  The event manager that will resolve events.
  * @param   { int }     tArg_NULL           A dummy variable we don't need. Specifying event types is not
- *                                            needed here since we're resolving the entire event chain in 
- *                                            order without any bias for the event type.
+ *                                          needed here since we're resolving the entire event chain in 
+ *                                          order without any bias for the event type.
 */
 void EventManager_resolveEvent(p_obj pArgs_EventManager, int tArg_NULL) {
   EventManager *this = (EventManager *) pArgs_EventManager;
@@ -472,7 +602,7 @@ void EventManager_resolveEvent(p_obj pArgs_EventManager, int tArg_NULL) {
     return;
 
   // Resolve the head
-  Event_resolve(this->pHead, this->Args2_ANY);
+  Event_resolve(this->pHead, this->pEventStore);
 
   // If the tail and head were one, set them to NULL since we can't move the pointers forward
   if(this->dEventCount == 1) {

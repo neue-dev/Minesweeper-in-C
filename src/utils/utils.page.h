@@ -1,16 +1,17 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-03 11:47:14
+ * @ Modified time: 2024-03-03 14:51:16
  * @ Description:
  * 
- * The page class bundles together a buffer, shared assets, and an animation manager. 
+ * The page class bundles together a buffer, shared assets, shared event stores, and an animation manager. 
  * The class handles interactions between these three components and helps decouple our classes.
  */
 
 #ifndef UTILS_PAGE_
 #define UTILS_PAGE_
 
+#include "./utils.event.h"
 #include "./utils.buffer.h"
 #include "./utils.asset.h"
 #include "./utils.animation.h"
@@ -46,10 +47,12 @@ enum PageState {
 */
 struct Page {
   char *sName;                        // An identifier for the page
-  PageState ePageState;                   // The current state of the page
+  PageState ePageState;               // The current state of the page
 
   AnimationManager animationManager;  // An animation manager so we can create animations
   AssetManager *pSharedAssetManager;  // A reference to a shared asset manager so we can access all assets
+  
+  EventStore *pSharedEventStore;      // Where we can access values modified by events
 
   Buffer *pPageBuffer;                // This is where all our content will be displayed
 };
@@ -69,11 +72,14 @@ Page *Page_new() {
  * 
  * @param		{ Page * }		      this	                A pointer to the instance to initialize.
  * @param   { AssetManager * }  pSharedAssetManager   A reference to the manager that stores all our assets.
+ * @param   { EventStore * }    pSharedEventStore     A reference to an event store instance that helps use deal with shared event states.
  * @return	{ Page * }					                      A pointer to the initialized instance.
 */
-Page *Page_init(Page *this, AssetManager *pSharedAssetManager) {
+Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pSharedEventStore) {
   AnimationManager_init(&this->animationManager);
+
   this->pSharedAssetManager = pSharedAssetManager;
+  this->pSharedEventStore = pSharedEventStore;
 
   return this;
 }
@@ -82,10 +88,11 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager) {
  * Creates an initialized instance of the Page class.
  * 
  * @param   { AssetManager * }      pSharedAssetManager   A reference to the manager that stores all our assets.
+ * @param   { EventStore * }        pSharedEventStore     A reference to an event store instance that helps use deal with shared event states.
  * @return	{ Page * }					                          A pointer to the initialized instance.
 */
-Page *Page_create(AssetManager *pSharedAssetManager) {
-  return Page_init(Page_new(), pSharedAssetManager);
+Page *Page_create(AssetManager *pSharedAssetManager, EventStore *pSharedEventStore) {
+  return Page_init(Page_new(), pSharedAssetManager, pSharedEventStore);
 }
 
 /**
@@ -99,9 +106,6 @@ void Page_kill(Page *this) {
   
   free(this);
 }
-
-//!remove
-#include "./utils.debug.h"
 
 /**
  * Performs a single frame update of our page instance.
@@ -178,6 +182,7 @@ void Page_deactivate(Page *this) {
 */
 struct PageManager {
   AssetManager *pSharedAssetManager;  // A reference to the shared asset manager so we only have to pass it during init
+  EventStore *pSharedEventStore;      // A reference to a shared event store so we can access things changed by events
 
   HashMap *pPageMap;                  // Stores all the pages we have
   int dPageCount;                     // How many pages we have
@@ -194,8 +199,9 @@ struct PageManager {
  * 
  * @param   { PageManager * }   this                  The page manager object.
  * @param   { AssetManager * }  pSharedAssetManager   The asset manager shared by all pages.
+ * @param   { EventStore * }    pSharedEventStore     A reference to an event store instance that helps use deal with shared event states.
 */
-void PageManager_init(PageManager *this, AssetManager *pSharedAssetManager) {
+void PageManager_init(PageManager *this, AssetManager *pSharedAssetManager, EventStore *pSharedEventStore) {
   this->pPageMap = HashMap_create();
   this->dPageCount = 0;
 
@@ -204,6 +210,9 @@ void PageManager_init(PageManager *this, AssetManager *pSharedAssetManager) {
 
   // So we dont need to pass it each time
   this->pSharedAssetManager = pSharedAssetManager;
+
+  // So we dont need to pass a lot of things around
+  this->pSharedEventStore = pSharedEventStore;
 }
 
 /**
@@ -221,7 +230,7 @@ void PageManager_exit(PageManager *this) {
  * @param   { f_page_configurer }   fPageConfigurer       A function that configures a page.
 */
 void PageManager_createPage(PageManager *this, char *sPageKey, f_page_configurer fPageConfigurer) {
-  Page *pPage = Page_create(this->pSharedAssetManager);
+  Page *pPage = Page_create(this->pSharedAssetManager, this->pSharedEventStore);
 
   // Set the created page as the active page (by default)
   strcpy(this->sActivePage, sPageKey);

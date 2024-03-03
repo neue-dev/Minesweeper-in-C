@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-03 11:34:30
+ * @ Modified time: 2024-03-03 15:26:42
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -60,12 +60,9 @@ struct Engine {
   PageManager pageManager;            // The page manager
 
   // Some back end managers
+  EventStore eventStore;              // Stores values updated by events
   EventManager eventManager;          // Deals with events
   ThreadManager threadManager;        // Manages the different threads of the program
-  
-  // Events
-  KeyEvents keyEvents;          // Deals with key events
-  TimeEvents timeEvents;        // Deals with timer related events
 
   int bState;                   // The state of the engine
 
@@ -96,17 +93,14 @@ void Engine_init(Engine *this) {
   // The engine is currently running
   this->bState = 1;
 
-  // ! remove this and embed it into the engine itself (?)
-  // Initialize user-defined state manager
-  KeyEvents_init(&this->keyEvents);
-
   /**
    * Initialize the managers
   */
   AssetManager_init(&this->assetManager);
-  PageManager_init(&this->pageManager, &this->assetManager);
+  PageManager_init(&this->pageManager, &this->assetManager, &this->eventStore);
 
-  EventManager_init(&this->eventManager, &this->keyEvents);
+  EventStore_init(&this->eventStore);
+  EventManager_init(&this->eventManager, &this->eventStore);
   ThreadManager_init(&this->threadManager);
 
   /**
@@ -214,15 +208,10 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Go to menu when intro is done
   if(PageManager_getActiveState(&this->pageManager) == PAGE_ACTIVE_IDLE)
     PageManager_setActive(&this->pageManager, "menu");
+  PageManager_update(&this->pageManager);
 
-  // Because IO operations are expensive, we want to do them only when a change occurs
-  if(!this->keyEvents.bHasBeenRead || 1) {
-    PageManager_update(&this->pageManager);
-
-    KeyEvents_read(&this->keyEvents);
-  }
-
-  if(this->keyEvents.cLatest == 'q')
+  // Update 
+  if(EventStore_get(&this->eventStore, "key-pressed") == 'q')
     this->bState = 0;
 }
 
