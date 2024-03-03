@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-03-03 11:34:26
+ * @ Modified time: 2024-03-03 18:02:42
  * @ Description:
  * 
  * An animation class.
@@ -54,6 +54,7 @@ struct Animation {
 
   unsigned long long dT;                    // Tells us the current time state of the animation (not to be
                                             //    confused with differential calculus notation of small changes)
+  unsigned int dStage;                      // What stage of the animation we're in
   AnimationState eAnimationState;           // This tells us what state the animation is currently in
 
   f_animation_handler fHandler;             // The function to update the animation over time
@@ -106,6 +107,7 @@ Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHan
 
   // Set the states to 0
   this->dT = 0ULL;
+  this->dStage = 0;
   this->dFloatStateCount = 0;
   this->dIntStateCount = 0;
 

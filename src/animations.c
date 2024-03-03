@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-03 11:42:22
+ * @ Modified time: 2024-03-03 18:29:54
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically, functions that increment 
@@ -51,30 +51,78 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
   // Initialization stage
   if(this->eAnimationState == ANIMATION_INIT) {
 
-    // Init the states we need; these refer to the positions of each letter
+    // Init the states we need; these refer to the y positions of each letter
     for(i = 0; i < 11; i++) {
-      this->dStates[i * 2] = dCumulativeLen + 24;
-      this->fStates[i * 2] = dCumulativeLen * 5.0 - 50.0;
-      
-      this->dStates[i * 2 + 1] = 12;
-      this->fStates[i * 2 + 1] = i * i * i * 10.0 - 128.0;
+      this->dStates[i * 2] = 1;
+      this->fStates[i * 2] = 0;   // Dummy values so theyre not null to begin with
 
-      // Get the name of the asset
-      sprintf(sGlyphName, "title-font-%c", sTitleGlyphs[i]);
-      aTitleGlyph = AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName);
-      dCumulativeLen += String_length(aTitleGlyph[0]);
+      this->dStates[i * 2 + 1] = 10;
+      this->fStates[i * 2 + 1] = i * i * i * 10.0 - 128.0;
     }
 
+    this->dStates[22] = 0;
+    this->fStates[22] = 5.0;
+
     // You have to manually set these cuz u didnt pass a statecount in the constuctor
-    this->dFloatStateCount = 22;
-    this->dIntStateCount = 22;
+    this->dFloatStateCount = 23;
+    this->dIntStateCount = 23;
 
   // Running the animation
   } else {
+    
+    // Update the position of the title along the x axis
+    for(i = 0; i < 11; i++) {
+      this->dStates[i * 2] = dCumulativeLen;
+      
+      // Get the name of the asset
+      sprintf(sGlyphName, "main-font-%c", sTitleGlyphs[i]);
+      aTitleGlyph = AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName);
 
-    // Make the fStates approach their targets
-    for(i = 0; i < 22; i++)
-      this->fStates[i] = Math_ease(this->fStates[i], this->dStates[i], 0.69);
+      // Compute these
+      dCumulativeLen += String_length(aTitleGlyph[0]);
+    }
+
+    // Shift towards the center
+    for(i = 0; i < 11; i++)
+      this->dStates[i * 2] += dWidth / 2 - dCumulativeLen / 2 - 1;
+
+    // Perform different updates based on the stage of the animation
+    switch(this->dStage) {
+      
+      // Make the letters approach the center
+      case 0: 
+
+        // Make the fStates approach their targets (this is along the y-axis)
+        for(i = 0; i < 11; i++)
+          this->fStates[i * 2 + 1] = Math_easeOut(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.69);
+
+        // This is the condition to move on to the next stage
+        if(round(this->fStates[1] * 1000) == this->dStates[1] * 1000) {
+          
+          // Next set of states to go to
+          for(i = 0; i < 11; i++)
+            this->dStates[i * 2 + 1] = 0;
+
+          this->dStage++;
+        }
+      break;
+
+      // Transition into the menu page
+      case 1:
+
+        // Update the letter y positions
+        for(i = 0; i < 11; i++)
+          this->fStates[i * 2 + 1] = Math_easeIn(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.69);
+        
+        // Update the bounding box
+        this->fStates[22] = Math_easeIn(this->fStates[22], this->dStates[22], 0.69);
+      break;
+
+      default:
+        this->eAnimationState = ANIMATION_EXIT;
+        pPage->ePageState = PAGE_ACTIVE_IDLE;
+        break;
+    }
     
     // Make sure we can display signature at the bottom
     Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0xffffff, 0x000000);
@@ -83,25 +131,30 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
     Buffer_contextRect(pBuffer, 0, 0, dWidth - 1, dHeight, 0x000000, 0x000000);
 
     // A red bounding box
-    Buffer_contextRect(pBuffer, 10, 5, dWidth - 20, dHeight - 10, 0xdd2121, 0xdd2121);
+    Buffer_contextRect(pBuffer, 
+      this->dRoundStates[22] * 2, 
+      this->dRoundStates[22], 
+      
+      dWidth - this->dRoundStates[22] * 4, 
+      dHeight - this->dRoundStates[22] * 2, 
+      0xcc2121, 0xcc2121);
 
     // White canvas in center
-    Buffer_contextRect(pBuffer, 12, 6, dWidth - 24, dHeight - 12, 0x000000, 0xffffff);
+    Buffer_contextRect(pBuffer, 
+      this->dRoundStates[22] * 2 + 2, 
+      this->dRoundStates[22] + 1, 
+      dWidth - this->dRoundStates[22] * 4 - 4, 
+      dHeight - this->dRoundStates[22] * 2 - 2, 
+      0x111111, 0xffffff);
 
     // For each letter
     for(i = 0; i < 11; i++) {
-      sprintf(sGlyphName, "title-font-%c", sTitleGlyphs[i]);
+      sprintf(sGlyphName, "main-font-%c", sTitleGlyphs[i]);
 
       Buffer_write(pBuffer, 
         this->dStates[i * 2], this->dRoundStates[i * 2 + 1], 
         AssetManager_getAssetHeight(pPage->pSharedAssetManager, sGlyphName), 
         AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName));
-    }
-
-    // This is our exit condition (this animation doesn't happen forever)
-    if(round(this->fStates[0] * 1000.0) == this->dStates[0] * 1000) {
-      this->eAnimationState = ANIMATION_EXIT;
-      pPage->ePageState = PAGE_ACTIVE_IDLE;
     }
   }
 }

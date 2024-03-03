@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-02-28 22:32:38
+ * @ Modified time: 2024-03-03 18:31:01
  * @ Description:
  * 
  * Some helper math functions.
@@ -79,7 +79,7 @@ float Math_lerp(float fStart, float fEnd, float fAmount) {
  *                                0 means basically no movement at all, while 1 means instantaneous motion.
  * @return  { float }             The next value fValue should take on.
 */
-float Math_ease(float fValue, float fTarget, float fSpeed) {
+float Math_easeOut(float fValue, float fTarget, float fSpeed) {
   
   if(fSpeed >= 1) fSpeed = 1.00000;
   if(fSpeed <= 0) fSpeed = 0.00001;
@@ -88,6 +88,31 @@ float Math_ease(float fValue, float fTarget, float fSpeed) {
                                           // The + 1 is because fSpeed should be in the interval [1, +infinity) 
 
   fValue -= (fValue - fTarget) / fSpeed;  // This brings the value of fValue closer to fTarget
+
+  return fValue;
+}
+
+/**
+ * An easing function used to make a value approach another value smoothly.
+ * We use a logarithmic speed system (since the rate of change here is proportional to 1/x,
+ *    and the integral of that happens to be ln(x)).
+ * 
+ * @param   { float }   fValue    The value we try to change over time.
+ * @param   { float }   fTarget   What the value should try to approach.
+ * @param   { float }   fSpeed    A number that determines how fast fValue will approach fTarget.
+ *                                The value of this number should be between 0 and 1.
+ *                                0 means basically no movement at all, while 1 means instantaneous motion.
+ * @return  { float }             The next value fValue should take on.
+*/
+float Math_easeIn(float fValue, float fTarget, float fSpeed) {
+  
+  if(fSpeed >= 1) fSpeed = 1.00000;
+  if(fSpeed <= 0) fSpeed = 0.00001;
+
+  fSpeed = 1 - log(fSpeed * fSpeed) * 4;      // The * 4 here is an arbitrary constant used to scale the speed
+                                              // The + 1 is because fSpeed should be in the interval [1, +infinity) 
+
+  fValue -= fSpeed / (fValue - fTarget);  // This brings the value of fValue closer to fTarget
 
   return fValue;
 }
