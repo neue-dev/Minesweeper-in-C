@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-02 21:36:38
+ * @ Modified time: 2024-03-03 09:35:35
  * @ Description:
  * 
  * The main game file.
@@ -67,10 +67,10 @@ int main() {
 
   printf("heloo dord");
 
-  // char **testOutput = AssetManager_getAssetText(&am, "title-font-m");
+  char **testOutput = AssetManager_getAssetText(&am, "title-font-m");
 
-  // for(int i = 0; i < 6; i++)
-  //   printf("\n%s", testOutput[i]);
+  for(int i = 0; i < 6; i++)
+    printf("\n%s", testOutput[i]);
 
   while(1);
 

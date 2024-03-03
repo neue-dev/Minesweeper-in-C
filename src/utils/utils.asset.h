@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-02 21:55:10
+ * @ Modified time: 2024-03-03 09:36:25
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -65,6 +65,8 @@ Asset *Asset_new() {
 */
 Asset *Asset_init(Asset *this, char *sName, int dHeight, char *sContentArray[]) {
   int i, j;
+
+  this->sName = sName;
 
   // Stroe the height
   this->dHeight = dHeight;
@@ -162,7 +164,7 @@ void AssetManager_exit(AssetManager *this) {
 */
 void AssetManager_createAsset(AssetManager *this, char *sAssetKey, int h, char *sContentArray[]) {
   Asset *pAsset;
-  
+
   // Too many assets
   if(this->dAssetCount >= ASSET_MAX_COUNT)
     return;
@@ -254,8 +256,11 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
     if(bIsComment) {
 
       // It's the end of an asset sprite
-      if(strlen(sAssetFileBuffer[i]) <= dDelimeterLength + 1) {
-
+      // Note the +2: THIS TOOK SO LONG TO DEBUG but apparently newlines on Windows are stored as /r/n (but they're)
+      //    read as one and on Linux theyre only stored as /n so when migrating to Linux things broke when having just + 1
+      //    (all the new lines became an explicit /r/n)
+      if(strlen(sAssetFileBuffer[i]) <= dDelimeterLength + 2) {
+        
         // Create the asset
         AssetManager_createAsset(this, sName, dAssetInstanceBufferLength, sAssetInstanceBuffer);
 
@@ -268,8 +273,13 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
         dAssetInstanceBufferLength = 0;
         
         // Read the name from the comment
+        // This is also a contribution to the Linux bug: again new lines here explicity have the /r
+        //    because the text file was saved on Windows
         k = 0;
-        while(sAssetFileBuffer[i][j] != 32 && sAssetFileBuffer[i][j] != '\n')
+        while(
+          sAssetFileBuffer[i][j] != 32 && 
+          sAssetFileBuffer[i][j] != '\n' && 
+          sAssetFileBuffer[i][j] != '\r')
           sName[k++] = sAssetFileBuffer[i][j++];
 
         // Reset the asset instance buffer
@@ -283,7 +293,11 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
 
       // Copy the contents of the file
       strcpy(sAssetInstanceBuffer[dAssetInstanceBufferLength], sAssetFileBuffer[i]);
-      sAssetInstanceBuffer[dAssetInstanceBufferLength][j - 1] = 0;
+
+      while(
+        sAssetInstanceBuffer[dAssetInstanceBufferLength][j - 1] == '\n' ||
+        sAssetInstanceBuffer[dAssetInstanceBufferLength][j - 1] == '\r')
+        sAssetInstanceBuffer[dAssetInstanceBufferLength][j-- - 1] = 0;
 
       // Increment the length of the instance buffer
       dAssetInstanceBufferLength++;
