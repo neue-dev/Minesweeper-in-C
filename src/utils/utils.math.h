@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-03-03 19:12:24
+ * @ Modified time: 2024-03-03 20:28:26
  * @ Description:
  * 
  * Some helper math functions.
@@ -126,6 +126,18 @@ float Math_easeIn(float fValue, float fTarget, float fSpeed) {
     return fTarget;
 
   return fValue;
+}
+
+/**
+ * Computes the 1d distance between two points.
+ * Basically just the absolute value of their difference.
+ * 
+ * @param   { float }   a   A float.
+ * @param   { float }   b   Another float. LMAO.
+ * @return  { float }       The absolute value of the difference between a and b.
+*/
+float Math_dist1d(float a, float b) {
+  return fabs(a - b);
 }
 
 #endif

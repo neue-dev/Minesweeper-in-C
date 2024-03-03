@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-03 15:25:52
+ * @ Modified time: 2024-03-03 20:47:20
  * @ Description:
  * 
  * This file contains definitions for event listeners and event handlers.
@@ -60,8 +60,7 @@ char EventListener_keyPressed(void) {
  * @param   { p_obj }   pArgs_Event   The actual event object to be handled.
 */
 void EventHandler_keyPressed(p_obj pArgs_Event, p_obj pArgs2_EventStore) {
-  int i;
-
+  
   // This line is always required for all event handlers
   Event *this = (Event *) pArgs_Event;
   
