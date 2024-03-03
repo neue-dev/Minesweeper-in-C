@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-03 20:46:29
+ * @ Modified time: 2024-03-03 20:51:08
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically, functions that increment 
@@ -234,7 +234,7 @@ void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
     }
 
     // Background
-    Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0x212121, 0xffffff);
+    Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0x111111, 0xffffff);
     
     // The minesweeper logo and title
     aLogo = AssetManager_getAssetText(pPage->pSharedAssetManager, "logo");
@@ -245,7 +245,7 @@ void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
       dWidth / 2 - String_length(aTitle[0]) / 2 - 1, 
       this->dRoundStates[1], 
       strlen(aTitle[0]), 1, 
-      0x212121, 0xffffff);
+      0x000000, 0xffffff);
 
     Buffer_write(pBuffer, 
       dWidth / 2 - String_length(aLogo[0]) / 2 - 1, 

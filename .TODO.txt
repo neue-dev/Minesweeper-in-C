@@ -1,18 +1,16 @@
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 
+CONSIDER REFACTING AnimationHandler() and split the init into an AnimationInit()
+
 LOOK FOR ALL PLACES WHERE WE INCREMENT someCount++ AFTER ADDING TO A HASHMAP OR SMTH, AND MAKE HashMap_add() return a boolean
 this way, if HashMap_add fails, we dont increment someCount++
 
-1. STORE THE EVENT STATES IN THE ENGINE, ITS CLEANER THAT WAY
-2  Instead of using IO_getWidth each time, have an event listener and store the state in the engine OR 
-    Just store the state in the engine
-
 REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them when not needed in a  file ?)
 
-4. Make sure to foward declare all your functions AND typedefs (THEY SHOULD BE RIGHT AFTER THE IMPORTS BEFORE ALL OTHER CODE)
-5. Make the main file cleaner sheesh
-6. SET THE FONT SIZE + FONT FAMILY OF THE TERMINAL TO PREVENT HAVING A BIGGER BUFFER SIZE BECAUSE OF SMALL FONTS
+1. Make sure to foward declare all your functions AND typedefs (THEY SHOULD BE RIGHT AFTER THE IMPORTS BEFORE ALL OTHER CODE)
+2. Make the main file cleaner sheesh
+3. SET THE FONT SIZE + FONT FAMILY OF THE TERMINAL TO PREVENT HAVING A BIGGER BUFFER SIZE BECAUSE OF SMALL FONTS
 
 ehmm pretend we didnt see this LMAO
 [semaphores]                              https://www.reddit.com/r/compsci/comments/5e08s5/eli5_semaphores_and_the_producerconsumer_problem/
