@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-03-03 18:31:01
+ * @ Modified time: 2024-03-03 19:12:24
  * @ Description:
  * 
  * Some helper math functions.
@@ -94,8 +94,7 @@ float Math_easeOut(float fValue, float fTarget, float fSpeed) {
 
 /**
  * An easing function used to make a value approach another value smoothly.
- * We use a logarithmic speed system (since the rate of change here is proportional to 1/x,
- *    and the integral of that happens to be ln(x)).
+ * Here, we use a reciprocal slider for the speed variable.
  * 
  * @param   { float }   fValue    The value we try to change over time.
  * @param   { float }   fTarget   What the value should try to approach.
@@ -105,14 +104,26 @@ float Math_easeOut(float fValue, float fTarget, float fSpeed) {
  * @return  { float }             The next value fValue should take on.
 */
 float Math_easeIn(float fValue, float fTarget, float fSpeed) {
-  
+  int dSign = fValue - fTarget < 0 ? -1 : 1;
+
   if(fSpeed >= 1) fSpeed = 1.00000;
   if(fSpeed <= 0) fSpeed = 0.00001;
 
-  fSpeed = 1 - log(fSpeed * fSpeed) * 4;      // The * 4 here is an arbitrary constant used to scale the speed
-                                              // The + 1 is because fSpeed should be in the interval [1, +infinity) 
+  fSpeed = -(1 / (fSpeed - 1) + 1) * 4;   // Again, 4 is an arbitrary
 
+  // If we've hit the target, return
+  if(!round(fValue - fTarget))
+    return fTarget;
+
+  // Compute the next value
   fValue -= fSpeed / (fValue - fTarget);  // This brings the value of fValue closer to fTarget
+
+  // The two next return statements tell us we've gone over the target
+  if(fValue - fTarget < 0 && dSign == 1)
+    return fTarget;
+
+  if(fValue - fTarget > 0 && dSign == -1)
+    return fTarget;
 
   return fValue;
 }

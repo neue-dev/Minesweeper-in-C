@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-03 17:42:59
+ * @ Modified time: 2024-03-03 18:58:08
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -107,6 +107,7 @@ void Engine_init(Engine *this) {
    * Creates all our assets
   */
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/title-font.asset.txt");
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/logo.asset.txt");
 
   /**
    * Creates all our pages

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-03 18:29:54
+ * @ Modified time: 2024-03-03 19:14:57
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically, functions that increment 
@@ -60,7 +60,7 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
       this->fStates[i * 2 + 1] = i * i * i * 10.0 - 128.0;
     }
 
-    this->dStates[22] = 0;
+    this->dStates[22] = -1;
     this->fStates[22] = 5.0;
 
     // You have to manually set these cuz u didnt pass a statecount in the constuctor
@@ -101,7 +101,7 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
           
           // Next set of states to go to
           for(i = 0; i < 11; i++)
-            this->dStates[i * 2 + 1] = 0;
+            this->dStates[i * 2 + 1] = -10;
 
           this->dStage++;
         }
@@ -112,7 +112,7 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
 
         // Update the letter y positions
         for(i = 0; i < 11; i++)
-          this->fStates[i * 2 + 1] = Math_easeIn(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.69);
+          this->fStates[i * 2 + 1] = Math_easeIn(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.83);
         
         // Update the bounding box
         this->fStates[22] = Math_easeIn(this->fStates[22], this->dStates[22], 0.69);
