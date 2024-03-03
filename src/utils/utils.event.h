@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-02 16:12:03
+ * @ Modified time: 2024-03-03 11:08:29
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -210,7 +210,7 @@ void EventHandler_chain(EventHandler *this, EventHandler *pNextHandler) {
 struct Event {
 
   Event *pNextEvent;                // The next event in the event chain
-  EventType eType;                  // What type of event it is
+  EventType eEventType;             // What type of event it is
   EventHandler *pHeadHandler;       // The first event handler assigned to this type of event
                                     // Note that we don't need the last one since we won't be appending handlers
                                     //    once the event has been created
@@ -236,16 +236,16 @@ Event *Event_new() {
  * 
  * @param   { Event * }           this            The event instance to be initialized.
  * @param   { Event * }           pNextEvent      The event after the current instance.
- * @param   { EventType }         eType           The type of the event.
+ * @param   { EventType }         eEventType      The type of the event.
  * @param   { EventHandler * }    pHeadHandler    The first callback function that resolves the event.
  * @param   { char }              cState          What value is stored by the event.
  * @return  { Event * }                           A pointer to the initialized instance.
 */
-Event *Event_init(Event *this, Event *pNextEvent, EventType eType, EventHandler *pHeadHandler, char cState) {
+Event *Event_init(Event *this, Event *pNextEvent, EventType eEventType, EventHandler *pHeadHandler, char cState) {
   
   // Store the reference to the next event
   this->pNextEvent = pNextEvent;
-  this->eType = eType;
+  this->eEventType = eEventType;
 
   // Store the event handler
   this->pHeadHandler = pHeadHandler;
@@ -260,13 +260,13 @@ Event *Event_init(Event *this, Event *pNextEvent, EventType eType, EventHandler 
  * Creates a new initialized event.
  * 
  * @param   { Event * }           pNextEvent      The event after the current instance.
- * @param   { EventType }         eType           The type of the event.
+ * @param   { EventType }         eEventType      The type of the event.
  * @param   { EventHandler * }    pHeadHandler    The first callback function that resolves the event.
  * @param   { char }              cState          What value is stored by the event.
  * @return  { Event * }                           A pointer to the initialized instance.
 */
-Event *Event_create(Event *pNextEvent, EventType eType, EventHandler *pHeadHandler, char cState) {
-  return Event_init(Event_new(), pNextEvent, eType, pHeadHandler, cState);
+Event *Event_create(Event *pNextEvent, EventType eEventType, EventHandler *pHeadHandler, char cState) {
+  return Event_init(Event_new(), pNextEvent, eEventType, pHeadHandler, cState);
 }
 
 /**
@@ -405,18 +405,18 @@ void EventManager_exit(EventManager *this) {
 /**
  * Creates an event and appends it to the event chain.
  * 
- * @param   { EventManager * }  this    The event manager we used to create the event.
- * @param   { EventType }       eType   The type of event to create.
- * @param   { char }            cState  What data the event will store.
+ * @param   { EventManager * }  this        The event manager we used to create the event.
+ * @param   { EventType }       eEventType  The type of event to create.
+ * @param   { char }            cState      What data the event will store.
 */
-void EventManager_createEvent(EventManager *this, EventType eType, char cState) {
+void EventManager_createEvent(EventManager *this, EventType eEventType, char cState) {
 
   // The new event
-  Event *pEvent = Event_create(NULL, eType, NULL, cState);
+  Event *pEvent = Event_create(NULL, eEventType, NULL, cState);
   
   // If we have event handlers for this type of event
-  if(this->pHandlerHeads[eType] != NULL)
-    pEvent->pHeadHandler = this->pHandlerHeads[eType];
+  if(this->pHandlerHeads[eEventType] != NULL)
+    pEvent->pHeadHandler = this->pHandlerHeads[eEventType];
 
   // The queue of events is currently empty
   if(this->pHead == NULL) {
@@ -438,22 +438,22 @@ void EventManager_createEvent(EventManager *this, EventType eType, char cState) 
  *    for each event type. That way, different event types dont block each other when triggering.
  * 
  * @param   { p_obj }   pArgs_EventManager  The event manager that will trigger events.
- * @param   { int }     tArg_eType          The event type to watch out for.
+ * @param   { int }     tArg_eEventType     The event type to watch out for.
 */
-void EventManager_triggerEvent(p_obj pArgs_EventManager, int tArg_eType) {
+void EventManager_triggerEvent(p_obj pArgs_EventManager, int tArg_eEventType) {
   EventManager *this = (EventManager *) pArgs_EventManager;
-  EventType eType = (EventType) tArg_eType;
+  EventType eEventType = (EventType) tArg_eEventType;
 
   // There is no event listener for the event type
-  if(this->pListeners[eType] == NULL)
+  if(this->pListeners[eEventType] == NULL)
     return;
     
   // Save the outcome of the event
-  char cState = EventListener_trigger(this->pListeners[eType]);
+  char cState = EventListener_trigger(this->pListeners[eEventType]);
 
   // If the event occured
   if(cState)
-    EventManager_createEvent(this, eType, cState);
+    EventManager_createEvent(this, eEventType, cState);
 }
 
 /**
@@ -504,23 +504,23 @@ void EventManager_resolveEvent(p_obj pArgs_EventManager, int tArg_NULL) {
  * Once an event handler has been added to the chain, it cannot be removed.
  * 
  * @param   { EventManager * }      this            The event manager to append the handler to.
- * @param   { EventType }           eType           What type of events the handler applies to.
+ * @param   { EventType }           eEventType      What type of events the handler applies to.
  * @param   { f_event_handler * }   fEventHandler   The event handler function to append.
 */
-void EventManager_createEventHandler(EventManager *this, EventType eType, f_event_handler fEventHandler) {
+void EventManager_createEventHandler(EventManager *this, EventType eEventType, f_event_handler fEventHandler) {
   
   // Create the new event handler object with NULL as its next in line
   EventHandler *pEventHandler = EventHandler_create(NULL, fEventHandler);
 
   // If there are currently no handlers associated with that event type
-  if(this->pHandlerHeads[eType] == NULL) {
-    this->pHandlerHeads[eType] = pEventHandler;
-    this->pHandlerTails[eType] = pEventHandler;
+  if(this->pHandlerHeads[eEventType] == NULL) {
+    this->pHandlerHeads[eEventType] = pEventHandler;
+    this->pHandlerTails[eEventType] = pEventHandler;
   
   // Otherwise, append it to the end of the chain
   } else {
-    EventHandler_chain(this->pHandlerTails[eType], pEventHandler);
-    this->pHandlerTails[eType] = pEventHandler;
+    EventHandler_chain(this->pHandlerTails[eEventType], pEventHandler);
+    this->pHandlerTails[eEventType] = pEventHandler;
   }
 }
 
@@ -529,22 +529,22 @@ void EventManager_createEventHandler(EventManager *this, EventType eType, f_even
  * Note that if an event listener already exists for that event type, it overwrites the original listener.
  * 
  * @param   { EventManager * }      this            The event manager to add the listener to.
- * @param   { EventType }           eType           What type of events the listener applies to.
+ * @param   { EventType }           eEventType      What type of events the listener applies to.
  * @param   { f_event_listener * }  fEventListener  The event listener function to append.
 */
-void EventManager_createEventListener(EventManager *this, EventType eType, f_event_listener fEventListener) {
+void EventManager_createEventListener(EventManager *this, EventType eEventType, f_event_listener fEventListener) {
   
   // Create a new event listener
   EventListener *pEventListener = EventListener_create(fEventListener);
 
   // If there are currently no listeners for the event type
-  if(this->pListeners[eType] == NULL) {
-    this->pListeners[eType] = pEventListener;
+  if(this->pListeners[eEventType] == NULL) {
+    this->pListeners[eEventType] = pEventListener;
   
   // Otherwise, overwrite the existing listener
   } else {
-    EventListener_kill(this->pListeners[eType]);
-    this->pListeners[eType] = pEventListener;
+    EventListener_kill(this->pListeners[eEventType]);
+    this->pListeners[eEventType] = pEventListener;
   }
 }
 

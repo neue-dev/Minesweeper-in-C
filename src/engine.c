@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-02 23:31:58
+ * @ Modified time: 2024-03-03 11:34:30
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -117,6 +117,7 @@ void Engine_init(Engine *this) {
   /**
    * Creates all our pages
   */
+  PageManager_createPage(&this->pageManager, "menu", PageConfigurer_menu);
   PageManager_createPage(&this->pageManager, "intro", PageConfigurer_intro);
 
   /**
@@ -210,9 +211,13 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
 
+  // Go to menu when intro is done
+  if(PageManager_getActiveState(&this->pageManager) == PAGE_ACTIVE_IDLE)
+    PageManager_setActive(&this->pageManager, "menu");
+
   // Because IO operations are expensive, we want to do them only when a change occurs
   if(!this->keyEvents.bHasBeenRead || 1) {
-    PageManager_updatePage(&this->pageManager, "intro");
+    PageManager_update(&this->pageManager);
 
     KeyEvents_read(&this->keyEvents);
   }

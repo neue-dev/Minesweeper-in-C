@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-03 09:36:25
+ * @ Modified time: 2024-03-03 10:02:02
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.

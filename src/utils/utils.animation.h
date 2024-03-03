@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-03-02 16:25:13
+ * @ Modified time: 2024-03-03 11:34:26
  * @ Description:
  * 
  * An animation class.
@@ -24,8 +24,16 @@
 #define ANIMATION_MAX_STATES (1 << 8)
 #define ANIMATION_MAX_COUNT (1 << 8)
 
+typedef enum AnimationState AnimationState;
+
 typedef struct Animation Animation;
 typedef struct AnimationManager AnimationManager;
+
+enum AnimationState {
+  ANIMATION_INIT,     // The animation is currently initializing
+  ANIMATION_RUNNING,  // The animation is running
+  ANIMATION_EXIT,     // The animation has finished running
+};
 
 /**
  * //
@@ -46,8 +54,7 @@ struct Animation {
 
   unsigned long long dT;                    // Tells us the current time state of the animation (not to be
                                             //    confused with differential calculus notation of small changes)
-
-  int bIsInitted;                           // This allows us to init stuff during the first frame
+  AnimationState eAnimationState;           // This tells us what state the animation is currently in
 
   f_animation_handler fHandler;             // The function to update the animation over time
   p_obj pArgs2_ANY;                         // The argument to the handler
@@ -91,7 +98,7 @@ Animation *Animation_init(Animation *this, char *sName, f_animation_handler fHan
   this->sName = sName;
 
   // For the first animation frame
-  this->bIsInitted = 0;
+  this->eAnimationState = ANIMATION_INIT;
 
   // Store the handler
   this->fHandler = fHandler;
@@ -164,13 +171,17 @@ void Animation_update(Animation *this) {
   // Execute the callback
   this->fHandler(this, this->pArgs2_ANY);
 
+  // If the animation has exited
+  if(this->eAnimationState == ANIMATION_EXIT)
+    return;
+
   // Perform some fixins
   for(i = 0; i < this->dFloatStateCount; i++)
     this->dRoundStates[i] = round(this->fStates[i]);
 
   // The first frame has been executed
-  if(!this->bIsInitted)
-    this->bIsInitted = 1;
+  if(this->eAnimationState == ANIMATION_INIT)
+    this->eAnimationState = ANIMATION_RUNNING;
     
   // Increment time state
   this->dT++;
