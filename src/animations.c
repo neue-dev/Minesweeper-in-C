@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-03 20:51:08
+ * @ Modified time: 2024-03-04 11:47:07
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically, functions that increment 
@@ -36,85 +36,70 @@
  * @param   { p_obj }   Args2_Page      The page object we're gonna update based on our state data.
 */
 void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
+  
   Animation *this = (Animation *) Args_Animation;
   Page *pPage = (Page *) Args2_Page;
   Buffer *pBuffer = pPage->pPageBuffer;
  
   int dWidth = pBuffer->dWidth;
   int dHeight = pBuffer->dHeight;
-  int i, dCumulativeLen = 0;
-
-  char **aTitleGlyph;                     // We prepend asset variable names with a.
-  char sTitleGlyphs[12] = "minesweeper";  // A list of the characters we need from the asset set.
-  char *sGlyphName = String_alloc(16);    // We'll use this to get the specific name of the asset.
+  
+  // The logo and its height
+  char **aLogo = AssetManager_getAssetText(pPage->pSharedAssetManager, "logo");
+  int dLogoHeight = AssetManager_getAssetHeight(pPage->pSharedAssetManager, "logo");
 
   // Initialization stage
   if(this->eAnimationState == ANIMATION_INIT) {
 
-    // Init the states we need; these refer to the y positions of each letter
-    for(i = 0; i < 11; i++) {
-      this->dStates[i * 2] = 1;
-      this->fStates[i * 2] = 0;   // Dummy values so theyre not null to begin with
+    // The bomb logo
+    this->dStates[0] = round(dHeight / 2.0 - dLogoHeight / 2.0) - 1;
+    this->fStates[0] = 100.0;
 
-      this->dStates[i * 2 + 1] = 10;
-      this->fStates[i * 2 + 1] = i * i * i * 10.0 - 128.0;
-    }
-
-    // After the text centered, we expand the boundary
-    this->dStates[22] = -1;
-    this->fStates[22] = 5.0;
+    // The bounding box
+    this->dStates[1] = 5;
+    this->fStates[1] = dWidth / 2;
 
     // You have to manually set these cuz u didnt pass a statecount in the constuctor
-    this->dFloatStateCount = 23;
-    this->dIntStateCount = 23;
+    this->dFloatStateCount = 2;
+    this->dIntStateCount = 2;
 
   // Running the animation
   } else {
-    
-    // Update the position of the title along the x axis
-    for(i = 0; i < 11; i++) {
-      this->dStates[i * 2] = dCumulativeLen;
-      
-      // Get the name of the asset
-      sprintf(sGlyphName, "main-font-%c", sTitleGlyphs[i]);
-      aTitleGlyph = AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName);
-
-      // Compute these
-      dCumulativeLen += String_length(aTitleGlyph[0]);
-    }
-
-    // Shift towards the center
-    for(i = 0; i < 11; i++)
-      this->dStates[i * 2] += dWidth / 2 - dCumulativeLen / 2 - 1;
 
     // Perform different updates based on the stage of the animation
     switch(this->dStage) {
       
-      case 0:   // Make the letters approach the center
+      case 0:   // Create the boundary area first
 
-        // Make the fStates approach their targets (this is along the y-axis)
-        for(i = 0; i < 11; i++)
-          this->fStates[i * 2 + 1] = Math_easeOut(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.75);
+        // Make the size approach 5.0
+        if(this->dT > 8)
+          this->fStates[1] = Math_easeOut(this->fStates[1], this->dStates[1], 0.69);
 
-        // Go to next stage
-        if(Math_dist1d(this->fStates[1], this->dStates[1] * 1.0) < 0.001) {          
-          for(i = 0; i < 11; i++)
-            this->dStates[i * 2 + 1] = -10;
+        if(Math_dist1d(this->fStates[1], this->dStates[1] * 1.0) < 0.1) 
+          this->dStage++;
+      break;
+
+      case 1:   // Make the bomb go up
+
+        this->fStates[0] = Math_easeOut(this->fStates[0], this->dStates[0], 0.75);
+
+        if(Math_dist1d(this->fStates[0], this->dStates[0] * 1.0) < 0.001) {
+          this->dStates[0] = -(dWidth - dHeight) / 2;
+          this->dStates[1] = -(dWidth - dHeight) / 2;
+
           this->dStage++;
         }
       break;
 
-      case 1:   // Transition into the menu page
-
-        // Update the letter y positions
-        for(i = 0; i < 11; i++)
-          this->fStates[i * 2 + 1] = Math_easeIn(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.75);
+      case 2:   // Transition into the menu page
         
-        // Update the bounding box
-        this->fStates[22] = Math_easeIn(this->fStates[22], this->dStates[22], 0.83);
+        // Update the bounding box and the bomb
+        this->fStates[0] = Math_easeIn(this->fStates[0], this->dStates[0], 0.975);
+        this->fStates[1] = Math_easeIn(this->fStates[1], this->dStates[1], 0.975);
 
         // Go to next stage
-        if(Math_dist1d(this->fStates[1], this->dStates[1] * 1.0) < 0.001)
+        if(Math_dist1d(this->fStates[0], this->dStates[0] * 1.0) < 0.01 && 
+          Math_dist1d(this->fStates[1], this->dStates[1] * 1.0) < 0.01)
           this->dStage++;
       break;
 
@@ -123,45 +108,45 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
         pPage->ePageState = PAGE_ACTIVE_IDLE;
       break;
     }
+
+    // The minesweeper logo 
+    aLogo = AssetManager_getAssetText(pPage->pSharedAssetManager, "logo");
     
     // Make sure we can display signature at the bottom
-    Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0xffffff, 0x000000);
+    Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0xffffff, 0x111111);
 
     // Total black at the edges
-    Buffer_contextRect(pBuffer, 0, 0, dWidth - 1, dHeight, 0x000000, 0x000000);
+    Buffer_contextRect(pBuffer, 0, 0, dWidth - 1, dHeight, 0x111111, 0x111111);
 
-    // A red bounding box
+    // A gray bounding box
     Buffer_contextRect(pBuffer, 
-      this->dRoundStates[22] * 2, 
-      this->dRoundStates[22], 
+      round(dWidth / 2.0 - dHeight + this->dRoundStates[1] * 2.0 - 1), 
+      this->dRoundStates[1], 
       
-      dWidth - this->dRoundStates[22] * 4, 
-      dHeight - this->dRoundStates[22] * 2, 
-      0xcc2121, 0xcc2121);
+      (dHeight - this->dRoundStates[1] * 2) * 2, 
+      dHeight - this->dRoundStates[1] * 2, 
+      
+      0x888888, 
+      0x888888);
 
     // White canvas in center
     Buffer_contextRect(pBuffer, 
-      this->dRoundStates[22] * 2 + 2, 
-      this->dRoundStates[22] + 1, 
+      round(dWidth / 2.0 - dHeight + this->dRoundStates[1] * 2.0 + 1), 
+      this->dRoundStates[1] + 1, 
       
-      dWidth - this->dRoundStates[22] * 4 - 4, 
-      dHeight - this->dRoundStates[22] * 2 - 2, 
-      0x111111, 0xffffff);
+      (dHeight - this->dRoundStates[1] * 2 - 2) * 2, 
+      dHeight - this->dRoundStates[1] * 2 - 2, 
+      
+      0x111111, 
+      0xffffff);
 
-    // This displays the intro title
-    for(i = 0; i < 11; i++) {
+    // Write the asset to the buffer
+    Buffer_write(pBuffer, 
+      round(dWidth / 2.0 - strlen(aLogo[0]) / 2.0), 
+      this->dRoundStates[0], 
 
-      // Generate the key to get the character asset
-      sprintf(sGlyphName, "main-font-%c", sTitleGlyphs[i]);
-
-      // Write the asset to the buffer
-      Buffer_write(pBuffer, 
-        this->dStates[i * 2], 
-        this->dRoundStates[i * 2 + 1], 
-
-        AssetManager_getAssetHeight(pPage->pSharedAssetManager, sGlyphName),
-        AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName));
-    }
+      dLogoHeight,
+      aLogo);
   }
 }
 
@@ -172,59 +157,73 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
  * @param   { p_obj }   Args2_Page      The page object we're gonna update based on our state data.
 */
 void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
+
   Animation *this = (Animation *) Args_Animation;
   Page *pPage = (Page *) Args2_Page;
   Buffer *pBuffer = pPage->pPageBuffer;
  
   int dWidth = pBuffer->dWidth;
   int dHeight = pBuffer->dHeight;
+  int i, dCumulativeLength = 0;
 
-  char **aLogo;   // The logo for the game
-  char **aTitle;  // The title of the game
+  char **aTitleGlyph;                         // We prepend asset variable names with a.
+  int dTitleGlyphHeight;                      // The height of a title glyph.
+
+  char sTitleGlyphs[12] = "minesweeper";      // A list of the characters we need from the asset set.
+  char dTitleLength = strlen(sTitleGlyphs);   // The length of the title
+  char *sGlyphName = String_alloc(16);        // We'll use this to get the specific name of the asset.
 
   // We perform the initialization here
   if(this->eAnimationState == ANIMATION_INIT) {
 
-    // The bomb logo
-    this->dStates[0] = 3;
-    this->fStates[0] = 100.0;
+    // Init the states we need; these refer to the y positions of each letter
+    for(i = 0; i < dTitleLength; i++) {
+      this->dStates[i * 2] = 1;
+      this->fStates[i * 2] = 0;   // Dummy values so theyre not null to begin with
 
-    // The title
-    this->dStates[1] = 18;
-    this->fStates[1] = 100.0;
+      this->dStates[i * 2 + 1] = 6;
+      this->fStates[i * 2 + 1] = i * i * i * 10.0 - 128.0;
+    }
 
-    this->dIntStateCount = 2;
-    this->dFloatStateCount = 2;
+    this->dIntStateCount = (dTitleLength + 1) * 2;
+    this->dFloatStateCount = (dTitleLength + 1) * 2;
 
   // This is where the animation updates happen
   } else {
 
+    // Update the position of the title along the x axis
+    for(i = 0; i < dTitleLength; i++) {
+      this->dStates[i * 2] = dCumulativeLength;
+      
+      // Get the name of the asset
+      sprintf(sGlyphName, "main-font-%c", sTitleGlyphs[i]);
+      aTitleGlyph = AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName);
+
+      // Compute these
+      dCumulativeLength += String_length(aTitleGlyph[0]);
+    }
+
+    // Shift towards the center
+    for(i = 0; i < dTitleLength; i++)
+      this->dStates[i * 2] += dWidth / 2 - dCumulativeLength / 2 - 1;
+
     // Perform different updates based on the stage of the animation
     switch(this->dStage) {
 
-      case 3:   // Transition to next page
-        this->dStates[0] = -35;
-        this->dStates[1] = -20;
+      case 0:   // Make the title go up
 
-        this->fStates[0] = Math_easeIn(this->fStates[0], this->dStates[0], 0.93);
-        this->fStates[1] = Math_easeIn(this->fStates[1], this->dStates[1], 0.93);
+        // Make the fStates approach their targets (this is along the y-axis)
+        for(i = 0; i < dTitleLength; i++)
+          this->fStates[i * 2 + 1] = Math_easeOut(this->fStates[i * 2 + 1], this->dStates[i * 2 + 1], 0.75);
+
+        // Go to next stage
+        if(Math_dist1d(this->fStates[1], this->dStates[1] * 1.0) < 0.001) {          
+          this->dStage++;
+        }
       break;
-      
-      case 2:   // We just chillin
-        if(EventStore_get(pPage->pSharedEventStore, "key-pressed") == 't')
-          this->dStage++;
 
-      case 1:   // Make the title go up
-        this->fStates[1] = Math_easeOut(this->fStates[1], this->dStates[1], 0.75);
+      case 1:   // We chillin
 
-        if(Math_dist1d(this->fStates[1], this->dStates[1] * 1.0) < 10 && this->dStage == 1)
-          this->dStage++;
-
-      case 0:   // Make the bomb go up
-        this->fStates[0] = Math_easeOut(this->fStates[0], this->dStates[0], 0.75);
-
-        if(Math_dist1d(this->fStates[0], this->dStates[0] * 1.0) < 10 && this->dStage == 0)
-          this->dStage++;
       break;
 
       default:
@@ -234,30 +233,27 @@ void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
     }
 
     // Background
-    Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0x111111, 0xffffff);
-    
-    // The minesweeper logo and title
-    aLogo = AssetManager_getAssetText(pPage->pSharedAssetManager, "logo");
-    aTitle = AssetManager_getAssetText(pPage->pSharedAssetManager, "title");
-
-    // Makes the title a different color
     Buffer_contextRect(pBuffer, 
-      dWidth / 2 - String_length(aTitle[0]) / 2 - 1, 
-      this->dRoundStates[1], 
-      strlen(aTitle[0]), 1, 
-      0x000000, 0xffffff);
+      0, 0, 
+      dWidth, dHeight, 
+      0x212121, 0xffffff);
 
-    Buffer_write(pBuffer, 
-      dWidth / 2 - String_length(aLogo[0]) / 2 - 1, 
-      this->dRoundStates[0], 
-      AssetManager_getAssetHeight(pPage->pSharedAssetManager, "logo"),
-      aLogo);
-
-    Buffer_write(pBuffer, 
-      dWidth / 2 - String_length(aTitle[0]) / 2 - 1, 
-      this->dRoundStates[1], 
-      AssetManager_getAssetHeight(pPage->pSharedAssetManager, "title"),
-      aTitle);
+    // Title
+    for(i = 0; i < dTitleLength; i++) {
+      
+      // Get the glyph asset
+      sprintf(sGlyphName, "main-font-%c", sTitleGlyphs[i]);
+      aTitleGlyph = AssetManager_getAssetText(pPage->pSharedAssetManager, sGlyphName);
+      dTitleGlyphHeight = AssetManager_getAssetHeight(pPage->pSharedAssetManager, sGlyphName);
+      
+      // Display the letter
+      Buffer_write(pBuffer,
+        this->dStates[i * 2],
+        this->dRoundStates[i * 2 + 1],
+        
+        dTitleGlyphHeight, 
+        aTitleGlyph);
+    }
   }
 }
 
