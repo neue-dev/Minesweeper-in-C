@@ -1,10 +1,10 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-03 14:51:16
+ * @ Modified time: 2024-03-04 12:27:44
  * @ Description:
  * 
- * The page class bundles together a buffer, shared assets, shared event stores, and an animation manager. 
+ * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
  * The class handles interactions between these three components and helps decouple our classes.
  */
 
@@ -14,7 +14,7 @@
 #include "./utils.event.h"
 #include "./utils.buffer.h"
 #include "./utils.asset.h"
-#include "./utils.animation.h"
+#include "./utils.runner.h"
 #include "./utils.types.h"
 
 #define PAGE_MAX_COUNT (1 << 4)
@@ -41,17 +41,17 @@ enum PageState {
 */
 
 /**
- * The page class bundles together a buffer, a shared asset manager, and its own animation manager.
+ * The page class bundles together a buffer, a shared asset manager, and its own runner manager.
  * 
  * @class
 */
 struct Page {
   char *sName;                        // An identifier for the page
+  char *sNextName;                    // The name of the next page to render
   PageState ePageState;               // The current state of the page
 
-  AnimationManager animationManager;  // An animation manager so we can create animations
+  RunnerManager runnerManager;        // An runner manager so we can handle the "backend" of each page
   AssetManager *pSharedAssetManager;  // A reference to a shared asset manager so we can access all assets
-  
   EventStore *pSharedEventStore;      // Where we can access values modified by events
 
   Buffer *pPageBuffer;                // This is where all our content will be displayed
@@ -76,7 +76,7 @@ Page *Page_new() {
  * @return	{ Page * }					                      A pointer to the initialized instance.
 */
 Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pSharedEventStore) {
-  AnimationManager_init(&this->animationManager);
+  RunnerManager_init(&this->runnerManager);
 
   this->pSharedAssetManager = pSharedAssetManager;
   this->pSharedEventStore = pSharedEventStore;
@@ -118,7 +118,7 @@ void Page_update(Page *this) {
   if(this->ePageState == PAGE_INACTIVE)
     return;
 
-  // If the page stopped after that animation update
+  // If the page stopped after that runner update
   if(this->ePageState == PAGE_ACTIVE_IDLE)
     return;
 
@@ -129,8 +129,8 @@ void Page_update(Page *this) {
     0x000000,
     0xffffff);
 
-  // Update the animations
-  AnimationManager_updateAll(&this->animationManager);
+  // Update the runners
+  RunnerManager_updateAll(&this->runnerManager);
 
   // The page is currently initializing
   if(this->ePageState == PAGE_ACTIVE_INIT) {
