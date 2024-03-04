@@ -1,12 +1,13 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 10:46:20
- * @ Modified time: 2024-03-04 11:47:07
+ * @ Modified time: 2024-03-04 11:59:52
  * @ Description:
  * 
  * This file contains definitions for animation handlers (basically, functions that increment 
  *    the animation over time).
  * Note that these functions are passed as callbacks to animation instances.
+ * Functions here are also annotated differently for convenience.
  */
 
 #ifndef ANIMATIONS_
@@ -37,6 +38,10 @@
 */
 void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
   
+  /**
+   * Grab all the pertinent objects and store some constant values.
+   * ..............................................................
+  */
   Animation *this = (Animation *) Args_Animation;
   Page *pPage = (Page *) Args2_Page;
   Buffer *pBuffer = pPage->pPageBuffer;
@@ -44,11 +49,14 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
   int dWidth = pBuffer->dWidth;
   int dHeight = pBuffer->dHeight;
   
-  // The logo and its height
+  int dRectPos;
   char **aLogo = AssetManager_getAssetText(pPage->pSharedAssetManager, "logo");
   int dLogoHeight = AssetManager_getAssetHeight(pPage->pSharedAssetManager, "logo");
 
-  // Initialization stage
+  /**
+   * Initialization stage.
+   * .....................
+  */
   if(this->eAnimationState == ANIMATION_INIT) {
 
     // The bomb logo
@@ -63,7 +71,10 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
     this->dFloatStateCount = 2;
     this->dIntStateCount = 2;
 
-  // Running the animation
+  /**
+   * Update stage.
+   * .............
+  */
   } else {
 
     // Perform different updates based on the stage of the animation
@@ -111,40 +122,43 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
 
     // The minesweeper logo 
     aLogo = AssetManager_getAssetText(pPage->pSharedAssetManager, "logo");
-    
-    // Make sure we can display signature at the bottom
-    Buffer_contextRect(pBuffer, 0, 0, dWidth, dHeight, 0xffffff, 0x111111);
 
-    // Total black at the edges
-    Buffer_contextRect(pBuffer, 0, 0, dWidth - 1, dHeight, 0x111111, 0x111111);
+    // Position of the central rectangle
+    dRectPos = round(dWidth / 2.0 - dHeight + this->dRoundStates[1] * 2.0);
 
-    // A gray bounding box
+    /**
+     * Writing to the buffer.
+     * ......................
+    */
+    Buffer_contextRect(pBuffer,   // Writable background 
+      0, 0, 
+      dWidth, dHeight, 
+      0xffffff, 0x111111);
+
     Buffer_contextRect(pBuffer, 
-      round(dWidth / 2.0 - dHeight + this->dRoundStates[1] * 2.0 - 1), 
+      0, 0,                       // Total black at the edges
+      dWidth - 1, dHeight, 
+      0x111111, 0x111111);
+
+    Buffer_contextRect(pBuffer,   // A gray bounding box
+      dRectPos - 1, 
       this->dRoundStates[1], 
-      
       (dHeight - this->dRoundStates[1] * 2) * 2, 
       dHeight - this->dRoundStates[1] * 2, 
-      
       0x888888, 
       0x888888);
 
-    // White canvas in center
-    Buffer_contextRect(pBuffer, 
-      round(dWidth / 2.0 - dHeight + this->dRoundStates[1] * 2.0 + 1), 
+    Buffer_contextRect(pBuffer,   // White canvas in the center
+      dRectPos + 1, 
       this->dRoundStates[1] + 1, 
-      
       (dHeight - this->dRoundStates[1] * 2 - 2) * 2, 
-      dHeight - this->dRoundStates[1] * 2 - 2, 
-      
+      dHeight - this->dRoundStates[1] * 2 - 2,       
       0x111111, 
       0xffffff);
 
-    // Write the asset to the buffer
-    Buffer_write(pBuffer, 
+    Buffer_write(pBuffer,         // The mine logo
       round(dWidth / 2.0 - strlen(aLogo[0]) / 2.0), 
       this->dRoundStates[0], 
-
       dLogoHeight,
       aLogo);
   }
@@ -158,6 +172,10 @@ void AnimationHandler_intro(p_obj Args_Animation, p_obj Args2_Page) {
 */
 void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
 
+  /**
+   * Grab all the pertinent objects and store some constant values.
+   * ..............................................................
+  */
   Animation *this = (Animation *) Args_Animation;
   Page *pPage = (Page *) Args2_Page;
   Buffer *pBuffer = pPage->pPageBuffer;
@@ -173,7 +191,10 @@ void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
   char dTitleLength = strlen(sTitleGlyphs);   // The length of the title
   char *sGlyphName = String_alloc(16);        // We'll use this to get the specific name of the asset.
 
-  // We perform the initialization here
+  /**
+   * Initialization stage.
+   * .....................
+  */
   if(this->eAnimationState == ANIMATION_INIT) {
 
     // Init the states we need; these refer to the y positions of each letter
@@ -188,7 +209,10 @@ void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
     this->dIntStateCount = (dTitleLength + 1) * 2;
     this->dFloatStateCount = (dTitleLength + 1) * 2;
 
-  // This is where the animation updates happen
+  /**
+   * Update stage.
+   * .............
+  */
   } else {
 
     // Update the position of the title along the x axis
@@ -231,9 +255,12 @@ void AnimationHandler_menu(p_obj Args_Animation, p_obj Args2_Page) {
         pPage->ePageState = PAGE_ACTIVE_IDLE;
       break;
     }
-
-    // Background
-    Buffer_contextRect(pBuffer, 
+    
+    /**
+     * Writing to the buffer.
+     * ......................
+    */
+    Buffer_contextRect(pBuffer,   // Background
       0, 0, 
       dWidth, dHeight, 
       0x212121, 0xffffff);
