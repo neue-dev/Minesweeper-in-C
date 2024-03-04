@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-04 23:47:09
+ * @ Modified time: 2024-03-04 23:50:21
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -199,10 +199,10 @@ void Page_render(Page *this) {
       pH = (int *) HashMap_get(this->pPixelStates, sComponentKey);
 
       // Update the component states
-      pComponent->x = *pX;
-      pComponent->y = *pY;
-      pComponent->x = *pW;
-      pComponent->y = *pH;
+      // pComponent->x = *pX;
+      // pComponent->y = *pY;
+      // pComponent->x = *pW;
+      // pComponent->y = *pH;
     }
 
     // Add its children to the render queue
