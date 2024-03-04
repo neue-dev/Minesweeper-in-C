@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-04 12:31:40
+ * @ Modified time: 2024-03-04 23:10:28
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -12,10 +12,9 @@
 #ifndef PAGES_
 #define PAGES_
 
+#include "./utils/utils.asset.h"
 #include "./utils/utils.page.h"
-#include "./utils/utils.runner.h"
-
-#include "./runners.c"
+#include "./utils/utils.component.h"
 
 /**
  * //
@@ -30,12 +29,45 @@
  * 
  * @param   { p_obj }   pArgs_Page  The instance page we need to configure.
 */
-void PageConfigurer_intro(p_obj pArgs_Page) {
+void PageHandler_intro(p_obj pArgs_Page) {
   Page *this = (Page *) pArgs_Page;
 
-  RunnerManager_createRunner(
-    &this->runnerManager,
-    "intro", RunnerHandler_intro, this, 0);
+  switch(this->ePageStatus) {
+
+    case PAGE_ACTIVE_INIT:
+      Page_addComponent(this, "root", "test", 
+        0, 0, 0, 0, 
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "main-font-m"),
+        AssetManager_getAssetText(this->pSharedAssetManager, "main-font-m"),
+        -1, -1);
+
+      Page_addComponent(this, "root", "test89", 
+        0, 20, 0, 0, 
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "main-font-w"),
+        AssetManager_getAssetText(this->pSharedAssetManager, "main-font-w"), 
+        -1, -1);
+
+      Page_addComponent(this, "test", "test2", 
+        10, 5, 10, 10, 
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "main-font-d"),
+        AssetManager_getAssetText(this->pSharedAssetManager, "main-font-d"), 
+        0x123456, 0x654321);
+
+      Page_addComponent(this, "test2", "test2-child", 
+        10, 5, 10, 10, 
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "main-font-c"),
+        AssetManager_getAssetText(this->pSharedAssetManager, "main-font-c"),
+        0xaabbcc, 0x112233);
+    break;
+
+    case PAGE_ACTIVE_RUNNING:
+      
+    break;
+
+    default:
+      // ! exit the page
+    break;
+  }
 }
 
 /**
@@ -43,12 +75,9 @@ void PageConfigurer_intro(p_obj pArgs_Page) {
  * 
  * @param   { p_obj }   pArgs_Page  The page instance we need to configure.
 */
-void PageConfigurer_menu(p_obj pArgs_Page) {
+void PageHandler_menu(p_obj pArgs_Page) {
   Page *this = (Page *) pArgs_Page;
 
-  RunnerManager_createRunner(
-    &this->runnerManager,
-    "menu", RunnerHandler_menu, this, 0);
 }
 
 #endif

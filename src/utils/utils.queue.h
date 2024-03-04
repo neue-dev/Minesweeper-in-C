@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:31:48
- * @ Modified time: 2024-03-04 14:54:20
+ * @ Modified time: 2024-03-04 22:25:29
  * @ Description:
  * 
  * This file defines a queue data structure.
@@ -154,6 +154,9 @@ void Queue_kill(Queue *this) {
  * @return  { p_obj }           The object currently indexed at the head.
 */
 p_obj Queue_getHead(Queue *this) {
+  if(this->pHead == NULL)
+    return NULL;
+    
   return this->pHead->pObject;
 }
 
@@ -170,7 +173,7 @@ void Queue_push(Queue *this, p_obj pObject) {
   if(this->pHead == NULL)
     this->pHead = pQueueEntry;
   else 
-    QueueEntry_chain(this->pTail, pQueueEntry);
+    this->pTail->pNext = pQueueEntry;
 
   // Make the entry the new tail
   this->pTail = pQueueEntry;

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-04 12:28:00
+ * @ Modified time: 2024-03-04 22:34:22
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -14,7 +14,6 @@
 #define ENGINE_
 
 #include "./utils/utils.page.h"
-#include "./utils/utils.runner.h"
 #include "./utils/utils.asset.h"
 #include "./utils/utils.buffer.h"
 #include "./utils/utils.event.h"
@@ -64,7 +63,7 @@ struct Engine {
   EventManager eventManager;          // Deals with events
   ThreadManager threadManager;        // Manages the different threads of the program
 
-  int bState;                   // The state of the engine
+  int bState;                         // The state of the engine
 
 };
 
@@ -113,8 +112,8 @@ void Engine_init(Engine *this) {
   /**
    * Creates all our pages
   */
-  PageManager_createPage(&this->pageManager, "menu", PageConfigurer_menu);
-  PageManager_createPage(&this->pageManager, "intro", PageConfigurer_intro);
+  PageManager_createPage(&this->pageManager, "menu", PageHandler_menu);
+  PageManager_createPage(&this->pageManager, "intro", PageHandler_intro);
 
   /**
    * Creates event listeners and handlers, alongside their mutexes

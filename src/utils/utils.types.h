@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-03-04 12:22:32
+ * @ Modified time: 2024-03-04 21:42:40
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -57,8 +57,6 @@ typedef void (*f_event_handler)(p_obj pArgs, p_obj pArgs2);       // Creates a t
 
 typedef char (*f_event_listener)(void);                           // Creates a template for event listeners
 
-typedef void (*f_runner_handler)(p_obj pArgs, p_obj pArgs2);      // Creates a template for animation handlers
-
-typedef void (*f_page_configurer)(p_obj pArgs);                   // Creates a template for page configurers (they set up pages)
+typedef void (*f_page_handler)(p_obj pArgs);                      // Creates a template for a page handler, which updates a page over time
 
 #endif
