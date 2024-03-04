@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-04 12:27:44
+ * @ Modified time: 2024-03-04 14:57:16
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -12,6 +12,7 @@
 #define UTILS_PAGE_
 
 #include "./utils.event.h"
+#include "./utils.component.h"
 #include "./utils.buffer.h"
 #include "./utils.asset.h"
 #include "./utils.runner.h"
