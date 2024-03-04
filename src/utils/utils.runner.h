@@ -1,10 +1,10 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-03-04 14:58:15
+ * @ Modified time: 2024-03-04 15:43:26
  * @ Description:
  * 
- * An runner class. 
+ * A runner class. 
  * This class not only handles animations but also anything related to updating the page class.
  */
 

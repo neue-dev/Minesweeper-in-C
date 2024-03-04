@@ -3,8 +3,13 @@
 .VSCodeCounter/
 *.exe
 *.o
+
+# Ignore debug files
 .debug/
 utils.debug.h
+
+# Ignore drafting files
+.draft.*
 
 # Don't ignore the build files
 !build/
