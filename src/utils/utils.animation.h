@@ -1,10 +1,13 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-27 09:17:35
- * @ Modified time: 2024-03-03 18:02:42
+ * @ Modified time: 2024-03-04 10:28:54
  * @ Description:
  * 
- * An animation class.
+ * An animation class. 
+ * This class not only handles animations but also anything related to updating the page class.
+ * This might have more aptly been called a "Runner" class, but refactoring things this late into
+ *    the dev process might break some things.
  */
 
 #ifndef UTILS_ANIMATION_
