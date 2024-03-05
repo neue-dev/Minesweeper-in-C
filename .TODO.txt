@@ -1,7 +1,6 @@
+add back animations through pagehandler
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
-
-CONSIDER REFACTING AnimationHandler() and split the init into an AnimationInit()
 
 LOOK FOR ALL PLACES WHERE WE INCREMENT someCount++ AFTER ADDING TO A HASHMAP OR SMTH, AND MAKE HashMap_add() return a boolean
 this way, if HashMap_add fails, we dont increment someCount++
