@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-06 13:49:59
+ * @ Modified time: 2024-03-06 14:53:07
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -17,8 +17,24 @@
 
 #define COMPONENT_MAX_CHILD_COUNT (1 << 8)
 
+typedef enum ComponentType ComponentType;
+typedef enum ComponentAlignment ComponentAlignment;
+
 typedef struct Component Component;
 typedef struct ComponentManager ComponentManager;
+
+enum ComponentType {
+  COMPONENT_SINGLE_ROW,
+  COMPONENT_MULTI_ROW,
+  COMPONENT_SINGLE_COL,
+  COMPONENT_MULTI_COL,
+};
+
+enum ComponentAlignment {
+  COMPONENT_CENTER_ALIGN,
+  COMPONENT_LEFT_ALIGN,
+  COMPONENT_RIGHT_ALIGN,
+};
 
 /**
  * A class that stores a UI component which we will eventually render to the screen.
@@ -54,6 +70,9 @@ struct Component {
 
   int colorFG;                                      // A color for the foreground
   int colorBG;                                      // A color for the background
+
+  ComponentType eComponentType;                     // Determines how the component renders its children
+  ComponentAlignment eComponentAlignment;           // Determiens the alignment of its children
 };
 
 /**
@@ -78,12 +97,57 @@ Component *Component_new() {
  * @param   { int }           h             The height of the component.
  * @param   { int }           dAssetHeight  The height of the asset.
  * @param   { char ** }       aAsset        The asset to be rendered by the component.
- * @param   { int }                   colorFG       A foreground color for the component.
- * @param   { int }                   colorBG       A background color for the component.
+ * @param   { int }           colorFG       A foreground color for the component.
+ * @param   { int }           colorBG       A background color for the component.
  * @return	{ Component * }					        A pointer to the initialized instance.
 */
 Component *Component_init(Component *this, char *sName, Component *pParent, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+  int i = 0, j = 0, dNameLength = strlen(sName);
+  char sNameSubpart[STRING_KEY_MAX_LENGTH];
+  
+  // Copy the name string
   strcpy(this->sName, sName);
+
+  // Default component type
+  this->eComponentType = COMPONENT_MULTI_ROW;
+  this->eComponentAlignment = COMPONENT_LEFT_ALIGN;
+
+  i = 0, j = 0;
+
+  // Parse the name and deduce the type from there
+  // Note that this is <= dNameLength because we need to check for when !sName[i] inside the loop
+  while(i <= dNameLength) {
+
+    // It's a new subpart of the name
+    if(sName[i] == '-' || !sName[i]) {
+      
+      // Determine what kind of component it is
+      if(!strcmp(sNameSubpart, "row")) this->eComponentType = COMPONENT_SINGLE_ROW;
+      if(!strcmp(sNameSubpart, "col")) this->eComponentType = COMPONENT_SINGLE_COL;
+      if(!strcmp(sNameSubpart, "multirow")) this->eComponentType = COMPONENT_MULTI_ROW;
+      if(!strcmp(sNameSubpart, "multicol")) this->eComponentType = COMPONENT_MULTI_COL;
+
+      // Determine the alignment of its children
+      if(!strcmp(sNameSubpart, "left")) this->eComponentType = COMPONENT_LEFT_ALIGN;
+      if(!strcmp(sNameSubpart, "center")) this->eComponentType = COMPONENT_CENTER_ALIGN;
+      if(!strcmp(sNameSubpart, "right")) this->eComponentType = COMPONENT_RIGHT_ALIGN;
+
+      // Clear the name component
+      while(--j >= 0) 
+        sNameSubpart[j] = 0;
+
+      i++;
+      j = 0;
+    } else {
+      
+      // Copy the component here
+      sNameSubpart[j] = sName[i++];
+      sNameSubpart[j + 1] = 0;
+
+      j++;
+    }
+
+  };
   
   this->pParent = pParent;
   this->dChildCount = 0;
@@ -158,18 +222,47 @@ int Component_add(Component *this, Component *pChild) {
   this->pChildren[this->dChildCount++] = pChild;
   pChild->pParent = this;
 
-  // A new row starts
-  if(this->dChildCount > 1)
-    if(this->pChildren[this->dChildCount - 2]->y != pChild->y)
-      this->dChildrenLength = 0;
+  switch(this->eComponentType) {
+    
+    case COMPONENT_MULTI_ROW:
+    
+      // A new row starts
+      if(this->dChildCount > 1)
+        if(this->pChildren[this->dChildCount - 2]->y != pChild->y)
+          this->dChildrenLength = 0;
 
-  // Get the cumulative length of these guys
-  pChild->dOffsetX = this->dChildrenLength;
-  this->dChildrenLength += pChild->w;
+    case COMPONENT_SINGLE_ROW:
 
-  // If it's just a container, expand it to fit its kids
-  if(this->aAsset == NULL)
-    this->w = this->dChildrenLength;
+      // Get the cumulative length of these guys
+      pChild->dOffsetX = this->dChildrenLength;
+      this->dChildrenLength += pChild->w;
+
+      // If it's just a container, expand it to fit its kids
+      if(this->aAsset == NULL)
+        this->w = this->dChildrenLength;
+
+    break;
+
+    case COMPONENT_MULTI_COL:
+    
+      // A new row starts
+      if(this->dChildCount > 1)
+        if(this->pChildren[this->dChildCount - 2]->x != pChild->x)
+          this->dChildrenLength = 0;
+
+    case COMPONENT_SINGLE_COL:
+
+      // Get the cumulative length of these guys
+      pChild->dOffsetY = this->dChildrenLength;
+      this->dChildrenLength += pChild->h;
+
+      // If it's just a container, expand it to fit its kids
+      if(this->aAsset == NULL)
+        this->h = this->dChildrenLength;
+
+    break;
+  }
+
 
   return 1;
 }

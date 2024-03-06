@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 13:42:47
+ * @ Modified time: 2024-03-06 13:59:24
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -17,6 +17,7 @@
 #include "./utils.asset.h"
 #include "./utils.types.h"
 
+#define PAGE_NULL_INT -999
 #define PAGE_MAX_COMPONENTS (1 << 10)
 #define PAGE_MAX_STATES (1 << 10)
 #define PAGE_MAX_COUNT (1 << 4)
@@ -366,14 +367,16 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
     // Set appropriate values
     switch(i) {
       case 0:
-        *pRenderTargetState = x * 1.0;
+        if(x > PAGE_NULL_INT)
+          *pRenderTargetState = x * 1.0;
 
         if(colorFG > -1)
           *pColorTargetState = colorFG;
       break;
       
       case 1:
-        *pRenderTargetState = y * 1.0;
+        if(y > PAGE_NULL_INT)
+          *pRenderTargetState = y * 1.0;
 
         if(colorBG > -1)
           *pColorTargetState = colorBG;
@@ -386,7 +389,7 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
 
       case 3:
         if(h > -1)
-          *pRenderTargetState = w * 1.0;
+          *pRenderTargetState = h * 1.0;
       break;
     }
   }

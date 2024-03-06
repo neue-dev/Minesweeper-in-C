@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 13:50:54
+ * @ Modified time: 2024-03-06 14:44:49
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -49,8 +49,8 @@ void PageHandler_intro(p_obj pArgs_Page) {
     case PAGE_ACTIVE_INIT:
 
       // A container for the title
-      Page_addComponent(this, "title", "root",
-        0, 0, 0, 0, 0, NULL, -1, -1);
+      Page_addComponent(this, "title-row", "root",
+        0, 10, 0, 0, 0, NULL, -1, -1);
 
       // Get the total length
       for(i = 0, dTotalLength = 0; i < dTitleLength; i++) {
@@ -70,14 +70,18 @@ void PageHandler_intro(p_obj pArgs_Page) {
         String_keyAndChar(sAssetKey, "main-font", sTitle[i]);
 
         // Add the component
-        Page_addComponent(this, sComponentKey, "title",
-          dWidth / 2 - dTotalLength / 2, (i / 5) * 6 + 5, 
+        Page_addComponent(this, sComponentKey, "title-row",
+          dWidth / 2 - dTotalLength / 2, i * i * i * 10 - 128, 
           AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey), 
           AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
           AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
           AssetManager_getAssetText(this->pSharedAssetManager, sAssetKey),
           -1, -1);  
+
+        Page_setComponentTarget(this, sComponentKey, PAGE_NULL_INT, 0, -1, -1, -1, -1, 0.69);
       }
+
+      Page_setComponentTarget(this, "title-row", PAGE_NULL_INT, 10, -1, -1, -1, -1, 0.69);
     break;
 
     case PAGE_ACTIVE_RUNNING:
