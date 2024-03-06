@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 18:02:09
+ * @ Modified time: 2024-03-06 19:52:54
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -39,7 +39,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
   char *sIntroComponent = "intro-row.col-center.y-center.x";
   char *sOuterBoxComponent = "box.outer-row.col-center.y-center.x";
   char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x";
-  char *sLogoComponent = "logo-fixed";
+  char *sLogoComponent = "logo";
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -49,17 +49,18 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0xffffff, 0x080808);
       Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 40, 20, 0, NULL, 0x111111, 0x888888);
-      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 36, 18, 0, NULL, 0x111111, 0xcccccc);
-      // Page_addComponent(this, sLogoComponent, "root", 60, 20, 
-      //   AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
-      //   AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
-      //   AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
-      //   AssetManager_getAssetText(this->pSharedAssetManager, "logo"), 
-      //   -1, -1);
+      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 36, 18, 0, NULL, 0x111111, 0xf0f0f0);
+      Page_addComponent(this, sLogoComponent, sInnerBoxComponent, 0, 100, 
+        AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
+        AssetManager_getAssetText(this->pSharedAssetManager, "logo"), 
+        -1, -1);
 
       // Set initials
       Page_resetComponentInitial(this, sOuterBoxComponent, 20, 10, 0, 0, -1, -1);
       Page_resetComponentInitial(this, sInnerBoxComponent, 18, 9, 0, 0, -1, -1);
+      Page_resetComponentInitial(this, sLogoComponent, 0, 100, -1, -1, -1, -1);
 
       // Set targets
       Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 40, 20, -1, -1, 0.69);
@@ -69,6 +70,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
     case PAGE_ACTIVE_RUNNING:
       
+      // ! why isnt the numbers working right?
+      if(this->dT > 12)
+        Page_setComponentTarget(this, sLogoComponent, 0, 0, -1, -1, -1, -1, 0.84);
+
     break;
 
     default:
