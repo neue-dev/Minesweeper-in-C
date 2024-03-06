@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 19:52:54
+ * @ Modified time: 2024-03-06 20:51:59
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -47,10 +47,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
     case PAGE_ACTIVE_INIT:
 
       // Create component tree
-      Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0xffffff, 0x080808);
-      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 40, 20, 0, NULL, 0x111111, 0x888888);
-      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 36, 18, 0, NULL, 0x111111, 0xf0f0f0);
-      Page_addComponent(this, sLogoComponent, sInnerBoxComponent, 0, 100, 
+      Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x080808, 0x080808);
+      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, 0x888888, 0x888888);
+      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, 0x111111, 0xf0f0f0);
+      Page_addComponent(this, sLogoComponent, sInnerBoxComponent, 0, -100, 
         AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
         AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
         AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
@@ -58,21 +58,28 @@ void PageHandler_intro(p_obj pArgs_Page) {
         -1, -1);
 
       // Set initials
-      Page_resetComponentInitial(this, sOuterBoxComponent, 20, 10, 0, 0, -1, -1);
-      Page_resetComponentInitial(this, sInnerBoxComponent, 18, 9, 0, 0, -1, -1);
+      Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
+      Page_resetComponentInitial(this, sInnerBoxComponent, 80, 40, 0, 0, -1, -1);
       Page_resetComponentInitial(this, sLogoComponent, 0, 100, -1, -1, -1, -1);
 
       // Set targets
-      Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 40, 20, -1, -1, 0.69);
-      Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 36, 18, -1, -1, 0.69);
+      Page_setComponentTarget(this, sOuterBoxComponent, 60, 30, 40, 20, -1, -1, 0.69);
+      Page_setComponentTarget(this, sInnerBoxComponent, 60, 30, 36, 18, -1, -1, 0.69);
       
     break;
 
     case PAGE_ACTIVE_RUNNING:
       
-      // ! why isnt the numbers working right?
-      if(this->dT > 12)
+      if(this->dT == 20) {
         Page_setComponentTarget(this, sLogoComponent, 0, 0, -1, -1, -1, -1, 0.84);
+      } else if(this->dT > 20) {
+
+        if(Page_getComponentDist(this, sLogoComponent, 1) < 0.00001) {
+          Page_setComponentTarget(this, sLogoComponent, 0, 100, -1, -1, -1, -1, -0.99);
+          Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 160, 80, -1, -1, 0.4);
+          Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 156, 78, -1, -1, 0.4);
+        } 
+      } 
 
     break;
 

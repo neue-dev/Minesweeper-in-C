@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-03-02 17:42:05
+ * @ Modified time: 2024-03-06 19:59:37
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -121,6 +121,19 @@ char *Graphics_getCodeFGBG(int colorFG, int colorBG) {
     sANSISequence[i++] = 32;
 
   return sANSISequence;
+}
+
+/**
+ * Returns the "pythagorean distance" between two colors.
+*/
+float Graphics_getColorDist(int color1, int color2) {
+  return sqrtf(
+    ((color1 >> 16) % (1 << 8) - (color2 >> 16) % (1 << 8)) * 
+    (color1 >> 16) % (1 << 8) - (color2 >> 16) % (1 << 8) + 
+    ((color1 >> 8) % (1 << 8) - (color2 >> 8) % (1 << 8) * 
+    (color1 >> 8) % (1 << 8) - (color2 >> 8) % (1 << 8)) + 
+    ((color1 >> 0) % (1 << 8) - (color2 >> 0) % (1 << 8) * 
+    (color1 >> 0) % (1 << 8) - (color2 >> 0) % (1 << 8)) * 1.0);
 }
 
 /**

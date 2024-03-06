@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-03-02 16:43:10
+ * @ Modified time: 2024-03-06 20:36:25
  * 
  * ███╗   ███╗██╗███╗   ██╗███████╗███████╗██╗    ██╗███████╗███████╗██████╗ ███████╗██████╗ 
  * ████╗ ████║██║████╗  ██║██╔════╝██╔════╝██║    ██║██╔════╝██╔════╝██╔══██╗██╔════╝██╔══██╗
@@ -42,6 +42,10 @@ int main(int argc, char *argv[]) {
       system("cls");
       printf("\n\n\tThe game is loading...");
       system("build\\minesweeper.win.exe");
+      
+      // Reset colors in case of crash
+      printf("\x1b[38;5;255m");
+      printf("\x1b[48;5;232m");
 
       // After playing
       system("cls");
@@ -67,6 +71,10 @@ int main(int argc, char *argv[]) {
     printf("\e[H\e[2J\e[3J");
     printf("\n\n\tThe game is loading...\n");
     system("./build/minesweeper.unix.o");
+
+    // Reset colors in case of crash
+    printf("\x1b[38;5;255m");
+    printf("\x1b[48;5;232m");
 
     // After the game exits
     printf("\e[H\e[2J\e[3J");

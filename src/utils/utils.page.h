@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 17:55:17
+ * @ Modified time: 2024-03-06 20:50:02
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -205,7 +205,7 @@ int Page_update(Page *this) {
     // Ease in
     } else if(*pTransitionSpeed < 0) {
       *pRenderState = Math_easeIn(*pRenderState, *pRenderTargetState, *pTransitionSpeed * -1.0);
-      *pColorState = Math_easeOut(*pColorState * 1.0, *pColorTargetState * 1.0, *pTransitionSpeed * -1.0);
+      *pColorState = Math_easeIn(*pColorState * 1.0, *pColorTargetState * 1.0, *pTransitionSpeed * -1.0);
     }
 
     // Update the state values
@@ -397,6 +397,54 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
 }
 
 /**
+ * Returns the distance of the component from its target.
+ * 
+ * @param   { Page * }  this    The page to modify.
+ * @param   { char * }  sKey    The component to read data from.
+ * @param   { int }     dParam  Which value we're specifically getting the distances of.
+*/
+float Page_getComponentDist(Page *this, char *sKey, int dParam) {
+  int i;
+  float *pRenderState, *pRenderTargetState;
+  int *pColorState, *pColorTargetState;
+  char sStateKey[STRING_KEY_MAX_LENGTH];
+  
+  // A for loop makes things easier here
+  for(i = 0; i < 4; i++) {
+
+    // Create the key
+    String_keyAndId(sStateKey, sKey, i);
+
+    // Retrieve the values
+    pColorState = HashMap_get(this->pColorStates, sStateKey);
+    pRenderState = HashMap_get(this->pRenderStates, sStateKey);
+
+    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
+    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
+    
+    // Set appropriate values
+    // I KNOW this switch statement couldve been simplified but Id rather keep it explicit for my own sake
+    switch(dParam) {
+      case 0:   // Distance of x values
+        if(i == 0) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
+      case 1:   // Distance of y values
+        if(i == 1) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
+      case 2:   // Distance of w values
+        if(i == 2) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
+      case 3:   // Distance of h values
+        if(i == 3) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
+      
+      case 5:   // Distance of FG color values
+        if(i == 0) { return Graphics_getColorDist(*pColorState, *pColorTargetState); } break;
+      case 6:   // Distance of FG color values
+        if(i == 1) { return Graphics_getColorDist(*pColorState, *pColorTargetState); } break;
+    }
+  }
+
+  return 0.0;
+}
+
+/**
  * Sets the initial starting values of the component.
  * 
  * // ! ADD JSDOC
@@ -449,11 +497,13 @@ void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int
 
 /**
  * Sets the page state to PAGE_ACTIVE.
+ * It also resets the dT value of the page so animations can start over.
  * 
  * @param   { Page * }  this  The page we're going to activate.
 */
 void Page_activate(Page *this) {
   this->ePageStatus = PAGE_ACTIVE_INIT;
+  this->dT = 0;
 }
 
 /**
