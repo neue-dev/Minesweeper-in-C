@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-03 10:02:02
+ * @ Modified time: 2024-03-06 12:25:05
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -40,6 +40,8 @@ struct Asset {
   char *sName;                            // An identifier for the asset
 
   int dHeight;                            // Stores the height of the text content
+  int dWidth;                             // Stores the default width of the text content (the width of the first line)
+
   char *sContentArray[ASSET_MAX_HEIGHT];  // The actual content of the asset
 };
 
@@ -70,6 +72,7 @@ Asset *Asset_init(Asset *this, char *sName, int dHeight, char *sContentArray[]) 
 
   // Stroe the height
   this->dHeight = dHeight;
+  this->dWidth = String_charCount(sContentArray[0]);
   
   // Store the content
   for(i = 0; i < dHeight; i++) {
@@ -191,14 +194,26 @@ char **AssetManager_getAssetText(AssetManager *this, char *sAssetKey) {
 
 /**
  * Retrieves an asset from its database of assets.
- * It returns the content of that asset as opposed to a pointer to the asset object.
+ * It returns the height of the asset.
  * 
  * @param   { AssetManager * }  this            The AssetManager struct.
  * @param   { char * }          sAssetKey       The name of the asset to create.
- * @return  {}
+ * @return  { int }                             The number of lines in the asset.
 */
 int AssetManager_getAssetHeight(AssetManager *this, char *sAssetKey) {
   return ((Asset *) HashMap_get(this->pAssetMap, sAssetKey))->dHeight;
+}
+
+/**
+ * Retrieves an asset from its database of assets.
+ * It returns the default width of the asset.
+ * 
+ * @param   { AssetManager * }  this            The AssetManager struct.
+ * @param   { char * }          sAssetKey       The name of the asset to create.
+ * @return  { int }                             The number of characters on the first line of the asset.
+*/
+int AssetManager_getAssetWidth(AssetManager *this, char *sAssetKey) {
+  return ((Asset *) HashMap_get(this->pAssetMap, sAssetKey))->dWidth;
 }
 
 /**

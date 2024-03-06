@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-06 11:57:23
+ * @ Modified time: 2024-03-06 12:10:10
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -15,7 +15,6 @@
 #include "./utils.queue.h"
 
 #define COMPONENT_MAX_CHILD_COUNT (1 << 8)
-#define COMPONENT_MAX_ASSET_COUNT (1 << 4)
 
 typedef struct Component Component;
 typedef struct ComponentManager ComponentManager;

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 11:58:40
+ * @ Modified time: 2024-03-06 12:02:40
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -160,7 +160,6 @@ void Page_render(Page *this) {
  * @param		{ Page * }		this	A pointer to the instance to update.
  * @param   { int }             Whether or not the page was able to update.
 */
-#include "./utils.debug.h"
 int Page_update(Page *this) {
   
   int i, j;

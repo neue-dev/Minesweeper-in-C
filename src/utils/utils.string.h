@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-06 10:40:26
+ * @ Modified time: 2024-03-06 12:19:21
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -79,12 +79,12 @@ int String_isChar(char c) {
 }
 
 /**
- * Computes the length of a string, taking into account compound characters.
+ * Gets the number of characters in a string, including multi-byte characters.
  * 
  * @param   { char * }  string  The string to get the length of.
  * @return  { int }             The length of the string.
 */
-int String_length(char *string) {
+int String_charCount(char *string) {
   int dLen = 0;
 
   // While not null byte
