@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-02-29 23:23:21
+ * @ Modified time: 2024-03-06 12:01:39
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -98,7 +98,7 @@ void ThreadManager_exit(ThreadManager *this) {
   // Kill all the threads first
   while(this->dThreadCount) {
     sThreadKey = String_create(sThreadKeyArray[this->dThreadCount]);
-    pStateMutex = (Mutex *) HashMap_get(this->pStateMap, sThreadKey);
+    pStateMutex = HashMap_get(this->pStateMap, sThreadKey);
 
     // This tells the thread to terminate
     if(pStateMutex != NULL)
@@ -118,7 +118,7 @@ void ThreadManager_exit(ThreadManager *this) {
   // Kill all the mutexes after killing the threads
   while(this->dMutexCount) {
     sMutexKey = String_create(sMutexKeyArray[this->dMutexCount]);
-    pDataMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+    pDataMutex = HashMap_get(this->pMutexMap, sMutexKey);
 
     // Kill the mutex
     if(pDataMutex != NULL)
@@ -147,8 +147,8 @@ void ThreadManager_exit(ThreadManager *this) {
  * @param   { int }               tArg_ANY          A parameter that the callback function might need (ie, an enum).
 */
 void ThreadManager_createThread(ThreadManager *this, char *sThreadKey, char *sMutexKey, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY) {
-  Mutex *pStateMutex = (Mutex *) HashMap_get(this->pStateMap, sThreadKey), *pDataMutex;
-  Thread *pThread = (Thread *) HashMap_get(this->pThreadMap, sThreadKey);
+  Mutex *pStateMutex = HashMap_get(this->pStateMap, sThreadKey), *pDataMutex;
+  Thread *pThread = HashMap_get(this->pThreadMap, sThreadKey);
 
   // Duplicate key
   if(pThread != NULL)
@@ -161,7 +161,7 @@ void ThreadManager_createThread(ThreadManager *this, char *sThreadKey, char *sMu
   // The data mutex is the mutex at the specified index
   // Also, we have a new state mutex specifically for the new thread (these are not saved in the array of mutexes)
   // We have to lock this immediately to prevent the thread from terminating upon creation
-  pDataMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+  pDataMutex = HashMap_get(this->pMutexMap, sMutexKey);
 
   // If the mutex does not exist
   if(pDataMutex == NULL)
@@ -193,7 +193,7 @@ void ThreadManager_createThread(ThreadManager *this, char *sThreadKey, char *sMu
  * @param   { char * }            sMutexKey   The identifier for the mutex.
 */
 void ThreadManager_createMutex(ThreadManager *this, char *sMutexKey) {
-  Mutex *pMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+  Mutex *pMutex = HashMap_get(this->pMutexMap, sMutexKey);
 
   // Duplicate key
   if(pMutex != NULL)
@@ -250,7 +250,7 @@ void ThreadManager_killThread(ThreadManager *this, char *sThreadKey) {
  * @param   { char * }            sMutexKey   The name of the mutex we will lock.
 */
 void ThreadManager_lockMutex(ThreadManager *this, char *sMutexKey) {
-  Mutex *pMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+  Mutex *pMutex = HashMap_get(this->pMutexMap, sMutexKey);
 
   if(HashMap_get(this->pMutexMap, sMutexKey) != NULL)
     Mutex_lock(pMutex);
@@ -265,7 +265,7 @@ void ThreadManager_lockMutex(ThreadManager *this, char *sMutexKey) {
  * @return  { int }                           Whether or not the operation was successful.
 */
 void ThreadManager_unlockMutex(ThreadManager *this, char *sMutexKey) {
-  Mutex *pMutex = (Mutex *) HashMap_get(this->pMutexMap, sMutexKey);
+  Mutex *pMutex = HashMap_get(this->pMutexMap, sMutexKey);
 
   if(HashMap_get(this->pMutexMap, sMutexKey) != NULL)
     Mutex_unlock(pMutex);

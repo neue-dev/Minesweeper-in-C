@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 11:56:32
+ * @ Modified time: 2024-03-06 12:01:46
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -43,8 +43,8 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
       Page_addComponent(this, "test89", "root", 
         0, 20, 0, 0, 
-        AssetManager_getAssetHeight(this->pSharedAssetManager, "main-font-w"),
-        AssetManager_getAssetText(this->pSharedAssetManager, "main-font-w"), 
+        AssetManager_getAssetHeight(this->pSharedAssetManager, "main-font-x"),
+        AssetManager_getAssetText(this->pSharedAssetManager, "main-font-x"), 
         -1, -1);
 
       Page_addComponent(this, "test2", "test", 
