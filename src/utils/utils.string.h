@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-06 12:19:21
+ * @ Modified time: 2024-03-06 13:26:50
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -12,6 +12,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#define STRING_KEY_MAX_LENGTH (1 << 8)
 
 /**
  * //
@@ -109,6 +111,28 @@ int String_charCount(char *string) {
 */
 char String_getLast(char *string) {
   return string[strlen(string) - 1];
+}
+
+/**
+ * Creates a key with the following format: <key_name>-<key_id>.
+ * 
+ * @param   { char * }  sKey      Where we want to store the key.
+ * @param   { char * }  sKeyName  The name of the key.
+ * @param   { int }     sKeyId    The id of the key.
+*/
+void String_keyAndId(char *sKey, char *sKeyName, int sKeyId) {
+  snprintf(sKey, STRING_KEY_MAX_LENGTH, "%s-%d", sKeyName, sKeyId);
+}
+
+/**
+ * Creates a key with the following format: <key_name>-<key_char>.
+ * 
+ * @param   { char * }  sKey      Where we want to store the key.
+ * @param   { char * }  sKeyName  The name of the key.
+ * @param   { int }     sKeyChar  The char of associated with the key.
+*/
+void String_keyAndChar(char *sKey, char *sKeyName, char sKeyChar) {
+  snprintf(sKey, STRING_KEY_MAX_LENGTH, "%s-%c", sKeyName, sKeyChar);
 }
 
 // You are in Windows

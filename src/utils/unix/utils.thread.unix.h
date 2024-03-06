@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:19:47
- * @ Modified time: 2024-03-02 16:26:01
+ * @ Modified time: 2024-03-06 13:19:01
  * @ Description:
  *    
  * A utility library for implementing threads in Unix-based systems.
@@ -12,6 +12,8 @@
 
 #ifndef UTILS_THREAD_UNIX_
 #define UTILS_THREAD_UNIX_
+
+#include "../utils.string.h"
 
 #include <pthread.h>
 #include <errno.h>
@@ -46,8 +48,8 @@ typedef struct Thread Thread;
 */
 struct Mutex {
   
-  char *sName;              // The name of the mutex
-  pthread_mutex_t *hMutex;  // A handle to the actual mutex
+  char sName[STRING_KEY_MAX_LENGTH];  // The name of the mutex
+  pthread_mutex_t *hMutex;            // A handle to the actual mutex
 
 };
 
@@ -69,7 +71,7 @@ Mutex *Mutex_new() {
  * @return  { Mutex * }           The initialized instance.
 */
 Mutex *Mutex_init(Mutex *this, char *sName) {
-  this->sName = sName;
+  strcpy(this->sName, sName);
   this->hMutex = calloc(1, sizeof(*(this->hMutex)));
 
   // Initialize the memory block of the mutex
@@ -163,17 +165,17 @@ void Mutex_unlock(Mutex *this) {
 */
 struct Thread {
 
-  char *sName;                // The name of the thread
-                              // TBH, this is only here for convenience and debugging
-
-  pthread_t *hThread;         // A handle to the actual thread instance
-  Mutex *pStateMutex;         // A pointer to the mutex that tells the thread to keep running
-  Mutex *pDataMutex;          // A pointer to the mutex that tells the thread if it can 
-                              //    modify the shared resource
-
-  f_void_callback fCallee;    // A pointer to the routine to be run by the thread
-  p_obj pArgs_ANY;            // The arguments to the callee
-  int tArg_ANY;               // An optional argument to the callee
+  char sName[STRING_KEY_MAX_LENGTH];  // The name of the thread
+                                      // TBH, this is only here for convenience and debugging
+        
+  pthread_t *hThread;                 // A handle to the actual thread instance
+  Mutex *pStateMutex;                 // A pointer to the mutex that tells the thread to keep running
+  Mutex *pDataMutex;                  // A pointer to the mutex that tells the thread if it can 
+                                      //    modify the shared resource
+        
+  f_void_callback fCallee;            // A pointer to the routine to be run by the thread
+  p_obj pArgs_ANY;                    // The arguments to the callee
+  int tArg_ANY;                       // An optional argument to the callee
 
 };
 
@@ -227,7 +229,7 @@ Thread *Thread_new() {
 Thread *Thread_init(Thread *this, char *sName, Mutex *pStateMutex, Mutex *pDataMutex, f_void_callback fCallee, p_obj pArgs_ANY, int tArg_ANY) {
   
   // Update its name
-  this->sName = sName;
+  strcpy(this->sName, sName);
 
   // Store the references to the mutex
   this->pStateMutex = pStateMutex;

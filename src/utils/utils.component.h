@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-06 12:10:10
+ * @ Modified time: 2024-03-06 13:07:15
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -11,6 +11,7 @@
 #ifndef UTILS_COMPONENT_
 #define UTILS_COMPONENT_
 
+#include "./utils.string.h"
 #include "./utils.buffer.h"
 #include "./utils.queue.h"
 
@@ -25,12 +26,13 @@ typedef struct ComponentManager ComponentManager;
  * @class
 */
 struct Component {
-  char *sName;                                      // The name of the component
+  char sName[STRING_KEY_MAX_LENGTH];                // The name of the component
                                                     // This is important so we can get its states in the page class
 
   Component *pParent;                               // The parent component
   Component *pChildren[COMPONENT_MAX_CHILD_COUNT];  // The children components
   int dChildCount;                                  // How many children we currently have
+  int dChildrenLength;                              // The cumulative length of the children
 
   int x;                                            // The x-position of the component with respect to its parent
   int y;                                            // The y-position of the component with respect to its parent
@@ -40,6 +42,9 @@ struct Component {
 
   int dParentX;                                     // An x offset based on its parent
   int dParentY;                                     // A y offset based on its parent
+
+  int dOffsetX;                                     // An x offset for the element, based on siblings
+  int dOffsetY;                                     // A y offset for the element, based on siblings
   
   int dRenderX;                                     // The absolute x-coordinate where the component will actually be rendered
   int dRenderY;                                     // The absolute y-coordinate where the component will actually be rendered
@@ -78,10 +83,11 @@ Component *Component_new() {
  * @return	{ Component * }					        A pointer to the initialized instance.
 */
 Component *Component_init(Component *this, char *sName, Component *pParent, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
-  this->sName = sName;
+  strcpy(this->sName, sName);
   
   this->pParent = pParent;
   this->dChildCount = 0;
+  this->dChildrenLength = 0;
 
   this->x = x;
   this->y = y;
@@ -90,6 +96,9 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
 
   this->dParentX = 0;
   this->dParentY = 0;
+
+  this->dOffsetX = 0;
+  this->dOffsetY = 0;
 
   this->dRenderX = 0;
   this->dRenderY = 0;
@@ -149,6 +158,14 @@ int Component_add(Component *this, Component *pChild) {
   this->pChildren[this->dChildCount++] = pChild;
   pChild->pParent = this;
 
+  // Get the cumulative length of these guys
+  pChild->dOffsetX = this->dChildrenLength;
+  this->dChildrenLength += pChild->w;
+
+  // If it's just a container, expand it to fit its kids
+  if(this->aAsset == NULL)
+    this->w = this->dChildrenLength;
+
   return 1;
 }
 
@@ -156,8 +173,8 @@ int Component_add(Component *this, Component *pChild) {
  * Computes the position of the component based on parent components.
 */
 void Component_config(Component *this) {
-  this->dParentX = this->pParent->dParentX + this->pParent->x;
-  this->dParentY = this->pParent->dParentY + this->pParent->y;
+  this->dParentX = this->pParent->dParentX + this->pParent->x + this->dOffsetX;
+  this->dParentY = this->pParent->dParentY + this->pParent->y + this->dOffsetY;
 
   this->dRenderX = this->dParentX + this->x;
   this->dRenderY = this->dParentY + this->y;

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-06 12:25:05
+ * @ Modified time: 2024-03-06 13:17:05
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -37,7 +37,7 @@ typedef struct AssetManager AssetManager;
  * @class
 */
 struct Asset {
-  char *sName;                            // An identifier for the asset
+  char sName[STRING_KEY_MAX_LENGTH];      // An identifier for the asset
 
   int dHeight;                            // Stores the height of the text content
   int dWidth;                             // Stores the default width of the text content (the width of the first line)
@@ -68,7 +68,7 @@ Asset *Asset_new() {
 Asset *Asset_init(Asset *this, char *sName, int dHeight, char *sContentArray[]) {
   int i, j;
 
-  this->sName = sName;
+  strcpy(this->sName, sName);
 
   // Stroe the height
   this->dHeight = dHeight;
@@ -232,7 +232,7 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
   int bIsComment = 0;
   
   // Stores a name for an asset
-  char *sName;
+  char sName[STRING_KEY_MAX_LENGTH];
 
   // Stores the output of the file and the file itself
   int dAssetFileBufferLength = 0;
@@ -242,6 +242,10 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
   // The contents of a single asset instance and the asset itself
   int dAssetInstanceBufferLength = 0;
   char *sAssetInstanceBuffer[ASSET_MAX_HEIGHT];
+
+  // Initialize the name buffer
+  for(i = 0; i < STRING_KEY_MAX_LENGTH; i++)
+    sName[i] = 0;
 
   // Initialize the asset instance buffer
   for(i = 0; i < ASSET_MAX_HEIGHT; i++)
@@ -284,7 +288,8 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
 
         // Max name length is 256 bytes
         // We create a new string each time because we pass it to the asset instance anw
-        sName = String_alloc(ASSET_MAX_WIDTH);
+        k = 0;
+        while(sName[k]) sName[k++] = 0;
         dAssetInstanceBufferLength = 0;
         
         // Read the name from the comment

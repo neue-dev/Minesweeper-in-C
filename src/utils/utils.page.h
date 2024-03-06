@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 12:02:40
+ * @ Modified time: 2024-03-06 13:33:43
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -48,31 +48,31 @@ enum PageStatus {
  * @class
 */
 struct Page {
-  char *sName;                              // An identifier for the page
-  char *sNextName;                          // The name of the next page to render
-  
-  PageStatus ePageStatus;                   // The current status of the page
-  f_page_handler fHandler;                  // Handles the update of the page
+  char *sName[STRING_KEY_MAX_LENGTH];                           // An identifier for the page
+  char *sNextName;                                              // The name of the next page to render
+                      
+  PageStatus ePageStatus;                                       // The current status of the page
+  f_page_handler fHandler;                                      // Handles the update of the page
+                    
+  AssetManager *pSharedAssetManager;                            // A reference to a shared asset manager so we can access all assets
+  EventStore *pSharedEventStore;                                // Where we can access values modified by events
+                    
+  int dComponentCount;                                          // How many components we have
+  ComponentManager componentManager;                            // We store the components both through a tree and a hashmap
+  Buffer *pBuffer;                                              // This is where all our content will be displayed
+                    
+  HashMap *pColorStates;                                        // The foreground and background colors for each component
+  HashMap *pRenderStates;                                       // Float states that describe the positions of different components
+  HashMap *pPixelStates;                                        // These are the rounded off versions of the pRenderStates above
+                      
+  HashMap *pColorTargetStates;                                  // What colors to be approached
+  HashMap *pRenderTargetStates;                                 // These are what the render states try to approach
+  HashMap *pTransitionSpeeds;                                   // How fast each component should switch between states
 
-  AssetManager *pSharedAssetManager;        // A reference to a shared asset manager so we can access all assets
-  EventStore *pSharedEventStore;            // Where we can access values modified by events
-
-  int dComponentCount;                      // How many components we have
-  ComponentManager componentManager;        // We store the components both through a tree and a hashmap
-  Buffer *pBuffer;                          // This is where all our content will be displayed
-
-  HashMap *pColorStates;                    // The foreground and background colors for each component
-  HashMap *pRenderStates;                   // Float states that describe the positions of different components
-  HashMap *pPixelStates;                    // These are the rounded off versions of the pRenderStates above
-  
-  HashMap *pColorTargetStates;              // What colors to be approached
-  HashMap *pRenderTargetStates;             // These are what the render states try to approach
-  HashMap *pTransitionSpeeds;               // How fast each component should switch between states
-
-  char *sStateKeyArray[PAGE_MAX_STATES];    // The keys to all our states
-  int dStateCount;                          // How many states we have at the moment
-
-  unsigned long long dT;                    // A variable that stores the current frame number
+  char sStateKeyArray[PAGE_MAX_STATES][STRING_KEY_MAX_LENGTH];  // The keys to all our states
+  int dStateCount;                                              // How many states we have at the moment
+                    
+  unsigned long long dT;                                        // A variable that stores the current frame number
 };
 
 /**
@@ -165,7 +165,7 @@ int Page_update(Page *this) {
   int i, j;
   float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
   int *pColorState, *pColorTargetState, *pPixelState;
-  char *sStateKey;
+  char sStateKey[STRING_KEY_MAX_LENGTH];
   
   Component *pComponent;
   char *sComponentKeyArray[PAGE_MAX_COMPONENTS];
@@ -185,7 +185,7 @@ int Page_update(Page *this) {
   for(i = 0; i < this->dStateCount; i++) {
 
     // Get the key
-    sStateKey = this->sStateKeyArray[i];
+    strcpy(sStateKey, this->sStateKeyArray[i]);
 
     // Retrieve the values
     pColorState = HashMap_get(this->pColorStates, sStateKey);
@@ -213,9 +213,10 @@ int Page_update(Page *this) {
 
   // Update component states
   HashMap_getKeys(this->componentManager.pComponentMap, sComponentKeyArray);
-  sStateKey = String_alloc(256);
   
   for(i = 0; i < this->dComponentCount; i++) {
+
+    // Get the component first
     pComponent = HashMap_get(this->componentManager.pComponentMap, sComponentKeyArray[i]);
 
     // If we're not dealing witht the root
@@ -223,8 +224,10 @@ int Page_update(Page *this) {
 
       // For each of the associated states
       for(j = 0; j < 4; j++) {
-        snprintf(sStateKey, 256, "%s-%d", pComponent->sName, j);
 
+        // Create the key
+        String_keyAndId(sStateKey, pComponent->sName, j);
+        
         // Retrieve the values
         pColorState = HashMap_get(this->pColorStates, sStateKey);
         pRenderState = HashMap_get(this->pRenderStates, sStateKey);
@@ -240,8 +243,6 @@ int Page_update(Page *this) {
       }
     }
   }
-
-  String_kill(sStateKey);
     
   // Increment time state
   this->dT++;
@@ -275,7 +276,7 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   int i;
   float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
   int *pColorState, *pColorTargetState, *pPixelState;
-  char *sStateKey = NULL;
+  char sStateKey[STRING_KEY_MAX_LENGTH];
 
   if(this->dComponentCount >= PAGE_MAX_COMPONENTS)
     return;
@@ -288,8 +289,7 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   for(i = 0; i < 4; i++) {
 
     // We don't kill the string because its added to the hashmaps below
-    sStateKey = String_alloc(256);
-    snprintf(sStateKey, 256, "%s-%d", sKey, i);
+    String_keyAndId(sStateKey, sKey, i);
 
     // Create pointers
     pRenderState = calloc(1, sizeof(float));
@@ -334,7 +334,7 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
     }
 
     // Append the state key to the array
-    this->sStateKeyArray[this->dStateCount++] = sStateKey;    
+    strcpy(this->sStateKeyArray[this->dStateCount++], sStateKey);    
   }
 
   this->dComponentCount++;
@@ -348,10 +348,12 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
   int i;
   float *pRenderTargetState, *pTransitionSpeed;
   int *pColorTargetState;
-  char *sStateKey = String_alloc(256);
+  char sStateKey[STRING_KEY_MAX_LENGTH];
   
   for(i = 0; i < 4; i++) {
-    snprintf(sStateKey, 256, "%s-%d", sKey, i);
+
+    // Create the key
+    String_keyAndId(sStateKey, sKey, i);
 
     // Retrieve the values
     pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
@@ -388,8 +390,6 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
       break;
     }
   }
-
-  String_kill(sStateKey);
 }
 
 /**

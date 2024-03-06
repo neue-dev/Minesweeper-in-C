@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:17:17
- * @ Modified time: 2024-03-02 16:33:15
+ * @ Modified time: 2024-03-06 13:15:17
  * @ Description:
  * 
  * A utility library for creating hash tables with a max size of 1 << 16 (2^16) elements.
@@ -43,13 +43,13 @@ typedef struct HashMap HashMap;
 */
 struct HashMapEntry {
   
-  char *sKey;           // The we're feeding into the hash function
-                        // We don't really need this here, but this becomes handy when collisions occur and
-                        //    we want to iterate through a linked list to find an entry with a given key
+  char sKey[STRING_KEY_MAX_LENGTH];   // The string we're feeding into the hash function
+                                      // We don't really need this here, but this becomes handy when collisions occur and
+                                      //    we want to iterate through a linked list to find an entry with a given key
 
-  p_obj pObject;        // A pointer to the actual data we want to index
+  p_obj pObject;                      // A pointer to the actual data we want to index
 
-  HashMapEntry *pNext;  // A pointer to the next entry, in case a collision occurs at this location
+  HashMapEntry *pNext;                // A pointer to the next entry, in case a collision occurs at this location
 
 };
 
@@ -74,7 +74,7 @@ HashMapEntry *HashMapEntry_new() {
 HashMapEntry *HashMapEntry_init(HashMapEntry *this, char *sKey, p_obj pObject) {
 
   // Store the name
-  this->sKey = sKey;
+  strcpy(this->sKey, sKey);
 
   // Copy the reference to the object
   this->pObject = pObject;
