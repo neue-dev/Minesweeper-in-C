@@ -1,4 +1,5 @@
-add back animations through pagehandler
+WHEN KILLING OBJECTS, KILL THEIR NAMES TOO
+REMOVE DEBUGGER AND TURN ALL sprintf into snprintf
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 

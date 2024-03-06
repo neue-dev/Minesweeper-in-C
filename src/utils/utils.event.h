@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-04 14:53:50
+ * @ Modified time: 2024-03-06 11:57:47
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -378,7 +378,7 @@ void EventStore_set(EventStore *this, char *sKey, char cValue) {
 
   // Delete old entry if its still there
   if(HashMap_get(this->pValueStore, sKey) != NULL) {
-    sHistory = (char * ) HashMap_get(this->pValueHistories, sKey);
+    sHistory = HashMap_get(this->pValueHistories, sKey);
 
     // We shift everything by 1 to the left
     if(strlen(sHistory) >= EVENT_MAX_HISTORY_LEN) {
@@ -412,7 +412,7 @@ void EventStore_set(EventStore *this, char *sKey, char cValue) {
  * @return  { char }                The current value stored with the provided key.
 */
 char EventStore_get(EventStore *this, char *sKey) {
-  char *pChar = (char *) HashMap_get(this->pValueStore, sKey);
+  char *pChar = HashMap_get(this->pValueStore, sKey);
 
   // The entry doesn't exist
   if(pChar == NULL)
@@ -429,7 +429,7 @@ char EventStore_get(EventStore *this, char *sKey) {
  * @return  { char * }              A string of characters that represents the history of values stored by that key.
 */
 char *EventStore_getHistory(EventStore *this, char *sKey) {
-  char *sHistory = (char *) HashMap_get(this->pValueHistories, sKey);
+  char *sHistory = HashMap_get(this->pValueHistories, sKey);
 
   // The entry doesn't exist
   if(sHistory == NULL)

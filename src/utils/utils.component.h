@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-04 23:12:24
+ * @ Modified time: 2024-03-06 11:57:23
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -10,6 +10,9 @@
 
 #ifndef UTILS_COMPONENT_
 #define UTILS_COMPONENT_
+
+#include "./utils.buffer.h"
+#include "./utils.queue.h"
 
 #define COMPONENT_MAX_CHILD_COUNT (1 << 8)
 #define COMPONENT_MAX_ASSET_COUNT (1 << 4)
@@ -208,8 +211,8 @@ void ComponentManager_exit(ComponentManager *this) {
  * Adds a component as a child of the specified component with the given id.
  * 
  * @param		{ ComponentManager * }		this          The component manager.
- * @param   { char * }                sParentKey    The key of the component to append to.
  * @param   { char * }                sName         An identifier for the component.
+ * @param   { char * }                sParentKey    The key of the component to append to.
  * @param   { int }                   x             The x-coordinate of the component.
  * @param   { int }                   y             The y-coordinate of the component.
  * @param   { int }                   w             The width of the component.
@@ -219,12 +222,15 @@ void ComponentManager_exit(ComponentManager *this) {
  * @param   { int }                   colorFG       A foreground color for the component.
  * @param   { int }                   colorBG       A background color for the component.
 */
-void ComponentManager_add(ComponentManager *this, char *sParentKey, char *sKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
-  Component *pParent = (Component *) HashMap_get(this->pComponentMap, sParentKey);
-  Component *pChild;
+void ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+  Component *pParent =  NULL;
+  Component *pChild = NULL;
 
-  // The parent doesn't exist
-  if(pParent == NULL)
+  if(sParentKey != NULL)
+    pParent = HashMap_get(this->pComponentMap, sParentKey);
+
+  // // The parent doesn't exist
+  if(pParent == NULL && sParentKey != NULL)
     return;
 
   // Create the child
@@ -236,6 +242,78 @@ void ComponentManager_add(ComponentManager *this, char *sParentKey, char *sKey, 
 
   // Otherwise, append it to the hashmap too
   HashMap_add(this->pComponentMap, sKey, pChild);
+}
+
+/**
+ * Renders the components in the tree to the specified buffer.
+ * 
+ * @param   { ComponentManager * }  this      The component manager.
+ * @param   { Buffer * }            pBuffer   The buffer to render components to.
+*/
+void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
+  int i;
+  Component *pComponent = NULL;
+  Component *pChildComponent;
+
+  // Initialize the queue with just the root component
+  Queue_push(this->pRenderQueue, this->pRoot);
+
+  // Prepare the buffer
+  pBuffer = Buffer_create(
+    IO_getWidth(), 
+    IO_getHeight(), 
+    0x000000,
+    0xffffff);
+
+  // While we have components
+  while(Queue_getHead(this->pRenderQueue) != NULL) {
+    
+    // Get the head component first
+    pComponent = (Component *) Queue_getHead(this->pRenderQueue);
+
+    // Add its children to the render queue
+    for(i = 0; i < pComponent->dChildCount; i++) {
+      pChildComponent = pComponent->pChildren[i];
+
+      // Compute its position based on parent offsets
+      Component_config(pChildComponent);
+
+      // Push the child to the queue
+      Queue_push(this->pRenderQueue, pChildComponent);
+    }
+
+    // If the component has colors
+    if(pComponent->colorFG > 0 || pComponent->colorBG > 0) {
+      Buffer_contextRect(
+        pBuffer, 
+        pComponent->dRenderX, 
+        pComponent->dRenderY, 
+        pComponent->w, 
+        pComponent->h, 
+        pComponent->colorFG, 
+        pComponent->colorBG);
+    }
+
+    // If the component has an asset
+    if(pComponent->aAsset != NULL) {
+      Buffer_write(
+        pBuffer, 
+        pComponent->dRenderX, 
+        pComponent->dRenderY, 
+        pComponent->dAssetHeight, 
+        pComponent->aAsset);
+    }
+
+    // Remove the head component
+    Queue_pop(this->pRenderQueue);
+  }
+
+  // Reset the cursor home position
+  IO_resetCursor();
+  
+  // Print the buffer
+  Buffer_print(pBuffer);
+  Buffer_kill(pBuffer);
 }
 
 #endif

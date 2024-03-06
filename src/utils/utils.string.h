@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-01 19:50:35
+ * @ Modified time: 2024-03-06 10:40:26
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -99,6 +99,16 @@ int String_length(char *string) {
   }
 
   return dLen;
+}
+
+/**
+ * Returns the last character in a string.
+ * 
+ * @param   { char * }  string  The string to read.
+ * @return  { char }            The last char of the string.
+*/
+char String_getLast(char *string) {
+  return string[strlen(string) - 1];
 }
 
 // You are in Windows

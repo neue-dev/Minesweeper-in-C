@@ -1,9 +1,11 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-03-04 11:44:15
+ * @ Modified time: 2024-03-06 11:11:45
  * @ Description:
  */
+
+#include "utils/utils.debug.h"
 
 #include "./engine.c"
 #include "game/field.obj.h"
@@ -13,6 +15,8 @@
 #include <stdio.h>
 
 int main() {
+
+  // Debug_clearLogs();
 
   // Some IO stuff
   IO io;

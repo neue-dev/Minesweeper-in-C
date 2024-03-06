@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-04 23:50:21
+ * @ Modified time: 2024-03-06 11:58:40
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -17,6 +17,7 @@
 #include "./utils.asset.h"
 #include "./utils.types.h"
 
+#define PAGE_MAX_COMPONENTS (1 << 10)
 #define PAGE_MAX_STATES (1 << 10)
 #define PAGE_MAX_COUNT (1 << 4)
 #define PAGE_MAX_NAME_LEN (1 << 8)
@@ -56,9 +57,9 @@ struct Page {
   AssetManager *pSharedAssetManager;        // A reference to a shared asset manager so we can access all assets
   EventStore *pSharedEventStore;            // Where we can access values modified by events
 
+  int dComponentCount;                      // How many components we have
   ComponentManager componentManager;        // We store the components both through a tree and a hashmap
   Buffer *pBuffer;                          // This is where all our content will be displayed
-  Queue *pRenderQueue;                      // Queues all components for rendering
 
   HashMap *pColorStates;                    // The foreground and background colors for each component
   HashMap *pRenderStates;                   // Float states that describe the positions of different components
@@ -97,14 +98,12 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pShar
   
   // Initialize the handler and component manager
   this->fHandler = fHandler;
-  ComponentManager_init(&this->componentManager);
+  this->dComponentCount = 1;                        // The root component
+  ComponentManager_init(&this->componentManager);   // Init the component tree and other stuff
 
   // Init the shared resources
   this->pSharedAssetManager = pSharedAssetManager;
   this->pSharedEventStore = pSharedEventStore;
-  
-  // An empty render queue
-  this->pRenderQueue = Queue_create();
 
   // Empty hashmaps
   this->pColorStates = HashMap_create();
@@ -151,129 +150,36 @@ void Page_kill(Page *this) {
  * @param   { Page * }  this  The page to render.
 */
 void Page_render(Page *this) {
-  int i;
-  int *pX, *pY, *pW, *pH, *pColorFG, *pColorBG;
-  char *sComponentKey = NULL;
-
-  Component *pComponent = NULL;
-  Component *pChildComponent;
-
-  // Initialize the queue with just the root component
-  Queue_push(this->pRenderQueue, this->componentManager.pRoot);
-
-  // Prepare the buffer
-  this->pBuffer = Buffer_create(
-    IO_getWidth(), 
-    IO_getHeight(), 
-    0x000000,
-    0xffffff);
-
-  // While we have components
-  while(Queue_getHead(this->pRenderQueue) != NULL) {
-    
-    // Get the head component first
-    pComponent = (Component *) Queue_getHead(this->pRenderQueue);
-
-    // Update its placement based on states IF its not the root
-    if(strcmp(pComponent->sName, "root")) {
-
-      // Free it if ever
-      if(sComponentKey != NULL)
-        String_kill(sComponentKey);
-      
-      // Generate the key of the component
-      sComponentKey = String_alloc(strlen(pComponent->sName) + 3);
-
-      sprintf(sComponentKey, "%s-0", pComponent->sName);
-      pX = (int *) HashMap_get(this->pPixelStates, sComponentKey);
-      pColorFG = (int *) HashMap_get(this->pColorStates, sComponentKey);
-
-      sprintf(sComponentKey, "%s-1", pComponent->sName);
-      pY = (int *) HashMap_get(this->pPixelStates, sComponentKey);
-      pColorBG = (int *) HashMap_get(this->pColorStates, sComponentKey);
-
-      sprintf(sComponentKey, "%s-2", pComponent->sName);
-      pW = (int *) HashMap_get(this->pPixelStates, sComponentKey);
-
-      sprintf(sComponentKey, "%s-3", pComponent->sName);
-      pH = (int *) HashMap_get(this->pPixelStates, sComponentKey);
-
-      // Update the component states
-      // pComponent->x = *pX;
-      // pComponent->y = *pY;
-      // pComponent->x = *pW;
-      // pComponent->y = *pH;
-    }
-
-    // Add its children to the render queue
-    for(i = 0; i < pComponent->dChildCount; i++) {
-      pChildComponent = pComponent->pChildren[i];
-
-      // Compute its position based on parent offsets
-      Component_config(pChildComponent);
-
-      // Push the child to the queue
-      Queue_push(this->pRenderQueue, pChildComponent);
-    }
-
-    // If the component has colors
-    if(pComponent->colorFG > 0 || pComponent->colorBG > 0) {
-      Buffer_contextRect(
-        this->pBuffer, 
-        pComponent->dRenderX, 
-        pComponent->dRenderY, 
-        pComponent->w, 
-        pComponent->h, 
-        pComponent->colorFG, 
-        pComponent->colorBG);
-    }
-
-    // If the component has an asset
-    if(pComponent->aAsset != NULL) {
-      Buffer_write(
-        this->pBuffer, 
-        pComponent->dRenderX, 
-        pComponent->dRenderY, 
-        pComponent->dAssetHeight, 
-        pComponent->aAsset);
-    }
-
-    // Remove the head component
-    Queue_pop(this->pRenderQueue);
-  }
-
-  // Reset the cursor home position
-  IO_resetCursor();
-  
-  // Print the buffer
-  Buffer_print(this->pBuffer);
-  Buffer_kill(this->pBuffer);
-
-  if(sComponentKey != NULL)
-    String_kill(sComponentKey);
+  ComponentManager_render(&this->componentManager, this->pBuffer);
 }
 
 /**
  * Performs a single frame update of our page instance.
+ * Returns a boolean that indicates whether or not the page was able to update.
  * 
  * @param		{ Page * }		this	A pointer to the instance to update.
+ * @param   { int }             Whether or not the page was able to update.
 */
-void Page_update(Page *this) {
+#include "./utils.debug.h"
+int Page_update(Page *this) {
   
-  int i;
+  int i, j;
   float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
   int *pColorState, *pColorTargetState, *pPixelState;
   char *sStateKey;
+  
+  Component *pComponent;
+  char *sComponentKeyArray[PAGE_MAX_COMPONENTS];
 
   // The page isn't active
   if(this->ePageStatus == PAGE_INACTIVE)
-    return;
+    return 0;
 
   // If the page stopped after that runner update
   if(this->ePageStatus == PAGE_ACTIVE_IDLE)
-    return;
+    return 0;
 
-  // Update the runners
+  // Update the page states
   this->fHandler(this);
   
   // Perform some fixins
@@ -283,13 +189,13 @@ void Page_update(Page *this) {
     sStateKey = this->sStateKeyArray[i];
 
     // Retrieve the values
-    pColorState = (int *) HashMap_get(this->pColorStates, sStateKey);
-    pRenderState = (float *) HashMap_get(this->pRenderStates, sStateKey);
-    pPixelState = (int *) HashMap_get(this->pPixelStates, sStateKey);
+    pColorState = HashMap_get(this->pColorStates, sStateKey);
+    pRenderState = HashMap_get(this->pRenderStates, sStateKey);
+    pPixelState = HashMap_get(this->pPixelStates, sStateKey);
 
-    pColorTargetState = (int *) HashMap_get(this->pColorTargetStates, sStateKey);
-    pRenderTargetState = (float *) HashMap_get(this->pRenderTargetStates, sStateKey);
-    pTransitionSpeed = (float *) HashMap_get(this->pTransitionSpeeds, sStateKey);
+    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
+    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
+    pTransitionSpeed = HashMap_get(this->pTransitionSpeeds, sStateKey);
 
     // Ease out
     if(*pTransitionSpeed > 0) {
@@ -305,6 +211,38 @@ void Page_update(Page *this) {
     // Update the state values
     *pPixelState = round(*pRenderState);
   }
+
+  // Update component states
+  HashMap_getKeys(this->componentManager.pComponentMap, sComponentKeyArray);
+  sStateKey = String_alloc(256);
+  
+  for(i = 0; i < this->dComponentCount; i++) {
+    pComponent = HashMap_get(this->componentManager.pComponentMap, sComponentKeyArray[i]);
+
+    // If we're not dealing witht the root
+    if(strcmp(pComponent->sName, "root")) {
+
+      // For each of the associated states
+      for(j = 0; j < 4; j++) {
+        snprintf(sStateKey, 256, "%s-%d", pComponent->sName, j);
+
+        // Retrieve the values
+        pColorState = HashMap_get(this->pColorStates, sStateKey);
+        pRenderState = HashMap_get(this->pRenderStates, sStateKey);
+        pPixelState = HashMap_get(this->pPixelStates, sStateKey);
+
+        // Put the values into the component
+        switch(j) {
+          case 0: pComponent->x = *pPixelState; break;
+          case 1: pComponent->y = *pPixelState; break;
+          case 2: pComponent->w = *pPixelState; break;
+          case 3: pComponent->h = *pPixelState; break;
+        }
+      }
+    }
+  }
+
+  String_kill(sStateKey);
     
   // Increment time state
   this->dT++;
@@ -312,29 +250,47 @@ void Page_update(Page *this) {
   // The page is currently initializing
   if(this->ePageStatus == PAGE_ACTIVE_INIT) {
     this->ePageStatus = PAGE_ACTIVE_RUNNING;
-    return;
+
+    // We return 0 because we don't want to render until after initting
+    return 0;
   }
 
-  Page_render(this);
+  return 1;
 }
 
 /**
- * //!
+ * Adds a new component to the page.
+ * 
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { char * }                sParentKey    The key of the component to append to.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
+ * @param   { int }                   w             The width of the component.
+ * @param   { int }                   h             The height of the component.
+ * @param   { int }                   dAssetHeight  The height of the asset. This can be 0.
+ * @param   { char ** }               aAsset        The asset to be rendered by the component. This may be NULL.
+ * @param   { int }                   colorFG       A foreground color for the component.
+ * @param   { int }                   colorBG       A background color for the component.
 */
-void Page_addComponent(Page *this, char *sParentKey, char *sKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
   int i;
   float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
   int *pColorState, *pColorTargetState, *pPixelState;
   char *sStateKey = NULL;
 
+  if(this->dComponentCount >= PAGE_MAX_COMPONENTS)
+    return;
+
   // Add a component
-  ComponentManager_add(&this->componentManager, sParentKey, sKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG);
+  ComponentManager_add(&this->componentManager, sKey, sParentKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG);
 
   // Create a new state for that component
   // Each component is always given 4 states
   for(i = 0; i < 4; i++) {
-    char *sStateKey = String_alloc(strlen(sKey) + 3);
-    sprintf(sStateKey, "%s-%d", sKey, i);
+
+    // We don't kill the string because its added to the hashmaps below
+    sStateKey = String_alloc(256);
+    snprintf(sStateKey, 256, "%s-%d", sKey, i);
 
     // Create pointers
     pRenderState = calloc(1, sizeof(float));
@@ -347,27 +303,94 @@ void Page_addComponent(Page *this, char *sParentKey, char *sKey, int x, int y, i
 
     // Generate allocations for each state
     HashMap_add(this->pColorStates, sStateKey, pColorState);
-    HashMap_add(this->pRenderStates, sStateKey, pColorState);
+    HashMap_add(this->pRenderStates, sStateKey, pRenderState);
     HashMap_add(this->pPixelStates, sStateKey, pPixelState);
 
-    HashMap_add(this->pColorTargetStates, sStateKey, pRenderTargetState);
-    HashMap_add(this->pRenderTargetStates, sStateKey, pColorTargetState);
+    HashMap_add(this->pColorTargetStates, sStateKey, pColorTargetState);
+    HashMap_add(this->pRenderTargetStates, sStateKey, pRenderTargetState);
     HashMap_add(this->pTransitionSpeeds, sStateKey, pTransitionSpeed);
 
     // Set the values of the states
     *pTransitionSpeed = 0.75;
+    
+    // Set appropriate values
+    switch(i) {
+      case 0:
+        *pRenderTargetState = *pRenderState = (*pPixelState = x) * 1.0;
+        *pColorTargetState = *pColorState = colorFG;
+      break;
+      
+      case 1:
+        *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
+        *pColorTargetState = *pColorState = colorBG;
+      break;
+      
+      case 2:
+        *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
+      break;
 
-    if(i == 0) *pColorTargetState = *pColorState = colorFG;
-    else if(i == 1) *pColorTargetState = *pColorState = colorBG;
-
-    if(i == 0) *pRenderTargetState = *pRenderState = (*pPixelState = x) * 1.0;
-    else if(i == 1) *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
-    else if(i == 2) *pRenderTargetState = *pRenderState = (*pPixelState = w) * 1.0;
-    else if(i == 3) *pRenderTargetState = *pRenderState = (*pPixelState = h) * 1.0;
+      case 3:
+        *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
+      break;
+    }
 
     // Append the state key to the array
     this->sStateKeyArray[this->dStateCount++] = sStateKey;    
   }
+
+  this->dComponentCount++;
+}
+
+/**
+ * Sets the target position for a certain component.
+ * Also requires to specify the speed at which the component should get there.
+*/
+void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, int colorFG, int colorBG, float fTransitionSpeed) {
+  int i;
+  float *pRenderTargetState, *pTransitionSpeed;
+  int *pColorTargetState;
+  char *sStateKey = String_alloc(256);
+  
+  for(i = 0; i < 4; i++) {
+    snprintf(sStateKey, 256, "%s-%d", sKey, i);
+
+    // Retrieve the values
+    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
+    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
+    pTransitionSpeed = HashMap_get(this->pTransitionSpeeds, sStateKey);
+
+    // Set the values of the states
+    *pTransitionSpeed = fTransitionSpeed;
+    
+    // Set appropriate values
+    switch(i) {
+      case 0:
+        *pRenderTargetState = x * 1.0;
+
+        if(colorFG > -1)
+          *pColorTargetState = colorFG;
+      break;
+      
+      case 1:
+        *pRenderTargetState = y * 1.0;
+
+        if(colorBG > -1)
+          *pColorTargetState = colorBG;
+      break;
+      
+      case 2:
+        if(w > -1)
+          *pRenderTargetState = w * 1.0;
+      break;
+
+      case 3:
+        if(h > -1)
+          *pRenderTargetState = w * 1.0;
+      break;
+    }
+  }
+
+  String_kill(sStateKey);
 }
 
 /**
@@ -409,7 +432,7 @@ struct PageManager {
   HashMap *pPageMap;                  // Stores all the pages we have
   int dPageCount;                     // How many pages we have
 
-  char *sPageKeys[PAGE_MAX_COUNT];    // We need this for certain operations.
+  char *sPageKeyArray[PAGE_MAX_COUNT];    // We need this for certain operations.
   char *sActivePage;                  // An identifier to the active page.
 };
 
@@ -458,7 +481,7 @@ void PageManager_createPage(PageManager *this, char *sPageKey, f_page_handler fH
   HashMap_add(this->pPageMap, sPageKey, pPage);
 
   // Store the key and increment the count
-  this->sPageKeys[this->dPageCount] = sPageKey;
+  this->sPageKeyArray[this->dPageCount] = sPageKey;
   this->dPageCount++;
 }
 
@@ -492,13 +515,15 @@ void PageManager_setActive(PageManager *this, char *sPageKey) {
 
 /**
  * Updates the active page.
+ * // ! rename this function to something other than update
  * 
  * @param   { PageManager * }   this      The page manager object.
 */
 void PageManager_update(PageManager *this) {
-  Page *pPage = (Page *) HashMap_get(this->pPageMap, this->sActivePage);
+  Page *pPage = HashMap_get(this->pPageMap, this->sActivePage);
 
-  Page_update(pPage);
+  if(Page_update(pPage))
+    Page_render(pPage);
 }
 
 #endif
