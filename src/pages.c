@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 13:45:17
+ * @ Modified time: 2024-03-06 13:50:54
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -71,7 +71,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
         // Add the component
         Page_addComponent(this, sComponentKey, "title",
-          dWidth / 2 - dTotalLength / 2, 5, 
+          dWidth / 2 - dTotalLength / 2, (i / 5) * 6 + 5, 
           AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey), 
           AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
           AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),

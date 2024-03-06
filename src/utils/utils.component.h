@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-06 13:07:15
+ * @ Modified time: 2024-03-06 13:49:59
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -157,6 +157,11 @@ int Component_add(Component *this, Component *pChild) {
   // Add to the array and set the parent of the child to the current component
   this->pChildren[this->dChildCount++] = pChild;
   pChild->pParent = this;
+
+  // A new row starts
+  if(this->dChildCount > 1)
+    if(this->pChildren[this->dChildCount - 2]->y != pChild->y)
+      this->dChildrenLength = 0;
 
   // Get the cumulative length of these guys
   pChild->dOffsetX = this->dChildrenLength;
