@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 13:35:38
+ * @ Modified time: 2024-03-06 13:45:17
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -36,7 +36,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
   int dHeight = IO_getHeight();
 
   int i;
-  char *sTitle = "mmmmines";
+  char *sTitle = "mmmmones";
   int dTitleLength = strlen(sTitle);
   int dTotalLength;
   

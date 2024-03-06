@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 13:33:43
+ * @ Modified time: 2024-03-06 13:42:47
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -425,14 +425,14 @@ void Page_deactivate(Page *this) {
  * @struct
 */
 struct PageManager {
-  AssetManager *pSharedAssetManager;  // A reference to the shared asset manager so we only have to pass it during init
-  EventStore *pSharedEventStore;      // A reference to a shared event store so we can access things changed by events
+  AssetManager *pSharedAssetManager;                          // A reference to the shared asset manager so we only have to pass it during init
+  EventStore *pSharedEventStore;                              // A reference to a shared event store so we can access things changed by events
+                        
+  HashMap *pPageMap;                                          // Stores all the pages we have
+  int dPageCount;                                             // How many pages we have
 
-  HashMap *pPageMap;                  // Stores all the pages we have
-  int dPageCount;                     // How many pages we have
-
-  char *sPageKeyArray[PAGE_MAX_COUNT];    // We need this for certain operations.
-  char *sActivePage;                  // An identifier to the active page.
+  char sPageKeyArray[PAGE_MAX_COUNT][STRING_KEY_MAX_LENGTH];  // We need this for certain operations.
+  char sActivePage[STRING_KEY_MAX_LENGTH];                    // An identifier to the active page.
 };
 
 /**
@@ -445,9 +445,6 @@ struct PageManager {
 void PageManager_init(PageManager *this, AssetManager *pSharedAssetManager, EventStore *pSharedEventStore) {
   this->pPageMap = HashMap_create();
   this->dPageCount = 0;
-
-  // Max page name is 256 characters
-  this->sActivePage = String_alloc(PAGE_MAX_NAME_LEN);
 
   // So we dont need to pass it each time
   this->pSharedAssetManager = pSharedAssetManager;
@@ -480,7 +477,7 @@ void PageManager_createPage(PageManager *this, char *sPageKey, f_page_handler fH
   HashMap_add(this->pPageMap, sPageKey, pPage);
 
   // Store the key and increment the count
-  this->sPageKeyArray[this->dPageCount] = sPageKey;
+  strcpy(this->sPageKeyArray[this->dPageCount], sPageKey);
   this->dPageCount++;
 }
 
