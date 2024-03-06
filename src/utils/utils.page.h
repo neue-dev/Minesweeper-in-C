@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 13:59:24
+ * @ Modified time: 2024-03-06 17:02:21
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -326,11 +326,11 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
       break;
       
       case 2:
-        *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
+        *pRenderTargetState = *pRenderState = (*pPixelState = w) * 1.0;
       break;
 
       case 3:
-        *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
+        *pRenderTargetState = *pRenderState = (*pPixelState = h) * 1.0;
       break;
     }
 

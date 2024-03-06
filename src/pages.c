@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 14:44:49
+ * @ Modified time: 2024-03-06 17:47:27
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -35,8 +35,55 @@ void PageHandler_intro(p_obj pArgs_Page) {
   int dWidth = IO_getWidth();
   int dHeight = IO_getHeight();
 
+  // Component names
+  char *sIntroComponent = "intro-row.col-center.y-center.x";
+  char *sOuterBoxComponent = "box.outer-row.col-center.y-center.x";
+  char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x";
+  char *sLogoComponent = "logo-fixed";
+
+  // Do stuff based on page status
+  switch(this->ePageStatus) {
+
+    case PAGE_ACTIVE_INIT:
+
+      Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0xffffff, 0x080808);
+
+      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 20, 10, 0, NULL, 0x111111, 0x888888);
+      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 16, 8, 0, NULL, 0x111111, 0xcccccc);
+      // Page_addComponent(this, sLogoComponent, sIntroComponent, 
+      //   0, 0, 
+        
+      //   AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
+      //   AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
+      //   AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
+      //   AssetManager_getAssetText(this->pSharedAssetManager, "logo"), 
+      //   -1, -1);
+      
+    break;
+
+    case PAGE_ACTIVE_RUNNING:
+      
+    break;
+
+    default:
+      // ! exit the page
+    break;
+  }
+}
+
+/**
+ * Configures the main menu.
+ * 
+ * @param   { p_obj }   pArgs_Page  The page instance we need to configure.
+*/
+void PageHandler_menu(p_obj pArgs_Page) {
+
+  Page *this = (Page *) pArgs_Page;
+  int dWidth = IO_getWidth();
+  int dHeight = IO_getHeight();
+
   int i;
-  char *sTitle = "mmmmones";
+  char *sTitle = "minesweeper";
   int dTitleLength = strlen(sTitle);
   int dTotalLength;
   
@@ -92,16 +139,6 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // ! exit the page
     break;
   }
-}
-
-/**
- * Configures the main menu.
- * 
- * @param   { p_obj }   pArgs_Page  The page instance we need to configure.
-*/
-void PageHandler_menu(p_obj pArgs_Page) {
-  Page *this = (Page *) pArgs_Page;
-
 }
 
 #endif

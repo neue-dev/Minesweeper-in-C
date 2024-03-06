@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-06 14:53:07
+ * @ Modified time: 2024-03-06 17:47:11
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -18,7 +18,8 @@
 #define COMPONENT_MAX_CHILD_COUNT (1 << 8)
 
 typedef enum ComponentType ComponentType;
-typedef enum ComponentAlignment ComponentAlignment;
+typedef enum ComponentAlignmentX ComponentAlignmentX;
+typedef enum ComponentAlignmentY ComponentAlignmentY;
 
 typedef struct Component Component;
 typedef struct ComponentManager ComponentManager;
@@ -28,12 +29,21 @@ enum ComponentType {
   COMPONENT_MULTI_ROW,
   COMPONENT_SINGLE_COL,
   COMPONENT_MULTI_COL,
+  COMPONENT_ROW_COL,
+  COMPONENT_COL_ROW,
+  COMPONENT_FIXED,
 };
 
-enum ComponentAlignment {
-  COMPONENT_CENTER_ALIGN,
-  COMPONENT_LEFT_ALIGN,
-  COMPONENT_RIGHT_ALIGN,
+enum ComponentAlignmentX {
+  COMPONENT_CENTER_ALIGN_X,
+  COMPONENT_LEFT_ALIGN_X,
+  COMPONENT_RIGHT_ALIGN_X,
+};
+
+enum ComponentAlignmentY {
+  COMPONENT_CENTER_ALIGN_Y,
+  COMPONENT_TOP_ALIGN_Y,
+  COMPONENT_BOTTOM_ALIGN_Y,
 };
 
 /**
@@ -48,7 +58,8 @@ struct Component {
   Component *pParent;                               // The parent component
   Component *pChildren[COMPONENT_MAX_CHILD_COUNT];  // The children components
   int dChildCount;                                  // How many children we currently have
-  int dChildrenLength;                              // The cumulative length of the children
+  int dRowLength;                                   // The cumulative length of the children along a row
+  int dColLength;                                   // Cumulative length along a column  
 
   int x;                                            // The x-position of the component with respect to its parent
   int y;                                            // The y-position of the component with respect to its parent
@@ -61,6 +72,9 @@ struct Component {
 
   int dOffsetX;                                     // An x offset for the element, based on siblings
   int dOffsetY;                                     // A y offset for the element, based on siblings
+
+  int dPaddingX;                                    // The padding is used to compute center, left and right aligns
+  int dPaddingY;                                    // yes
   
   int dRenderX;                                     // The absolute x-coordinate where the component will actually be rendered
   int dRenderY;                                     // The absolute y-coordinate where the component will actually be rendered
@@ -72,7 +86,8 @@ struct Component {
   int colorBG;                                      // A color for the background
 
   ComponentType eComponentType;                     // Determines how the component renders its children
-  ComponentAlignment eComponentAlignment;           // Determiens the alignment of its children
+  ComponentAlignmentX eComponentAlignmentX;         // Determiens the alignment of its children along the horizontal
+  ComponentAlignmentY eComponentAlignmentY;         // Determiens the alignment of its children along the vertical
 };
 
 /**
@@ -110,7 +125,8 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
 
   // Default component type
   this->eComponentType = COMPONENT_MULTI_ROW;
-  this->eComponentAlignment = COMPONENT_LEFT_ALIGN;
+  this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
+  this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
 
   i = 0, j = 0;
 
@@ -123,14 +139,21 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
       
       // Determine what kind of component it is
       if(!strcmp(sNameSubpart, "row")) this->eComponentType = COMPONENT_SINGLE_ROW;
-      if(!strcmp(sNameSubpart, "col")) this->eComponentType = COMPONENT_SINGLE_COL;
-      if(!strcmp(sNameSubpart, "multirow")) this->eComponentType = COMPONENT_MULTI_ROW;
-      if(!strcmp(sNameSubpart, "multicol")) this->eComponentType = COMPONENT_MULTI_COL;
+      else if(!strcmp(sNameSubpart, "col")) this->eComponentType = COMPONENT_SINGLE_COL;
+      else if(!strcmp(sNameSubpart, "multirow")) this->eComponentType = COMPONENT_MULTI_ROW;
+      else if(!strcmp(sNameSubpart, "multicol")) this->eComponentType = COMPONENT_MULTI_COL;
+      else if(!strcmp(sNameSubpart, "row.col")) this->eComponentType = COMPONENT_ROW_COL;
+      else if(!strcmp(sNameSubpart, "col.row")) this->eComponentType = COMPONENT_COL_ROW;
+      else if(!strcmp(sNameSubpart, "fixed")) this->eComponentType = COMPONENT_FIXED;
 
       // Determine the alignment of its children
-      if(!strcmp(sNameSubpart, "left")) this->eComponentType = COMPONENT_LEFT_ALIGN;
-      if(!strcmp(sNameSubpart, "center")) this->eComponentType = COMPONENT_CENTER_ALIGN;
-      if(!strcmp(sNameSubpart, "right")) this->eComponentType = COMPONENT_RIGHT_ALIGN;
+      else if(!strcmp(sNameSubpart, "left.x")) this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
+      else if(!strcmp(sNameSubpart, "center.x")) this->eComponentAlignmentX = COMPONENT_CENTER_ALIGN_X;
+      else if(!strcmp(sNameSubpart, "right.x")) this->eComponentAlignmentX = COMPONENT_RIGHT_ALIGN_X;
+
+      else if(!strcmp(sNameSubpart, "top.y")) this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
+      else if(!strcmp(sNameSubpart, "center.y")) this->eComponentAlignmentY = COMPONENT_CENTER_ALIGN_Y;
+      else if(!strcmp(sNameSubpart, "bottom.y")) this->eComponentAlignmentY = COMPONENT_BOTTOM_ALIGN_Y;
 
       // Clear the name component
       while(--j >= 0) 
@@ -151,7 +174,8 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
   
   this->pParent = pParent;
   this->dChildCount = 0;
-  this->dChildrenLength = 0;
+  this->dRowLength = 0;
+  this->dColLength = 0;
 
   this->x = x;
   this->y = y;
@@ -222,6 +246,7 @@ int Component_add(Component *this, Component *pChild) {
   this->pChildren[this->dChildCount++] = pChild;
   pChild->pParent = this;
 
+  // How to display its children
   switch(this->eComponentType) {
     
     case COMPONENT_MULTI_ROW:
@@ -229,17 +254,17 @@ int Component_add(Component *this, Component *pChild) {
       // A new row starts
       if(this->dChildCount > 1)
         if(this->pChildren[this->dChildCount - 2]->y != pChild->y)
-          this->dChildrenLength = 0;
+          this->dRowLength = 0;
 
     case COMPONENT_SINGLE_ROW:
 
       // Get the cumulative length of these guys
-      pChild->dOffsetX = this->dChildrenLength;
-      this->dChildrenLength += pChild->w;
+      pChild->dOffsetX = this->dRowLength;
+      this->dRowLength += pChild->w;
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL)
-        this->w = this->dChildrenLength;
+        this->w = this->dRowLength;
 
     break;
 
@@ -248,21 +273,56 @@ int Component_add(Component *this, Component *pChild) {
       // A new row starts
       if(this->dChildCount > 1)
         if(this->pChildren[this->dChildCount - 2]->x != pChild->x)
-          this->dChildrenLength = 0;
+          this->dColLength = 0;
 
     case COMPONENT_SINGLE_COL:
 
       // Get the cumulative length of these guys
-      pChild->dOffsetY = this->dChildrenLength;
-      this->dChildrenLength += pChild->h;
+      pChild->dOffsetY = this->dColLength;
+      this->dColLength += pChild->h;
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL)
-        this->h = this->dChildrenLength;
+        this->h = this->dColLength;
 
     break;
-  }
 
+    case COMPONENT_FIXED:
+
+    break;
+
+    case COMPONENT_ROW_COL:
+
+      // Get the cumulative length along x
+      pChild->dOffsetX = this->dRowLength;
+      this->dRowLength += pChild->w;
+
+      // Get the cumulative length along y
+      this->dColLength += pChild->h;
+
+      // If it's just a container, expand it to fit its kids
+      if(this->aAsset == NULL) {
+        this->w = this->dRowLength;
+        this->h = this->dColLength;
+      }
+    break;
+
+    case COMPONENT_COL_ROW:
+
+      // Get the cumulative length along x
+      this->dRowLength += pChild->w;
+
+      // Get the cumulative length along y
+      pChild->dOffsetY = this->dColLength;
+      this->dColLength += pChild->h;
+
+      // If it's just a container, expand it to fit its kids
+      if(this->aAsset == NULL) {
+        this->w = this->dRowLength;
+        this->h = this->dColLength;
+      }
+    break;
+  }
 
   return 1;
 }
@@ -271,11 +331,54 @@ int Component_add(Component *this, Component *pChild) {
  * Computes the position of the component based on parent components.
 */
 void Component_config(Component *this) {
-  this->dParentX = this->pParent->dParentX + this->pParent->x + this->dOffsetX;
-  this->dParentY = this->pParent->dParentY + this->pParent->y + this->dOffsetY;
+  int i;
+  int dPaddingX = 0, dPaddingY = 0;
 
-  this->dRenderX = this->dParentX + this->x;
-  this->dRenderY = this->dParentY + this->y;
+  this->dParentX = this->pParent->dRenderX;
+  this->dParentY = this->pParent->dRenderY;
+
+  this->dRenderX = this->dParentX + this->x + this->dPaddingX + this->dOffsetX;
+  this->dRenderY = this->dParentY + this->y + this->dPaddingY + this->dOffsetY;
+
+  // How to align its children alogn the horizontal
+  switch(this->eComponentAlignmentX) {
+
+    case COMPONENT_CENTER_ALIGN_X:
+      if(this->eComponentType != COMPONENT_MULTI_ROW)
+        dPaddingX = this->w / 2 - this->dRowLength / 2;
+    break;
+
+    case COMPONENT_LEFT_ALIGN_X:
+
+    break;
+
+    case COMPONENT_RIGHT_ALIGN_X:
+      dPaddingX = this->w - this->dRowLength;
+    break;
+  }
+
+  // Alignment along the vertical
+  switch(this->eComponentAlignmentY) {
+
+    case COMPONENT_CENTER_ALIGN_Y:
+      if(this->eComponentType != COMPONENT_MULTI_COL)
+        dPaddingY = this->h / 2 - this->dColLength / 2;
+    break;
+
+    case COMPONENT_TOP_ALIGN_Y:
+
+    break;
+
+    case COMPONENT_BOTTOM_ALIGN_Y:
+      dPaddingY = this->h - this->dColLength;
+    break;
+  }
+
+  // Update the paddings
+  for(i = 0; i < this->dChildCount; i++) {
+    this->pChildren[i]->dPaddingX = dPaddingX;
+    this->pChildren[i]->dPaddingY = dPaddingY;
+  }
 }
 
 /**
