@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 17:02:21
+ * @ Modified time: 2024-03-06 17:55:17
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -344,6 +344,7 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
 /**
  * Sets the target position for a certain component.
  * Also requires to specify the speed at which the component should get there.
+ * //! ADD JSDOC
 */
 void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, int colorFG, int colorBG, float fTransitionSpeed) {
   int i;
@@ -390,6 +391,57 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
       case 3:
         if(h > -1)
           *pRenderTargetState = h * 1.0;
+      break;
+    }
+  }
+}
+
+/**
+ * Sets the initial starting values of the component.
+ * 
+ * // ! ADD JSDOC
+*/
+void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, int colorFG, int colorBG) {
+  int i;
+  float *pRenderState;
+  int *pColorState;
+  char sStateKey[STRING_KEY_MAX_LENGTH];
+  
+  for(i = 0; i < 4; i++) {
+
+    // Create the key
+    String_keyAndId(sStateKey, sKey, i);
+
+    // Retrieve the values
+    pColorState = HashMap_get(this->pColorStates, sStateKey);
+    pRenderState = HashMap_get(this->pRenderStates, sStateKey);
+    
+    // Set appropriate values
+    switch(i) {
+      case 0:
+        if(x > PAGE_NULL_INT)
+          *pRenderState = x * 1.0;
+
+        if(colorFG > -1)
+          *pColorState = colorFG;
+      break;
+      
+      case 1:
+        if(y > PAGE_NULL_INT)
+          *pRenderState = y * 1.0;
+
+        if(colorBG > -1)
+          *pColorState = colorBG;
+      break;
+      
+      case 2:
+        if(w > -1)
+          *pRenderState = w * 1.0;
+      break;
+
+      case 3:
+        if(h > -1)
+          *pRenderState = h * 1.0;
       break;
     }
   }

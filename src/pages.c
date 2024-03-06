@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 17:47:27
+ * @ Modified time: 2024-03-06 18:02:09
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -46,18 +46,24 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
     case PAGE_ACTIVE_INIT:
 
+      // Create component tree
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0xffffff, 0x080808);
-
-      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 20, 10, 0, NULL, 0x111111, 0x888888);
-      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 16, 8, 0, NULL, 0x111111, 0xcccccc);
-      // Page_addComponent(this, sLogoComponent, sIntroComponent, 
-      //   0, 0, 
-        
+      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 40, 20, 0, NULL, 0x111111, 0x888888);
+      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 36, 18, 0, NULL, 0x111111, 0xcccccc);
+      // Page_addComponent(this, sLogoComponent, "root", 60, 20, 
       //   AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
       //   AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
       //   AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
       //   AssetManager_getAssetText(this->pSharedAssetManager, "logo"), 
       //   -1, -1);
+
+      // Set initials
+      Page_resetComponentInitial(this, sOuterBoxComponent, 20, 10, 0, 0, -1, -1);
+      Page_resetComponentInitial(this, sInnerBoxComponent, 18, 9, 0, 0, -1, -1);
+
+      // Set targets
+      Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 40, 20, -1, -1, 0.69);
+      Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 36, 18, -1, -1, 0.69);
       
     break;
 
