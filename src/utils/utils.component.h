@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-07 22:34:32
+ * @ Modified time: 2024-03-07 22:56:44
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -20,6 +20,8 @@
 typedef enum ComponentType ComponentType;
 typedef enum ComponentAlignmentX ComponentAlignmentX;
 typedef enum ComponentAlignmentY ComponentAlignmentY;
+typedef enum ComponentAnchorX ComponentAnchorX;
+typedef enum ComponentAnchorY ComponentAnchorY;
 
 typedef struct Component Component;
 typedef struct ComponentManager ComponentManager;
@@ -44,6 +46,18 @@ enum ComponentAlignmentY {
   COMPONENT_CENTER_ALIGN_Y,
   COMPONENT_TOP_ALIGN_Y,
   COMPONENT_BOTTOM_ALIGN_Y,
+};
+
+enum ComponentAnchorX {
+  COMPONENT_CENTER_ANCHOR_X,
+  COMPONENT_LEFT_ANCHOR_X,
+  COMPONENT_RIGHT_ANCHOR_X,
+};
+
+enum ComponentAnchorY {
+  COMPONENT_CENTER_ANCHOR_Y,
+  COMPONENT_TOP_ANCHOR_Y,
+  COMPONENT_BOTTOM_ANCHOR_Y,
 };
 
 /**
@@ -88,6 +102,8 @@ struct Component {
   ComponentType eComponentType;                     // Determines how the component renders its children
   ComponentAlignmentX eComponentAlignmentX;         // Determiens the alignment of its children along the horizontal
   ComponentAlignmentY eComponentAlignmentY;         // Determiens the alignment of its children along the vertical
+  ComponentAnchorX eComponentAnchorX;               // How the component is anchored horizontally (where its pivot point is)
+  ComponentAnchorY eComponentAnchorY;               // How the component is anchored vertically (where its pivot point is)
 };
 
 /**
@@ -127,6 +143,8 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
   this->eComponentType = COMPONENT_FIXED;
   this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
   this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
+  this->eComponentAnchorX = COMPONENT_LEFT_ANCHOR_X;
+  this->eComponentAnchorY = COMPONENT_TOP_ANCHOR_Y;
 
   i = 0, j = 0;
 
@@ -150,10 +168,17 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
       else if(!strcmp(sNameSubpart, "left.x")) this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
       else if(!strcmp(sNameSubpart, "center.x")) this->eComponentAlignmentX = COMPONENT_CENTER_ALIGN_X;
       else if(!strcmp(sNameSubpart, "right.x")) this->eComponentAlignmentX = COMPONENT_RIGHT_ALIGN_X;
-
       else if(!strcmp(sNameSubpart, "top.y")) this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
       else if(!strcmp(sNameSubpart, "center.y")) this->eComponentAlignmentY = COMPONENT_CENTER_ALIGN_Y;
       else if(!strcmp(sNameSubpart, "bottom.y")) this->eComponentAlignmentY = COMPONENT_BOTTOM_ALIGN_Y;
+
+      // Determine the alignment of its own asset / position
+      else if(!strcmp(sNameSubpart, "aleft.x")) this->eComponentAnchorX = COMPONENT_LEFT_ANCHOR_X;
+      else if(!strcmp(sNameSubpart, "acenter.x")) this->eComponentAnchorX = COMPONENT_CENTER_ANCHOR_X;
+      else if(!strcmp(sNameSubpart, "aright.x")) this->eComponentAnchorX = COMPONENT_RIGHT_ANCHOR_X;
+      else if(!strcmp(sNameSubpart, "atop.y")) this->eComponentAnchorY = COMPONENT_TOP_ANCHOR_Y;
+      else if(!strcmp(sNameSubpart, "acenter.y")) this->eComponentAnchorY = COMPONENT_CENTER_ANCHOR_Y;
+      else if(!strcmp(sNameSubpart, "abottom.y")) this->eComponentAnchorY = COMPONENT_BOTTOM_ANCHOR_Y;
 
       // Clear the name component
       while(--j >= 0) 
@@ -357,7 +382,7 @@ void Component_config(Component *this) {
     break;
   }
 
-  // Alignment along the vertical
+  // Alignment of children along the vertical
   switch(this->eComponentAlignmentY) {
 
     case COMPONENT_CENTER_ALIGN_Y:
@@ -371,6 +396,38 @@ void Component_config(Component *this) {
 
     case COMPONENT_BOTTOM_ALIGN_Y:
       dPaddingY = this->h - this->dColLength;
+    break;
+  }
+
+  // Self-alignment along horizontal
+  switch(this->eComponentAnchorX) {
+    
+    case COMPONENT_CENTER_ANCHOR_X:
+      this->dRenderX -= this->w / 2;
+    break;
+
+    case COMPONENT_LEFT_ANCHOR_X:
+
+    break;
+
+    case COMPONENT_RIGHT_ANCHOR_X:
+      this->dRenderX -= this->w;
+    break;
+  }
+
+  // Self alignment along vertical
+  switch(this->eComponentAnchorY) {
+    
+    case COMPONENT_CENTER_ANCHOR_Y:
+      this->dRenderY -= this->h / 2;
+    break;
+
+    case COMPONENT_TOP_ANCHOR_Y:
+
+    break;
+
+    case COMPONENT_BOTTOM_ANCHOR_Y:
+      this->dRenderY -= this->h;
     break;
   }
 

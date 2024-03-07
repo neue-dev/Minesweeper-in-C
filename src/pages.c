@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-07 22:44:46
+ * @ Modified time: 2024-03-07 23:00:20
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -39,7 +39,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
   char *sIntroComponent = "intro-row.col-center.y-center.x";
   char *sOuterBoxComponent = "box.outer-row.col-center.y-center.x";
   char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x";
-  char *sLogoComponent = "logo";
+  char *sLogoComponent = "logo-acenter.x-acenter.y";
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -50,13 +50,11 @@ void PageHandler_intro(p_obj pArgs_Page) {
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x080808, 0x080808);
       Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, 0x888888, 0x888888);
       Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, 0x080808, 0xf0f0f0);
-      Page_addComponent(this, sLogoComponent, "root", 
-        dWidth / 2 - AssetManager_getAssetWidth(this->pSharedAssetManager, "logo") / 2, 100, 
+      Page_addComponent(this, sLogoComponent, "root", dWidth / 2, 100, 
         AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
         AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
         AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
-        AssetManager_getAssetText(this->pSharedAssetManager, "logo"), 
-        -1, -1);
+        AssetManager_getAssetText(this->pSharedAssetManager, "logo"), -1, -1);
 
       // Set initials
       Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
@@ -82,10 +80,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
         break;
 
         case 2:   // Make the logo fly to the center
-          Page_setComponentTarget(this, sLogoComponent, 
-              PAGE_NULL_INT,
-              dHeight / 2 - AssetManager_getAssetHeight(this->pSharedAssetManager, "logo") / 2,
-              -1, -1, -1, -1, 0.84);
+          Page_setComponentTarget(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, -1, -1, -1, -1, 0.84);
 
           if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG3)
             Page_nextStage(this);
