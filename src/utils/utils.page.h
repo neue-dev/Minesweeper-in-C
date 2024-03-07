@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-07 22:22:02
+ * @ Modified time: 2024-03-07 22:29:59
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -508,7 +508,16 @@ void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int
 }
 
 /**
- * Sets the page state to PAGE_ACTIVE.
+ * Sets the page status to PAGE_ACTIVE_IDLE.
+ * 
+ * @param   { Page * }  this.
+*/
+void Page_idle(Page *this) {
+  this->ePageStatus = PAGE_ACTIVE_IDLE;  
+}
+
+/**
+ * Sets the page status to PAGE_ACTIVE.
  * It also resets the dT value of the page so animations can start over.
  * 
  * @param   { Page * }  this  The page we're going to activate.
@@ -519,12 +528,21 @@ void Page_activate(Page *this) {
 }
 
 /**
- * Sets the page state to PAGE_INACTIVE.
+ * Sets the page status to PAGE_INACTIVE.
  * 
  * @param   { Page * }  this  The page we're going to deactivate.
 */
 void Page_deactivate(Page *this) {
   this->ePageStatus = PAGE_INACTIVE;
+}
+
+/**
+ * Increments the stage counter of the page.
+ * 
+ * @param   { Page * }  The page to modify.
+*/
+void Page_nextStage(Page *this) {
+  this->dStage++;
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-07 19:48:16
+ * @ Modified time: 2024-03-07 22:34:32
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -479,8 +479,8 @@ void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
   pBuffer = Buffer_create(
     IO_getWidth(), 
     IO_getHeight(), 
-    0x000000,
-    0xffffff);
+    0x080808,
+    0xf0f0f0);
 
   // While we have components
   while(Queue_getHead(this->pRenderQueue) != NULL) {
