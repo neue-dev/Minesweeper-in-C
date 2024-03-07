@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-06 11:57:47
+ * @ Modified time: 2024-03-07 23:37:35
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -419,6 +419,19 @@ char EventStore_get(EventStore *this, char *sKey) {
     return 0;
 
   return *pChar;
+}
+
+/**
+ * Resets a certain value on the event store.
+ * 
+ * @param   { EventStore * }  this  The event store instance to modify.
+ * @param   { char * }        sKey  The key of the object we want to modify.
+*/
+void EventStore_clear(EventStore *this, char *sKey) {
+  char *pValue = HashMap_get(this->pValueStore, sKey);
+
+  if(pValue != NULL)
+    *pValue = 0;
 }
 
 /**

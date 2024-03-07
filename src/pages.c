@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-07 23:12:46
+ * @ Modified time: 2024-03-07 23:34:51
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -98,9 +98,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
     break;
 
-    default:
-      // ! exit the page
-    break;
+    default: break;
   }
 }
 
@@ -172,6 +170,10 @@ void PageHandler_menu(p_obj pArgs_Page) {
         case 0:
 
         break;
+      }
+
+      if(EventStore_get(this->pSharedEventStore, "key-pressed") == 'c') {
+        Page_setUserState(this, "menu-selector", this->dT % 128);
       }
 
     break;

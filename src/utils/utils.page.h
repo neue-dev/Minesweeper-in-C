@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-07 23:09:58
+ * @ Modified time: 2024-03-07 23:24:14
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -161,6 +161,38 @@ void Page_kill(Page *this) {
 */
 void Page_render(Page *this) {
   ComponentManager_render(&this->componentManager, this->pBuffer);
+}
+
+/**
+ * Sets a specific user-defined state to the value provided.
+ * Note that user states can only store char data.
+ * 
+ * @param   { Page * }  this        The page to modify.
+ * @param   { char * }  sStateKey   The key of state to modify.
+ * @param   { char }    cData       The new data to store for the state.
+*/
+void Page_setUserState(Page *this, char *sStateKey, char cData) {
+  char *cDataEntry = HashMap_get(this->pUserStates, sStateKey);
+
+  // The entry doesnt exist yet
+  if(cDataEntry == NULL) {
+    cDataEntry = calloc(1, sizeof(char));  
+    HashMap_add(this->pUserStates, sStateKey, cDataEntry);
+  }
+
+  // Store the data in the hashmap
+  *cDataEntry = cData;
+}
+
+/**
+ * Gets a specific user-defined state.
+ * Note that user states can only store char data.
+ * 
+ * @param   { Page * }  this        The page to read.
+ * @param   { char * }  sStateKey   The key of state to read.
+*/
+char Page_getUserState(Page *this, char *sStateKey) {
+  return *(char *) HashMap_get(this->pUserStates, sStateKey);
 }
 
 /**

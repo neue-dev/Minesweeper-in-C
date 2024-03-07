@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-04 22:34:22
+ * @ Modified time: 2024-03-07 23:38:45
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -214,6 +214,10 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Update 
   if(EventStore_get(&this->eventStore, "key-pressed") == 'q')
     this->bState = 0;
+
+  // Reset event store each time
+  // This has to happen on this thread because this is where the "key-pressed" data is read
+  EventStore_clear(&this->eventStore, "key-pressed");
 }
 
 /**
