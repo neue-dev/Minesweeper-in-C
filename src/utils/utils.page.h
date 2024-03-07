@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-07 22:29:59
+ * @ Modified time: 2024-03-07 23:09:58
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -348,6 +348,27 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   }
 
   this->dComponentCount++;
+}
+
+/**
+ * Adds a component with the asset of a given key.
+ * Note that the width and height of the component are automatically determined by the asset.
+ * 
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { char * }                sParentKey    The key of the component to append to.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
+ * @param   { int }                   colorFG       A foreground color for the component.
+ * @param   { int }                   colorBG       A background color for the component.
+ * @param   { char * }                sAssetKey     The asset to be rendered by the component.
+*/
+void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int y, int colorFG, int colorBG, char *sAssetKey) {
+  Page_addComponent(this, sKey, sParentKey, x, y, 
+    AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey),
+    AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
+    AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
+    AssetManager_getAssetText(this->pSharedAssetManager, sAssetKey),
+    colorFG, colorBG);
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-07 23:00:20
+ * @ Modified time: 2024-03-07 23:12:46
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -50,11 +50,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x080808, 0x080808);
       Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, 0x888888, 0x888888);
       Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, 0x080808, 0xf0f0f0);
-      Page_addComponent(this, sLogoComponent, "root", dWidth / 2, 100, 
-        AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
-        AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
-        AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
-        AssetManager_getAssetText(this->pSharedAssetManager, "logo"), -1, -1);
+      Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, -1, -1, "logo");
 
       // Set initials
       Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
@@ -124,7 +120,6 @@ void PageHandler_menu(p_obj pArgs_Page) {
   // Component names
   char *sMenuComponent = "menu-fixed";
   char *sTitleComponent = "title-row";
-  char *sLogoComponent = "logo";
 
   // Some other holding vars
   char *sTitle = "minesweeper";
@@ -147,11 +142,8 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
       // Get the total length
       for(i = 0, dTotalLength = 0; i < dTitleLength; i++) {
-        
-        // Get the key
         String_keyAndChar(sAssetKey, sFontName, sTitle[i]);
-
-        // Compute the total length
+        
         dTotalLength += AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey);
       }
 
@@ -163,13 +155,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         String_keyAndChar(sAssetKey, sFontName, sTitle[i]);
 
         // Add the component
-        Page_addComponent(this, sComponentKey, sTitleComponent,
-          dWidth / 2 - dTotalLength / 2, i * i * i * -10 + 128, 
-          AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey), 
-          AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
-          AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
-          AssetManager_getAssetText(this->pSharedAssetManager, sAssetKey),
-          -1, -1);  
+        Page_addComponentAsset(this, sComponentKey, sTitleComponent, dWidth / 2 - dTotalLength / 2, i * i * i * -10 + 128, -1, -1, sAssetKey);  
 
         // Make all the letters want to go to their places
         Page_setComponentTarget(this, sComponentKey, PAGE_NULL_INT, 0, -1, -1, -1, -1, 0.69);
@@ -177,7 +163,6 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
       // Shift it down a bit
       Page_setComponentTarget(this, sTitleComponent, PAGE_NULL_INT, 4, -1, -1, -1, -1, 0.69);
-
     break;
 
     case PAGE_ACTIVE_RUNNING:
