@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-03-03 20:28:26
+ * @ Modified time: 2024-03-07 19:57:37
  * @ Description:
  * 
  * Some helper math functions.
@@ -11,6 +11,21 @@
 #define UTILS_MATH_
 
 #include <math.h>
+
+// These come in handy with the "getComponentDist()" function
+// They can be used as references for when to execute an action 
+//    (when a component gets sufficiently close to its target)
+#define MATH_E_POS1 1e1
+#define MATH_E_POS2 1e2
+#define MATH_E_POS3 1e3
+#define MATH_E_POS4 1e4
+#define MATH_E_POS5 1e5
+
+#define MATH_E_NEG1 1e-1
+#define MATH_E_NEG2 1e-2
+#define MATH_E_NEG3 1e-3
+#define MATH_E_NEG4 1e-4
+#define MATH_E_NEG5 1e-5
 
 /**
  * //

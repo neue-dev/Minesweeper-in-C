@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-06 20:50:02
+ * @ Modified time: 2024-03-07 19:57:42
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -17,7 +17,11 @@
 #include "./utils.asset.h"
 #include "./utils.types.h"
 
+// This is used as a parameter to "setComponentTarget()"
+// It signifies that an int value will not be modified
 #define PAGE_NULL_INT -999
+
+// Some other page state related stuff
 #define PAGE_MAX_COMPONENTS (1 << 10)
 #define PAGE_MAX_STATES (1 << 10)
 #define PAGE_MAX_COUNT (1 << 4)

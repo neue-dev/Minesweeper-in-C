@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-06 20:51:59
+ * @ Modified time: 2024-03-07 20:00:14
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -50,7 +50,8 @@ void PageHandler_intro(p_obj pArgs_Page) {
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x080808, 0x080808);
       Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, 0x888888, 0x888888);
       Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, 0x111111, 0xf0f0f0);
-      Page_addComponent(this, sLogoComponent, sInnerBoxComponent, 0, -100, 
+      Page_addComponent(this, sLogoComponent, "root", 
+        dWidth / 2 - AssetManager_getAssetWidth(this->pSharedAssetManager, "logo") / 2, 100, 
         AssetManager_getAssetWidth(this->pSharedAssetManager, "logo"),
         AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
         AssetManager_getAssetHeight(this->pSharedAssetManager, "logo"),
@@ -60,7 +61,6 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // Set initials
       Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
       Page_resetComponentInitial(this, sInnerBoxComponent, 80, 40, 0, 0, -1, -1);
-      Page_resetComponentInitial(this, sLogoComponent, 0, 100, -1, -1, -1, -1);
 
       // Set targets
       Page_setComponentTarget(this, sOuterBoxComponent, 60, 30, 40, 20, -1, -1, 0.69);
@@ -70,14 +70,20 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
     case PAGE_ACTIVE_RUNNING:
       
-      if(this->dT == 20) {
-        Page_setComponentTarget(this, sLogoComponent, 0, 0, -1, -1, -1, -1, 0.84);
-      } else if(this->dT > 20) {
+      // Make logo go to the center
+      if(this->dT == 32) {
+        Page_setComponentTarget(this, sLogoComponent, 
+          PAGE_NULL_INT,
+          dHeight / 2 - AssetManager_getAssetHeight(this->pSharedAssetManager, "logo") / 2,
+          -1, -1, -1, -1, 0.84);
+      
+      // Expand the box and fly the logo away
+      } else if(this->dT > 32) {
 
-        if(Page_getComponentDist(this, sLogoComponent, 1) < 0.00001) {
-          Page_setComponentTarget(this, sLogoComponent, 0, 100, -1, -1, -1, -1, -0.99);
-          Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 160, 80, -1, -1, 0.4);
-          Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 156, 78, -1, -1, 0.4);
+        if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG3) {
+          Page_setComponentTarget(this, sLogoComponent, PAGE_NULL_INT, -16, -1, -1, -1, -1, -0.94);
+          Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 160, 80, -1, -1, 0.45);
+          Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 156, 78, -1, -1, 0.45);
         } 
       } 
 

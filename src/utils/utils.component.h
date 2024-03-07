@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-06 17:58:01
+ * @ Modified time: 2024-03-07 19:48:16
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -124,7 +124,7 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
   strcpy(this->sName, sName);
 
   // Default component type
-  this->eComponentType = COMPONENT_MULTI_ROW;
+  this->eComponentType = COMPONENT_FIXED;
   this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
   this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
 
