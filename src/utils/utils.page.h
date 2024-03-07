@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-07 19:57:42
+ * @ Modified time: 2024-03-07 22:22:02
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -65,7 +65,8 @@ struct Page {
   int dComponentCount;                                          // How many components we have
   ComponentManager componentManager;                            // We store the components both through a tree and a hashmap
   Buffer *pBuffer;                                              // This is where all our content will be displayed
-                    
+  HashMap *pUserStates;                                         // This are custom user-defined states (which we can use for selectors, etc.)                    
+
   HashMap *pColorStates;                                        // The foreground and background colors for each component
   HashMap *pRenderStates;                                       // Float states that describe the positions of different components
   HashMap *pPixelStates;                                        // These are the rounded off versions of the pRenderStates above
@@ -78,6 +79,7 @@ struct Page {
   int dStateCount;                                              // How many states we have at the moment
                     
   unsigned long long dT;                                        // A variable that stores the current frame number
+  unsigned int dStage;                                          // An int that tells us what stage anims are in
 };
 
 /**
@@ -111,17 +113,20 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pShar
   this->pSharedEventStore = pSharedEventStore;
 
   // Empty hashmaps
+  this->pUserStates = HashMap_create();
   this->pColorStates = HashMap_create();
   this->pRenderStates = HashMap_create();
   this->pPixelStates = HashMap_create();
-  
   this->pColorTargetStates = HashMap_create();
   this->pRenderTargetStates = HashMap_create();
   this->pTransitionSpeeds = HashMap_create();
 
-  // Set dT to 0 and state count to 0
+  // Currently no states
   this->dStateCount = 0;
+  
+  // Set dT to 0 and dStage to 0
   this->dT = 0ULL;
+  this->dStage = 0;
 
   return this;
 }
@@ -455,8 +460,8 @@ float Page_getComponentDist(Page *this, char *sKey, int dParam) {
 */
 void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, int colorFG, int colorBG) {
   int i;
-  float *pRenderState;
-  int *pColorState;
+  float *pRenderState, *pRenderTargetState;
+  int *pColorState, *pColorTargetState;
   char sStateKey[STRING_KEY_MAX_LENGTH];
   
   for(i = 0; i < 4; i++) {
@@ -467,33 +472,36 @@ void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int
     // Retrieve the values
     pColorState = HashMap_get(this->pColorStates, sStateKey);
     pRenderState = HashMap_get(this->pRenderStates, sStateKey);
+
+    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
+    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
     
     // Set appropriate values
     switch(i) {
       case 0:
         if(x > PAGE_NULL_INT)
-          *pRenderState = x * 1.0;
+          *pRenderTargetState = *pRenderState = x * 1.0;
 
         if(colorFG > -1)
-          *pColorState = colorFG;
+          *pColorTargetState = *pColorState = colorFG;
       break;
       
       case 1:
         if(y > PAGE_NULL_INT)
-          *pRenderState = y * 1.0;
+          *pRenderTargetState = *pRenderState = y * 1.0;
 
         if(colorBG > -1)
-          *pColorState = colorBG;
+          *pColorTargetState = *pColorState = colorBG;
       break;
       
       case 2:
         if(w > -1)
-          *pRenderState = w * 1.0;
+          *pRenderTargetState = *pRenderState = w * 1.0;
       break;
 
       case 3:
         if(h > -1)
-          *pRenderState = h * 1.0;
+          *pRenderTargetState = *pRenderState = h * 1.0;
       break;
     }
   }

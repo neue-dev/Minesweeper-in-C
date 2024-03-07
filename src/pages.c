@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-07 20:00:14
+ * @ Modified time: 2024-03-07 22:20:06
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -61,31 +61,45 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // Set initials
       Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
       Page_resetComponentInitial(this, sInnerBoxComponent, 80, 40, 0, 0, -1, -1);
-
-      // Set targets
-      Page_setComponentTarget(this, sOuterBoxComponent, 60, 30, 40, 20, -1, -1, 0.69);
-      Page_setComponentTarget(this, sInnerBoxComponent, 60, 30, 36, 18, -1, -1, 0.69);
-      
     break;
 
     case PAGE_ACTIVE_RUNNING:
       
       // Make logo go to the center
-      if(this->dT == 32) {
-        Page_setComponentTarget(this, sLogoComponent, 
-          PAGE_NULL_INT,
-          dHeight / 2 - AssetManager_getAssetHeight(this->pSharedAssetManager, "logo") / 2,
-          -1, -1, -1, -1, 0.84);
-      
-      // Expand the box and fly the logo away
-      } else if(this->dT > 32) {
+      switch(this->dStage) {
+        
+        case 0:   // Currently empty screen  
+          if(this->dT > 16) this->dStage++;
+        break;
 
-        if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG3) {
+        case 1:   // Make the box enlarge
+          Page_setComponentTarget(this, sOuterBoxComponent, 60, 30, 40, 20, -1, -1, 0.5);
+          Page_setComponentTarget(this, sInnerBoxComponent, 60, 30, 36, 18, -1, -1, 0.5);
+
+          if(Page_getComponentDist(this, sInnerBoxComponent, 0) < MATH_E_NEG1)
+            this->dStage++;
+        break;
+
+        case 2:   // Make the logo fly to the center
+          Page_setComponentTarget(this, sLogoComponent, 
+              PAGE_NULL_INT,
+              dHeight / 2 - AssetManager_getAssetHeight(this->pSharedAssetManager, "logo") / 2,
+              -1, -1, -1, -1, 0.84);
+
+          if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG3)
+            this->dStage++;
+        break;
+
+        case 3:   // Make the screen white
           Page_setComponentTarget(this, sLogoComponent, PAGE_NULL_INT, -16, -1, -1, -1, -1, -0.94);
           Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 160, 80, -1, -1, 0.45);
           Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 156, 78, -1, -1, 0.45);
-        } 
-      } 
+        break;
+        
+        default:
+          // ! exit page
+        break;
+      }
 
     break;
 
