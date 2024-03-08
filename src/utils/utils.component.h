@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-08 09:44:59
+ * @ Modified time: 2024-03-08 10:01:02
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -59,6 +59,14 @@ enum ComponentAnchorY {
   COMPONENT_TOP_ANCHOR_Y,
   COMPONENT_BOTTOM_ANCHOR_Y,
 };
+
+/**
+ * //
+ * ////
+ * //////    Component class
+ * ////////
+ * ////////// 
+*/
 
 /**
  * A class that stores a UI component which we will eventually render to the screen.
@@ -437,6 +445,14 @@ void Component_config(Component *this) {
     this->pChildren[i]->dPaddingY = dPaddingY;
   }
 }
+
+/**
+ * //
+ * ////
+ * //////    ComponentManager struct
+ * ////////
+ * ////////// 
+*/
 
 /**
  * A struct that stores a tree and hashmap of components.
