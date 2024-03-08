@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-08 09:12:32
+ * @ Modified time: 2024-03-08 09:44:59
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -96,8 +96,8 @@ struct Component {
   char **aAsset;                                    // An asset to be printed by the component    
   int dAssetHeight;                                 // The height of the asset
 
-  int colorFG;                                      // A color for the foreground
-  int colorBG;                                      // A color for the background
+  color colorFG;                                    // A color for the foreground
+  color colorBG;                                    // A color for the background
 
   ComponentType eComponentType;                     // Determines how the component renders its children
   ComponentAlignmentX eComponentAlignmentX;         // Determiens the alignment of its children along the horizontal
@@ -128,11 +128,11 @@ Component *Component_new() {
  * @param   { int }           h             The height of the component.
  * @param   { int }           dAssetHeight  The height of the asset.
  * @param   { char ** }       aAsset        The asset to be rendered by the component.
- * @param   { int }           colorFG       A foreground color for the component.
- * @param   { int }           colorBG       A background color for the component.
+ * @param   { color }         colorFG       A foreground color for the component.
+ * @param   { color }         colorBG       A background color for the component.
  * @return	{ Component * }					        A pointer to the initialized instance.
 */
-Component *Component_init(Component *this, char *sName, Component *pParent, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+Component *Component_init(Component *this, char *sName, Component *pParent, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
   int i = 0, j = 0, dNameLength = strlen(sName);
   char sNameSubpart[STRING_KEY_MAX_LENGTH];
   
@@ -236,11 +236,11 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
  * @param   { int }           h             The height of the component.
  * @param   { int }           dAssetHeight  The height of the asset.
  * @param   { char ** }       aAsset        The asset to be rendered by the component.
- * @param   { int }           colorFG       A foreground color for the component.
- * @param   { int }           colorBG       A background color for the component.
+ * @param   { color }         colorFG       A foreground color for the component.
+ * @param   { color }         colorBG       A background color for the component.
  * @return	{ Component * }		              A pointer to the newly created initialized instance.
 */
-Component *Component_create(char *sName, Component *pParent, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+Component *Component_create(char *sName, Component *pParent, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
   return Component_init(Component_new(), sName, pParent, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG);
 }
 
@@ -493,10 +493,10 @@ void ComponentManager_exit(ComponentManager *this) {
  * @param   { int }                   h             The height of the component.
  * @param   { int }                   dAssetHeight  The height of the asset. This can be 0.
  * @param   { char ** }               aAsset        The asset to be rendered by the component. This may be NULL.
- * @param   { int }                   colorFG       A foreground color for the component.
- * @param   { int }                   colorBG       A background color for the component.
+ * @param   { color }                 colorFG       A foreground color for the component.
+ * @param   { color }                 colorBG       A background color for the component.
 */
-void ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+void ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
   Component *pParent =  NULL;
   Component *pChild = NULL;
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:21:11
- * @ Modified time: 2024-03-04 21:42:40
+ * @ Modified time: 2024-03-08 09:52:47
  * @ Description:
  *    
  * Typedefs some custom types.   
@@ -34,6 +34,9 @@
  * ////////
  * ////////// 
 */
+
+// Colors
+typedef int color;
 
 // FOR THE CODE BELOW (parameter object pointers):
 // Note that we have to do this because some of the Windows API requires us to pass

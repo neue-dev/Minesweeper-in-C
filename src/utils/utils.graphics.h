@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-03-06 19:59:37
+ * @ Modified time: 2024-03-08 09:47:48
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -24,11 +24,11 @@
 /**
  * Color functions
 */
-char *Graphics_getCodeFG(int color);
+char *Graphics_getCodeFG(color color);
 
-char *Graphics_getCodeBG(int color);
+char *Graphics_getCodeBG(color color);
 
-char *Graphics_getCodeFGBG(int colorFG, int colorBG);
+char *Graphics_getCodeFGBG(color colorFG, color colorBG);
 
 /**
  * //
@@ -41,10 +41,10 @@ char *Graphics_getCodeFGBG(int colorFG, int colorBG);
 /**
  * Returns the sequence to modify the current color of the terminal.
  * 
- * @param   { int }     color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
+ * @param   { color }   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
  * @return  { char * }          A pointer to the string representing the escape sequence.
 */
-char *Graphics_getCodeFG(int color) {
+char *Graphics_getCodeFG(color color) {
   int i;
   char *sANSISequence = String_alloc(GRAPHICS_STD_SEQ);
 
@@ -69,10 +69,10 @@ char *Graphics_getCodeFG(int color) {
 /**
  * Returns the sequence to modify the current color of the background of the terminal.
  * 
- * @param   { int }     color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
+ * @param   { color }   color   An integer that stores the RGB information for a certain color (usually notated through hexadecimal).
  * @return  { char * }          A pointer to the string representing the escape sequence.
 */
-char *Graphics_getCodeBG(int color) {
+char *Graphics_getCodeBG(color color) {
   int i;
   char *sANSISequence = String_alloc(GRAPHICS_STD_SEQ);
 
@@ -97,11 +97,11 @@ char *Graphics_getCodeBG(int color) {
 /**
  * Returns the sequence to modify the current color of the foreground AND background of the terminal.
  * 
- * @param   { int }     colorFG   An integer that stores the RGB information for a certain color for the foreground.
- * @param   { int }     colorBG   An integer that stores the RGB information for a certain color for the background.
+ * @param   { color }   colorFG   An integer that stores the RGB information for a certain color for the foreground.
+ * @param   { color }   colorBG   An integer that stores the RGB information for a certain color for the background.
  * @return  { char * }            A pointer to the string representing the escape sequence.
 */
-char *Graphics_getCodeFGBG(int colorFG, int colorBG) {
+char *Graphics_getCodeFGBG(color colorFG, color colorBG) {
   int i;
   char *sANSISequence = String_alloc(GRAPHICS_STD_SEQ * 2);
 
@@ -125,8 +125,12 @@ char *Graphics_getCodeFGBG(int colorFG, int colorBG) {
 
 /**
  * Returns the "pythagorean distance" between two colors.
+ * 
+ * @param   { color }   color1  The first color.
+ * @param   { color }   color2  The second color.
+ * @return  { float }           The pythagorean distance between the two colors, with respect to their RGB values.
 */
-float Graphics_getColorDist(int color1, int color2) {
+float Graphics_getColorDist(color color1, color color2) {
   return sqrtf(
     ((color1 >> 16) % (1 << 8) - (color2 >> 16) % (1 << 8)) * 
     (color1 >> 16) % (1 << 8) - (color2 >> 16) % (1 << 8) + 
@@ -137,21 +141,26 @@ float Graphics_getColorDist(int color1, int color2) {
 }
 
 /**
- * Returns the insigned integer associated with a set of rgb values.
+ * Returns the color associated with a set of rgb values.
+ * 
+ * @param   { int }     r   The red value of the color.
+ * @param   { int }     g   The green value of the color.
+ * @param   { int }     b   The blue value of the color.
+ * @return  { color }       A color value with the rgb specified.  
 */
-int Graphics_RGB(int r, int g, int b) {
+color Graphics_RGB(int r, int g, int b) {
   return (r << 16) + (g << 8) + b;
 }
 
 /**
  * Lerps between two colors by the specified amount.
  * 
- * @param   { int }     color1    The first (start) color.
- * @param   { int }     color2    The second (end) color.
+ * @param   { color }   color1    The first (start) color.
+ * @param   { color }   color2    The second (end) color.
  * @param   { float }   fAmount   How much to lerp between the two colors.
  * @return  { int }               The new color.
 */
-int Graphics_lerp(int color1, int color2, float fAmount) {
+int Graphics_lerp(color color1, color color2, float fAmount) {
   int r1 = (color1 >> 16) % (1 << 8), r2 = (color2 >> 16) % (1 << 8);
   int g1 = (color1 >> 8) % (1 << 8), g2 = (color2 >> 8) % (1 << 8);
   int b1 = (color1 >> 0) % (1 << 8), b2 = (color2 >> 0) % (1 << 8);

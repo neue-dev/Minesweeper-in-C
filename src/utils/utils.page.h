@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-07 23:24:14
+ * @ Modified time: 2024-03-08 09:52:08
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -12,6 +12,7 @@
 #define UTILS_PAGE_
 
 #include "./utils.event.h"
+#include "./utils.theme.h"
 #include "./utils.component.h"
 #include "./utils.buffer.h"
 #include "./utils.asset.h"
@@ -61,6 +62,7 @@ struct Page {
                     
   AssetManager *pSharedAssetManager;                            // A reference to a shared asset manager so we can access all assets
   EventStore *pSharedEventStore;                                // Where we can access values modified by events
+  ThemeManager *pSharedThemeManager;                            // WHat we use to manager the colors across pages
                     
   int dComponentCount;                                          // How many components we have
   ComponentManager componentManager;                            // We store the components both through a tree and a hashmap
@@ -311,10 +313,10 @@ int Page_update(Page *this) {
  * @param   { int }                   h             The height of the component.
  * @param   { int }                   dAssetHeight  The height of the asset. This can be 0.
  * @param   { char ** }               aAsset        The asset to be rendered by the component. This may be NULL.
- * @param   { int }                   colorFG       A foreground color for the component.
- * @param   { int }                   colorBG       A background color for the component.
+ * @param   { color }                 colorFG       A foreground color for the component.
+ * @param   { color }                 colorBG       A background color for the component.
 */
-void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, int colorFG, int colorBG) {
+void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
   int i;
   float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
   int *pColorState, *pColorTargetState, *pPixelState;
@@ -386,15 +388,16 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
  * Adds a component with the asset of a given key.
  * Note that the width and height of the component are automatically determined by the asset.
  * 
+ * @param   { Page * }                this          The page to modify.
  * @param   { char * }                sKey          An identifier for the component.
  * @param   { char * }                sParentKey    The key of the component to append to.
  * @param   { int }                   x             The x-coordinate of the component.
  * @param   { int }                   y             The y-coordinate of the component.
- * @param   { int }                   colorFG       A foreground color for the component.
- * @param   { int }                   colorBG       A background color for the component.
+ * @param   { color }                 colorFG       A foreground color for the component.
+ * @param   { color }                 colorBG       A background color for the component.
  * @param   { char * }                sAssetKey     The asset to be rendered by the component.
 */
-void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int y, int colorFG, int colorBG, char *sAssetKey) {
+void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int y, color colorFG, color colorBG, char *sAssetKey) {
   Page_addComponent(this, sKey, sParentKey, x, y, 
     AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey),
     AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
@@ -406,9 +409,18 @@ void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int
 /**
  * Sets the target position for a certain component.
  * Also requires to specify the speed at which the component should get there.
- * //! ADD JSDOC
+ * 
+ * @param   { Page * }                this              The page to modify.
+ * @param   { char * }                sKey              An identifier for the component.
+ * @param   { int }                   x                 The x-coordinate the component will go to. PAGE_INT_NULL if none.
+ * @param   { int }                   y                 The y-coordinate the component will go to. PAGE_INT_NULL if none.
+ * @param   { int }                   w                 The width the component will approach. -1 if none.
+ * @param   { int }                   h                 The height the component will approach. -1 if none.
+ * @param   { color }                 colorFG           A foreground color the component will go to. -1 if none.
+ * @param   { color }                 colorBG           A background color the component will go to. -1 if none.
+ * @param   { float }                 fTransitionSpeed  How fast the component will go its target values.
 */
-void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, int colorFG, int colorBG, float fTransitionSpeed) {
+void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, color colorFG, color colorBG, float fTransitionSpeed) {
   int i;
   float *pRenderTargetState, *pTransitionSpeed;
   int *pColorTargetState;
@@ -509,9 +521,16 @@ float Page_getComponentDist(Page *this, char *sKey, int dParam) {
 /**
  * Sets the initial starting values of the component.
  * 
- * // ! ADD JSDOC
+ * @param   { Page * }                this              The page to modify.
+ * @param   { char * }                sKey              An identifier for the component.
+ * @param   { int }                   x                 The x-coordinate the component will start at. PAGE_INT_NULL if none.
+ * @param   { int }                   y                 The y-coordinate the component will start at. PAGE_INT_NULL if none.
+ * @param   { int }                   w                 The width the component will start with. -1 if none.
+ * @param   { int }                   h                 The height the component will start with. -1 if none.
+ * @param   { color }                 colorFG           A foreground color the component will start with. -1 if none.
+ * @param   { color }                 colorBG           A background color the component will start with. -1 if none.
 */
-void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, int colorFG, int colorBG) {
+void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, color colorFG, color colorBG) {
   int i;
   float *pRenderState, *pRenderTargetState;
   int *pColorState, *pColorTargetState;

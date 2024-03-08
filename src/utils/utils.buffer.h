@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-02 21:34:44
+ * @ Modified time: 2024-03-08 09:44:05
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -202,10 +202,10 @@ void Buffer_write(Buffer *this, int x, int y, int h, char *sBlock[]) {
  * @param   { int }       y         The y-coordinate where the context begins in the buffer.
  * @param   { int }       w         The width of the context area.
  * @param   { int }       h         The height of the context area.
- * @param   { int }       colorFG   The color of the foreground within the context.
- * @param   { int }       colorBG   The color of the background within the context.
+ * @param   { color }     colorFG   The color of the foreground within the context.
+ * @param   { color }     colorBG   The color of the background within the context.
 */
-void Buffer_contextRect(Buffer *this, int x, int y, int w, int h, int colorFG, int colorBG) {
+void Buffer_contextRect(Buffer *this, int x, int y, int w, int h, color colorFG, color colorBG) {
   int i, j;
 
   // Can't overload ourselves
@@ -241,10 +241,10 @@ void Buffer_contextRect(Buffer *this, int x, int y, int w, int h, int colorFG, i
  * @param   { int }       x         The x-coordinate where the context is centered in the buffer.
  * @param   { int }       y         The y-coordinate where the context is centered in the buffer.
  * @param   { int }       w         The radius of the context area.
- * @param   { int }       colorFG   The color of the foreground within the context.
- * @param   { int }       colorBG   The color of the background within the context.
+ * @param   { color }     colorFG   The color of the foreground within the context.
+ * @param   { color }     colorBG   The color of the background within the context.
 */
-void Buffer_contextCircle(Buffer *this, int x, int y, int r, int colorFG, int colorBG) {
+void Buffer_contextCircle(Buffer *this, int x, int y, int r, color colorFG, color colorBG) {
   int i, j;
 
   // Minimum radius would be 1
