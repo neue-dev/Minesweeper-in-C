@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-03-06 11:11:45
+ * @ Modified time: 2024-03-08 08:55:15
  * @ Description:
  */
 
@@ -31,7 +31,7 @@ int main() {
   Engine_init(&engine);
 
   // Keep the main thread open while the engine is running
-  while(Engine_getState(&engine)) {};
+  while(Engine_getState(&engine));
 
   // Clean up the engine
   Engine_exit(&engine);

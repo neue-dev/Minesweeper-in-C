@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-07 22:56:44
+ * @ Modified time: 2024-03-08 09:12:32
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -557,7 +557,7 @@ void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
     }
 
     // If the component has colors
-    if(pComponent->colorFG > 0 || pComponent->colorBG > 0) {
+    if(pComponent->colorFG > -1 || pComponent->colorBG > -1) {
       Buffer_contextRect(
         pBuffer, 
         pComponent->dRenderX, 

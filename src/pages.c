@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-07 23:34:51
+ * @ Modified time: 2024-03-08 09:18:25
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -15,6 +15,13 @@
 #include "./utils/utils.asset.h"
 #include "./utils/utils.page.h"
 #include "./utils/utils.component.h"
+
+//! remove these later and store colors in a theme class
+#define BG_1 0xfef9ff
+#define FG_1 0x111317
+#define FG_ACC_B 0x4282b3
+#define FG_ACC_Y 0xf18f01
+#define FG_ACC_R 0xf33016
 
 /**
  * //
@@ -47,9 +54,9 @@ void PageHandler_intro(p_obj pArgs_Page) {
     case PAGE_ACTIVE_INIT:
 
       // Create component tree
-      Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x080808, 0x080808);
-      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, 0x888888, 0x888888);
-      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, 0x080808, 0xf0f0f0);
+      Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x000001, 0x000001);
+      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, FG_ACC_B, FG_ACC_B);
+      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, FG_1, BG_1);
       Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, -1, -1, "logo");
 
       // Set initials
@@ -135,7 +142,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
     case PAGE_ACTIVE_INIT:
 
       // A container for the title
-      Page_addComponent(this, sMenuComponent, "root", 0, 0, 0, 0, 0, NULL, -1, -1);
+      Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
       Page_addComponent(this, sTitleComponent, sMenuComponent, 0, 10, 0, 0, 0, NULL, -1, -1);
 
       // Get the total length
