@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-03-08 09:00:12
+ * @ Modified time: 2024-03-08 10:15:49
  * 
  * ███╗   ███╗██╗███╗   ██╗███████╗███████╗██╗    ██╗███████╗███████╗██████╗ ███████╗██████╗ 
  * ████╗ ████║██║████╗  ██║██╔════╝██╔════╝██║    ██║██╔════╝██╔════╝██╔══██╗██╔════╝██╔══██╗
@@ -68,13 +68,15 @@ int main(int argc, char *argv[]) {
     system(command);
 
     // Just so the user doesn't get irritated
+    system("tput civis");
     printf("\e[H\e[2J\e[3J");
     printf("\n\n\tThe game is loading...\n");
     system("./build/minesweeper.unix.o");
 
-    // Reset colors in case of crash
+    // Reset colors and cursor in case of crash
     printf("\x1b[38;5;255m");
     printf("\x1b[48;5;232m");
+    system("tput cnorm");
 
     // After the game exits
     printf("\e[H\e[2J\e[3J");

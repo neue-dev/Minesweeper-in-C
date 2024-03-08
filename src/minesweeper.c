@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-03-08 08:55:15
+ * @ Modified time: 2024-03-08 10:17:35
  * @ Description:
  */
 
@@ -33,12 +33,12 @@ int main() {
   // Keep the main thread open while the engine is running
   while(Engine_getState(&engine));
 
-  // Clean up the engine
-  Engine_exit(&engine);
-
   // Clean up the IO related stuff
   IO_clear();
   IO_exit(&io);
+
+  // Clean up the engine
+  Engine_exit(&engine);
 
   return 0;
 }
