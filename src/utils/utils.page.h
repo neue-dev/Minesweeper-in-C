@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-09 17:01:53
+ * @ Modified time: 2024-03-09 20:31:41
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -473,6 +473,48 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
 }
 
 /**
+ * A shorthand function for _setComponentTarget().
+ * Only accepts parameters for changing position.
+ * 
+ * @param   { Page * }  this              The page to modify.
+ * @param   { char * }  sKey              The component to modify.
+ * @param   { int }     x                 The target x of the component.
+ * @param   { int }     y                 The target y of the component.
+ * @param   { float }   fTransitionSpeed  How fast the component should move.
+*/
+void Page_setComponentTargetPosition(Page *this, char *sKey, int x, int y, float fTransitionSpeed) {
+  Page_setComponentTarget(this, sKey, x, y, -1, -1, -1, -1, fTransitionSpeed);
+}
+
+/**
+ * A shorthand function for _setComponentTarget().
+ * Only accepts parameters for changing size.
+ * 
+ * @param   { Page * }  this              The page to modify.
+ * @param   { char * }  sKey              The component to modify.
+ * @param   { int }     w                 The target width of the component.
+ * @param   { int }     h                 The target height of the component.
+ * @param   { float }   fTransitionSpeed  How fast the component should move.
+*/
+void Page_setComponentTargetSize(Page *this, char *sKey, int w, int h, float fTransitionSpeed) {
+  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, -1, -1, fTransitionSpeed);
+}
+
+/**
+ * A shorthand function for _setComponentTarget().
+ * Only accepts parameters for changing color.
+ * 
+ * @param   { Page * }  this              The page to modify.
+ * @param   { char * }  sKey              The component to modify.
+ * @param   { color }   colorFG           The target width of the component.
+ * @param   { color }   colorBG           The target height of the component.
+ * @param   { float }   fTransitionSpeed  How fast the component should move.
+*/
+void Page_setComponentTargetColor(Page *this, char *sKey, color colorFG, color colorBG, float fTransitionSpeed) {
+  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, colorFG, colorBG, fTransitionSpeed);
+}
+
+/**
  * Returns the distance of the component from its target.
  * 
  * @param   { Page * }  this    The page to modify.
@@ -579,6 +621,45 @@ void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int
       break;
     }
   }
+}
+
+/**
+ * A shorthand function for _resetComponentInitial().
+ * Sets only the position of a component.
+ * 
+ * @param   { Page * }                this              The page to modify.
+ * @param   { char * }                sKey              An identifier for the component.
+ * @param   { int }                   x                 The x-coordinate the component will start at. PAGE_INT_NULL if none.
+ * @param   { int }                   y                 The y-coordinate the component will start at. PAGE_INT_NULL if none.
+*/
+void Page_resetComponentInitialPosition(Page *this, char *sKey, int x, int y) {
+  Page_resetComponentInitial(this, sKey, x, y, -1, -1, -1, -1);
+}
+
+/**
+ * A shorthand function for _resetComponentInitial().
+ * Sets only the size of a component.
+ * 
+ * @param   { Page * }                this              The page to modify.
+ * @param   { char * }                sKey              An identifier for the component.
+ * @param   { int }                   w                 The width the component will start at. -1 if none.
+ * @param   { int }                   h                 The width the component will start at. -1 if none
+*/
+void Page_resetComponentInitialSize(Page *this, char *sKey, int w, int h) {
+  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, -1, -1);
+}
+
+/**
+ * A shorthand function for _resetComponentInitial().
+ * Sets only the color of a component.
+ * 
+ * @param   { Page * }                this              The page to modify.
+ * @param   { char * }                sKey              An identifier for the component.
+ * @param   { color }                 colorFG           The foreground color the component will start at. -1 if none.
+ * @param   { color }                 colorBG           The background color the component will start at. -1 if none
+*/
+void Page_resetComponentInitialColor(Page *this, char *sKey, color colorFG, color colorBG) {
+  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, colorFG, colorBG);
 }
 
 /**
