@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 22:12:32
+ * @ Modified time: 2024-03-09 22:27:59
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -127,6 +127,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sTitleComponent = "title-row-acenter.x";
   char *sSelectorComponent = "selector-acenter.x";
   char *sIndicatorContainerComponent = "indicator-row-acenter.x-acenter.y";
+  char *sPromptComponent = "prompt-acenter.x-acenter.y";
 
   // Variables for the title
   char *sTitle = "MINEZ";
@@ -164,6 +165,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_addComponent(this, sTitleComponent, sMenuComponent, dWidth / 2, -4, 0, 0, 0, NULL, -1, -1);
       Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, dWidth / 2 - 3, 100, 0, 0, 0, NULL, -1, -1);
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, FG_ACC_Y, FG_ACC_Y, "selector");
+      Page_addComponentText(this, sPromptComponent, sMenuComponent, dWidth / 2, 100, 0x888888, -1, "arrow keys or WASD, enter to select");
 
       // Add each of the letters to the tree
       for(i = 0; i < dTitleLength; i++) {
@@ -173,7 +175,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
 
         // Add the letters and make them want to go to their targets
-        Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, i * i * i * -10 + 128, -1, -1, sAssetKey);  
+        Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, pow(i + 1, 3) * -10 + 128, -1, -1, sAssetKey);  
         Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
       }
 
@@ -190,8 +192,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
       }
 
       // Shift it down a bit
-      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 4, 0.69);
+      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 4, 0.7);
       Page_setComponentTargetPosition(this, sIndicatorContainerComponent, PAGE_NULL_INT, dHeight / 2 + 5, 0.5);
+      Page_setComponentTargetPosition(this, sPromptComponent, PAGE_NULL_INT, dHeight / 2 + 8, 0.5);
       Page_resetComponentInitialPosition(this, sSelectorComponent, 6, PAGE_NULL_INT);
 
       // Define initial user states

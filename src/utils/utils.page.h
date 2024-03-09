@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-09 21:30:26
+ * @ Modified time: 2024-03-09 22:23:13
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -406,6 +406,26 @@ void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int
     AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
     AssetManager_getAssetText(this->pSharedAssetManager, sAssetKey),
     colorFG, colorBG);
+}
+
+/**
+ * Makes it easier to insert plain text into the page without having to convert the text into an asset.
+ * 
+ * @param   { Page * }                this          The page to modify.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { char * }                sParentKey    The key of the component to append to.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
+ * @param   { color }                 colorFG       A foreground color for the component.
+ * @param   { color }                 colorBG       A background color for the component.
+ * @param   { char * }                sText         The text we want to add to the page.
+*/
+void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int y, color colorFG, color colorBG, char *sText) {
+  char **aAsset = calloc(1, sizeof(*aAsset));
+  aAsset[0] = String_create(sText);
+  
+  Page_addComponent(this, sKey, sParentKey, x, y, 
+    String_charCount(sText), 1, 1, aAsset, colorFG, colorBG);
 }
 
 /**
