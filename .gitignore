@@ -5,7 +5,9 @@
 *.o
 
 # Ignore debug files
-.debug/
+debug.txt
+log.unix.txt
+log.win.txt
 utils.debug.h
 
 # Ignore drafting files
