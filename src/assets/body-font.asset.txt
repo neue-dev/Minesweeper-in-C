@@ -1,0 +1,104 @@
+//body-font-a
+ ▄▀▄
+ █▀█
+//
+//body-font-b
+ ██▄
+ █▄█
+//
+//body-font-c
+ ▄▀▀
+ ▀▄▄
+//
+//body-font-d
+ █▀▄
+ █▄▀
+//
+//body-font-e
+ ██▀
+ █▄▄
+//
+//body-font-f
+ █▀
+ █▀
+//
+//body-font-g
+ ▄▀ 
+ ▀▄█
+//
+//body-font-h
+ █▄█
+ █ █
+//
+//body-font-i
+ █
+ █
+//
+//body-font-j
+   █
+ ▀▄█
+//
+//body-font-k
+ █▄▀
+ █ █
+//
+//body-font-l
+ █  
+ █▄▄
+//
+//body-font-m
+ █▄ ▄█
+ █ ▀ █
+//
+//body-font-n
+ █▄ █
+ █ ▀█
+//
+//body-font-o
+ ▄▀▄
+ ▀▄▀
+//
+//body-font-p
+ █▀▄
+ █▀ 
+//
+//body-font-q
+ ▄▀▄
+ ▀▄█
+//
+//body-font-r
+ █▀▄
+ █▀▄
+//
+//body-font-s
+ ▄▀▀
+ ▄██
+//
+//body-font-t
+ ▀█▀
+  █ 
+//
+//body-font-u
+ █ █
+ ▀▄█
+//
+//body-font-v
+ █ █
+ ▀▄▀
+//
+//body-font-w
+ █   █
+ ▀▄▀▄▀
+//
+//body-font-x
+ ▀▄▀
+ █ █
+//
+//body-font-y
+ ▀▄▀
+  █ 
+//
+//body-font-z
+ ▀█▀
+ █▄▄
+//

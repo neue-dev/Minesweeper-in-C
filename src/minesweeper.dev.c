@@ -67,7 +67,7 @@ int main() {
 
   printf("heloo dord");
 
-  char **testOutput = AssetManager_getAssetText(&am, "main-font-m");
+  char **testOutput = AssetManager_getAssetText(&am, "header-font-m");
 
   for(int i = 0; i < 6; i++)
     printf("\n%s", testOutput[i]);

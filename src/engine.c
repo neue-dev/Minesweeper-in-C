@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-09 14:17:05
+ * @ Modified time: 2024-03-09 14:43:16
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -107,8 +107,8 @@ void Engine_init(Engine *this) {
   /**
    * Creates all our assets
   */
-  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/main-font.asset.txt");
-  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/intro.asset.txt");
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/header-font.asset.txt");
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/body-font.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/menu.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/game.asset.txt");
 

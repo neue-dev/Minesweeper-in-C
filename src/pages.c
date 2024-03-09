@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 14:20:35
+ * @ Modified time: 2024-03-09 15:49:30
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -48,10 +48,6 @@ void PageHandler_intro(p_obj pArgs_Page) {
   char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x";
   char *sLogoComponent = "logo-acenter.x-acenter.y";
 
-  // User states
-  char cMenuSelector;
-  int dMenuSelectorLength;
-
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
@@ -66,35 +62,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // Set initials
       Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
       Page_resetComponentInitial(this, sInnerBoxComponent, 80, 40, 0, 0, -1, -1);
-
-      // Define initial user states
-      Page_setUserState(this, "menu-selector", 0);
-      Page_setUserState(this, "menu-selector-length", 5);
       
     break;
 
     case PAGE_ACTIVE_RUNNING:
-
-      // Key handling
-      cMenuSelector = Page_getUserState(this, "menu-selector");
-      dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
-
-      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
-
-        // Increment menu selector
-        case 'W': case 'w': case 38:
-          Page_setUserState(this, "menu-selector", (cMenuSelector + 1) % dMenuSelectorLength);
-        break;
-
-        // Decrement menu selector
-        case 'S': case 's': case 40:
-          Page_setUserState(this, "menu-selector", (cMenuSelector + dMenuSelectorLength - 1) % dMenuSelectorLength);
-        break;
-
-        default:
-
-        break;
-      }
 
       // Animations
       switch(this->dStage) {
@@ -155,16 +126,21 @@ void PageHandler_menu(p_obj pArgs_Page) {
   // Component names
   char *sMenuComponent = "menu-fixed";
   char *sTitleComponent = "title-row";
+  char *sMenuSelectorComponent = "menu-selector-acenter.x";
 
   // Some other holding vars
-  char *sTitle = "minesweeper";
-  char *sFontName = "main-font";
+  char *sTitle = "4AMines";
+  char *sFontName = "header-font";
   int dTitleLength = strlen(sTitle);
   int dTotalLength;
 
   // Refers to a single asset
   char sComponentKey[STRING_KEY_MAX_LENGTH];
   char sAssetKey[STRING_KEY_MAX_LENGTH];
+
+  // User states
+  char cMenuSelector;
+  int dMenuSelectorLength;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -174,6 +150,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
       // A container for the title
       Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
       Page_addComponent(this, sTitleComponent, sMenuComponent, 0, 10, 0, 0, 0, NULL, -1, -1);
+      Page_addComponentAsset(this, sMenuSelectorComponent, sMenuComponent, dWidth / 2, dHeight / 2, -1, -1, "menu-selector");
 
       // Get the total length
       for(i = 0, dTotalLength = 0; i < dTitleLength; i++) {
@@ -198,19 +175,42 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
       // Shift it down a bit
       Page_setComponentTarget(this, sTitleComponent, PAGE_NULL_INT, 4, -1, -1, -1, -1, 0.69);
+
+      // Define initial user states
+      Page_setUserState(this, "menu-selector", 0);
+      Page_setUserState(this, "menu-selector-length", 5);
+      
     break;
 
     case PAGE_ACTIVE_RUNNING:
+
+      // Key handling
+      cMenuSelector = Page_getUserState(this, "menu-selector");
+      dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
+
+      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+
+        // Increment menu selector
+        case 'W': case 'w': case 38:
+          Page_setUserState(this, "menu-selector", (cMenuSelector + 1) % dMenuSelectorLength);
+        break;
+
+        // Decrement menu selector
+        case 'S': case 's': case 40:
+          Page_setUserState(this, "menu-selector", (cMenuSelector + dMenuSelectorLength - 1) % dMenuSelectorLength);
+        break;
+
+        default:
+
+        break;
+      }
       
+      // Animations
       switch(this->dStage) {
         
         case 0:
 
         break;
-      }
-
-      if(EventStore_get(this->pSharedEventStore, "key-pressed") == 'c') {
-        Page_setUserState(this, "menu-selector", this->dT % 128);
       }
 
     break;

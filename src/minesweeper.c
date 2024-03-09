@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-03-08 10:17:35
+ * @ Modified time: 2024-03-09 15:54:01
  * @ Description:
  */
 
@@ -23,7 +23,7 @@ int main() {
   IO_init(&io);
 
   // Set the console size
-  IO_setSize(128, 40);
+  IO_setSize(96, 40);
   IO_clear();
   
   // Set up the engine
