@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-09 17:35:34
+ * @ Modified time: 2024-03-09 22:32:49
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -23,7 +23,8 @@
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
 
-#include "./pages.c"
+#include "./pages/intro.page.c"
+#include "./pages/menu.page.c"
 #include "./events.c"
 
 // Some definitions for identifiers
