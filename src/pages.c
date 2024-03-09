@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 15:49:30
+ * @ Modified time: 2024-03-09 16:20:08
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -43,9 +43,9 @@ void PageHandler_intro(p_obj pArgs_Page) {
   int dHeight = IO_getHeight();
 
   // Component names
-  char *sIntroComponent = "intro-row.col-center.y-center.x";
-  char *sOuterBoxComponent = "box.outer-row.col-center.y-center.x";
-  char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x";
+  char *sIntroComponent = "intro-fixed";
+  char *sOuterBoxComponent = "box.outer-row.col-center.y-center.x-acenter.x-acenter.y";
+  char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x-acenter.x-acenter.y";
   char *sLogoComponent = "logo-acenter.x-acenter.y";
 
   // Do stuff based on page status
@@ -55,13 +55,13 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
       // Create component tree
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x000001, 0x000001);
-      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, 0, 0, 160, 80, 0, NULL, FG_ACC_B, FG_ACC_B);
-      Page_addComponent(this, sInnerBoxComponent, sOuterBoxComponent, 0, 0, 156, 78, 0, NULL, FG_1, BG_1);
+      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, 0, NULL, FG_ACC_B, FG_ACC_B);
+      Page_addComponent(this, sInnerBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 156, 78, 0, NULL, FG_1, BG_1);
       Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, -1, -1, "logo");
 
       // Set initials
-      Page_resetComponentInitial(this, sOuterBoxComponent, 80, 40, 0, 0, -1, -1);
-      Page_resetComponentInitial(this, sInnerBoxComponent, 80, 40, 0, 0, -1, -1);
+      Page_resetComponentInitial(this, sOuterBoxComponent, PAGE_NULL_INT, PAGE_NULL_INT, 0, 0, -1, -1);
+      Page_resetComponentInitial(this, sInnerBoxComponent, PAGE_NULL_INT, PAGE_NULL_INT, 0, 0, -1, -1);
       
     break;
 
@@ -76,24 +76,24 @@ void PageHandler_intro(p_obj pArgs_Page) {
         break;
 
         case 1:   // Make the box enlarge
-          Page_setComponentTarget(this, sOuterBoxComponent, 60, 30, 40, 20, -1, -1, 0.5);
-          Page_setComponentTarget(this, sInnerBoxComponent, 60, 30, 36, 18, -1, -1, 0.5);
+          Page_setComponentTarget(this, sOuterBoxComponent, PAGE_NULL_INT, PAGE_NULL_INT, 30, 15, -1, -1, 0.5);
+          Page_setComponentTarget(this, sInnerBoxComponent, PAGE_NULL_INT, PAGE_NULL_INT, 26, 13, -1, -1, 0.5);
 
-          if(Page_getComponentDist(this, sInnerBoxComponent, 0) < MATH_E_NEG1)
+          if(Page_getComponentDist(this, sInnerBoxComponent, 2) < MATH_E_NEG1)
             Page_nextStage(this);
         break;
 
         case 2:   // Make the logo fly to the center
           Page_setComponentTarget(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, -1, -1, -1, -1, 0.84);
 
-          if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG3)
+          if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG5)
             Page_nextStage(this);
         break;
 
         case 3:   // Make the screen white
           Page_setComponentTarget(this, sLogoComponent, PAGE_NULL_INT, -16, -1, -1, -1, -1, -0.9);
-          Page_setComponentTarget(this, sOuterBoxComponent, 0, 0, 160, 80, -1, -1, 0.45);
-          Page_setComponentTarget(this, sInnerBoxComponent, 0, 0, 156, 78, -1, -1, 0.45);
+          Page_setComponentTarget(this, sOuterBoxComponent, PAGE_NULL_INT, PAGE_NULL_INT, 160, 80, -1, -1, 0.45);
+          Page_setComponentTarget(this, sInnerBoxComponent, PAGE_NULL_INT, PAGE_NULL_INT, 156, 78, -1, -1, 0.45);
 
           if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG1)
             Page_nextStage(this);
