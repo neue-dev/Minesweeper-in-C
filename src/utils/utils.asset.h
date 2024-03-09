@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-09 17:31:22
+ * @ Modified time: 2024-03-09 17:45:47
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -43,6 +43,7 @@ struct Asset {
   int dWidth;                             // Stores the default width of the text content (the width of the first line)
 
   char *sContentArray[ASSET_MAX_HEIGHT];  // The actual content of the asset
+                                          // We prefer to have this as a dynamically-allocated array because its easier to return
 };
 
 
@@ -66,7 +67,7 @@ Asset *Asset_new() {
  * @return	{ Asset * }					            A pointer to the initialized instance.
 */
 Asset *Asset_init(Asset *this, char *sName, int dHeight, char *sContentArray[]) {
-  int i, j;
+  int i;
 
   strcpy(this->sName, sName);
 
@@ -78,9 +79,7 @@ Asset *Asset_init(Asset *this, char *sName, int dHeight, char *sContentArray[]) 
   for(i = 0; i < dHeight; i++) {
     this->sContentArray[i] = String_alloc(ASSET_MAX_WIDTH);
     
-    // Copy the content one by one
-    for(j = 0; j < strlen(sContentArray[i]); j++) 
-      strcpy(this->sContentArray[i], sContentArray[i]);
+    strcpy(this->sContentArray[i], sContentArray[i]);
   }
 
   return this;
