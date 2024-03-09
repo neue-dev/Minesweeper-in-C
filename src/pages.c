@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 17:03:22
+ * @ Modified time: 2024-03-09 17:38:53
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -120,7 +120,6 @@ void PageHandler_menu(p_obj pArgs_Page) {
   Page *this = (Page *) pArgs_Page;
   int dWidth = IO_getWidth();
   int dHeight = IO_getHeight();
-
   int i;
 
   // Component names
@@ -128,9 +127,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sTitleComponent = "title-row";
   char *sMenuSelectorComponent = "menu-selector-acenter.x";
 
-  // Some other holding vars
+  // Variables for the title
   char *sTitle = "4AMines";
-  char *sFontName = "header-font";
+  char *sTitleFontName = "header-font";
   int dTitleLength = strlen(sTitle);
   int dTotalLength;
 
@@ -138,24 +137,34 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char sComponentKey[STRING_KEY_MAX_LENGTH];
   char sAssetKey[STRING_KEY_MAX_LENGTH];
 
-  // User states
+  // User states and the selector assets
   char cMenuSelector;
-  int dMenuSelectorLength;
+  int dMenuSelectorLength = 5;
+  char *sMenuSelectorFont = "body-font";
+  char *sMenuSelectors[5][2] = {
+    { "play", "play-acenter.x" },
+    { "custom", "custom-acenter.x" },
+    { "help", "help-acenter.x" },
+    { "about", "about-acenter.x" },
+    { "logout", "logout-acenter.x" },
+  };
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
     case PAGE_ACTIVE_INIT:
 
-      // A container for the title
+      // Create the assets we need
+      for(i= 0; i < dMenuSelectorLength; i++)
+        AssetManager_createTextAsset(this->pSharedAssetManager, sMenuSelectors[i][0], sMenuSelectorFont);
+
+      // A container for the menu and the title
       Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
-      Page_addComponent(this, sTitleComponent, sMenuComponent, 0, 10, 0, 0, 0, NULL, -1, -1);
-      Page_addComponentAsset(this, sMenuSelectorComponent, sMenuComponent, dWidth / 2, dHeight / 2, -1, -1, "menu-selector");
+      Page_addComponent(this, sTitleComponent, sMenuComponent, 0, -4, 0, 0, 0, NULL, -1, -1);
 
       // Get the total length
       for(i = 0, dTotalLength = 0; i < dTitleLength; i++) {
-        String_keyAndChar(sAssetKey, sFontName, sTitle[i]);
-        
+        String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
         dTotalLength += AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey);
       }
 
@@ -164,21 +173,29 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
         // Generate the keys first
         String_keyAndId(sComponentKey, "title", i);
-        String_keyAndChar(sAssetKey, sFontName, sTitle[i]);
+        String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
 
-        // Add the component
+        // Add the letters and make them want to go to their targets
         Page_addComponentAsset(this, sComponentKey, sTitleComponent, dWidth / 2 - dTotalLength / 2, i * i * i * -10 + 128, -1, -1, sAssetKey);  
-
-        // Make all the letters want to go to their places
         Page_setComponentTarget(this, sComponentKey, PAGE_NULL_INT, 0, -1, -1, -1, -1, 0.69);
       }
 
       // Shift it down a bit
       Page_setComponentTarget(this, sTitleComponent, PAGE_NULL_INT, 4, -1, -1, -1, -1, 0.69);
 
+      // Add the selectors
+      for(i = 0; i < dMenuSelectorLength; i++) {
+
+        // Create the key first
+        String_keyAndStr(sAssetKey, sMenuSelectorFont, sMenuSelectors[i][0]);
+
+        // Add the component
+        Page_addComponentAsset(this, sMenuSelectors[i][1], sMenuComponent, dWidth / 2, -8, -1, -1, sAssetKey);
+      }
+
       // Define initial user states
       Page_setUserState(this, "menu-selector", 0);
-      Page_setUserState(this, "menu-selector-length", 5);
+      Page_setUserState(this, "menu-selector-length", dMenuSelectorLength);
       
     break;
 
@@ -188,15 +205,18 @@ void PageHandler_menu(p_obj pArgs_Page) {
       cMenuSelector = Page_getUserState(this, "menu-selector");
       dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
 
+      // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 
         // Increment menu selector
-        case 'W': case 'w': case 38:
+        case 'D': case 'd': case 39:
+        case 'S': case 's': case 40:
           Page_setUserState(this, "menu-selector", (cMenuSelector + 1) % dMenuSelectorLength);
         break;
 
         // Decrement menu selector
-        case 'S': case 's': case 40:
+        case 'A': case 'a': case 37:
+        case 'W': case 'w': case 38:
           Page_setUserState(this, "menu-selector", (cMenuSelector + dMenuSelectorLength - 1) % dMenuSelectorLength);
         break;
 
@@ -214,7 +234,15 @@ void PageHandler_menu(p_obj pArgs_Page) {
         break;
 
         case 1:
-          
+          for(i = 0; i < dMenuSelectorLength; i++) {
+            
+            // Put the component out of view
+            Page_resetComponentInitial(this, sMenuSelectors[i][1], PAGE_NULL_INT, -8, -1, -1, -1, -1);
+
+            // Put the component in view
+            if(i == cMenuSelector)
+              Page_resetComponentInitial(this, sMenuSelectors[i][1], PAGE_NULL_INT, dHeight / 2, -1, -1, -1, -1);
+          }
         break;
       }
 

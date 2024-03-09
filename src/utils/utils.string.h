@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-06 13:26:50
+ * @ Modified time: 2024-03-09 17:31:58
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -133,6 +133,17 @@ void String_keyAndId(char *sKey, char *sKeyName, int sKeyId) {
 */
 void String_keyAndChar(char *sKey, char *sKeyName, char sKeyChar) {
   snprintf(sKey, STRING_KEY_MAX_LENGTH, "%s-%c", sKeyName, sKeyChar);
+}
+
+/**
+ * Creates a key with the following format: <key_name>-<key_char>.
+ * 
+ * @param   { char * }  sKey      Where we want to store the key.
+ * @param   { char * }  sKeyName  The name of the key.
+ * @param   { char * }  sKeyStr   The string associated with the key.
+*/
+void String_keyAndStr(char *sKey, char *sKeyName, char *sKeyStr) {
+  snprintf(sKey, STRING_KEY_MAX_LENGTH, "%s-%s", sKeyName, sKeyStr);
 }
 
 // You are in Windows

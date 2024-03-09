@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-09 16:55:53
+ * @ Modified time: 2024-03-09 17:31:22
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -224,23 +224,28 @@ int AssetManager_getAssetWidth(AssetManager *this, char *sAssetKey) {
  * Creates a new asset which is then appended to its hash map.
  * This asset is a text asset drawn with the font provided.
  * The provided font just refers to a set of characters drawn in Unicode.
+ * Note that the key is generated from both the text and the font. It is
+ *    written as <sText>-<sFont>.
  * 
  * @param   { AssetManager * }  this              The AssetManager struct.
- * @param   { char * }          sAssetKey         The name of the asset to create.
  * @param   { int }             sText             The text to convert into an asset.
  * @param   { char * }          sFont             The font we're going to use.
 */
-void AssetManager_createTextAsset(AssetManager *this, char *sAssetKey, char *sText, char *sFont) {
+void AssetManager_createTextAsset(AssetManager *this, char *sText, char *sFont) {
   
   Asset *pAsset;
   int i, dGlyphAssetHeight = 0;
   char **pGlyphText;
-  char *sGlyphKey = String_alloc(STRING_KEY_MAX_LENGTH);
+  char sAssetKey[STRING_KEY_MAX_LENGTH];
+  char sGlyphKey[STRING_KEY_MAX_LENGTH];
   char *sContentArray[ASSET_MAX_HEIGHT];
 
   // Too many assets
   if(this->dAssetCount >= ASSET_MAX_COUNT)
     return;
+
+  // Create the asset key
+  String_keyAndStr(sAssetKey, sFont, sText);
 
   // We have a duplicate
   if(HashMap_get(this->pAssetMap, sAssetKey) != NULL)
@@ -285,7 +290,6 @@ void AssetManager_createTextAsset(AssetManager *this, char *sAssetKey, char *sTe
   // Kill the allocations
   for(i = 0; i < dGlyphAssetHeight; i++)
     String_kill(sContentArray[i]);
-  String_kill(sGlyphKey);
 }
 
 /**
