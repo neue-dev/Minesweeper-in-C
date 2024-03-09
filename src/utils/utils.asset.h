@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-06 13:17:05
+ * @ Modified time: 2024-03-09 16:55:53
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -172,6 +172,10 @@ void AssetManager_createAsset(AssetManager *this, char *sAssetKey, int h, char *
   if(this->dAssetCount >= ASSET_MAX_COUNT)
     return;
 
+  // We have a duplicate
+  if(HashMap_get(this->pAssetMap, sAssetKey) != NULL)
+    return;
+
   // Create asset then append to map
   pAsset = Asset_create(sAssetKey, h, sContentArray);
   HashMap_add(this->pAssetMap, sAssetKey, pAsset);
@@ -214,6 +218,74 @@ int AssetManager_getAssetHeight(AssetManager *this, char *sAssetKey) {
 */
 int AssetManager_getAssetWidth(AssetManager *this, char *sAssetKey) {
   return ((Asset *) HashMap_get(this->pAssetMap, sAssetKey))->dWidth;
+}
+
+/**
+ * Creates a new asset which is then appended to its hash map.
+ * This asset is a text asset drawn with the font provided.
+ * The provided font just refers to a set of characters drawn in Unicode.
+ * 
+ * @param   { AssetManager * }  this              The AssetManager struct.
+ * @param   { char * }          sAssetKey         The name of the asset to create.
+ * @param   { int }             sText             The text to convert into an asset.
+ * @param   { char * }          sFont             The font we're going to use.
+*/
+void AssetManager_createTextAsset(AssetManager *this, char *sAssetKey, char *sText, char *sFont) {
+  
+  Asset *pAsset;
+  int i, dGlyphAssetHeight = 0;
+  char **pGlyphText;
+  char *sGlyphKey = String_alloc(STRING_KEY_MAX_LENGTH);
+  char *sContentArray[ASSET_MAX_HEIGHT];
+
+  // Too many assets
+  if(this->dAssetCount >= ASSET_MAX_COUNT)
+    return;
+
+  // We have a duplicate
+  if(HashMap_get(this->pAssetMap, sAssetKey) != NULL)
+    return;
+
+  // For each character, we add their string contents to the content array
+  while(*sText) {
+    
+    // If not a space
+    if(*sText != 32) {
+
+      // Create the key
+      String_keyAndChar(sGlyphKey, sFont, *sText);
+
+      // Only if we haven't set the glyph asset height, we init the array
+      if(!dGlyphAssetHeight) {
+        dGlyphAssetHeight = AssetManager_getAssetHeight(this, sGlyphKey);
+
+        for(i = 0; i < dGlyphAssetHeight; i++)
+          sContentArray[i] = String_alloc(ASSET_MAX_WIDTH);
+      }
+
+      // Get the asset for the letter
+      pGlyphText = AssetManager_getAssetText(this, sGlyphKey);
+
+      // Copy the letter asset unto the content array
+      for(i = 0; i < dGlyphAssetHeight; i++)
+        strcat(sContentArray[i], pGlyphText[i]);
+    }
+
+    // Increment pointer
+    sText++;
+  }
+
+  // Create asset then append to map
+  pAsset = Asset_create(sAssetKey, dGlyphAssetHeight, sContentArray);
+  HashMap_add(this->pAssetMap, sAssetKey, pAsset);
+
+  // Increment asset count
+  this->dAssetCount++;
+
+  // Kill the allocations
+  for(i = 0; i < dGlyphAssetHeight; i++)
+    String_kill(sContentArray[i]);
+  String_kill(sGlyphKey);
 }
 
 /**

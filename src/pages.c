@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 16:20:08
+ * @ Modified time: 2024-03-09 17:03:22
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -209,7 +209,12 @@ void PageHandler_menu(p_obj pArgs_Page) {
       switch(this->dStage) {
         
         case 0:
+          if(Page_getComponentDist(this, sTitleComponent, 1) < MATH_E_NEG1)
+            Page_nextStage(this);
+        break;
 
+        case 1:
+          
         break;
       }
 

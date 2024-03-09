@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-08 10:09:02
+ * @ Modified time: 2024-03-09 17:02:36
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -115,12 +115,16 @@ struct ThemeManager {
  * Creates a default theme which the program uses.
 */
 void ThemeManager_init(ThemeManager *this) {
+
+  // Init some stuff
   this->sActiveTheme = "default";
   this->pThemeMap = HashMap_create();
 
+  // Create and add the default theme
   Theme *pDefaultTheme = Theme_create(0xfef9ff, 0x111317, 0xfe9d0b, 0x4282b3, 0xf33016);
   HashMap_add(this->pThemeMap, this->sActiveTheme, pDefaultTheme);
 
+  // Set the colors of the active theme
   this->color1st = pDefaultTheme->colorPrimary;
   this->color2nd = pDefaultTheme->colorSecondary;
   this->colorNeu = pDefaultTheme->colorNeutralAccent;

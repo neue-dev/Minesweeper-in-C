@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-08 10:01:02
+ * @ Modified time: 2024-03-09 17:00:33
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -511,17 +511,22 @@ void ComponentManager_exit(ComponentManager *this) {
  * @param   { char ** }               aAsset        The asset to be rendered by the component. This may be NULL.
  * @param   { color }                 colorFG       A foreground color for the component.
  * @param   { color }                 colorBG       A background color for the component.
+ * @return  { int }                                 Whether or not the component was added successfully.
 */
-void ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
+int ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
   Component *pParent =  NULL;
   Component *pChild = NULL;
 
   if(sParentKey != NULL)
     pParent = HashMap_get(this->pComponentMap, sParentKey);
 
-  // // The parent doesn't exist
+  // The parent doesn't exist
   if(pParent == NULL && sParentKey != NULL)
-    return;
+    return 0;
+
+  // We have a duplicate component
+  if(HashMap_get(this->pComponentMap, sKey) != NULL)
+    return 0;
 
   // Create the child
   pChild = Component_create(sKey, pParent, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG);
@@ -532,6 +537,8 @@ void ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, 
 
   // Otherwise, append it to the hashmap too
   HashMap_add(this->pComponentMap, sKey, pChild);
+
+  return 1;
 }
 
 /**

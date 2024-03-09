@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-09 13:59:22
+ * @ Modified time: 2024-03-09 17:01:53
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -322,11 +322,13 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   int *pColorState, *pColorTargetState, *pPixelState;
   char sStateKey[STRING_KEY_MAX_LENGTH];
 
+  // Not too many components
   if(this->dComponentCount >= PAGE_MAX_COMPONENTS)
     return;
 
-  // Add a component
-  ComponentManager_add(&this->componentManager, sKey, sParentKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG);
+  // Add a component; exit if not successful
+  if(!ComponentManager_add(&this->componentManager, sKey, sParentKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG))
+    return;
 
   // Create a new state for that component
   // Each component is always given 4 states
@@ -675,7 +677,14 @@ void PageManager_exit(PageManager *this) {
  * @param   { f_page_configurer }   fPageConfigurer       A function that configures a page.
 */
 void PageManager_createPage(PageManager *this, char *sPageKey, f_page_handler fHandler) {
-  Page *pPage = Page_create(this->pSharedAssetManager, this->pSharedEventStore, fHandler);
+  Page *pPage;
+
+  // We have a duplicate
+  if(HashMap_get(this->pPageMap, sPageKey) != NULL)
+    return;
+
+  // Create the page
+  pPage = Page_create(this->pSharedAssetManager, this->pSharedEventStore, fHandler);
 
   // Set the created page as the active page (by default)
   strcpy(this->sActivePage, sPageKey);
