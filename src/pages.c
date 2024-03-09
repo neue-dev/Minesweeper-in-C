@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 14:09:27
+ * @ Modified time: 2024-03-09 14:20:35
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -48,6 +48,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
   char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x";
   char *sLogoComponent = "logo-acenter.x-acenter.y";
 
+  // User states
+  char cMenuSelector;
+  int dMenuSelectorLength;
+
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
@@ -65,15 +69,15 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
       // Define initial user states
       Page_setUserState(this, "menu-selector", 0);
-      Page_setUserState(this, "menu-selector", 5);
+      Page_setUserState(this, "menu-selector-length", 5);
       
     break;
 
     case PAGE_ACTIVE_RUNNING:
 
       // Key handling
-      char cMenuSelector = Page_getUserState(this, "menu-selector");
-      int dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
+      cMenuSelector = Page_getUserState(this, "menu-selector");
+      dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
 
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 

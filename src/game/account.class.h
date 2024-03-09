@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-09 14:10:12
- * @ Modified time: 2024-03-09 14:14:26
+ * @ Modified time: 2024-03-09 14:17:31
  * @ Description:
  * 
  * Represents account objects we have during runtime
@@ -9,6 +9,8 @@
 
 #ifndef GAME_ACCOUNT_
 #define GAME_ACCOUNT_
+
+#include <stdlib.h>
 
 typedef struct Account Account;
 
