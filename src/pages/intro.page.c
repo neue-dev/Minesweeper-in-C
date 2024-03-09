@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 22:32:27
+ * @ Modified time: 2024-03-09 22:36:29
  * @ Description:
  * 
  * This file defines the page handler for the intro.
@@ -29,8 +29,7 @@
 void PageHandler_intro(p_obj pArgs_Page) {
   
   Page *this = (Page *) pArgs_Page;
-  int dWidth = IO_getWidth();
-  int dHeight = IO_getHeight();
+  int dWidth, dHeight;
 
   // Component names
   char *sIntroComponent = "intro-fixed";
@@ -43,6 +42,9 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
     case PAGE_ACTIVE_INIT:
 
+      dWidth = IO_getWidth();
+      dHeight = IO_getHeight();
+
       // Create component tree
       Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x000001, 0x000001);
       Page_addComponent(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, 0, NULL, FG_ACC_Y, FG_ACC_Y);
@@ -52,6 +54,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // Set initials
       Page_resetComponentInitialSize(this, sOuterBoxComponent, 0, 0);
       Page_resetComponentInitialSize(this, sInnerBoxComponent, 0, 0);
+      Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, 0);
       
     break;
 
@@ -74,7 +77,7 @@ void PageHandler_intro(p_obj pArgs_Page) {
         break;
 
         case 2:   // Make the logo fly to the center
-          Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, 0.84);
+          Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, PAGE_NULL_INT, 0.84);
 
           if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG5)
             Page_nextStage(this);
