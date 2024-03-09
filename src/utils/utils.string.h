@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-09 17:31:58
+ * @ Modified time: 2024-03-10 00:25:04
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define STRING_KEY_MAX_LENGTH (1 << 8)
 
