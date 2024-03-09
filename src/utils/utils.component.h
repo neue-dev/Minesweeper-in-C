@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-09 21:34:03
+ * @ Modified time: 2024-03-09 21:37:44
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -347,11 +347,11 @@ int Component_add(Component *this, Component *pChild) {
     case COMPONENT_COL_ROW:
 
       // Get the cumulative length along x
-      this->dRowLength += pChild->w;
+      this->dRowLength += pChild->w + pChild->x;
 
       // Get the cumulative length along y
       pChild->dOffsetY = this->dColLength;
-      this->dColLength += pChild->h;
+      this->dColLength += pChild->h + pChild->y;
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL) {

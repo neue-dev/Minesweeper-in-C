@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 21:26:40
+ * @ Modified time: 2024-03-09 21:46:50
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -126,13 +126,12 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sMenuComponent = "menu-fixed";
   char *sTitleComponent = "title-row-acenter.x";
   char *sSelectorComponent = "selector-acenter.x";
-  char *sIndicatorContainerComponent = "indicator-row-acenter.x-acenter.y-center.x-center.y";
+  char *sIndicatorContainerComponent = "indicator-row-acenter.x-acenter.y";
 
   // Variables for the title
   char *sTitle = "4AMines";
   char *sTitleFontName = "header-font";
   int dTitleLength = strlen(sTitle);
-  int dTotalLength;
 
   // Refers to a single asset
   char sIndicatorKey[STRING_KEY_MAX_LENGTH];
@@ -163,14 +162,8 @@ void PageHandler_menu(p_obj pArgs_Page) {
       // Add the primary components to the tree
       Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
       Page_addComponent(this, sTitleComponent, sMenuComponent, dWidth / 2, -4, 0, 0, 0, NULL, -1, -1);
-      Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, 0, 10, 0, 0, 0, NULL, -1, -1);
-      Page_addComponentAsset(this, sSelectorComponent, sMenuComponent, dWidth / 2, dHeight / 2, -1, -1, "selector");
-
-      // Get the total length
-      for(i = 0, dTotalLength = 0; i < dTitleLength; i++) {
-        String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
-        dTotalLength += AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey);
-      }
+      Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, dWidth / 2 - 1, dHeight / 2 + 5, 0, 0, 0, NULL, -1, -1);
+      Page_addComponentAsset(this, sSelectorComponent, sMenuComponent, dWidth / 2, dHeight / 2 + 5, FG_ACC_Y, FG_ACC_Y, "selector");
 
       // Add each of the letters to the tree
       for(i = 0; i < dTitleLength; i++) {
@@ -196,7 +189,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
         // Add the component
         Page_addComponentAsset(this, sMenuSelectors[i][1], sMenuComponent, dWidth / 2, -8, -1, -1, sAssetKey);
-        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, i * 10, 0, -1, -1, "indicator");
+        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 3, 0, FG_1, -1, "indicator");
       }
 
       // Define initial user states
@@ -248,7 +241,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
             // Put the component in view
             if(i == cMenuSelector) {
               Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, dHeight / 2);
-              Page_resetComponentInitialPosition(this, sSelectorComponent, i * 10, PAGE_NULL_INT);
+              Page_resetComponentInitialPosition(this, sSelectorComponent, dWidth / 2 + i * 4 - 8, PAGE_NULL_INT);
             }
           }
         break;
