@@ -6,6 +6,8 @@ add a "screenshot" feature (basically it just outputs the current text on the sc
 LOOK FOR ALL PLACES WHERE WE INCREMENT someCount++ AFTER ADDING TO A HASHMAP OR SMTH, AND MAKE HashMap_add() return a boolean
 this way, if HashMap_add fails, we dont increment someCount++
 
+Deal with the goddamn segfault at the end
+
 REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them when not needed in a  file ?)
 
 1. Make sure to foward declare all your functions AND typedefs (THEY SHOULD BE RIGHT AFTER THE IMPORTS BEFORE ALL OTHER CODE)
