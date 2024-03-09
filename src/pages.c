@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 21:56:52
+ * @ Modified time: 2024-03-09 22:12:32
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -76,8 +76,8 @@ void PageHandler_intro(p_obj pArgs_Page) {
         break;
 
         case 1:   // Make the box enlarge
-          Page_setComponentTargetSize(this, sOuterBoxComponent, 30, 15, 0.5);
-          Page_setComponentTargetSize(this, sInnerBoxComponent, 26, 13, 0.5);
+          Page_setComponentTargetSize(this, sOuterBoxComponent, 24, 12, 0.5);
+          Page_setComponentTargetSize(this, sInnerBoxComponent, 20, 10, 0.5);
 
           if(Page_getComponentDist(this, sInnerBoxComponent, 2) < MATH_E_NEG1)
             Page_nextStage(this);
@@ -162,8 +162,8 @@ void PageHandler_menu(p_obj pArgs_Page) {
       // Add the primary components to the tree
       Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
       Page_addComponent(this, sTitleComponent, sMenuComponent, dWidth / 2, -4, 0, 0, 0, NULL, -1, -1);
-      Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, dWidth / 2 - 1, dHeight / 2 + 5, 0, 0, 0, NULL, -1, -1);
-      Page_addComponentAsset(this, sSelectorComponent, sMenuComponent, dWidth / 2, dHeight / 2 + 5, FG_ACC_Y, FG_ACC_Y, "selector");
+      Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, dWidth / 2 - 3, 100, 0, 0, 0, NULL, -1, -1);
+      Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, FG_ACC_Y, FG_ACC_Y, "selector");
 
       // Add each of the letters to the tree
       for(i = 0; i < dTitleLength; i++) {
@@ -177,10 +177,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
       }
 
-      // Shift it down a bit
-      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 4, 0.69);
-
-      // Add the selectors
+      // Add the indicators and headers
       for(i = 0; i < dMenuSelectorLength; i++) {
 
         // Create the keys first
@@ -191,6 +188,11 @@ void PageHandler_menu(p_obj pArgs_Page) {
         Page_addComponentAsset(this, sMenuSelectors[i][1], sMenuComponent, dWidth / 2, -8, -1, -1, sAssetKey);
         Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 3, 0, FG_1, -1, "indicator");
       }
+
+      // Shift it down a bit
+      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 4, 0.69);
+      Page_setComponentTargetPosition(this, sIndicatorContainerComponent, PAGE_NULL_INT, dHeight / 2 + 5, 0.5);
+      Page_resetComponentInitialPosition(this, sSelectorComponent, 6, PAGE_NULL_INT);
 
       // Define initial user states
       Page_setUserState(this, "menu-selector", 0);
@@ -241,7 +243,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
             // Put the component in view
             if(i == cMenuSelector) {
               Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, dHeight / 2);
-              Page_resetComponentInitialPosition(this, sSelectorComponent, dWidth / 2 + i * 4 - 8, PAGE_NULL_INT);
+              Page_resetComponentInitialPosition(this, sSelectorComponent, i * 4 + 6, PAGE_NULL_INT);
             }
           }
         break;
