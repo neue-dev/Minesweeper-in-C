@@ -7,8 +7,11 @@
   ▀ ▀▀█▀▀ ▀  
       ▀      
 //
-//title
-M  I  N  E  S  W  E  E  P  E  R
+//indicator
+■
+//
+//selector
+▐█▌
 //
 //border-x
 ║

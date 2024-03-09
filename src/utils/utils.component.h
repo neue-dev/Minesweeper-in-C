@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-09 17:00:33
+ * @ Modified time: 2024-03-09 21:34:03
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -100,6 +100,8 @@ struct Component {
   
   int dRenderX;                                     // The absolute x-coordinate where the component will actually be rendered
   int dRenderY;                                     // The absolute y-coordinate where the component will actually be rendered
+  int dRenderW;                                     // The rendering width
+  int dRenderH;                                     // The rendering height
 
   char **aAsset;                                    // An asset to be printed by the component    
   int dAssetHeight;                                 // The height of the asset
@@ -223,6 +225,8 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
 
   this->dRenderX = 0;
   this->dRenderY = 0;
+  this->dRenderW = 0;
+  this->dRenderH = 0;
 
   this->dAssetHeight = dAssetHeight;
   this->aAsset = aAsset;
@@ -293,11 +297,11 @@ int Component_add(Component *this, Component *pChild) {
 
       // Get the cumulative length of these guys
       pChild->dOffsetX = this->dRowLength;
-      this->dRowLength += pChild->w;
+      this->dRowLength += pChild->w + pChild->x;
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL)
-        this->w = this->dRowLength;
+        this->dRenderW = this->dRowLength;
 
     break;
 
@@ -312,11 +316,11 @@ int Component_add(Component *this, Component *pChild) {
 
       // Get the cumulative length of these guys
       pChild->dOffsetY = this->dColLength;
-      this->dColLength += pChild->h;
+      this->dColLength += pChild->h + pChild->y;
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL)
-        this->h = this->dColLength;
+        this->dRenderH = this->dColLength;
 
     break;
 
@@ -328,15 +332,15 @@ int Component_add(Component *this, Component *pChild) {
 
       // Get the cumulative length along x
       pChild->dOffsetX = this->dRowLength;
-      this->dRowLength += pChild->w;
+      this->dRowLength += pChild->w + pChild->x;
 
       // Get the cumulative length along y
-      this->dColLength += pChild->h;
+      this->dColLength += pChild->h + pChild->y;
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL) {
-        this->w = this->dRowLength;
-        this->h = this->dColLength;
+        this->dRenderW = this->dRowLength;
+        this->dRenderH = this->dColLength;
       }
     break;
 
@@ -351,8 +355,8 @@ int Component_add(Component *this, Component *pChild) {
 
       // If it's just a container, expand it to fit its kids
       if(this->aAsset == NULL) {
-        this->w = this->dRowLength;
-        this->h = this->dColLength;
+        this->dRenderW = this->dRowLength;
+        this->dRenderH = this->dColLength;
       }
     break;
   }
@@ -366,6 +370,8 @@ int Component_add(Component *this, Component *pChild) {
 void Component_config(Component *this) {
   int i;
   int dPaddingX = 0, dPaddingY = 0;
+  int w = this->dRenderW ? this->dRenderW : this->w;
+  int h = this->dRenderH ? this->dRenderH : this->h;
 
   this->dParentX = this->pParent->dRenderX;
   this->dParentY = this->pParent->dRenderY;
@@ -373,12 +379,12 @@ void Component_config(Component *this) {
   this->dRenderX = this->dParentX + this->x + this->dPaddingX + this->dOffsetX;
   this->dRenderY = this->dParentY + this->y + this->dPaddingY + this->dOffsetY;
 
-  // How to align its children alogn the horizontal
+  // How to align its children along the horizontal
   switch(this->eComponentAlignmentX) {
 
     case COMPONENT_CENTER_ALIGN_X:
       if(this->eComponentType != COMPONENT_MULTI_ROW)
-        dPaddingX = this->w / 2 - this->dRowLength / 2;
+        dPaddingX = w / 2 - this->dRowLength / 2;
     break;
 
     case COMPONENT_LEFT_ALIGN_X:
@@ -386,7 +392,7 @@ void Component_config(Component *this) {
     break;
 
     case COMPONENT_RIGHT_ALIGN_X:
-      dPaddingX = this->w - this->dRowLength;
+      dPaddingX = w - this->dRowLength;
     break;
   }
 
@@ -395,7 +401,7 @@ void Component_config(Component *this) {
 
     case COMPONENT_CENTER_ALIGN_Y:
       if(this->eComponentType != COMPONENT_MULTI_COL)
-        dPaddingY = this->h / 2 - this->dColLength / 2;
+        dPaddingY = h / 2 - this->dColLength / 2;
     break;
 
     case COMPONENT_TOP_ALIGN_Y:
@@ -403,7 +409,7 @@ void Component_config(Component *this) {
     break;
 
     case COMPONENT_BOTTOM_ALIGN_Y:
-      dPaddingY = this->h - this->dColLength;
+      dPaddingY = h - this->dColLength;
     break;
   }
 
@@ -411,7 +417,7 @@ void Component_config(Component *this) {
   switch(this->eComponentAnchorX) {
     
     case COMPONENT_CENTER_ANCHOR_X:
-      this->dRenderX -= this->w / 2;
+      this->dRenderX -= w / 2;
     break;
 
     case COMPONENT_LEFT_ANCHOR_X:
@@ -419,7 +425,7 @@ void Component_config(Component *this) {
     break;
 
     case COMPONENT_RIGHT_ANCHOR_X:
-      this->dRenderX -= this->w;
+      this->dRenderX -= w;
     break;
   }
 
@@ -427,7 +433,7 @@ void Component_config(Component *this) {
   switch(this->eComponentAnchorY) {
     
     case COMPONENT_CENTER_ANCHOR_Y:
-      this->dRenderY -= this->h / 2;
+      this->dRenderY -= h / 2;
     break;
 
     case COMPONENT_TOP_ANCHOR_Y:
@@ -435,7 +441,7 @@ void Component_config(Component *this) {
     break;
 
     case COMPONENT_BOTTOM_ANCHOR_Y:
-      this->dRenderY -= this->h;
+      this->dRenderY -= h;
     break;
   }
 
@@ -585,8 +591,8 @@ void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
         pBuffer, 
         pComponent->dRenderX, 
         pComponent->dRenderY, 
-        pComponent->w, 
-        pComponent->h, 
+        pComponent->dRenderW ? pComponent->dRenderW : pComponent->w, 
+        pComponent->dRenderH ? pComponent->dRenderH : pComponent->h, 
         pComponent->colorFG, 
         pComponent->colorBG);
     }

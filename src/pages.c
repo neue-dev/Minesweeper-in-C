@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 20:39:10
+ * @ Modified time: 2024-03-09 21:26:40
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -124,7 +124,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
   // Component names
   char *sMenuComponent = "menu-fixed";
-  char *sTitleComponent = "title-row";
+  char *sTitleComponent = "title-row-acenter.x";
+  char *sSelectorComponent = "selector-acenter.x";
+  char *sIndicatorContainerComponent = "indicator-row-acenter.x-acenter.y-center.x-center.y";
 
   // Variables for the title
   char *sTitle = "4AMines";
@@ -133,6 +135,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
   int dTotalLength;
 
   // Refers to a single asset
+  char sIndicatorKey[STRING_KEY_MAX_LENGTH];
   char sComponentKey[STRING_KEY_MAX_LENGTH];
   char sAssetKey[STRING_KEY_MAX_LENGTH];
 
@@ -157,9 +160,11 @@ void PageHandler_menu(p_obj pArgs_Page) {
       for(i= 0; i < dMenuSelectorLength; i++)
         AssetManager_createTextAsset(this->pSharedAssetManager, sMenuSelectors[i][0], sMenuSelectorFont);
 
-      // A container for the menu and the title
+      // Add the primary components to the tree
       Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
-      Page_addComponent(this, sTitleComponent, sMenuComponent, 0, -4, 0, 0, 0, NULL, -1, -1);
+      Page_addComponent(this, sTitleComponent, sMenuComponent, dWidth / 2, -4, 0, 0, 0, NULL, -1, -1);
+      Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, 0, 10, 0, 0, 0, NULL, -1, -1);
+      Page_addComponentAsset(this, sSelectorComponent, sMenuComponent, dWidth / 2, dHeight / 2, -1, -1, "selector");
 
       // Get the total length
       for(i = 0, dTotalLength = 0; i < dTitleLength; i++) {
@@ -175,7 +180,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
 
         // Add the letters and make them want to go to their targets
-        Page_addComponentAsset(this, sComponentKey, sTitleComponent, dWidth / 2 - dTotalLength / 2, i * i * i * -10 + 128, -1, -1, sAssetKey);  
+        Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, i * i * i * -10 + 128, -1, -1, sAssetKey);  
         Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
       }
 
@@ -185,11 +190,13 @@ void PageHandler_menu(p_obj pArgs_Page) {
       // Add the selectors
       for(i = 0; i < dMenuSelectorLength; i++) {
 
-        // Create the key first
+        // Create the keys first
+        String_keyAndId(sIndicatorKey, "indicator", i);
         String_keyAndStr(sAssetKey, sMenuSelectorFont, sMenuSelectors[i][0]);
 
         // Add the component
         Page_addComponentAsset(this, sMenuSelectors[i][1], sMenuComponent, dWidth / 2, -8, -1, -1, sAssetKey);
+        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, i * 10, 0, -1, -1, "indicator");
       }
 
       // Define initial user states
@@ -239,8 +246,10 @@ void PageHandler_menu(p_obj pArgs_Page) {
             Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, -8);
 
             // Put the component in view
-            if(i == cMenuSelector)
+            if(i == cMenuSelector) {
               Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, dHeight / 2);
+              Page_resetComponentInitialPosition(this, sSelectorComponent, i * 10, PAGE_NULL_INT);
+            }
           }
         break;
       }
