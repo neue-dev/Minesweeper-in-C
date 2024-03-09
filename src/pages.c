@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 21:46:50
+ * @ Modified time: 2024-03-09 21:56:52
  * @ Description:
  * 
  * This file defines page configurers so we can define the different pages of our application.
@@ -129,7 +129,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sIndicatorContainerComponent = "indicator-row-acenter.x-acenter.y";
 
   // Variables for the title
-  char *sTitle = "4AMines";
+  char *sTitle = "MINEZ";
   char *sTitleFontName = "header-font";
   int dTitleLength = strlen(sTitle);
 
