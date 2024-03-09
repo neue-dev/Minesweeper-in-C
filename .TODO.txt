@@ -1,4 +1,5 @@
 There seems to be something wrong with one of the _exit() functions; IO_exit() is never called because of crash?
+PLEASE DEBUG^^
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 

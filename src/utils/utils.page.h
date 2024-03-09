@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-08 09:52:08
+ * @ Modified time: 2024-03-09 13:59:22
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -718,7 +718,6 @@ void PageManager_setActive(PageManager *this, char *sPageKey) {
 
 /**
  * Updates the active page.
- * // ! rename this function to something other than update
  * 
  * @param   { PageManager * }   this      The page manager object.
 */
