@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-04 12:31:52
+ * @ Modified time: 2024-03-10 10:53:41
  * @ Description:
  * 
  * The main game file.
@@ -13,7 +13,6 @@
 #include "utils/utils.asset.h"
 #include "utils/utils.file.h"
 #include "utils/utils.debug.h"
-#include "utils/utils.runner.h"
 #include "utils/utils.hashmap.h"
 #include "utils/utils.graphics.h"
 #include "utils/utils.thread.h"
@@ -59,18 +58,9 @@ int main() {
     "ello worldH",
   };
 
-  AssetManager am;
-  AssetManager_init(&am);
+  int testint  = (int) round(12553.1231231);
 
-  AssetManager_createAsset(&am, "test", 10, test);
-  AssetManager_readAssetFile(&am, "//", "./src/assets/title-font.asset.txt");
-
-  printf("heloo dord");
-
-  char **testOutput = AssetManager_getAssetText(&am, "header-font-m");
-
-  for(int i = 0; i < 6; i++)
-    printf("\n%s", testOutput[i]);
+  printf("%d", testint);
 
   while(1);
 

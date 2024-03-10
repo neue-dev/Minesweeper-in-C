@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-08 09:44:05
+ * @ Modified time: 2024-03-10 11:35:09
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -183,6 +183,18 @@ void Buffer_write(Buffer *this, int x, int y, int h, char *sBlock[]) {
             }
 
           // It's just a whitespace
+          } else {
+            j2++;
+          }
+        
+        // Almost forgot this!
+        } else {
+
+          // Skip per unicode character, not per unit character data type
+          if(!String_isChar(sBlock[i - y][j2])) {
+            do {
+              j2++;
+            } while(j2 < w && !String_isChar(sBlock[i - y][j2]) && !String_isStartChar(sBlock[i - y][j2]));
           } else {
             j2++;
           }

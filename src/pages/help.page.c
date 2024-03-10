@@ -1,14 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 08:49:19
+ * @ Modified time: 2024-03-10 11:07:48
  * @ Description:
  * 
  * This file defines the page handler for the help page.
  */
 
-#ifndef PAGE_MENU_
-#define PAGE_MENU_
+#ifndef PAGE_HELP_
+#define PAGE_HELP_
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"

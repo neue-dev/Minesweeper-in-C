@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-10 08:53:25
+ * @ Modified time: 2024-03-10 10:59:04
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -252,7 +252,7 @@ int Page_update(Page *this) {
     }
 
     // Update the state values
-    *pPixelState = round(*pRenderState);
+    *pPixelState = (int) round(*pRenderState);
   }
 
   // Update component states

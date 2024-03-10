@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-07 02:12:46
- * @ Modified time: 2024-03-08 09:47:48
+ * @ Modified time: 2024-03-10 10:51:56
  * @ Description:
  *    
  * A library that implements graphics-related functionality.
@@ -166,9 +166,9 @@ int Graphics_lerp(color color1, color color2, float fAmount) {
   int b1 = (color1 >> 0) % (1 << 8), b2 = (color2 >> 0) % (1 << 8);
 
   return Graphics_RGB(
-    round(Math_lerp(r1 * 1.0, r2 * 1.0, fAmount)),
-    round(Math_lerp(g1 * 1.0, g2 * 1.0, fAmount)),
-    round(Math_lerp(b1 * 1.0, b2 * 1.0, fAmount))
+    (int) round(Math_lerp(r1 * 1.0, r2 * 1.0, fAmount)),
+    (int) round(Math_lerp(g1 * 1.0, g2 * 1.0, fAmount)),
+    (int) round(Math_lerp(b1 * 1.0, b2 * 1.0, fAmount))
   );
 }
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-03-07 19:57:37
+ * @ Modified time: 2024-03-10 10:54:17
  * @ Description:
  * 
  * Some helper math functions.
