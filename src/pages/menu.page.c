@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 22:40:43
+ * @ Modified time: 2024-03-10 09:06:45
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -66,6 +66,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
     case PAGE_ACTIVE_INIT:
 
+      // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
 
@@ -74,10 +75,10 @@ void PageHandler_menu(p_obj pArgs_Page) {
         AssetManager_createTextAsset(this->pSharedAssetManager, sMenuSelectors[i][0], sMenuSelectorFont);
 
       // Add the primary components to the tree
-      Page_addComponent(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, FG_1, BG_1);
-      Page_addComponent(this, sTitleComponent, sMenuComponent, dWidth / 2, -4, 0, 0, 0, NULL, -1, -1);
-      Page_addComponent(this, sHeaderContainer, sMenuComponent, dWidth / 2, dHeight / 2, 0, 0, 0, NULL, -1, -1);
-      Page_addComponent(this, sIndicatorContainerComponent, sMenuComponent, dWidth / 2 - 3, 100, 0, 0, 0, NULL, -1, -1);
+      Page_addComponentContext(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, FG_1, BG_1);
+      Page_addComponentContainer(this, sTitleComponent, sMenuComponent, dWidth / 2, -4);
+      Page_addComponentContainer(this, sHeaderContainer, sMenuComponent, dWidth / 2, dHeight / 2 + 5);
+      Page_addComponentContainer(this, sIndicatorContainerComponent, sMenuComponent, dWidth / 2 - 3, 100);
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, FG_ACC_Y, FG_ACC_Y, "selector");
       Page_addComponentText(this, sPromptComponent, sMenuComponent, dWidth / 2, 100, 0x888888, -1, "arrow keys or WASD, enter to select");
 
@@ -92,6 +93,8 @@ void PageHandler_menu(p_obj pArgs_Page) {
         Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, pow(i + 1, 3) * -10 + 128, -1, -1, sAssetKey);  
         Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
       }
+      Page_addComponentAsset(this, "logo-acenter.x-acenter.y", sMenuComponent, dWidth / 2, dHeight * 2, 0x888888, -1, "logo");  
+      Page_setComponentTargetPosition(this, "logo-acenter.x-acenter.y", PAGE_NULL_INT, dHeight / 2 - 1, 0.7);
 
       // Add the indicators and headers
       for(i = 0; i < dMenuSelectorLength; i++) {
@@ -106,9 +109,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
       }
 
       // Shift it down a bit
-      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 4, 0.7);
-      Page_setComponentTargetPosition(this, sIndicatorContainerComponent, PAGE_NULL_INT, dHeight / 2 + 5, 0.5);
-      Page_setComponentTargetPosition(this, sPromptComponent, PAGE_NULL_INT, dHeight / 2 + 8, 0.5);
+      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 5, 0.7);
+      Page_setComponentTargetPosition(this, sIndicatorContainerComponent, PAGE_NULL_INT, dHeight / 2 + 9, 0.5);
+      Page_setComponentTargetPosition(this, sPromptComponent, PAGE_NULL_INT, dHeight / 2 + 12, 0.5);
       Page_resetComponentInitialPosition(this, sSelectorComponent, 6, PAGE_NULL_INT);
 
       // Define initial user states

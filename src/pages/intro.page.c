@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-09 22:36:29
+ * @ Modified time: 2024-03-10 08:56:08
  * @ Description:
  * 
  * This file defines the page handler for the intro.
@@ -42,13 +42,14 @@ void PageHandler_intro(p_obj pArgs_Page) {
 
     case PAGE_ACTIVE_INIT:
 
+      // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
 
       // Create component tree
-      Page_addComponent(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0, NULL, 0x000001, 0x000001);
-      Page_addComponent(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, 0, NULL, FG_ACC_Y, FG_ACC_Y);
-      Page_addComponent(this, sInnerBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 156, 78, 0, NULL, FG_1, BG_1);
+      Page_addComponentContext(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0x000001, 0x000001);
+      Page_addComponentContext(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, FG_ACC_Y, FG_ACC_Y);
+      Page_addComponentContext(this, sInnerBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 156, 78, FG_1, BG_1);
       Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, -1, -1, "logo");
 
       // Set initials

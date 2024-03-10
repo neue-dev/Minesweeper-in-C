@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-09 22:23:13
+ * @ Modified time: 2024-03-10 08:53:25
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -426,6 +426,40 @@ void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int 
   
   Page_addComponent(this, sKey, sParentKey, x, y, 
     String_charCount(sText), 1, 1, aAsset, colorFG, colorBG);
+}
+
+/**
+ * Adds a component with the no asset and no colors.
+ * Note that the width and height of the component may be determined by its children,
+ *    depending on its alignment type.
+ * 
+ * @param   { Page * }                this          The page to modify.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { char * }                sParentKey    The key of the component to append to.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
+*/
+void Page_addComponentContainer(Page *this, char *sKey, char *sParentKey, int x, int y) {
+  Page_addComponent(this, sKey, sParentKey, x, y, 0, 0, 0, NULL, -1, -1);
+}
+
+/**
+ * Adds a component with the no asset and just colors.
+ * Note that the width and height of the component may be determined by its children,
+ *    depending on its alignment type.
+ * 
+ * @param   { Page * }                this          The page to modify.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { char * }                sParentKey    The key of the component to append to.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
+ * @param   { int }                   w             The width of the component.
+ * @param   { int }                   h             The height of the component.
+ * @param   { color }                 colorFG       A foreground color for the component.
+ * @param   { color }                 colorBG       A background color for the component.
+*/
+void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, color colorFG, color colorBG) {
+  Page_addComponent(this, sKey, sParentKey, x, y, w, h, 0, NULL, colorFG, colorBG);
 }
 
 /**

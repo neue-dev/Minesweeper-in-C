@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-09 22:32:49
+ * @ Modified time: 2024-03-10 08:49:33
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -25,6 +25,8 @@
 
 #include "./pages/intro.page.c"
 #include "./pages/menu.page.c"
+#include "./pages/help.page.c"
+#include "./pages/about.page.c"
 #include "./events.c"
 
 // Some definitions for identifiers
