@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 09:06:45
+ * @ Modified time: 2024-03-10 09:10:13
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -93,7 +93,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, pow(i + 1, 3) * -10 + 128, -1, -1, sAssetKey);  
         Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
       }
-      Page_addComponentAsset(this, "logo-acenter.x-acenter.y", sMenuComponent, dWidth / 2, dHeight * 2, 0x888888, -1, "logo");  
+      Page_addComponentAsset(this, "logo-acenter.x-acenter.y", sMenuComponent, dWidth / 2, dHeight * 2, 0xbbbbbb, -1, "logo");  
       Page_setComponentTargetPosition(this, "logo-acenter.x-acenter.y", PAGE_NULL_INT, dHeight / 2 - 1, 0.7);
 
       // Add the indicators and headers

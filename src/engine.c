@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-10 08:49:33
+ * @ Modified time: 2024-03-10 09:12:19
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -112,8 +112,9 @@ void Engine_init(Engine *this) {
   */
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/header-font.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/body-font.asset.txt");
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/icon.asset.txt");
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/intro.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/menu.asset.txt");
-  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/game.asset.txt");
 
   // I have no idea why but this makes the game launch faster ????
   AssetManager_createTextAsset(&this->assetManager, "a", "body-font");
