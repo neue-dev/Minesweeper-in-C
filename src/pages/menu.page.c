@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 11:49:12
+ * @ Modified time: 2024-03-10 13:48:19
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -90,7 +90,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, dWidth / 2, 8);
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, dWidth / 2 - 3, 0);
       Page_addComponentText(this, sPromptComponent, sSelectionComponent, dWidth / 2, 0, 0x888888, -1, 
-        "arrow keys or WASD, enter to select");
+        "WASD to browse, enter to select");
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, FG_ACC_Y, FG_ACC_Y, "selector");
 
       // Add each of the letters to the tree
@@ -116,7 +116,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
         // Add the component
         Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 3, 0, FG_1, -1, "indicator");
-        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 0, -100, 0x333544, -1, sAssetKey);
+        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 0, -512, 0x333544, -1, sAssetKey);
         Page_addComponentAsset(this, sIconKey, sIconContainerComponent, 0, 0, FG_ACC_Y, -1, sIconAssetKey);
 
         // Make the first component go to the center
@@ -146,23 +146,29 @@ void PageHandler_menu(p_obj pArgs_Page) {
       dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
 
       // Switch based on what key was last pressed
-      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+      if(this->dStage < 2) {
+        switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 
-        // Increment menu selector
-        case 'D': case 'd': case 39:
-        case 'S': case 's': case 40:
-          Page_setUserState(this, "menu-selector", cMenuSelector - dMenuSelectorLength + 1 ? cMenuSelector + 1 : cMenuSelector);
-        break;
+          // Increment menu selector
+          case 'D': case 'd': case 39:
+          case 'S': case 's': case 40:
+            Page_setUserState(this, "menu-selector", cMenuSelector - dMenuSelectorLength + 1 ? cMenuSelector + 1 : cMenuSelector);
+          break;
 
-        // Decrement menu selector
-        case 'A': case 'a': case 37:
-        case 'W': case 'w': case 38:
-          Page_setUserState(this, "menu-selector", cMenuSelector ? cMenuSelector - 1 : cMenuSelector);
-        break;
+          // Decrement menu selector
+          case 'A': case 'a': case 37:
+          case 'W': case 'w': case 38:
+            Page_setUserState(this, "menu-selector", cMenuSelector ? cMenuSelector - 1 : cMenuSelector);
+          break;
 
-        default:
+          case '\n': case '\r':
+            this->dStage++;
+          break;
 
-        break;
+          default:
+
+          break;
+        }
       }
       
       // Animations
@@ -180,7 +186,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
             String_keyAndStr(sIconKey, "menu", sMenuSelectors[i][1]);
             
             // Put the component out of view
-            Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, -100);
+            Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, -512);
 
             // Hide the components to the left
             if(i < cMenuSelector) {
@@ -197,6 +203,15 @@ void PageHandler_menu(p_obj pArgs_Page) {
               Page_setComponentTargetPosition(this, sIconKey, 512, PAGE_NULL_INT, -0.9995);
             }
           }
+        break;
+
+        case 2:   // User has chosen a page
+          Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, -100, -0.984);
+          Page_setComponentTargetPosition(this, sSelectionComponent, PAGE_NULL_INT, 100, -0.984);
+        break;
+
+        default:  // The outro transition has ended
+          Page_idle(this);
         break;
       }
 
