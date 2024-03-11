@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-03-11 18:55:30
+ * @ Modified time: 2024-03-11 18:58:23
  * @ Description:
  */
 
@@ -13,8 +13,6 @@
 #include <stdio.h>
 
 int main() {
-
-  // Debug_clearLogs();
 
   // Some IO stuff
   IO io;
