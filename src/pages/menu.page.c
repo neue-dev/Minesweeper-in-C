@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 13:48:19
+ * @ Modified time: 2024-03-10 14:01:58
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -208,10 +208,14 @@ void PageHandler_menu(p_obj pArgs_Page) {
         case 2:   // User has chosen a page
           Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, -100, -0.984);
           Page_setComponentTargetPosition(this, sSelectionComponent, PAGE_NULL_INT, 100, -0.984);
+
+          if(Page_getComponentDist(this, sSelectionComponent, 1) < MATH_E_NEG1)
+            this->dStage++;
         break;
 
         default:  // The outro transition has ended
           Page_idle(this);
+          Page_setNext(this, sMenuSelectors[cMenuSelector][0]);
         break;
       }
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-10 10:59:04
+ * @ Modified time: 2024-03-10 14:03:25
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -54,9 +54,8 @@ enum PageStatus {
  * @class
 */
 struct Page {
-  char *sName[STRING_KEY_MAX_LENGTH];                           // An identifier for the page
+  
   char *sNextName;                                              // The name of the next page to render
-                      
   PageStatus ePageStatus;                                       // The current status of the page
   f_page_handler fHandler;                                      // Handles the update of the page
                     
@@ -109,6 +108,9 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pShar
   this->fHandler = fHandler;
   this->dComponentCount = 1;                        // The root component
   ComponentManager_init(&this->componentManager);   // Init the component tree and other stuff
+  
+  // Currently none
+  this->sNextName = NULL;
 
   // Init the shared resources
   this->pSharedAssetManager = pSharedAssetManager;
@@ -717,6 +719,16 @@ void Page_resetComponentInitialColor(Page *this, char *sKey, color colorFG, colo
 }
 
 /**
+ * Sets what page will be rendered next after the current page finishes running.
+ * 
+ * @param   { Page * }  this    The page to modify.
+ * @param   { char * }  sNext   The name of the page to be rendered after the current one exits.
+*/
+void Page_setNext(Page *this, char *sNext) {
+  this->sNextName = sNext;
+}
+
+/**
  * Sets the page status to PAGE_ACTIVE_IDLE.
  * 
  * @param   { Page * }  this.
@@ -870,6 +882,9 @@ void PageManager_update(PageManager *this) {
 
   if(Page_update(pPage))
     Page_render(pPage);
+
+  if(pPage->ePageStatus == PAGE_ACTIVE_IDLE && pPage->sNextName != NULL)
+    PageManager_setActive(this, pPage->sNextName);
 }
 
 #endif

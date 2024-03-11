@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 11:07:48
+ * @ Modified time: 2024-03-10 14:04:29
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -31,6 +31,9 @@ void PageHandler_help(p_obj pArgs_Page) {
   Page *this = (Page *) pArgs_Page;
   int dWidth, dHeight, i;
 
+  // Component names
+  char *sHelpComponent = "help-fixed";
+
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
@@ -39,6 +42,9 @@ void PageHandler_help(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
+
+      Page_addComponentContainer(this, sHelpComponent, "root", 0, 0);
+      Page_addComponentAsset(this, "test", sHelpComponent, 0, 0, -1, -1, "menu-help");
       
     break;
 

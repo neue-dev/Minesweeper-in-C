@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-10 09:12:19
+ * @ Modified time: 2024-03-10 14:05:04
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -122,8 +122,11 @@ void Engine_init(Engine *this) {
   /**
    * Creates all our pages
   */
-  PageManager_createPage(&this->pageManager, "menu", PageHandler_menu);
   PageManager_createPage(&this->pageManager, "intro", PageHandler_intro);
+  PageManager_createPage(&this->pageManager, "menu", PageHandler_menu);
+  PageManager_createPage(&this->pageManager, "help", PageHandler_help);
+  PageManager_createPage(&this->pageManager, "about", PageHandler_about);
+  PageManager_setActive(&this->pageManager, "intro");
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
@@ -217,8 +220,6 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   Engine *this = (Engine *) pArgs_Engine;
 
   // Go to menu when intro is done
-  if(PageManager_getActiveState(&this->pageManager) == PAGE_ACTIVE_IDLE)
-    PageManager_setActive(&this->pageManager, "menu");
   PageManager_update(&this->pageManager);
 
   // Update 

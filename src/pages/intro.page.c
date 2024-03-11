@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 13:40:17
+ * @ Modified time: 2024-03-10 13:55:22
  * @ Description:
  * 
  * This file defines the page handler for the intro.
@@ -93,8 +93,9 @@ void PageHandler_intro(p_obj pArgs_Page) {
             Page_nextStage(this);
         break;
         
-        default:  // Make the page idle
+        default:  // Make the page idle and set the next page to menu
           Page_idle(this);
+          Page_setNext(this, "menu");
         break;
       }
 

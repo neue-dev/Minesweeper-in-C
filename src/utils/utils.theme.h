@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-09 17:02:36
+ * @ Modified time: 2024-03-11 18:54:40
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -27,15 +27,11 @@ typedef struct ThemeManager ThemeManager;
 
 /**
  * An instantiable class that holds references to different colors.
- * A theme consists of five main colors.
+ * A theme usually consists of five main colors.
 */
 struct Theme {
-  color colorPrimary;         // The primary color (usually for the background, etc.)
-  color colorSecondary;       // The secondary color that supplements the primary
-  color colorNeutralAccent;   // Used for highlighting stuff that neither affirm nor deny user actions
-                              // Note that this will be the primary accent used for the UI
-  color colorPositiveAccent;  // Used for positive feedback (ie, a good job popup or smth)
-  color colorNegativeAccent;  // Used for negative feedback (when bad stuff happen in the UI)
+  HashMap *pColorMap;  // A mapping between color keys and color values
+  int dColors;        // How many colors we have
 };
 
 /**
@@ -54,14 +50,10 @@ Theme *Theme_new() {
  * @param		{ Theme * }		this	A pointer to the instance to initialize.
  * @return	{ Theme * }					A pointer to the initialized instance.
 */
-Theme *Theme_init(Theme *this, color colorPrimary, color colorSecondary, color colorNeutralAccent, color colorPositiveAccent, color colorNegativeAccent) {
+Theme *Theme_init(Theme *this) {
 
-  // Store the provided colors
-  this->colorPrimary = colorPrimary;
-  this->colorSecondary = colorSecondary;
-  this->colorNeutralAccent = colorNeutralAccent;
-  this->colorPositiveAccent = colorPositiveAccent;
-  this->colorNegativeAccent = colorNegativeAccent;
+  this->pColorMap = HashMap_create();
+  this->dColors = 0;
 
   return this;
 }
@@ -71,8 +63,8 @@ Theme *Theme_init(Theme *this, color colorPrimary, color colorSecondary, color c
  * 
  * @return	{ Theme * }		A pointer to the newly created initialized instance.
 */
-Theme *Theme_create(color colorPrimary, color colorSecondary, color colorNeutralAccent, color colorPositiveAccent, color colorNegativeAccent) {
-  return Theme_init(Theme_new(), colorPrimary, colorSecondary, colorNeutralAccent, colorPositiveAccent, colorNegativeAccent);
+Theme *Theme_create() {
+  return Theme_init(Theme_new());
 }
 
 /**
@@ -84,8 +76,32 @@ void Theme_kill(Theme *this) {
   free(this);
 }
 
+/**
+ * Adds a new color to the theme given the provided key.
+ * 
+ * //! todo
+*/
+void Theme_addColor(Theme* this, char *sKey, color color) {
+  
+}
 
-// ! create function Theme_getShade() which uses lerp between black and white
+/**
+ * Gets a darker version of a specific color from the current theme.
+ * The number of steps is also indicated (how far to darken).
+ * ! todo
+*/
+void Theme_getDarker() {
+
+}
+
+/**
+ * Gets a lighter version of a specific color from the current theme.
+ * The number of steps is also indicated (how far to lighten).
+ * !todo
+*/
+void Theme_getLighter() {
+  
+}
 
 /**
  * //
@@ -103,12 +119,6 @@ void Theme_kill(Theme *this) {
 struct ThemeManager {
   char *sActiveTheme;   // The key of the active theme
   HashMap *pThemeMap;   // Stores all the themes
-
-  color color1st;       // The primary color
-  color color2nd;       // The secondary color
-  color colorNeu;       // The neutral accent
-  color colorPos;       // The positive accent
-  color colorNeg;       // The negative accent
 };
 
 /**
@@ -121,15 +131,11 @@ void ThemeManager_init(ThemeManager *this) {
   this->pThemeMap = HashMap_create();
 
   // Create and add the default theme
-  Theme *pDefaultTheme = Theme_create(0xfef9ff, 0x111317, 0xfe9d0b, 0x4282b3, 0xf33016);
-  HashMap_add(this->pThemeMap, this->sActiveTheme, pDefaultTheme);
+  Theme *pDefaultTheme = Theme_create();
 
-  // Set the colors of the active theme
-  this->color1st = pDefaultTheme->colorPrimary;
-  this->color2nd = pDefaultTheme->colorSecondary;
-  this->colorNeu = pDefaultTheme->colorNeutralAccent;
-  this->colorPos = pDefaultTheme->colorPositiveAccent;
-  this->colorNeg = pDefaultTheme->colorNegativeAccent;
+  // ! add the five default colors here
+
+  HashMap_add(this->pThemeMap, this->sActiveTheme, pDefaultTheme);
 }
 
 // ! create themeManager_setActive
