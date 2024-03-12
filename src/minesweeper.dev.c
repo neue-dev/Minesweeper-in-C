@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-10 10:53:41
+ * @ Modified time: 2024-03-12 23:24:52
  * @ Description:
  * 
  * The main game file.
@@ -16,7 +16,7 @@
 #include "utils/utils.hashmap.h"
 #include "utils/utils.graphics.h"
 #include "utils/utils.thread.h"
-#include "utils/utils.buffer.h"
+#include "utils/utils.theme.h"
 #include "utils/utils.grid.h"
 #include "utils/utils.io.h"
 
@@ -45,22 +45,12 @@ int main() {
   // IO_init(&io);
   // IO_exit(&io);
 
-  char *test[10] = {
-    "Hello world",
-    "ello worldH",
-    "Hello world",
-    "ello worldH",
-    "Hello world",
-    "ello worldH",
-    "Hello world",
-    "ello worldH",
-    "Hello world",
-    "ello worldH",
-  };
+  ThemeManager tm;
+  ThemeManager_init(&tm);
 
-  int testint  = (int) round(12553.1231231);
+  color c = ThemeManager_getActive(&tm, "primary-darken-0.5");
 
-  printf("%d", testint);
+  printf("%d, %d, %d", c >> 16, (c >> 8) % (1 << 8), c % (1 << 8));
 
   while(1);
 

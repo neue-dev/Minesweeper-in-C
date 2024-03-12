@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-12 23:16:22
+ * @ Modified time: 2024-03-12 23:33:12
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -260,15 +260,21 @@ color ThemeManager_getActive(ThemeManager* this, char *sKey) {
 
   // Parse the key first
   while(*sKey) {
-    if(*sKey == '-')
+    
+    // Next part of the string
+    if(*sKey == '-') {
       dKeySection++;
+    
+    // Copy the string
+    } else {
 
-    // Where to copy the string to
-    switch(dKeySection) {
-      case 0: sKeyColorName[strlen(sKeyColorName)] = *sKey; break;
-      case 1: sKeyModifier[strlen(sKeyModifier)] = *sKey; break;
-      case 2: sKeyParameter[strlen(sKeyParameter)] = *sKey; break;
-      default: break;
+      // Where to copy the string to
+      switch(dKeySection) {
+        case 0: sKeyColorName[strlen(sKeyColorName)] = *sKey; break;
+        case 1: sKeyModifier[strlen(sKeyModifier)] = *sKey; break;
+        case 2: sKeyParameter[strlen(sKeyParameter)] = *sKey; break;
+        default: break;
+      }
     }
 
     sKey++;
