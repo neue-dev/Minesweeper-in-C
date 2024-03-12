@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-12 22:36:05
+ * @ Modified time: 2024-03-12 23:16:22
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -13,6 +13,8 @@
 #include "./utils.hashmap.h"
 #include "./utils.graphics.h"
 #include "./utils.types.h"
+
+#include <stdlib.h>
 
 typedef struct Theme Theme;
 typedef struct ThemeManager ThemeManager;
@@ -148,6 +150,19 @@ color Theme_getLighter(Theme *this, char *sKey, float fAmount) {
 }
 
 /**
+ * Simply returns the color referred to by the given key.
+*/
+color Theme_getColor(Theme *this, char *sKey) {
+  color *pColor = HashMap_get(this->pColorMap, sKey);
+
+  // Color does not exist
+  if(pColor == NULL)
+    return -1;
+
+  return *pColor;
+}
+
+/**
  * //
  * ////
  * //////    ThemeManager struct
@@ -182,7 +197,7 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pDefaultTheme, "primary", 0xfef9ff);
   Theme_addColor(pDefaultTheme, "secondary", 0x111317);
   Theme_addColor(pDefaultTheme, "accent", 0xf18f01);
-  Theme_addColor(pDefaultTheme, "anti-accent", 0x4282b3);  
+  Theme_addColor(pDefaultTheme, "anti.accent", 0x4282b3);  
 
   // Create and add colors to the default night theme
   Theme *pNightTheme = Theme_create();
@@ -190,7 +205,7 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pNightTheme, "primary", 0x010600);
   Theme_addColor(pNightTheme, "secondary", 0xeeece8);
   Theme_addColor(pNightTheme, "accent", 0x0e70fe);
-  Theme_addColor(pNightTheme, "anti-accent", 0xbd7d4c);  
+  Theme_addColor(pNightTheme, "anti.accent", 0xbd7d4c);  
 
   // Add the default theme to the theme manager
   HashMap_add(this->pThemeMap, "default", pDefaultTheme);
@@ -220,6 +235,63 @@ void ThemeManager_setActive(ThemeManager *this, char *sKey) {
 
   // Copy the key of the active theme
   this->sActiveTheme = sKey;
+}
+
+/**
+ * Gets a color from the active theme referred to by the provided key. 
+ * 
+ * @param   { ThemeManager * }  this  The theme manager.
+ * @param   { char * }          sKey  The key for the color.
+*/
+color ThemeManager_getActive(ThemeManager* this, char *sKey) {
+  
+  // The key components
+  char sKeyColorName[STRING_KEY_MAX_LENGTH] = { 0 };
+  char sKeyModifier[STRING_KEY_MAX_LENGTH] = { 0 };
+  char sKeyParameter[STRING_KEY_MAX_LENGTH] = { 0 };
+  int dKeySection = 0;
+
+  // No color was selected
+  if(sKey == NULL)
+    return -1;
+
+  // The active theme
+  Theme *pActiveTheme = HashMap_get(this->pThemeMap, this->sActiveTheme);
+
+  // Parse the key first
+  while(*sKey) {
+    if(*sKey == '-')
+      dKeySection++;
+
+    // Where to copy the string to
+    switch(dKeySection) {
+      case 0: sKeyColorName[strlen(sKeyColorName)] = *sKey; break;
+      case 1: sKeyModifier[strlen(sKeyModifier)] = *sKey; break;
+      case 2: sKeyParameter[strlen(sKeyParameter)] = *sKey; break;
+      default: break;
+    }
+
+    sKey++;
+  }
+
+  // No color was selected
+  if(!strlen(sKeyColorName) || !strcmp(sKeyColorName, ""))
+    return -1;
+
+  // If the modifier doesn't have a value, just return the color as is
+  if(!strlen(sKeyModifier))
+    return Theme_getColor(pActiveTheme, sKeyColorName);
+
+  // We lighten the color
+  if(!strcmp(sKeyModifier, "lighten") || !strcmp(sKeyModifier, "lighter"))
+    return Theme_getLighter(pActiveTheme, sKeyColorName, atof(sKeyParameter));
+
+  // We darken the color
+  if(!strcmp(sKeyModifier, "darken") || !strcmp(sKeyModifier, "darker"))
+    return Theme_getDarker(pActiveTheme, sKeyColorName, atof(sKeyParameter));
+
+  // Bad input
+  return -1;
 }
 
 #endif

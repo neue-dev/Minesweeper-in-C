@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-12 22:44:00
+ * @ Modified time: 2024-03-12 23:18:36
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -318,14 +318,20 @@ int Page_update(Page *this) {
  * @param   { int }                   h             The height of the component.
  * @param   { int }                   dAssetHeight  The height of the asset. This can be 0.
  * @param   { char ** }               aAsset        The asset to be rendered by the component. This may be NULL.
- * @param   { color }                 colorFG       A foreground color for the component.
- * @param   { color }                 colorBG       A background color for the component.
+ * @param   { char * }                sColorFGKey   A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
 */
-void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, color colorFG, color colorBG) {
+void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, char *sColorFGKey, char *sColorBGKey) {
   int i;
+
+  // The different component states
   float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
   int *pColorState, *pColorTargetState, *pPixelState;
   char sStateKey[STRING_KEY_MAX_LENGTH];
+
+  // The colors we want from the theme  
+  color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
+  color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
 
   // Not too many components
   if(this->dComponentCount >= PAGE_MAX_COMPONENTS)
@@ -334,6 +340,7 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   // Add a component; exit if not successful
   if(!ComponentManager_add(&this->componentManager, sKey, sParentKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG))
     return;
+
 
   // Create a new state for that component
   // Each component is always given 4 states
@@ -400,17 +407,17 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
  * @param   { char * }                sParentKey    The key of the component to append to.
  * @param   { int }                   x             The x-coordinate of the component.
  * @param   { int }                   y             The y-coordinate of the component.
- * @param   { color }                 colorFG       A foreground color for the component.
- * @param   { color }                 colorBG       A background color for the component.
+ * @param   { char * }                sColorFGKey   A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
  * @param   { char * }                sAssetKey     The asset to be rendered by the component.
 */
-void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int y, color colorFG, color colorBG, char *sAssetKey) {
+void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int y, char *sColorFGKey, char *sColorBGKey, char *sAssetKey) {
   Page_addComponent(this, sKey, sParentKey, x, y, 
     AssetManager_getAssetWidth(this->pSharedAssetManager, sAssetKey),
     AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
     AssetManager_getAssetHeight(this->pSharedAssetManager, sAssetKey),
     AssetManager_getAssetText(this->pSharedAssetManager, sAssetKey),
-    colorFG, colorBG);
+    sColorFGKey, sColorBGKey);
 }
 
 /**
@@ -421,16 +428,16 @@ void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int
  * @param   { char * }                sParentKey    The key of the component to append to.
  * @param   { int }                   x             The x-coordinate of the component.
  * @param   { int }                   y             The y-coordinate of the component.
- * @param   { color }                 colorFG       A foreground color for the component.
- * @param   { color }                 colorBG       A background color for the component.
+ * @param   { char * }                sColorFGKey   A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
  * @param   { char * }                sText         The text we want to add to the page.
 */
-void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int y, color colorFG, color colorBG, char *sText) {
+void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int y, char *sColorFGKey, char *sColorBGKey, char *sText) {
   char **aAsset = calloc(1, sizeof(*aAsset));
   aAsset[0] = String_create(sText);
   
   Page_addComponent(this, sKey, sParentKey, x, y, 
-    String_charCount(sText), 1, 1, aAsset, colorFG, colorBG);
+    String_charCount(sText), 1, 1, aAsset, sColorFGKey, sColorBGKey);
 }
 
 /**
@@ -445,7 +452,7 @@ void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int 
  * @param   { int }                   y             The y-coordinate of the component.
 */
 void Page_addComponentContainer(Page *this, char *sKey, char *sParentKey, int x, int y) {
-  Page_addComponent(this, sKey, sParentKey, x, y, 0, 0, 0, NULL, -1, -1);
+  Page_addComponent(this, sKey, sParentKey, x, y, 0, 0, 0, NULL, "", "");
 }
 
 /**
@@ -460,11 +467,11 @@ void Page_addComponentContainer(Page *this, char *sKey, char *sParentKey, int x,
  * @param   { int }                   y             The y-coordinate of the component.
  * @param   { int }                   w             The width of the component.
  * @param   { int }                   h             The height of the component.
- * @param   { color }                 colorFG       A foreground color for the component.
- * @param   { color }                 colorBG       A background color for the component.
+ * @param   { char * }                sColorFGKey   A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
 */
-void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, color colorFG, color colorBG) {
-  Page_addComponent(this, sKey, sParentKey, x, y, w, h, 0, NULL, colorFG, colorBG);
+void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey) {
+  Page_addComponent(this, sKey, sParentKey, x, y, w, h, 0, NULL, sColorFGKey, sColorBGKey);
 }
 
 /**
@@ -477,15 +484,21 @@ void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, i
  * @param   { int }                   y                 The y-coordinate the component will go to. PAGE_INT_NULL if none.
  * @param   { int }                   w                 The width the component will approach. -1 if none.
  * @param   { int }                   h                 The height the component will approach. -1 if none.
- * @param   { color }                 colorFG           A foreground color the component will go to. -1 if none.
- * @param   { color }                 colorBG           A background color the component will go to. -1 if none.
+ * @param   { char * }                sColorFGKey       A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey       A color key for the background from the theme manager.
  * @param   { float }                 fTransitionSpeed  How fast the component will go its target values.
 */
-void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, color colorFG, color colorBG, float fTransitionSpeed) {
+void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey, float fTransitionSpeed) {
   int i;
+
+  // The target and transition parameters
   float *pRenderTargetState, *pTransitionSpeed;
   int *pColorTargetState;
   char sStateKey[STRING_KEY_MAX_LENGTH];
+
+  // The colors we want from the theme  
+  color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
+  color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
   
   for(i = 0; i < 4; i++) {
 
@@ -542,7 +555,7 @@ void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h,
  * @param   { float }   fTransitionSpeed  How fast the component should move.
 */
 void Page_setComponentTargetPosition(Page *this, char *sKey, int x, int y, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, x, y, -1, -1, -1, -1, fTransitionSpeed);
+  Page_setComponentTarget(this, sKey, x, y, -1, -1, "", "", fTransitionSpeed);
 }
 
 /**
@@ -556,7 +569,7 @@ void Page_setComponentTargetPosition(Page *this, char *sKey, int x, int y, float
  * @param   { float }   fTransitionSpeed  How fast the component should move.
 */
 void Page_setComponentTargetSize(Page *this, char *sKey, int w, int h, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, -1, -1, fTransitionSpeed);
+  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, "", "", fTransitionSpeed);
 }
 
 /**
@@ -565,12 +578,12 @@ void Page_setComponentTargetSize(Page *this, char *sKey, int w, int h, float fTr
  * 
  * @param   { Page * }  this              The page to modify.
  * @param   { char * }  sKey              The component to modify.
- * @param   { color }   colorFG           The target width of the component.
- * @param   { color }   colorBG           The target height of the component.
+ * @param   { char * }  sColorFGKey       A color key for the foreground from the theme manager.
+ * @param   { char * }  sColorBGKey       A color key for the background from the theme manager.
  * @param   { float }   fTransitionSpeed  How fast the component should move.
 */
-void Page_setComponentTargetColor(Page *this, char *sKey, color colorFG, color colorBG, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, colorFG, colorBG, fTransitionSpeed);
+void Page_setComponentTargetColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey, float fTransitionSpeed) {
+  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, sColorFGKey, sColorBGKey, fTransitionSpeed);
 }
 
 /**
@@ -630,14 +643,20 @@ float Page_getComponentDist(Page *this, char *sKey, int dParam) {
  * @param   { int }                   y                 The y-coordinate the component will start at. PAGE_INT_NULL if none.
  * @param   { int }                   w                 The width the component will start with. -1 if none.
  * @param   { int }                   h                 The height the component will start with. -1 if none.
- * @param   { color }                 colorFG           A foreground color the component will start with. -1 if none.
- * @param   { color }                 colorBG           A background color the component will start with. -1 if none.
+ * @param   { char * }                sColorFGKey       A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey       A color key for the background from the theme manager.
 */
-void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, color colorFG, color colorBG) {
+void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey) {
   int i;
+  
+  // The initial states
   float *pRenderState, *pRenderTargetState;
   int *pColorState, *pColorTargetState;
   char sStateKey[STRING_KEY_MAX_LENGTH];
+
+  // The colors we want from the theme  
+  color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
+  color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
   
   for(i = 0; i < 4; i++) {
 
@@ -692,7 +711,7 @@ void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int
  * @param   { int }                   y                 The y-coordinate the component will start at. PAGE_INT_NULL if none.
 */
 void Page_resetComponentInitialPosition(Page *this, char *sKey, int x, int y) {
-  Page_resetComponentInitial(this, sKey, x, y, -1, -1, -1, -1);
+  Page_resetComponentInitial(this, sKey, x, y, -1, -1, "", "");
 }
 
 /**
@@ -705,7 +724,7 @@ void Page_resetComponentInitialPosition(Page *this, char *sKey, int x, int y) {
  * @param   { int }                   h                 The width the component will start at. -1 if none
 */
 void Page_resetComponentInitialSize(Page *this, char *sKey, int w, int h) {
-  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, -1, -1);
+  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, "", "");
 }
 
 /**
@@ -714,11 +733,11 @@ void Page_resetComponentInitialSize(Page *this, char *sKey, int w, int h) {
  * 
  * @param   { Page * }                this              The page to modify.
  * @param   { char * }                sKey              An identifier for the component.
- * @param   { color }                 colorFG           The foreground color the component will start at. -1 if none.
- * @param   { color }                 colorBG           The background color the component will start at. -1 if none
+ * @param   { char * }                sColorFGKey       A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey       A color key for the background from the theme manager.
 */
-void Page_resetComponentInitialColor(Page *this, char *sKey, color colorFG, color colorBG) {
-  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, colorFG, colorBG);
+void Page_resetComponentInitialColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey) {
+  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, sColorFGKey, sColorBGKey);
 }
 
 /**

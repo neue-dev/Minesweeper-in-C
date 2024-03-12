@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 11:07:39
+ * @ Modified time: 2024-03-12 23:14:43
  * @ Description:
  * 
  * This file defines the page handler for the about page.
@@ -13,13 +13,6 @@
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
-
-//! remove these later and store colors in a theme class
-#define BG_1 0xfef9ff
-#define FG_1 0x111317
-#define FG_ACC_B 0x4282b3
-#define FG_ACC_Y 0xf18f01
-#define FG_ACC_R 0xf33016
 
 /**
  * Configures the main menu.

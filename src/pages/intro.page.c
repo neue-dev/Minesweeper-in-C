@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 13:55:22
+ * @ Modified time: 2024-03-12 23:12:17
  * @ Description:
  * 
  * This file defines the page handler for the intro.
@@ -13,13 +13,6 @@
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
-
-//! remove these later and store colors in a theme class
-#define BG_1 0xfef9ff
-#define FG_1 0x111317
-#define FG_ACC_B 0x4282b3
-#define FG_ACC_Y 0xf18f01
-#define FG_ACC_R 0xf33016
 
 /**
  * Configures the title page.
@@ -47,10 +40,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
       dHeight = IO_getHeight();
 
       // Create component tree
-      Page_addComponentContext(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, 0x000001, 0x000001);
-      Page_addComponentContext(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, FG_ACC_Y, FG_ACC_Y);
-      Page_addComponentContext(this, sInnerBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 156, 78, FG_1, BG_1);
-      Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, -1, -1, "logo");
+      Page_addComponentContext(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, "primary-darken-1.0", "primary-darken-1.0");
+      Page_addComponentContext(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, "accent", "accent");
+      Page_addComponentContext(this, sInnerBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 156, 78, "secondary", "primary");
+      Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, "", "", "logo");
 
       // Set initials
       Page_resetComponentInitialSize(this, sOuterBoxComponent, 0, 0);

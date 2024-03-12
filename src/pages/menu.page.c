@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-10 14:01:58
+ * @ Modified time: 2024-03-12 23:14:24
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -13,13 +13,6 @@
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
-
-//! remove these later and store colors in a theme class
-#define BG_1 0xfef9ff
-#define FG_1 0x111317
-#define FG_ACC_B 0x4282b3
-#define FG_ACC_Y 0xf18f01
-#define FG_ACC_R 0xf33016
 
 /**
  * Configures the main menu.
@@ -81,7 +74,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         AssetManager_createTextAsset(this->pSharedAssetManager, sMenuSelectors[i][0], sMenuSelectorFont);
 
       // Add the primary components to the tree
-      Page_addComponentContext(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, FG_1, BG_1);
+      Page_addComponentContext(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
       Page_addComponentContainer(this, sTitleComponent, sMenuComponent, dWidth / 2, -4);
       
       // Selection area
@@ -89,9 +82,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sIconContainerComponent, sSelectionComponent, dWidth / 2, dHeight / 2 - 4);
       Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, dWidth / 2, 8);
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, dWidth / 2 - 3, 0);
-      Page_addComponentText(this, sPromptComponent, sSelectionComponent, dWidth / 2, 0, 0x888888, -1, 
+      Page_addComponentText(this, sPromptComponent, sSelectionComponent, dWidth / 2, 0, "secondary-lighten-0.5", "", 
         "WASD to browse, enter to select");
-      Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, FG_ACC_Y, FG_ACC_Y, "selector");
+      Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, "accent", "accent", "selector");
 
       // Add each of the letters to the tree
       for(i = 0; i < dTitleLength; i++) {
@@ -101,7 +94,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
 
         // Add the letters and make them want to go to their targets
-        Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, pow(i + 1, 3) * -10 + 128, -1, -1, sAssetKey);  
+        Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, pow(i + 1, 3) * -10 + 128, "", "", sAssetKey);  
         Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
       }
 
@@ -115,9 +108,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
         String_keyAndStr(sIconAssetKey, "menu", sMenuSelectors[i][0]);
 
         // Add the component
-        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 3, 0, FG_1, -1, "indicator");
-        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 0, -512, 0x333544, -1, sAssetKey);
-        Page_addComponentAsset(this, sIconKey, sIconContainerComponent, 0, 0, FG_ACC_Y, -1, sIconAssetKey);
+        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 3, 0, "secondary", "", "indicator");
+        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 0, -512, "secondary-lighten-0.2", "", sAssetKey);
+        Page_addComponentAsset(this, sIconKey, sIconContainerComponent, 0, 0, "accent", "", sIconAssetKey);
 
         // Make the first component go to the center
         if(i) Page_resetComponentInitialPosition(this, sIconKey, 512, PAGE_NULL_INT);
