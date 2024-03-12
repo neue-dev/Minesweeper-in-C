@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:16
- * @ Modified time: 2024-03-11 18:58:23
+ * @ Modified time: 2024-03-12 21:59:29
  * @ Description:
  */
 
@@ -9,8 +9,6 @@
 #include "game/field.obj.h"
 
 #include "utils/utils.io.h"
-
-#include <stdio.h>
 
 int main() {
 

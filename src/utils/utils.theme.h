@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-11 18:54:40
+ * @ Modified time: 2024-03-12 22:14:03
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -73,34 +73,78 @@ Theme *Theme_create() {
  * @param		{ Theme * }		this	A pointer to the instance to deallocate.
 */
 void Theme_kill(Theme *this) {
+  HashMap_kill(this->pColorMap);
   free(this);
 }
 
 /**
  * Adds a new color to the theme given the provided key.
  * 
- * //! todo
+ * @param   { Theme * }   this  The theme to modify.
+ * @param   { char * }    sKey  The key of the theme to modify.
+ * @param   { color }     c     The color we want to add to the theme.
 */
-void Theme_addColor(Theme* this, char *sKey, color color) {
+void Theme_addColor(Theme* this, char *sKey, color c) {
   
+  // The color has already been added
+  if(HashMap_get(this->pColorMap, sKey) != NULL)
+    return;
+
+  // Create a reference to the specified color
+  color *pColor = calloc(1, sizeof(color));
+  *pColor = c;
+
+  // Store the reference in the hashmap
+  HashMap_add(this->pColorMap, sKey, pColor);
+
+  // Increment count
+  this->dColors++;
 }
 
 /**
  * Gets a darker version of a specific color from the current theme.
- * The number of steps is also indicated (how far to darken).
- * ! todo
+ * The degree of darkening is also provided, where
+ *    0.0 represents no darkening at all.
+ *    0.5 is a 50-50 combination of the selected color and black.
+ *    1.0 represnts total black.
+ * 
+ * @param   { Theme * }   this      The theme to modify.
+ * @param   { char * }    sKey      The key of the theme to modify.
+ * @param   { float }     fAmount   How much to lerp between the color and pure black.
+ * @return  { color }               The resulting lerped color.
 */
-void Theme_getDarker() {
+color Theme_getDarker(Theme *this, char *sKey, float fAmount) {
+  color *pColor = HashMap_get(this->pColorMap, sKey);
 
+  // Color does not exist
+  if(pColor == NULL)
+    return -1;
+
+  // Return the lerped color
+  return Graphics_lerp(*pColor, 0x000000, fAmount);
 }
 
 /**
  * Gets a lighter version of a specific color from the current theme.
- * The number of steps is also indicated (how far to lighten).
- * !todo
+ * The degree of lightening is also provided, where
+ *    0.0 represents no lightening at all.
+ *    0.5 is a 50-50 combination of the selected color and white.
+ *    1.0 represnts total white.
+ * 
+ * @param   { Theme * }   this      The theme to modify.
+ * @param   { char * }    sKey      The key of the theme to modify.
+ * @param   { float }     fAmount   How much to lerp between the color and pure white.
+ * @return  { color }               The resulting lerped color.
 */
-void Theme_getLighter() {
-  
+color Theme_getLighter(Theme *this, char *sKey, float fAmount) {
+  color *pColor = HashMap_get(this->pColorMap, sKey);
+
+  // Color does not exist
+  if(pColor == NULL)
+    return -1;
+
+  // Return the lerped color
+  return Graphics_lerp(*pColor, 0xffffff, fAmount);
 }
 
 /**
@@ -133,12 +177,26 @@ void ThemeManager_init(ThemeManager *this) {
   // Create and add the default theme
   Theme *pDefaultTheme = Theme_create();
 
-  // ! add the five default colors here
+  Theme_addColor(pDefaultTheme, "primary", 0xfef9ff);
+  Theme_addColor(pDefaultTheme, "secondary", 0x111317);
+  Theme_addColor(pDefaultTheme, "accent", 0xf18f01);
+  Theme_addColor(pDefaultTheme, "anti-accent", 0x4282b3);  
 
   HashMap_add(this->pThemeMap, this->sActiveTheme, pDefaultTheme);
 }
 
-// ! create themeManager_setActive
-// ! if theme does not exist, just return
+/**
+ * 
+*/
+void ThemeManager_exit() {
+  
+}
+
+/**
+ * //! 
+*/
+void ThemeManager_setActive() {
+  
+}
 
 #endif
