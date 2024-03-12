@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-10 11:35:09
+ * @ Modified time: 2024-03-12 23:39:33
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -354,13 +354,6 @@ void Buffer_print(Buffer *this) {
 
   // Iterate through the lines
   for(y = 0; y < this->dHeight; y++) {
-
-    // Set the defaults at the start of every line
-    i = 0;
-    while(this->sDefaultContext[i]) {
-      sBlob[dLen] = this->sDefaultContext[i];
-      dLen++; i++;   
-    }
 
     // The last mask value we had
     dLastMask = 0;
