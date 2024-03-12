@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-12 22:14:03
+ * @ Modified time: 2024-03-12 22:36:05
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -167,6 +167,8 @@ struct ThemeManager {
 
 /**
  * Creates a default theme which the program uses.
+ * 
+ * @param   { ThemeManager * }  this  The theme manager.
 */
 void ThemeManager_init(ThemeManager *this) {
 
@@ -174,7 +176,7 @@ void ThemeManager_init(ThemeManager *this) {
   this->sActiveTheme = "default";
   this->pThemeMap = HashMap_create();
 
-  // Create and add the default theme
+  // Create and add colors to the default theme
   Theme *pDefaultTheme = Theme_create();
 
   Theme_addColor(pDefaultTheme, "primary", 0xfef9ff);
@@ -182,21 +184,42 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pDefaultTheme, "accent", 0xf18f01);
   Theme_addColor(pDefaultTheme, "anti-accent", 0x4282b3);  
 
-  HashMap_add(this->pThemeMap, this->sActiveTheme, pDefaultTheme);
+  // Create and add colors to the default night theme
+  Theme *pNightTheme = Theme_create();
+
+  Theme_addColor(pNightTheme, "primary", 0x010600);
+  Theme_addColor(pNightTheme, "secondary", 0xeeece8);
+  Theme_addColor(pNightTheme, "accent", 0x0e70fe);
+  Theme_addColor(pNightTheme, "anti-accent", 0xbd7d4c);  
+
+  // Add the default theme to the theme manager
+  HashMap_add(this->pThemeMap, "default", pDefaultTheme);
+  HashMap_add(this->pThemeMap, "night", pNightTheme);
 }
 
 /**
+ * Exits the theme manager.
  * 
+ * @param   { ThemeManager * }  this  The theme manager.
 */
-void ThemeManager_exit() {
-  
+void ThemeManager_exit(ThemeManager *this) {
+  HashMap_kill(this->pThemeMap);
 }
 
 /**
- * //! 
+ * Changes the current active theme.
+ * 
+ * @param   { ThemeManager * }  this  The theme manager.
+ * @param   { char * }          sKey  The key to the new active theme.
 */
-void ThemeManager_setActive() {
+void ThemeManager_setActive(ThemeManager *this, char *sKey) {
   
+  // The theme does not exist
+  if(HashMap_get(this->pThemeMap, sKey) == NULL)
+    return;
+
+  // Copy the key of the active theme
+  this->sActiveTheme = sKey;
 }
 
 #endif

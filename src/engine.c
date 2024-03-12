@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-10 14:05:04
+ * @ Modified time: 2024-03-12 22:44:56
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -13,20 +13,26 @@
 #ifndef ENGINE_
 #define ENGINE_
 
+// Game-related constructs
 #include "./game/account.class.h"
 
+// Our utils
 #include "./utils/utils.page.h"
 #include "./utils/utils.asset.h"
 #include "./utils/utils.buffer.h"
+#include "./utils/utils.theme.h"
 #include "./utils/utils.event.h"
 #include "./utils/utils.file.h"
 #include "./utils/utils.thread.h"
 #include "./utils/utils.types.h"
 
+// The different pages
 #include "./pages/intro.page.c"
 #include "./pages/menu.page.c"
 #include "./pages/help.page.c"
 #include "./pages/about.page.c"
+
+// The events we have for our program
 #include "./events.c"
 
 // Some definitions for identifiers
@@ -61,6 +67,7 @@ struct Engine {
 
   // Some front end managers
   AssetManager assetManager;          // Deals with the game assets; this is shared across pages
+  ThemeManager themeManager;          // Manages our different themes
   PageManager pageManager;            // The page manager
 
   // Some back end managers
@@ -101,11 +108,16 @@ void Engine_init(Engine *this) {
    * Initialize the managers
   */
   AssetManager_init(&this->assetManager);
-  PageManager_init(&this->pageManager, &this->assetManager, &this->eventStore);
+  ThemeManager_init(&this->themeManager);
+  PageManager_init(&this->pageManager, 
+    &this->assetManager, 
+    &this->eventStore, 
+    &this->themeManager);
 
-  EventStore_init(&this->eventStore);
-  EventManager_init(&this->eventManager, &this->eventStore);
   ThreadManager_init(&this->threadManager);
+  EventStore_init(&this->eventStore);
+  EventManager_init(&this->eventManager, 
+    &this->eventStore);
 
   /**
    * Creates all our assets
