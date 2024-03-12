@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-07 23:37:35
+ * @ Modified time: 2024-03-12 22:20:28
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -355,7 +355,8 @@ void EventStore_init(EventStore *this) {
  * @param		{ EventStore * }		this	A pointer to the instance to initialize.
 */
 void EventStore_exit(EventStore *this) {
-  // ! todo   
+  HashMap_kill(this->pValueStore);
+  HashMap_kill(this->pValueHistories);
 }
 
 /**

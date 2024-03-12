@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-10 11:01:47
+ * @ Modified time: 2024-03-12 22:23:10
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -500,7 +500,8 @@ void ComponentManager_init(ComponentManager *this) {
  * @param		{ ComponentManager * }		this	A pointer to the instance to clean up.
 */
 void ComponentManager_exit(ComponentManager *this) {
-
+  Queue_kill(this->pRenderQueue);
+  HashMap_kill(this->pComponentMap);
 }
 
 /**

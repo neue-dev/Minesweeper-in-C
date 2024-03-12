@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:31:48
- * @ Modified time: 2024-03-04 22:25:29
+ * @ Modified time: 2024-03-12 22:22:54
  * @ Description:
  * 
  * This file defines a queue data structure.
@@ -144,6 +144,20 @@ Queue *Queue_create() {
  * @param		{ Queue * }		this	A pointer to the instance to deallocate.
 */
 void Queue_kill(Queue *this) {
+  QueueEntry *pHead = this->pHead;
+  
+  // While the queue has stuff in it
+  while(this->pHead != NULL) {
+    
+    // Move the pointer forward
+    pHead = this->pHead;
+    this->pHead = this->pHead->pNext;
+
+    // Free the old head
+    free(pHead);
+  }
+
+  // Free the queue itself
   free(this);
 }
 

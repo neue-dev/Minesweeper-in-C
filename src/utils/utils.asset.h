@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-09 17:45:47
+ * @ Modified time: 2024-03-12 22:23:39
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -146,14 +146,7 @@ void AssetManager_init(AssetManager *this) {
  * @param   { AssetManager * }  this  The AssetManager struct.
 */
 void AssetManager_exit(AssetManager *this) {
-  int i;
-  char *pAssetKeyArray[ASSET_MAX_COUNT];
-  
-  HashMap_getKeys(this->pAssetMap, pAssetKeyArray);
-
-  // Delete all entries
-  for(i = 0; i < this->dAssetCount; i++)
-    HashMap_del(this->pAssetMap, pAssetKeyArray[i]);
+  HashMap_kill(this->pAssetMap);
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 12:01:02
- * @ Modified time: 2024-03-09 17:03:11
+ * @ Modified time: 2024-03-12 22:19:02
  * @ Description:
  *    
  * A utility library for implementing threads.
@@ -131,6 +131,11 @@ void ThreadManager_exit(ThreadManager *this) {
     // Decrement the size of the array
     this->dMutexCount--;
   }
+
+  // Kill all the hashmaps too
+  HashMap_kill(this->pThreadMap);
+  HashMap_kill(this->pMutexMap);
+  HashMap_kill(this->pStateMap);
 }
 
 /**

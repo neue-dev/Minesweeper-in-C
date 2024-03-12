@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-10 14:03:25
+ * @ Modified time: 2024-03-12 22:19:54
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -810,10 +810,12 @@ void PageManager_init(PageManager *this, AssetManager *pSharedAssetManager, Even
 }
 
 /**
- * // ! todo
+ * Exits the page manager.
+ * 
+ * @param   { PageManager * }   this  The page manager to exit.
 */
 void PageManager_exit(PageManager *this) {
-  
+  HashMap_kill(this->pPageMap);
 }
 
 /**
