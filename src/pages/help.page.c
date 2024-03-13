@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-13 15:13:44
+ * @ Modified time: 2024-03-13 15:18:38
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -27,6 +27,7 @@ void PageHandler_help(p_obj pArgs_Page) {
   // Font
   char *sPageTitleFont = "body-font";
   char *sPageTitle = "how to play";
+  char sPageTitleKey[STRING_KEY_MAX_LENGTH];
 
   // Component names
   char *sHelpComponent = "help-fixed";
@@ -43,9 +44,12 @@ void PageHandler_help(p_obj pArgs_Page) {
       // Create text assets
       AssetManager_createTextAsset(this->pSharedAssetManager, sPageTitle, sPageTitleFont);
 
+      // Create keys
+      String_keyAndStr(sPageTitleKey, sPageTitleFont, sPageTitle);
+
       // Create component tree
       Page_addComponentContainer(this, sHelpComponent, "root", 0, 0);
-      Page_addComponentAsset(this, "test", sHelpComponent, 0, 0, "", "", "menu-help");
+      Page_addComponentAsset(this, "test", sHelpComponent, 0, 0, "", "", sPageTitleKey);
       
     break;
 

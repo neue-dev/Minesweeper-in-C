@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-12 22:23:39
+ * @ Modified time: 2024-03-13 15:22:03
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -245,28 +245,24 @@ void AssetManager_createTextAsset(AssetManager *this, char *sText, char *sFont) 
 
   // For each character, we add their string contents to the content array
   while(*sText) {
-    
-    // If not a space
-    if(*sText != 32) {
 
-      // Create the key
-      String_keyAndChar(sGlyphKey, sFont, *sText);
+    // Create the key
+    String_keyAndChar(sGlyphKey, sFont, *sText);
 
-      // Only if we haven't set the glyph asset height, we init the array
-      if(!dGlyphAssetHeight) {
-        dGlyphAssetHeight = AssetManager_getAssetHeight(this, sGlyphKey);
+    // Only if we haven't set the glyph asset height, we init the array
+    if(!dGlyphAssetHeight) {
+      dGlyphAssetHeight = AssetManager_getAssetHeight(this, sGlyphKey);
 
-        for(i = 0; i < dGlyphAssetHeight; i++)
-          sContentArray[i] = String_alloc(ASSET_MAX_WIDTH);
-      }
-
-      // Get the asset for the letter
-      pGlyphText = AssetManager_getAssetText(this, sGlyphKey);
-
-      // Copy the letter asset unto the content array
       for(i = 0; i < dGlyphAssetHeight; i++)
-        strcat(sContentArray[i], pGlyphText[i]);
+        sContentArray[i] = String_alloc(ASSET_MAX_WIDTH);
     }
+
+    // Get the asset for the letter
+    pGlyphText = AssetManager_getAssetText(this, sGlyphKey);
+
+    // Copy the letter asset unto the content array
+    for(i = 0; i < dGlyphAssetHeight; i++)
+      strcat(sContentArray[i], pGlyphText[i]);
 
     // Increment pointer
     sText++;
@@ -364,8 +360,7 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
         // This is also a contribution to the Linux bug: again new lines here explicity have the /r
         //    because the text file was saved on Windows
         k = 0;
-        while(
-          sAssetFileBuffer[i][j] != 32 && 
+        while( 
           sAssetFileBuffer[i][j] != '\n' && 
           sAssetFileBuffer[i][j] != '\r')
           sName[k++] = sAssetFileBuffer[i][j++];
