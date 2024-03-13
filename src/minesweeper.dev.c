@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-12 23:24:52
+ * @ Modified time: 2024-03-13 23:00:01
  * @ Description:
  * 
  * The main game file.
@@ -45,12 +45,7 @@ int main() {
   // IO_init(&io);
   // IO_exit(&io);
 
-  ThemeManager tm;
-  ThemeManager_init(&tm);
-
-  color c = ThemeManager_getActive(&tm, "primary-darken-0.5");
-
-  printf("%d, %d, %d", c >> 16, (c >> 8) % (1 << 8), c % (1 << 8));
+  printf(String_repeat("test", 20));
 
   while(1);
 

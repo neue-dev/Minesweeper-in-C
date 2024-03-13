@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-12 23:18:36
+ * @ Modified time: 2024-03-13 22:55:08
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -341,7 +341,6 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   if(!ComponentManager_add(&this->componentManager, sKey, sParentKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG))
     return;
 
-
   // Create a new state for that component
   // Each component is always given 4 states
   for(i = 0; i < 4; i++) {
@@ -433,11 +432,32 @@ void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int
  * @param   { char * }                sText         The text we want to add to the page.
 */
 void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int y, char *sColorFGKey, char *sColorBGKey, char *sText) {
-  char **aAsset = calloc(1, sizeof(*aAsset));
-  aAsset[0] = String_create(sText);
+  int dChar = 0, dLines = 0, dLineLength = 256; 
+  char **aAsset = calloc(256, sizeof(*aAsset));
+
+  // Init the first line
+  aAsset[dLines] = String_alloc(dLineLength);
+
+  // Peruse the text
+  while(*sText) {
+    
+    // Copy character to current line
+    if(*sText != '\n' && dChar < dLineLength) {
+      aAsset[dLines][dChar++] = *sText;
+    
+    // New line
+    } else {
+      dLines++;
+      dChar = 0;
+
+      aAsset[dLines] = String_alloc(dLineLength);
+    }
+
+    sText++;
+  }
   
   Page_addComponent(this, sKey, sParentKey, x, y, 
-    String_charCount(sText), 1, 1, aAsset, sColorFGKey, sColorBGKey);
+    String_charCount(aAsset[0]), dLines + 1, dLines + 1, aAsset, sColorFGKey, sColorBGKey);
 }
 
 /**

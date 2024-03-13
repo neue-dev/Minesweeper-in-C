@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-12 23:39:33
+ * @ Modified time: 2024-03-13 22:54:54
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -16,7 +16,6 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <stdarg.h>
 
 #define BUFFER_MAX_WIDTH (1 << 8)
 #define BUFFER_MAX_HEIGHT (1 << 6)

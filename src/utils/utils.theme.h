@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-13 14:43:01
+ * @ Modified time: 2024-03-13 22:48:25
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -213,8 +213,8 @@ void ThemeManager_init(ThemeManager *this) {
   Theme *pOtherTheme = Theme_create();
 
   Theme_addColor(pOtherTheme, "primary", 0xf2efea);
-  Theme_addColor(pOtherTheme, "secondary", 0x33202a);
-  Theme_addColor(pOtherTheme, "accent", 0xdb1a30);
+  Theme_addColor(pOtherTheme, "secondary", 0x252627); //0x33202a);
+  Theme_addColor(pOtherTheme, "accent", 0xbb0a21);//0xdb1a30);
   Theme_addColor(pOtherTheme, "anti.accent", 0x748386);  
 
   // Add the default theme to the theme manager
@@ -263,7 +263,7 @@ color ThemeManager_getActive(ThemeManager* this, char *sKey) {
   int dKeySection = 0;
 
   // No color was selected
-  if(sKey == NULL)
+  if(sKey == NULL || !strlen(sKey))
     return -1;
 
   // The active theme
