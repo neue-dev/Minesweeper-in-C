@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-12 23:33:12
+ * @ Modified time: 2024-03-13 14:43:01
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -188,7 +188,7 @@ struct ThemeManager {
 void ThemeManager_init(ThemeManager *this) {
 
   // Init some stuff
-  this->sActiveTheme = "default";
+  this->sActiveTheme = "other";
   this->pThemeMap = HashMap_create();
 
   // Create and add colors to the default theme
@@ -200,6 +200,7 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pDefaultTheme, "anti.accent", 0x4282b3);  
 
   // Create and add colors to the default night theme
+  // ! remove this too
   Theme *pNightTheme = Theme_create();
 
   Theme_addColor(pNightTheme, "primary", 0x010600);
@@ -207,8 +208,18 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pNightTheme, "accent", 0x0e70fe);
   Theme_addColor(pNightTheme, "anti.accent", 0xbd7d4c);  
 
+  // Create and add colors to the default night theme
+  // ! remove this later on
+  Theme *pOtherTheme = Theme_create();
+
+  Theme_addColor(pOtherTheme, "primary", 0xf2efea);
+  Theme_addColor(pOtherTheme, "secondary", 0x33202a);
+  Theme_addColor(pOtherTheme, "accent", 0xdb1a30);
+  Theme_addColor(pOtherTheme, "anti.accent", 0x748386);  
+
   // Add the default theme to the theme manager
   HashMap_add(this->pThemeMap, "default", pDefaultTheme);
+  HashMap_add(this->pThemeMap, "other", pOtherTheme);
   HashMap_add(this->pThemeMap, "night", pNightTheme);
 }
 

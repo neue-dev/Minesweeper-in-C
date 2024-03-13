@@ -1,14 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-13 15:13:44
+ * @ Modified time: 2024-03-13 15:06:30
  * @ Description:
  * 
  * This file defines the page handler for the help page.
  */
 
-#ifndef PAGE_HELP_
-#define PAGE_HELP_
+#ifndef PAGE_PLAY_
+#define PAGE_PLAY_
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -19,14 +19,10 @@
  * 
  * @param   { p_obj }   pArgs_Page  The page instance we need to configure.
 */
-void PageHandler_help(p_obj pArgs_Page) {
+void PageHandler_play(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
   int dWidth, dHeight, i;
-
-  // Font
-  char *sPageTitleFont = "body-font";
-  char *sPageTitle = "how to play";
 
   // Component names
   char *sHelpComponent = "help-fixed";
@@ -40,10 +36,6 @@ void PageHandler_help(p_obj pArgs_Page) {
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
 
-      // Create text assets
-      AssetManager_createTextAsset(this->pSharedAssetManager, sPageTitle, sPageTitleFont);
-
-      // Create component tree
       Page_addComponentContainer(this, sHelpComponent, "root", 0, 0);
       Page_addComponentAsset(this, "test", sHelpComponent, 0, 0, "", "", "menu-help");
       

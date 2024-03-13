@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-12 23:14:24
+ * @ Modified time: 2024-03-13 14:57:09
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -53,9 +53,9 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sMenuSelectors[7][2] = {
     { "play", "play-acenter.x"  },
     { "custom", "custom-acenter.x" },
-    { "help", "help-acenter.x" },
-    { "statistics", "statistics-acenter.x" },
+    { "account", "account-acenter.x" },
     { "settings", "settings-acenter.x" },
+    { "help", "help-acenter.x" },
     { "about", "about-acenter.x" },
     { "logout", "logout-acenter.x" },
   };
