@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-13 22:55:08
+ * @ Modified time: 2024-03-13 23:23:54
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -429,10 +429,11 @@ void Page_addComponentAsset(Page *this, char *sKey, char *sParentKey, int x, int
  * @param   { int }                   y             The y-coordinate of the component.
  * @param   { char * }                sColorFGKey   A color key for the foreground from the theme manager.
  * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
+ * @param   { int }                   dWrapLength   How wide the text block can be. If 0, then 256 is the default width.
  * @param   { char * }                sText         The text we want to add to the page.
 */
 void Page_addComponentText(Page *this, char *sKey, char *sParentKey, int x, int y, char *sColorFGKey, char *sColorBGKey, char *sText) {
-  int dChar = 0, dLines = 0, dLineLength = 256; 
+  int dChar = 0, dLines = 0, dLineLength = 1024; 
   char **aAsset = calloc(256, sizeof(*aAsset));
 
   // Init the first line

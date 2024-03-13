@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-13 21:45:02
+ * @ Modified time: 2024-03-13 23:23:02
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -82,7 +82,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sIconContainerComponent, sSelectionComponent, dWidth / 2, dHeight / 2 - 4);
       Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, dWidth / 2, 8);
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, dWidth / 2 - 3, 0);
-      Page_addComponentText(this, sPromptComponent, sSelectionComponent, dWidth / 2, 0, "secondary-lighten-0.5", "", 
+      Page_addComponentText(this, sPromptComponent, sSelectionComponent, dWidth / 2, 0, "secondary-lighten-0.5", "",
         "WASD to browse, enter to select");
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, "accent", "accent", "selector");
 

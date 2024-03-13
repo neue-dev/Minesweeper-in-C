@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-13 23:00:01
+ * @ Modified time: 2024-03-13 23:52:05
  * @ Description:
  * 
  * The main game file.
@@ -45,7 +45,8 @@ int main() {
   // IO_init(&io);
   // IO_exit(&io);
 
-  printf(String_repeat("test", 20));
+  printf(String_join("\n", "-", 16, "Theeeeeeeeeeeee quick brown foxxxxxxxxxx jumped over the lazy dog.", "-"));
+  printf("ahha");
 
   while(1);
 

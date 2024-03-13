@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-13 22:59:14
+ * @ Modified time: 2024-03-13 23:22:45
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -55,20 +55,16 @@ void PageHandler_help(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponentContext(this, sHelpComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
       Page_addComponentAsset(this, sTitleComponent, sHelpComponent, -100, 6, "", "", sPageTitleKey);
-      Page_addComponentText(this, sDividerComponent, sHelpComponent, -100, 1, "accent", "", String_repeat("=", dWidth - 16));
-      Page_addComponentText(this, sBodyTextComponent, sHelpComponent, -100, 1, "", "", 
-        String_join("\n", "-",
-          "MINEZ is a minesweeper spin-off implemented in C with some neat",
-          "bonus features.",
+      Page_addComponentText(this, sDividerComponent, sHelpComponent, -100, 0, "accent", "", String_repeat("▄", dWidth - 16));
+      Page_addComponentText(this, sBodyTextComponent, sHelpComponent, -100, 1, "", "",
+        String_join("\n", "-", dWidth - 16,
+          "MINEZ is a minesweeper spin-off implemented in C with some neat bonus features.",
           "",
-          "The goal of the game is to identify all the cells with mines on",
-          "them by using the numerical hints provided throughout the grid.",
+          "The goal of the game is to identify all the cells with mines on them by using the numerical hints provided throughout the grid.",
           "",
-          "Each hint tells us how many mines are adjacent to any given cell.",
-          "To identify a cell as having a mine, simply plant a flag on it.",
+          "Each hint tells us how many mines are adjacent to any given cell. To identify a cell as having a mine, simply plant a flag on it.",
           "",
-          "More information about the controls can be found in the settings,",
-          "although these will also be given as you play along.",
+          "More information about the controls can be found in the settings, although these will also be given as you play along.",
           "-"
         ));
 

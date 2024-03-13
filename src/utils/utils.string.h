@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-13 23:00:15
+ * @ Modified time: 2024-03-13 23:51:32
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -152,16 +152,19 @@ void String_keyAndStr(char *sKey, char *sKeyName, char *sKeyStr) {
  * Joins multiple strings together with the specified sequence.
  * This function always assumes that the last argument is equal to the terminator.
  * 
- * @param   { char * }  sDelimeter  The joining sequence.
- * @param   { char * }  ...         A bunch of strings to join.
- * @return  { char * }              The joined strings.    
+ * @param   { char * }  sDelimeter    The joining sequence.
+ * @param   { char * }  sTerminator   The last argument must be equal to this.
+ * @param   { int }     dWrapLength   Length before a line becomes a "new line" (a line delimeted by sDelimeter).
+ * @param   { char * }  ...           A bunch of strings to join.
+ * @return  { char * }                The joined strings.    
 */
-char *String_join(char *sDelimeter, char *sTerminator, ...) {
+char *String_join(char *sDelimeter, char *sTerminator, int dWrapLength, ...) {
 
   // Variable string params
   va_list vStrings;
-  va_start(vStrings, sTerminator);
+  va_start(vStrings, dWrapLength);
   char *string, *sOutput = calloc(1, 1);
+  int dStartingPoint = 0, bIsDelimeter = 0, i;
 
   // We go out of the loop once we hit the last argument
   for(;;) {
@@ -169,7 +172,10 @@ char *String_join(char *sDelimeter, char *sTerminator, ...) {
     // Reallocate string each time
     // Note the + length of the delimeter
     string = va_arg(vStrings, char *);
-    sOutput = realloc(sOutput, (strlen(sOutput) + strlen(string) + strlen(sDelimeter) + 1) * sizeof(char));
+    sOutput = realloc(sOutput, (
+      strlen(sOutput) + 
+      strlen(string) + 
+      strlen(sDelimeter) + 1) * sizeof(char));
 
     // We've hit the terminator
     if(!strcmp(string, sTerminator)) {
@@ -177,9 +183,72 @@ char *String_join(char *sDelimeter, char *sTerminator, ...) {
       return sOutput;
     }
     
-    // Append string to output
-    strcat(sOutput, string);
-    strcat(sOutput, sDelimeter);
+    // If the text has to wrap around
+    if(String_charCount(string) > dWrapLength && dWrapLength) {
+      
+      // Resize sOutput to account for new size
+      sOutput = realloc(sOutput, (
+        strlen(sOutput) + 
+        strlen(string) + 
+        strlen(sDelimeter) * 
+        (String_charCount(string) / dWrapLength + 4) + 4) * sizeof(char));
+
+      // Starting point for that line
+      dStartingPoint = 0;
+
+      // Start copying the string line by line
+      while(dStartingPoint < strlen(string)) {
+
+        // Copy string until wrap length
+        strncat(sOutput, string + dStartingPoint, dWrapLength);
+        dStartingPoint += dWrapLength;
+
+        // Remove end characters until we hit a space IF we're not on the last line
+        if(dStartingPoint < strlen(string)) {
+          while(sOutput[strlen(sOutput) - 1] != 32) {
+
+            // Otherwise, keep shrinking the string
+            sOutput[strlen(sOutput) - 1] = 0;
+            dStartingPoint--;
+            
+            // Output got too short
+            if(strlen(sOutput) < strlen(sDelimeter)) {
+              if(strlen(sOutput) < 1) {
+                strncat(sOutput, string + dStartingPoint, dWrapLength);
+                sOutput[strlen(sOutput) - 1] = 32;
+                dStartingPoint += dWrapLength - 1;
+              }
+
+            // We've possibly hit the end of the previous line
+            } else {
+              bIsDelimeter = 1;
+              
+              // Check if we've hit the delimeter
+              for(i = strlen(sDelimeter) - 1; i >= 0; i--) {
+                if(sOutput[strlen(sOutput) - i - 1] != sDelimeter[i])
+                  bIsDelimeter = 0;
+              }
+
+
+              // Just fck it and copy the next line cuz the token length was too long
+              if(bIsDelimeter) {
+                strncat(sOutput, string + dStartingPoint, dWrapLength);
+                sOutput[strlen(sOutput) - 1] = 32;
+                dStartingPoint += dWrapLength - 1;
+              }
+            }
+          }
+        }
+
+        // Copy the delimeter
+        strcat(sOutput, sDelimeter);
+      }
+
+    // Otherwise, just copy the line
+    } else {
+      strcat(sOutput, string);
+      strcat(sOutput, sDelimeter);
+    }
   }
 }
 
@@ -187,14 +256,16 @@ char *String_join(char *sDelimeter, char *sTerminator, ...) {
  * Repeat a certain string pattern before a certain length is reached.
  * 
  * @param   { char * }  sUnit     The unit to repeat.
- * @param   { int }     dLength   Length up until to keep repeating.
+ * @param   { int }     dLength   Length up until to keep repeating; note that this is number of chars not number of bytes.
  * @return  { char * }            The output string.
 */
 char *String_repeat(char *sUnit, int dLength) { 
-  char *sOutput = String_alloc(dLength + 1);
+
+  // It's *4 because we have to account for Unicode chars
+  char *sOutput = String_alloc(dLength * 4 + 4);
 
   // Create the pattern string
-  while(strlen(sOutput) + strlen(sUnit) < dLength)
+  while(String_charCount(sOutput) + String_charCount(sUnit) < dLength)
     strcat(sOutput, sUnit);
 
   return sOutput;
