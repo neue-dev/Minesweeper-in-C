@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 00:37:29
+ * @ Modified time: 2024-03-14 00:46:56
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -85,35 +85,49 @@ void PageHandler_help(p_obj pArgs_Page) {
     break;
 
     case PAGE_ACTIVE_RUNNING:
+
+      // Switch based on what key was last pressed
+      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+
+        // Exit the page
+        case 8: case 27:
+          Page_nextStage(this);
+        break;
+
+        default:
+
+        break;
+      }
       
       // Animations
       switch(this->dStage) {
         
-        case 0: 
+        case 0:     // The header
           if(Page_getComponentDist(this, sTitleComponent, 0) < MATH_E_POS1)
             Page_nextStage(this);
         break;
 
-        case 1:
-          Page_setComponentTransitionSpeed(this, sDividerComponent, 0.7);
+        case 1:     // The divider
+          Page_setComponentTransitionSpeed(this, sDividerComponent, 0.8);
           
           if(Page_getComponentDist(this, sDividerComponent, 1) < MATH_E_POS1)
             Page_nextStage(this);
         break;
 
-        case 2:
+        case 2:     // The help text 
           Page_setComponentTransitionSpeed(this, sBodyTextComponent, 0.8);
 
           if(Page_getComponentDist(this, sBodyTextComponent, 1) < MATH_E_POS1)
             Page_nextStage(this);
         break;
 
-        case 3:
-          Page_setComponentTransitionSpeed(this, sPromptTextComponent, 0.7);
+        case 3:     // The exit prompt
+          Page_setComponentTransitionSpeed(this, sPromptTextComponent, 0.8);
         break;
 
-        default:
-
+        default:    // Exit the page
+          Page_idle(this);
+          Page_setNext(this, "menu");
         break;
       }
 

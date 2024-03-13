@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-12 23:12:17
+ * @ Modified time: 2024-03-14 00:41:31
  * @ Description:
  * 
  * This file defines the page handler for the intro.
@@ -48,7 +48,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
       // Set initials
       Page_resetComponentInitialSize(this, sOuterBoxComponent, 0, 0);
       Page_resetComponentInitialSize(this, sInnerBoxComponent, 0, 0);
-      Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, 0);
+
+      Page_setComponentTargetSize(this, sOuterBoxComponent, 25, 12, 0.0);
+      Page_setComponentTargetSize(this, sInnerBoxComponent, 21, 10, 0.0);
+      Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, 0.0);
       
     break;
 
@@ -63,15 +66,15 @@ void PageHandler_intro(p_obj pArgs_Page) {
         break;
 
         case 1:   // Make the box enlarge
-          Page_setComponentTargetSize(this, sOuterBoxComponent, 25, 12, 0.5);
-          Page_setComponentTargetSize(this, sInnerBoxComponent, 21, 10, 0.5);
+          Page_setComponentTransitionSpeed(this, sOuterBoxComponent, 0.5);
+          Page_setComponentTransitionSpeed(this, sInnerBoxComponent, 0.5);
 
           if(Page_getComponentDist(this, sInnerBoxComponent, 2) < MATH_E_NEG1)
             Page_nextStage(this);
         break;
 
         case 2:   // Make the logo fly to the center
-          Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, PAGE_NULL_INT, 0.84);
+          Page_setComponentTransitionSpeed(this, sLogoComponent, 0.84);
 
           if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG5)
             Page_nextStage(this);

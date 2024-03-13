@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-14 00:34:58
+ * @ Modified time: 2024-03-14 00:47:58
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -801,6 +801,7 @@ void Page_idle(Page *this) {
 void Page_activate(Page *this) {
   this->ePageStatus = PAGE_ACTIVE_INIT;
   this->dT = 0;
+  this->dStage = 0;
 }
 
 /**
