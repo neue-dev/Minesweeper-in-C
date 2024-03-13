@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-14 00:47:58
+ * @ Modified time: 2024-03-14 00:50:35
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -199,6 +199,9 @@ void Page_setUserState(Page *this, char *sStateKey, char cData) {
  * @param   { char * }  sStateKey   The key of state to read.
 */
 char Page_getUserState(Page *this, char *sStateKey) {
+  if(HashMap_get(this->pUserStates, sStateKey) == NULL)
+    return -1;
+
   return *(char *) HashMap_get(this->pUserStates, sStateKey);
 }
 

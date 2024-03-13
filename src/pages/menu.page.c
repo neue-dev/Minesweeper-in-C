@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 00:30:40
+ * @ Modified time: 2024-03-14 01:00:08
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -22,7 +22,7 @@
 void PageHandler_menu(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, i;
+  int dWidth, dHeight, i, j;
 
   // Component names
   char *sMenuComponent = "menu-fixed";
@@ -127,8 +127,8 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_setComponentTargetPosition(this, sPromptComponent, PAGE_NULL_INT, 7, 0.9);
 
       // Define initial user states
-      Page_setUserState(this, "menu-selector", 0);
-      Page_setUserState(this, "menu-selector-length", dMenuSelectorLength);
+      if(Page_getUserState(this, "menu-selector") == -1) Page_setUserState(this, "menu-selector", 0);
+      if(Page_getUserState(this, "menu-selector-length") == -1) Page_setUserState(this, "menu-selector-length", dMenuSelectorLength);
       
     break;
 
@@ -173,7 +173,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
         break;
 
         case 1:   // Display the selector
-          for(i = 0; i < dMenuSelectorLength; i++) {
+          for(i = 0, j = 0; i < dMenuSelectorLength; i++) {
 
             // Create the key
             String_keyAndStr(sIconKey, "menu", sMenuSelectors[i][1]);
@@ -187,13 +187,29 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
             // Put the component in view
             } else if(i == cMenuSelector) {
-              Page_setComponentTargetPosition(this, sIconKey, 0, PAGE_NULL_INT, 0.83);
+              j = i;
+
+              Page_setComponentTargetPosition(this, sIconKey, 0, PAGE_NULL_INT, 0.8);
               Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, 1);
               Page_resetComponentInitialPosition(this, sSelectorComponent, i * 4 + 6, PAGE_NULL_INT);
-            
+
             // Hide the components to the right
             } else {
               Page_setComponentTargetPosition(this, sIconKey, 512, PAGE_NULL_INT, -0.9995);
+            }
+
+          }
+          
+          // Get the current icon
+          String_keyAndStr(sIconKey, "menu", sMenuSelectors[j][1]);
+
+          // If it's already there, just fast forward the other components to their positions
+          if(Page_getComponentDist(this, sIconKey, 0) < MATH_E_POS1) {
+            for(i = 0; i < dMenuSelectorLength; i++) {
+              if(i != j) {
+                String_keyAndStr(sIconKey, "menu", sMenuSelectors[i][1]);
+                Page_setComponentTransitionSpeed(this, sIconKey, 1.0);
+              }
             }
           }
         break;
