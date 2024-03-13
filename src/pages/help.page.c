@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-13 23:22:45
+ * @ Modified time: 2024-03-14 00:37:29
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -22,13 +22,15 @@
 void PageHandler_help(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, i;
+  int dWidth, dHeight, dMargin, i;
 
   // Components
-  char *sHelpComponent = "help-col";
+  char *sHelpComponent = "help-fixed";
+  char *sHelpContainerComponent = "help.container-col";
   char *sTitleComponent = "title-aleft.x-abottom.y";
   char *sDividerComponent = "divider-aleft.x-abottom.y";
   char *sBodyTextComponent = "body.text-aleft.x-atop.y";
+  char *sPromptTextComponent = "prompt.text-aright.x-atop.y";
 
   // Page title and asset
   char *sPageTitleFont = "body-font";
@@ -45,6 +47,7 @@ void PageHandler_help(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
+      dMargin = 10;
 
       // Create text assets
       AssetManager_createTextAsset(this->pSharedAssetManager, sPageTitle, sPageTitleFont);
@@ -54,10 +57,11 @@ void PageHandler_help(p_obj pArgs_Page) {
 
       // Create component tree
       Page_addComponentContext(this, sHelpComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
-      Page_addComponentAsset(this, sTitleComponent, sHelpComponent, -100, 6, "", "", sPageTitleKey);
-      Page_addComponentText(this, sDividerComponent, sHelpComponent, -100, 0, "accent", "", String_repeat("▄", dWidth - 16));
-      Page_addComponentText(this, sBodyTextComponent, sHelpComponent, -100, 1, "", "",
-        String_join("\n", "-", dWidth - 16,
+      Page_addComponentContainer(this, sHelpContainerComponent, sHelpComponent, dMargin, 0);
+      Page_addComponentAsset(this, sTitleComponent, sHelpContainerComponent, -100, 6, "", "", sPageTitleKey);
+      Page_addComponentText(this, sDividerComponent, sHelpContainerComponent, 0, 0, "accent", "", String_repeat("▄", dWidth - dMargin * 2));
+      Page_addComponentText(this, sBodyTextComponent, sHelpContainerComponent, 0, 2, "", "",
+        String_join("\n", "-", dWidth - dMargin * 2,
           "MINEZ is a minesweeper spin-off implemented in C with some neat bonus features.",
           "",
           "The goal of the game is to identify all the cells with mines on them by using the numerical hints provided throughout the grid.",
@@ -67,11 +71,17 @@ void PageHandler_help(p_obj pArgs_Page) {
           "More information about the controls can be found in the settings, although these will also be given as you play along.",
           "-"
         ));
+      Page_addComponentText(this, sPromptTextComponent, sHelpContainerComponent, 999, 4, 
+        "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
 
       // Start animations
-      Page_setComponentTargetPosition(this, sTitleComponent, 7, PAGE_NULL_INT, 0.7);
-      Page_setComponentTargetPosition(this, sDividerComponent, 8, PAGE_NULL_INT, 0.7);
-      Page_setComponentTargetPosition(this, sBodyTextComponent, 8, PAGE_NULL_INT, 0.7);
+      Page_resetComponentInitialPosition(this, sDividerComponent, PAGE_NULL_INT, 100);
+      Page_resetComponentInitialPosition(this, sBodyTextComponent, PAGE_NULL_INT, 100);
+
+      Page_setComponentTargetPosition(this, sTitleComponent, -1, PAGE_NULL_INT, 0.7);
+      Page_setComponentTargetPosition(this, sPromptTextComponent, dWidth - dMargin * 2, PAGE_NULL_INT, 0.0);
+      Page_setComponentTargetPosition(this, sDividerComponent, PAGE_NULL_INT, 0, 0.0);
+      Page_setComponentTargetPosition(this, sBodyTextComponent, PAGE_NULL_INT, 2, 0.0);
     break;
 
     case PAGE_ACTIVE_RUNNING:
@@ -80,7 +90,30 @@ void PageHandler_help(p_obj pArgs_Page) {
       switch(this->dStage) {
         
         case 0: 
+          if(Page_getComponentDist(this, sTitleComponent, 0) < MATH_E_POS1)
+            Page_nextStage(this);
+        break;
+
+        case 1:
+          Page_setComponentTransitionSpeed(this, sDividerComponent, 0.7);
           
+          if(Page_getComponentDist(this, sDividerComponent, 1) < MATH_E_POS1)
+            Page_nextStage(this);
+        break;
+
+        case 2:
+          Page_setComponentTransitionSpeed(this, sBodyTextComponent, 0.8);
+
+          if(Page_getComponentDist(this, sBodyTextComponent, 1) < MATH_E_POS1)
+            Page_nextStage(this);
+        break;
+
+        case 3:
+          Page_setComponentTransitionSpeed(this, sPromptTextComponent, 0.7);
+        break;
+
+        default:
+
         break;
       }
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-13 23:23:54
+ * @ Modified time: 2024-03-14 00:34:58
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -605,6 +605,18 @@ void Page_setComponentTargetSize(Page *this, char *sKey, int w, int h, float fTr
 */
 void Page_setComponentTargetColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey, float fTransitionSpeed) {
   Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, sColorFGKey, sColorBGKey, fTransitionSpeed);
+}
+
+/**
+ * A shorthand function for _setComponentTarget().
+ * Only accepts parameters for transition speed.
+ * 
+ * @param   { Page * }  this              The page to modify.
+ * @param   { char * }  sKey              The component to modify.
+ * @param   { float }   fTransitionSpeed  How fast the component should move.
+*/
+void Page_setComponentTransitionSpeed(Page *this, char *sKey, float fTransitionSpeed) {
+  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, "", "", fTransitionSpeed);
 }
 
 /**
