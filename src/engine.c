@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-14 00:48:18
+ * @ Modified time: 2024-03-14 10:34:56
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -31,7 +31,6 @@
 #include "./pages/menu.page.c"
 #include "./pages/account.page.c"
 #include "./pages/help.page.c"
-#include "./pages/about.page.c"
 
 // The events we have for our program
 #include "./events.c"
@@ -139,7 +138,6 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "menu", PageHandler_menu);
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_createPage(&this->pageManager, "about", PageHandler_about);
   PageManager_setActive(&this->pageManager, "intro");
 
   /**

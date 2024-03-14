@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 00:46:56
+ * @ Modified time: 2024-03-14 10:20:12
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -75,13 +75,13 @@ void PageHandler_help(p_obj pArgs_Page) {
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
 
       // Start animations
-      Page_resetComponentInitialPosition(this, sDividerComponent, PAGE_NULL_INT, 100);
-      Page_resetComponentInitialPosition(this, sBodyTextComponent, PAGE_NULL_INT, 100);
+      Page_resetComponentInitialPosition(this, sDividerComponent, -100, PAGE_NULL_INT);
+      Page_resetComponentInitialPosition(this, sBodyTextComponent, -100, PAGE_NULL_INT);
 
       Page_setComponentTargetPosition(this, sTitleComponent, -1, PAGE_NULL_INT, 0.7);
       Page_setComponentTargetPosition(this, sPromptTextComponent, dWidth - dMargin * 2, PAGE_NULL_INT, 0.0);
-      Page_setComponentTargetPosition(this, sDividerComponent, PAGE_NULL_INT, 0, 0.0);
-      Page_setComponentTargetPosition(this, sBodyTextComponent, PAGE_NULL_INT, 2, 0.0);
+      Page_setComponentTargetPosition(this, sDividerComponent, 0, PAGE_NULL_INT, 0.0);
+      Page_setComponentTargetPosition(this, sBodyTextComponent, 0, PAGE_NULL_INT, 0.0);
     break;
 
     case PAGE_ACTIVE_RUNNING:
@@ -110,14 +110,14 @@ void PageHandler_help(p_obj pArgs_Page) {
         case 1:     // The divider
           Page_setComponentTransitionSpeed(this, sDividerComponent, 0.8);
           
-          if(Page_getComponentDist(this, sDividerComponent, 1) < MATH_E_POS1)
+          if(Page_getComponentDist(this, sDividerComponent, 0) < MATH_E_POS1)
             Page_nextStage(this);
         break;
 
         case 2:     // The help text 
           Page_setComponentTransitionSpeed(this, sBodyTextComponent, 0.8);
 
-          if(Page_getComponentDist(this, sBodyTextComponent, 1) < MATH_E_POS1)
+          if(Page_getComponentDist(this, sBodyTextComponent, 0) < MATH_E_POS1)
             Page_nextStage(this);
         break;
 
