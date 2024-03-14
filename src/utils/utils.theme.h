@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-14 11:22:54
+ * @ Modified time: 2024-03-14 11:42:48
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -10,11 +10,14 @@
 #ifndef UTILS_THEME_
 #define UTILS_THEME_
 
+#include "./utils.file.h"
 #include "./utils.hashmap.h"
 #include "./utils.graphics.h"
 #include "./utils.types.h"
 
 #include <stdlib.h>
+
+#define THEME_FILE_MAX_LEN (1 << 12)
 
 typedef struct Theme Theme;
 typedef struct ThemeManager ThemeManager;
@@ -309,6 +312,25 @@ color ThemeManager_getActive(ThemeManager* this, char *sKey) {
 
   // Bad input
   return -1;
+}
+
+/**
+ * Reads and parses the themes contained in a themes file.
+*/
+void ThemeManager_readThemeFile(ThemeManager *this, char *sFilepath) {
+
+  // The length of the output buffer and the theme file
+  int dThemeFileBufferLength = 0;
+  char *sThemeFileBuffer[THEME_FILE_MAX_LEN];
+  File *pThemeFile = File_create(sFilepath);
+
+  File_read(pThemeFile, THEME_FILE_MAX_LEN, 
+    &dThemeFileBufferLength, 
+    sThemeFileBuffer);
+
+  // ! remove
+  for(int i = 0; i < dThemeFileBufferLength; i++)
+    printf(sThemeFileBuffer[i]);
 }
 
 #endif
