@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-13 22:48:25
+ * @ Modified time: 2024-03-14 11:22:54
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -197,7 +197,7 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pDefaultTheme, "primary", 0xfef9ff);
   Theme_addColor(pDefaultTheme, "secondary", 0x111317);
   Theme_addColor(pDefaultTheme, "accent", 0xf18f01);
-  Theme_addColor(pDefaultTheme, "anti.accent", 0x4282b3);  
+  Theme_addColor(pDefaultTheme, "anti-accent", 0x4282b3);  
 
   // Create and add colors to the default night theme
   // ! remove this too
@@ -206,7 +206,7 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pNightTheme, "primary", 0x010600);
   Theme_addColor(pNightTheme, "secondary", 0xeeece8);
   Theme_addColor(pNightTheme, "accent", 0x0e70fe);
-  Theme_addColor(pNightTheme, "anti.accent", 0xbd7d4c);  
+  Theme_addColor(pNightTheme, "anti-accent", 0xbd7d4c);  
 
   // Create and add colors to the default night theme
   // ! remove this later on
@@ -215,7 +215,7 @@ void ThemeManager_init(ThemeManager *this) {
   Theme_addColor(pOtherTheme, "primary", 0xf2efea);
   Theme_addColor(pOtherTheme, "secondary", 0x252627); //0x33202a);
   Theme_addColor(pOtherTheme, "accent", 0xbb0a21);//0xdb1a30);
-  Theme_addColor(pOtherTheme, "anti.accent", 0x748386);  
+  Theme_addColor(pOtherTheme, "anti-accent", 0x748386);  
 
   // Add the default theme to the theme manager
   HashMap_add(this->pThemeMap, "default", pDefaultTheme);
