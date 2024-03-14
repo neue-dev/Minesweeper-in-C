@@ -20,6 +20,7 @@
 [Passing Arguments to _beginthread]       https://stackoverflow.com/questions/20412633/calling-beginthreadx-with-passing-function-pointers
 [Printing Unicode in C]                   https://stackoverflow.com/questions/43834315/printing-a-unicode-symbol-in-c
 [puts() is Apparerntly So Fast]           https://cboard.cprogramming.com/c-programming/179502-best-way-print-large-amount-text.html
+[Resizing gnome terminal]                 https://askubuntu.com/questions/1037463/how-to-resize-terminal-window-permanently-using-cli
 [Scientific notation in C]                https://stackoverflow.com/questions/16905988/how-to-represent-scientific-notation-in-c
 [Some stuff about file handling]          https://stackoverflow.com/questions/8175827/what-happens-if-i-dont-call-fclose-in-a-c-program
 [Timeouts in C Unix]                      https://stackoverflow.com/questions/46365448/pthread-mutex-timedlock-exiting-prematurely-without-waiting-for-timeout

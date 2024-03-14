@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-03-10 00:27:11
+ * @ Modified time: 2024-03-14 09:56:31
  * 
  *    ▀████▄     ▄███▀▀████▀▀███▄   ▀███▀▀███▀▀▀███ ███▀▀▀███         █      
  *      ████    ████    ██    ███▄    █    ██    ▀█ █▀   ███      ▀▄█████▄▀  
@@ -72,6 +72,10 @@ int main(int argc, char *argv[]) {
     system("tput civis");
     printf("\e[H\e[2J\e[3J");
     printf("\n\n\tThe game is loading...\n");
+    
+    // We have no choice but to launch a new window if we wanna resize
+    // Also, this doesn't work on KDE so GG (idk how to do smth similar there)
+    system("gnome-terminal --geometry=96x40 -- ./build/minesweeper.unix.o");
     system("./build/minesweeper.unix.o");
 
     // Reset colors and cursor in case of crash
