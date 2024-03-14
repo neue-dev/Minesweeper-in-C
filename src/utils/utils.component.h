@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-12 23:35:57
+ * @ Modified time: 2024-03-14 11:25:51
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -163,32 +163,32 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
   while(i <= dNameLength) {
 
     // It's a new subpart of the name
-    if(sName[i] == '-' || !sName[i]) {
+    if(sName[i] == '.' || !sName[i]) {
       
       // Determine what kind of component it is
       if(!strcmp(sNameSubpart, "row")) this->eComponentType = COMPONENT_SINGLE_ROW;
       else if(!strcmp(sNameSubpart, "col")) this->eComponentType = COMPONENT_SINGLE_COL;
       else if(!strcmp(sNameSubpart, "multirow")) this->eComponentType = COMPONENT_MULTI_ROW;
       else if(!strcmp(sNameSubpart, "multicol")) this->eComponentType = COMPONENT_MULTI_COL;
-      else if(!strcmp(sNameSubpart, "row.col")) this->eComponentType = COMPONENT_ROW_COL;
-      else if(!strcmp(sNameSubpart, "col.row")) this->eComponentType = COMPONENT_COL_ROW;
+      else if(!strcmp(sNameSubpart, "row-col")) this->eComponentType = COMPONENT_ROW_COL;
+      else if(!strcmp(sNameSubpart, "col-row")) this->eComponentType = COMPONENT_COL_ROW;
       else if(!strcmp(sNameSubpart, "fixed")) this->eComponentType = COMPONENT_FIXED;
 
       // Determine the alignment of its children
-      else if(!strcmp(sNameSubpart, "left.x")) this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
-      else if(!strcmp(sNameSubpart, "center.x")) this->eComponentAlignmentX = COMPONENT_CENTER_ALIGN_X;
-      else if(!strcmp(sNameSubpart, "right.x")) this->eComponentAlignmentX = COMPONENT_RIGHT_ALIGN_X;
-      else if(!strcmp(sNameSubpart, "top.y")) this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
-      else if(!strcmp(sNameSubpart, "center.y")) this->eComponentAlignmentY = COMPONENT_CENTER_ALIGN_Y;
-      else if(!strcmp(sNameSubpart, "bottom.y")) this->eComponentAlignmentY = COMPONENT_BOTTOM_ALIGN_Y;
+      else if(!strcmp(sNameSubpart, "left-x")) this->eComponentAlignmentX = COMPONENT_LEFT_ALIGN_X;
+      else if(!strcmp(sNameSubpart, "center-x")) this->eComponentAlignmentX = COMPONENT_CENTER_ALIGN_X;
+      else if(!strcmp(sNameSubpart, "right-x")) this->eComponentAlignmentX = COMPONENT_RIGHT_ALIGN_X;
+      else if(!strcmp(sNameSubpart, "top-y")) this->eComponentAlignmentY = COMPONENT_TOP_ALIGN_Y;
+      else if(!strcmp(sNameSubpart, "center-y")) this->eComponentAlignmentY = COMPONENT_CENTER_ALIGN_Y;
+      else if(!strcmp(sNameSubpart, "bottom-y")) this->eComponentAlignmentY = COMPONENT_BOTTOM_ALIGN_Y;
 
       // Determine the alignment of its own asset / position
-      else if(!strcmp(sNameSubpart, "aleft.x")) this->eComponentAnchorX = COMPONENT_LEFT_ANCHOR_X;
-      else if(!strcmp(sNameSubpart, "acenter.x")) this->eComponentAnchorX = COMPONENT_CENTER_ANCHOR_X;
-      else if(!strcmp(sNameSubpart, "aright.x")) this->eComponentAnchorX = COMPONENT_RIGHT_ANCHOR_X;
-      else if(!strcmp(sNameSubpart, "atop.y")) this->eComponentAnchorY = COMPONENT_TOP_ANCHOR_Y;
-      else if(!strcmp(sNameSubpart, "acenter.y")) this->eComponentAnchorY = COMPONENT_CENTER_ANCHOR_Y;
-      else if(!strcmp(sNameSubpart, "abottom.y")) this->eComponentAnchorY = COMPONENT_BOTTOM_ANCHOR_Y;
+      else if(!strcmp(sNameSubpart, "aleft-x")) this->eComponentAnchorX = COMPONENT_LEFT_ANCHOR_X;
+      else if(!strcmp(sNameSubpart, "acenter-x")) this->eComponentAnchorX = COMPONENT_CENTER_ANCHOR_X;
+      else if(!strcmp(sNameSubpart, "aright-x")) this->eComponentAnchorX = COMPONENT_RIGHT_ANCHOR_X;
+      else if(!strcmp(sNameSubpart, "atop-y")) this->eComponentAnchorY = COMPONENT_TOP_ANCHOR_Y;
+      else if(!strcmp(sNameSubpart, "acenter-y")) this->eComponentAnchorY = COMPONENT_CENTER_ANCHOR_Y;
+      else if(!strcmp(sNameSubpart, "abottom-y")) this->eComponentAnchorY = COMPONENT_BOTTOM_ANCHOR_Y;
 
       // Clear the name component
       while(--j >= 0) 

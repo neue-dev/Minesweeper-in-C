@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 10:53:16
+ * @ Modified time: 2024-03-14 11:29:27
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -25,12 +25,12 @@ void PageHandler_help(p_obj pArgs_Page) {
   int dWidth, dHeight, dMargin, i;
 
   // Components
-  char *sHelpComponent = "help-fixed";
-  char *sHelpContainerComponent = "help.container-col";
-  char *sTitleComponent = "title-aleft.x-abottom.y";
-  char *sDividerComponent = "divider-aleft.x-abottom.y";
-  char *sBodyTextComponent = "body.text-aleft.x-atop.y";
-  char *sPromptTextComponent = "prompt.text-aright.x-atop.y";
+  char *sHelpComponent = "help.fixed";
+  char *sHelpContainerComponent = "help-container.col";
+  char *sTitleComponent = "title.aleft-x.abottom-y";
+  char *sDividerComponent = "divider.aleft-x.abottom-y";
+  char *sBodyTextComponent = "body-text.aleft-x.atop-y";
+  char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
   // Page title and asset
   char *sPageTitleFont = "body-font";

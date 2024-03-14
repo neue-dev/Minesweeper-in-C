@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 10:48:28
+ * @ Modified time: 2024-03-14 11:28:38
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -25,14 +25,14 @@ void PageHandler_menu(p_obj pArgs_Page) {
   int dWidth, dHeight, i, j;
 
   // Component names
-  char *sMenuComponent = "menu-fixed";
-  char *sTitleComponent = "title-row-acenter.x";
-  char *sSelectionComponent = "selection-col";
-  char *sIconContainerComponent = "icon-fixed-acenter.x-acenter.y";
-  char *sSelectorComponent = "selector-acenter.x";
-  char *sCategoryTitleContainer = "cat.title-fixed-acenter.x-acenter.y";
-  char *sIndicatorContainerComponent = "indicator-row-acenter.x-acenter.y";
-  char *sPromptComponent = "prompt-acenter.x-acenter.y";
+  char *sMenuComponent = "menu.fixed";
+  char *sTitleComponent = "title.row.acenter-x";
+  char *sSelectionComponent = "selection.col";
+  char *sIconContainerComponent = "icon.fixed.acenter-x.acenter-y";
+  char *sSelectorComponent = "selector.acenter-x";
+  char *sCategoryTitleContainer = "cat-title.fixed.acenter-x.acenter-y";
+  char *sIndicatorContainerComponent = "indicator.row.acenter-x.acenter-y";
+  char *sPromptComponent = "prompt.acenter-x.acenter-y";
 
   // Variables for the title
   char *sTitle = "MINEZ";
@@ -51,12 +51,12 @@ void PageHandler_menu(p_obj pArgs_Page) {
   int dMenuSelectorLength = 6;
   char *sMenuSelectorFont = "body-font";
   char *sMenuSelectors[6][2] = {
-    { "play", "play-acenter.x"  },
-    { "custom", "custom-acenter.x" },
-    { "account", "account-acenter.x" },
-    { "settings", "settings-acenter.x" },
-    { "help", "help-acenter.x" },
-    { "logout", "logout-acenter.x" },
+    { "play", "play.acenter-x"  },
+    { "custom", "custom.acenter-x" },
+    { "account", "account.acenter-x" },
+    { "settings", "settings.acenter-x" },
+    { "help", "help.acenter-x" },
+    { "logout", "logout.acenter-x" },
   };
 
   // Do stuff based on page status

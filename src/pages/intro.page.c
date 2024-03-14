@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 00:41:31
+ * @ Modified time: 2024-03-14 11:27:02
  * @ Description:
  * 
  * This file defines the page handler for the intro.
@@ -25,10 +25,10 @@ void PageHandler_intro(p_obj pArgs_Page) {
   int dWidth, dHeight;
 
   // Component names
-  char *sIntroComponent = "intro-fixed";
-  char *sOuterBoxComponent = "box.outer-row.col-center.y-center.x-acenter.x-acenter.y";
-  char *sInnerBoxComponent = "box.inner-row.col-center.y-center.x-acenter.x-acenter.y";
-  char *sLogoComponent = "logo-acenter.x-acenter.y";
+  char *sIntroComponent = "intro.fixed";
+  char *sOuterBoxComponent = "box-outer.row-col.center-y.center-x.acenter-x.acenter-y";
+  char *sInnerBoxComponent = "box-inner.row-col.center-y.center-x.acenter-x.acenter-y";
+  char *sLogoComponent = "logo.acenter-x.acenter-y";
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
