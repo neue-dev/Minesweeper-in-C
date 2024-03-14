@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 10:20:12
+ * @ Modified time: 2024-03-14 10:53:16
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -63,15 +63,15 @@ void PageHandler_help(p_obj pArgs_Page) {
       Page_addComponentText(this, sBodyTextComponent, sHelpContainerComponent, 0, 2, "", "",
         String_join("\n", "-", dWidth - dMargin * 2,
           "MINEZ is a minesweeper spin-off implemented in C with some neat bonus features.",
-          "",
+          "","",
           "The goal of the game is to identify all the cells with mines on them by using the numerical hints provided throughout the grid.",
-          "",
+          "","",
           "Each hint tells us how many mines are adjacent to any given cell. To identify a cell as having a mine, simply plant a flag on it.",
-          "",
+          "","",
           "More information about the controls can be found in the settings, although these will also be given as you play along.",
           "-"
         ));
-      Page_addComponentText(this, sPromptTextComponent, sHelpContainerComponent, 999, 4, 
+      Page_addComponentText(this, sPromptTextComponent, sHelpComponent, 999, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
 
       // Start animations
@@ -79,9 +79,10 @@ void PageHandler_help(p_obj pArgs_Page) {
       Page_resetComponentInitialPosition(this, sBodyTextComponent, -100, PAGE_NULL_INT);
 
       Page_setComponentTargetPosition(this, sTitleComponent, -1, PAGE_NULL_INT, 0.7);
-      Page_setComponentTargetPosition(this, sPromptTextComponent, dWidth - dMargin * 2, PAGE_NULL_INT, 0.0);
+      Page_setComponentTargetPosition(this, sPromptTextComponent, dWidth - dMargin, PAGE_NULL_INT, 0.0);
       Page_setComponentTargetPosition(this, sDividerComponent, 0, PAGE_NULL_INT, 0.0);
       Page_setComponentTargetPosition(this, sBodyTextComponent, 0, PAGE_NULL_INT, 0.0);
+      
     break;
 
     case PAGE_ACTIVE_RUNNING:
@@ -91,7 +92,7 @@ void PageHandler_help(p_obj pArgs_Page) {
 
         // Exit the page
         case 8: case 27:
-          Page_nextStage(this);
+          this->dStage = 999;
         break;
 
         default:

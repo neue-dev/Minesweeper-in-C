@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 10:36:31
+ * @ Modified time: 2024-03-14 10:48:28
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -217,7 +217,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
           Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, -100, -0.984);
           Page_setComponentTargetPosition(this, sSelectionComponent, PAGE_NULL_INT, 100, -0.984);
 
-          if(Page_getComponentDist(this, sSelectionComponent, 1) < MATH_E_NEG1)
+          if(Page_getComponentDist(this, sSelectionComponent, 1) < MATH_E_POS1)
             this->dStage++;
         break;
 
