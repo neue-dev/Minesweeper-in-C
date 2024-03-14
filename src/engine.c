@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-14 10:44:24
+ * @ Modified time: 2024-03-15 01:56:35
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -131,6 +131,11 @@ void Engine_init(Engine *this) {
 
   // I have no idea why but this makes the game launch faster ????
   AssetManager_createTextAsset(&this->assetManager, "a", "body-font");
+
+  /**
+   * Registers our themes
+  */
+  ThemeManager_readThemeFile(&this->themeManager, "./src/data/themes.data.txt");
 
   /**
    * Creates all our pages

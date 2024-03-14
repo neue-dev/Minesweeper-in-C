@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-14 11:42:48
+ * @ Modified time: 2024-03-15 02:06:34
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -191,39 +191,8 @@ struct ThemeManager {
 void ThemeManager_init(ThemeManager *this) {
 
   // Init some stuff
-  this->sActiveTheme = "other";
+  this->sActiveTheme = "default";
   this->pThemeMap = HashMap_create();
-
-  // Create and add colors to the default theme
-  Theme *pDefaultTheme = Theme_create();
-
-  Theme_addColor(pDefaultTheme, "primary", 0xfef9ff);
-  Theme_addColor(pDefaultTheme, "secondary", 0x111317);
-  Theme_addColor(pDefaultTheme, "accent", 0xf18f01);
-  Theme_addColor(pDefaultTheme, "anti-accent", 0x4282b3);  
-
-  // Create and add colors to the default night theme
-  // ! remove this too
-  Theme *pNightTheme = Theme_create();
-
-  Theme_addColor(pNightTheme, "primary", 0x010600);
-  Theme_addColor(pNightTheme, "secondary", 0xeeece8);
-  Theme_addColor(pNightTheme, "accent", 0x0e70fe);
-  Theme_addColor(pNightTheme, "anti-accent", 0xbd7d4c);  
-
-  // Create and add colors to the default night theme
-  // ! remove this later on
-  Theme *pOtherTheme = Theme_create();
-
-  Theme_addColor(pOtherTheme, "primary", 0xf2efea);
-  Theme_addColor(pOtherTheme, "secondary", 0x252627); //0x33202a);
-  Theme_addColor(pOtherTheme, "accent", 0xbb0a21);//0xdb1a30);
-  Theme_addColor(pOtherTheme, "anti-accent", 0x748386);  
-
-  // Add the default theme to the theme manager
-  HashMap_add(this->pThemeMap, "default", pDefaultTheme);
-  HashMap_add(this->pThemeMap, "other", pOtherTheme);
-  HashMap_add(this->pThemeMap, "night", pNightTheme);
 }
 
 /**
@@ -316,21 +285,86 @@ color ThemeManager_getActive(ThemeManager* this, char *sKey) {
 
 /**
  * Reads and parses the themes contained in a themes file.
+ * 
+ * ! add jsdoc
 */
 void ThemeManager_readThemeFile(ThemeManager *this, char *sFilepath) {
 
   // The length of the output buffer and the theme file
-  int dThemeFileBufferLength = 0;
+  int dThemeFileBufferLength = 0, dThemeStringLength = 0, i, j;
   char *sThemeFileBuffer[THEME_FILE_MAX_LEN];
   File *pThemeFile = File_create(sFilepath);
 
+  // A theme instance and its associated details
+  Theme *pTheme;
+  char sThemeName[STRING_KEY_MAX_LENGTH] = { 0 };
+  char sColorName[STRING_KEY_MAX_LENGTH] = { 0 };
+  char sHexValue[STRING_KEY_MAX_LENGTH] = { 0 };
+  int bIsValue = 0;
+
+  // Read the file
   File_read(pThemeFile, THEME_FILE_MAX_LEN, 
     &dThemeFileBufferLength, 
     sThemeFileBuffer);
 
-  // ! remove
-  for(int i = 0; i < dThemeFileBufferLength; i++)
-    printf(sThemeFileBuffer[i]);
+  // Create a theme for each line
+  for(i = 0; i < dThemeFileBufferLength; i++) {
+
+    // Get the length of the theme string
+    dThemeStringLength = strlen(sThemeFileBuffer[i]);
+
+    // Reset the theme name first
+    while(strlen(sThemeName)) sThemeName[strlen(sThemeName) - 1] = 0;
+
+    // Parse the theme name
+    j = 0;
+    while(sThemeFileBuffer[i][++j] != ']')
+      sThemeName[j - 1] = sThemeFileBuffer[i][j];
+
+    // If the key wasn't duplicated
+    if(HashMap_get(this->pThemeMap, sThemeName) == NULL) {
+
+      // Create a theme object
+      pTheme = Theme_create();
+      HashMap_add(this->pThemeMap, sThemeName, pTheme);
+
+      // Get the parameters
+      bIsValue = 0;
+      while(++j < dThemeStringLength) {
+        
+        // We have a comma character or its the end of the line
+        if(sThemeFileBuffer[i][j] == ',' || 
+          sThemeFileBuffer[i][j] == '\n' || 
+          sThemeFileBuffer[i][j] == '\r') {
+          
+          // Add the color to the theme
+          Theme_addColor(pTheme, sColorName, (int) strtol(sHexValue, NULL, 16));
+
+          // Reset the parameters
+          bIsValue = 0;
+          while(strlen(sColorName)) sColorName[strlen(sColorName) - 1] = 0;
+          while(strlen(sHexValue)) sHexValue[strlen(sHexValue) - 1] = 0;
+
+        // We get the name
+        } else {
+          
+          // Check whether we're parsing string or hex value
+          if(sThemeFileBuffer[i][j] == ':') {
+
+            // We're reading the hex value now
+            bIsValue = 1;
+          
+          // Keep copying stuff
+          } else {
+
+            // Copy the name or the value
+            if(!bIsValue) sColorName[strlen(sColorName)] = sThemeFileBuffer[i][j];
+            else sHexValue[strlen(sHexValue)] = sThemeFileBuffer[i][j];
+          } 
+        }
+      }
+    }
+  }
 }
 
 #endif

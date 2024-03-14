@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-13 23:52:05
+ * @ Modified time: 2024-03-15 01:23:42
  * @ Description:
  * 
  * The main game file.
@@ -45,8 +45,10 @@ int main() {
   // IO_init(&io);
   // IO_exit(&io);
 
-  printf(String_join("\n", "-", 16, "Theeeeeeeeeeeee quick brown foxxxxxxxxxx jumped over the lazy dog.", "-"));
-  printf("ahha");
+  ThemeManager themeManager;
+  ThemeManager_init(&themeManager);
+
+  ThemeManager_readThemeFile(&themeManager, "./src/data/themes.data.txt");
 
   while(1);
 
