@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-15 02:06:34
+ * @ Modified time: 2024-03-15 02:13:10
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -193,6 +193,16 @@ void ThemeManager_init(ThemeManager *this) {
   // Init some stuff
   this->sActiveTheme = "default";
   this->pThemeMap = HashMap_create();
+
+  // Create the default theme
+  Theme *pDefaultTheme = Theme_create();
+  Theme_addColor(pDefaultTheme, "primary", 0xfef9ff);
+  Theme_addColor(pDefaultTheme, "secondary", 0x111317);
+  Theme_addColor(pDefaultTheme, "accent", 0xf18f01);
+  Theme_addColor(pDefaultTheme, "anti-accent", 0x4282b3);
+
+  // Add it to hashmap
+  HashMap_add(this->pThemeMap, "default", pDefaultTheme);
 }
 
 /**

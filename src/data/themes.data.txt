@@ -1,3 +1,2 @@
-[default]primary:fef9ff,secondary:111317,accent:f18f01,anti-accent:4282b3
 [night]primary:010600,secondary:eeece8,accent:0e70fe,anti-accent:bd7d4c
 [red gash]primary:f2efea,secondary:252627,accent:bb0a21,anti-accent:748386
