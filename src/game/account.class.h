@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-09 14:10:12
- * @ Modified time: 2024-03-09 14:17:31
+ * @ Modified time: 2024-03-16 17:26:56
  * @ Description:
  * 
  * Represents account objects we have during runtime
@@ -22,6 +22,7 @@ typedef struct Account Account;
 */
 struct Account {
   char *sAccountName;
+  char *sPassword;
 };
 
 /**

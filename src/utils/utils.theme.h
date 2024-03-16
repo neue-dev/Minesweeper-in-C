@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-15 02:13:10
+ * @ Modified time: 2024-03-15 02:17:21
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -296,7 +296,8 @@ color ThemeManager_getActive(ThemeManager* this, char *sKey) {
 /**
  * Reads and parses the themes contained in a themes file.
  * 
- * ! add jsdoc
+ * @param   { ThemeManager * }  this        The theme manager.
+ * @param   { char * }          sFilepath   Where to find the themes file.
 */
 void ThemeManager_readThemeFile(ThemeManager *this, char *sFilepath) {
 
