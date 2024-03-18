@@ -1,5 +1,5 @@
-Prevent holding keys down on menu selection
-(add key-pressed and key-hold)
+REPRESENT ACCOUNT DATA IN binary
+THEME DATA DONT PUT IN BINARY SO WE CAN CHANGE IT
 
 Create a FAR_RIGHT, FAR_LEFT, FAR_UP, FAR_DOWN variables for flying stuff out of the screen
 There seems to be something wrong with one of the _exit() functions; IO_exit() is never called because of crash?

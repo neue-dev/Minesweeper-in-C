@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-18 11:13:00
+ * @ Modified time: 2024-03-18 11:45:13
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -125,6 +125,62 @@ void File_read(File *this, int n, int *h, char **sOutputBuffer) {
 
   // Set the height
   *h = i;
+
+  // Close the file
+  fclose(this->pFile);
+}
+
+/**
+ * Writes to a text file.
+ * This function overwrites the current data on a file.
+ * 
+ * @param   { File * }  this              The file we want to write to.
+ * @param   { int }     n                 How many lines we want to write.
+ * @param   { char * }  sContentBuffer[]  The lines we want to write.
+*/
+void File_writeText(File *this, int n, char *sContentBuffer[]) {
+  int i;
+
+  // Open the file
+  this->pFile = fopen(this->sPath, "w");
+
+  // The file could not be opened
+  if(this->pFile == NULL)
+    return;
+
+  // Write the content to the file
+  for(i = 0; i < n; i++) {
+    fputs(sContentBuffer[i], this->pFile);
+    fputs("\n", this->pFile);
+  }
+
+  fclose(this->pFile);
+}
+
+/**
+ * Writes to a binary file.
+ * This function overwrites the current data on a file.
+ * If the given pointer to the data object is NULL, we just exit the function.
+ * 
+ * @param   { File * }              this      The file we want to write to.
+ * @param   { int }                 n         The size of the object in bytes.
+ * @param   { p_obj }               pObject   The data of the object we want to write.
+*/
+void File_writeBin(File *this, int n, p_obj pObject) {
+
+  // Open the file
+  this->pFile = fopen(this->sPath, "wb");
+
+  // The file could not be opened
+  if(this->pFile == NULL)
+    return;
+
+  // If the pointer is somehow NULL
+  if(pObject == NULL)
+    return;
+
+  //Write the data to the file
+  fwrite(pObject, n, 1, this->pFile);
 
   // Close the file
   fclose(this->pFile);
