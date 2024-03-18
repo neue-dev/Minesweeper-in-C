@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-18 11:58:24
+ * @ Modified time: 2024-03-18 12:08:52
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -160,7 +160,7 @@ void File_readBinObject(File *this, int dOffset, int n, p_obj pOutputObject) {
 
 /**
  * Writes to a text file.
- * This function overwrites the current data on a file.
+ * This function only appends data to the existing content of the file.
  * 
  * @param   { File * }  this              The file we want to write to.
  * @param   { int }     n                 How many lines we want to write.
@@ -170,7 +170,7 @@ void File_writeText(File *this, int n, char *sContentBuffer[]) {
   int i;
 
   // Open the file
-  this->pFile = fopen(this->sPath, "w");
+  this->pFile = fopen(this->sPath, "a");
 
   // The file could not be opened
   if(this->pFile == NULL)
@@ -187,31 +187,40 @@ void File_writeText(File *this, int n, char *sContentBuffer[]) {
 
 /**
  * Writes to a binary file.
- * This function overwrites the current data on a file.
+ * This function only appends data to the existing content of the file.
  * If the given pointer to the data object is NULL, we just exit the function.
  * 
  * @param   { File * }              this      The file we want to write to.
  * @param   { int }                 n         The size of the object in bytes.
  * @param   { p_obj }               pObject   The data of the object we want to write.
+ * @return  { int }                           The starting point of the written data. -1 if the function exited prematurely.
 */
-void File_writeBin(File *this, int n, p_obj pObject) {
+int File_writeBin(File *this, int n, p_obj pObject) {
+  int fpos = -1;
 
   // Open the file
-  this->pFile = fopen(this->sPath, "wb");
+  this->pFile = fopen(this->sPath, "ab");
 
   // The file could not be opened
   if(this->pFile == NULL)
-    return;
+    return -1;
 
   // If the pointer is somehow NULL
   if(pObject == NULL)
-    return;
+    fclose(this->pFile);
+    return -1;
+
+  // Get the position of the "cursor" before writing
+  fpos = ftell(this->pFile);
 
   //Write the data to the file
   fwrite(pObject, n, 1, this->pFile);
 
   // Close the file
   fclose(this->pFile);
+
+  // Return the starting point of the data
+  return fpos;
 }
 
 
