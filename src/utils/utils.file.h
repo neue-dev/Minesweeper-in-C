@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-02 23:28:04
+ * @ Modified time: 2024-03-18 11:13:00
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -98,6 +98,10 @@ void File_read(File *this, int n, int *h, char **sOutputBuffer) {
 
   // Open the file
   this->pFile = fopen(this->sPath, "r");
+
+  // Exit the routine if it's not found or smth
+  if(this->pFile == NULL)
+    return;
 
   // While there are lines to read
   while(fgets(s, FILE_MAX_LINE_LEN, this->pFile) != NULL) {
