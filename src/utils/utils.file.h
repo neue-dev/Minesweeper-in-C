@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-18 11:50:59
+ * @ Modified time: 2024-03-18 11:58:24
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -131,13 +131,14 @@ void File_readText(File *this, int n, int *h, char **sOutputBuffer) {
 }
 
 /**
- * Reads the binary file stored at the path.
+ * Reads a single entry from the binary file stored at the path.
  * 
  * @param   { File * }    this            The file to read from.
+ * @param   { int }       dOffset         The offset from which to begin reading.
  * @param   { int }       n               The size of the object to write to.
  * @param   { p_obj }     pOutputObject   The object to write the data to.
 */
-void File_readBin(File *this, int n, p_obj pOutputObject) {
+void File_readBinObject(File *this, int dOffset, int n, p_obj pOutputObject) {
   int i = 0;
 
   // Open the file
@@ -146,6 +147,9 @@ void File_readBin(File *this, int n, p_obj pOutputObject) {
   // Exit the routine if it's not found or smth
   if(this->pFile == NULL)
     return;
+
+  // Set the offset first
+  fseek(this->pFile, dOffset, SEEK_SET);
 
   // Write the data and spit it into the object
   fread(pOutputObject, n, 1, this->pFile);
