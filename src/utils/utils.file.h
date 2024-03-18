@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-18 11:45:13
+ * @ Modified time: 2024-03-18 11:50:59
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -85,14 +85,14 @@ void File_kill(File *this) {
 }
 
 /**
- * Reads the file stored at the path.
+ * Reads the text file stored at the path.
  * 
  * @param   { File * }    this            The file to read from.
  * @param   { int }       n               How many lines we have in our output buffer.
  * @param   { int * }     h               The actual height of the output buffer.
  * @param   { char ** }   sOutputBuffer   We're to store the file contents.
 */
-void File_read(File *this, int n, int *h, char **sOutputBuffer) {
+void File_readText(File *this, int n, int *h, char **sOutputBuffer) {
   int i = 0;
   char *s = String_alloc(FILE_MAX_LINE_LEN);
 
@@ -125,6 +125,30 @@ void File_read(File *this, int n, int *h, char **sOutputBuffer) {
 
   // Set the height
   *h = i;
+
+  // Close the file
+  fclose(this->pFile);
+}
+
+/**
+ * Reads the binary file stored at the path.
+ * 
+ * @param   { File * }    this            The file to read from.
+ * @param   { int }       n               The size of the object to write to.
+ * @param   { p_obj }     pOutputObject   The object to write the data to.
+*/
+void File_readBin(File *this, int n, p_obj pOutputObject) {
+  int i = 0;
+
+  // Open the file
+  this->pFile = fopen(this->sPath, "rb");
+
+  // Exit the routine if it's not found or smth
+  if(this->pFile == NULL)
+    return;
+
+  // Write the data and spit it into the object
+  fread(pOutputObject, n, 1, this->pFile);
 
   // Close the file
   fclose(this->pFile);

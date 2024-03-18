@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-08 09:36:02
- * @ Modified time: 2024-03-15 02:17:21
+ * @ Modified time: 2024-03-18 11:52:22
  * @ Description:
  * 
  * A class for handling themes so changing colors individially doesnt end up becoming a pain in the ass.
@@ -314,7 +314,7 @@ void ThemeManager_readThemeFile(ThemeManager *this, char *sFilepath) {
   int bIsValue = 0;
 
   // Read the file
-  File_read(pThemeFile, THEME_FILE_MAX_LEN, 
+  File_readText(pThemeFile, THEME_FILE_MAX_LEN, 
     &dThemeFileBufferLength, 
     sThemeFileBuffer);
 
@@ -376,6 +376,10 @@ void ThemeManager_readThemeFile(ThemeManager *this, char *sFilepath) {
       }
     }
   }
+
+  // Kill the file if ever
+  if(pThemeFile != NULL)
+    File_kill(pThemeFile);
 }
 
 #endif

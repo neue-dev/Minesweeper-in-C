@@ -316,7 +316,7 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
     sAssetInstanceBuffer[i] = String_alloc(ASSET_MAX_WIDTH);
 
   // Read the file unto the buffer
-  File_read(pAssetFile, ASSET_FILE_MAX_LEN, 
+  File_readText(pAssetFile, ASSET_FILE_MAX_LEN, 
     &dAssetFileBufferLength,
     sAssetFileBuffer);
 
