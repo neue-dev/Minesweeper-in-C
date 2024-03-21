@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-21 19:48:33
+ * @ Modified time: 2024-03-21 21:54:26
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -78,7 +78,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_addComponentAsset(this, sTitleComponent, sMenuComponent, 12, 4, "", "", sTitleKey);
 
       // Selection area
-      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 12, 15);
+      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 80, 4);
       Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, 2, 0);
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, 0, 0);
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, -2, "accent", "accent", "selector");
