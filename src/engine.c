@@ -15,6 +15,11 @@
 
 // Game-related constructs
 #include "./game/account.class.h"
+#include "./game/field.obj.h"
+#include "./game/level-editor.game.c"
+#include "./game/play.game.c"
+#include "./game/profile.game.c"
+#include "./game/stats.game.c"
 
 // Our utils
 #include "./utils/utils.page.h"
