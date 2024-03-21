@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-21 16:24:35
+ * @ Modified time: 2024-03-21 16:32:43
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -139,6 +139,14 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
       c->x = -1;
       c->y = cMenuSelector * 4 + 2;
+
+      for(i = 0; i < dMenuSelectorLength; i++) {
+        c = HashMap_get(this->componentManager.pComponentMap, sMenuSelectors[i][1]);
+        c->colorFG = 0xcccccc;
+      }
+      
+      c = HashMap_get(this->componentManager.pComponentMap, sMenuSelectors[(int) cMenuSelector][1]);
+      c->colorFG = 0x212121;
 
     break;
 
