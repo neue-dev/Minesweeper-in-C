@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-15 01:56:35
+ * @ Modified time: 2024-03-21 15:49:42
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -27,7 +27,7 @@
 #include "./utils/utils.types.h"
 
 // The different pages
-#include "./pages/intro.page.c"
+#include "./pages/login.page.c"
 #include "./pages/menu.page.c"
 #include "./pages/account.page.c"
 #include "./pages/settings.page.c"
@@ -140,12 +140,12 @@ void Engine_init(Engine *this) {
   /**
    * Creates all our pages
   */
-  PageManager_createPage(&this->pageManager, "intro", PageHandler_intro);
+  PageManager_createPage(&this->pageManager, "login", PageHandler_login);
   PageManager_createPage(&this->pageManager, "menu", PageHandler_menu);
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "intro");
+  PageManager_setActive(&this->pageManager, "menu");
 
   /**
    * Creates event listeners and handlers, alongside their mutexes

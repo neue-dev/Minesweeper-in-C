@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-14 11:28:38
+ * @ Modified time: 2024-03-21 16:24:35
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -26,24 +26,21 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
   // Component names
   char *sMenuComponent = "menu.fixed";
-  char *sTitleComponent = "title.row.acenter-x";
+  char *sTitleComponent = "title.row.aleft-x";
   char *sSelectionComponent = "selection.col";
-  char *sIconContainerComponent = "icon.fixed.acenter-x.acenter-y";
-  char *sSelectorComponent = "selector.acenter-x";
-  char *sCategoryTitleContainer = "cat-title.fixed.acenter-x.acenter-y";
-  char *sIndicatorContainerComponent = "indicator.row.acenter-x.acenter-y";
-  char *sPromptComponent = "prompt.acenter-x.acenter-y";
+  char *sSelectorComponent = "selector.aleft-x";
+  char *sCategoryTitleContainer = "cat-title.col.aleft-x.atop-y";
+  char *sIndicatorContainerComponent = "indicator.col.aleft-x.atop-y";
+  char *sPromptComponent = "prompt.aleft-x.atop-y";
 
   // Variables for the title
-  char *sTitle = "MINEZ";
-  char *sTitleFontName = "header-font";
+  char *sTitle = "minez";
+  char *sTitleFont = "header-font";
   int dTitleLength = strlen(sTitle);
 
   // Refers to assets and components
+  char *sTitleKey[STRING_KEY_MAX_LENGTH];
   char sIndicatorKey[STRING_KEY_MAX_LENGTH];
-  char sComponentKey[STRING_KEY_MAX_LENGTH];
-  char sIconKey[STRING_KEY_MAX_LENGTH];
-  char sIconAssetKey[STRING_KEY_MAX_LENGTH];
   char sAssetKey[STRING_KEY_MAX_LENGTH];
 
   // User states and the selector assets
@@ -51,12 +48,12 @@ void PageHandler_menu(p_obj pArgs_Page) {
   int dMenuSelectorLength = 6;
   char *sMenuSelectorFont = "body-font";
   char *sMenuSelectors[6][2] = {
-    { "play", "play.acenter-x"  },
-    { "custom", "custom.acenter-x" },
-    { "account", "account.acenter-x" },
-    { "settings", "settings.acenter-x" },
-    { "help", "help.acenter-x" },
-    { "logout", "logout.acenter-x" },
+    { "play", "play.aleft-x"  },
+    { "custom", "custom.aleft-x" },
+    { "account", "account.aleft-x" },
+    { "settings", "settings.aleft-x" },
+    { "help", "help.aleft-x" },
+    { "logout", "logout.aleft-x" },
   };
 
   // Do stuff based on page status
@@ -68,34 +65,25 @@ void PageHandler_menu(p_obj pArgs_Page) {
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
 
+      // Create the title
+      String_keyAndStr(sTitleKey, sTitleFont, sTitle);
+      AssetManager_createTextAsset(this->pSharedAssetManager, sTitle, sTitleFont);
+
       // Create the assets we need
       for(i= 0; i < dMenuSelectorLength; i++)
         AssetManager_createTextAsset(this->pSharedAssetManager, sMenuSelectors[i][0], sMenuSelectorFont);
 
       // Add the primary components to the tree
       Page_addComponentContext(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
-      Page_addComponentContainer(this, sTitleComponent, sMenuComponent, dWidth / 2, -4);
-      
+      Page_addComponentAsset(this, sTitleComponent, sMenuComponent, 12, 4, "", "", sTitleKey);
+
       // Selection area
-      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 0, 0);
-      Page_addComponentContainer(this, sIconContainerComponent, sSelectionComponent, dWidth / 2, dHeight / 2 - 4);
-      Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, dWidth / 2, 8);
-      Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, dWidth / 2 - 3, 0);
-      Page_addComponentText(this, sPromptComponent, sSelectionComponent, dWidth / 2, 0, 
+      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 12, 15);
+      Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, 2, 0);
+      Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, 0, 0);
+      Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, -2, "accent", "accent", "selector");
+      Page_addComponentText(this, sPromptComponent, sSelectionComponent, 0, 27, 
         "secondary-lighten-0.5", "", "[wasd] to browse, [enter] to select");
-      Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, 0, "accent", "accent", "selector");
-
-      // Add each of the letters to the tree
-      for(i = 0; i < dTitleLength; i++) {
-
-        // Generate the keys first
-        String_keyAndId(sComponentKey, "title", i);
-        String_keyAndChar(sAssetKey, sTitleFontName, sTitle[i]);
-
-        // Add the letters and make them want to go to their targets
-        Page_addComponentAsset(this, sComponentKey, sTitleComponent, 0, pow(i + 1, 3) * -10 + 128, "", "", sAssetKey);  
-        Page_setComponentTargetPosition(this, sComponentKey, PAGE_NULL_INT, 0, 0.69);
-      }
 
       // Add the indicators and headers
       for(i = 0; i < dMenuSelectorLength; i++) {
@@ -103,27 +91,11 @@ void PageHandler_menu(p_obj pArgs_Page) {
         // Create the keys first
         String_keyAndId(sIndicatorKey, "indicator", i);
         String_keyAndStr(sAssetKey, sMenuSelectorFont, sMenuSelectors[i][0]);
-        String_keyAndStr(sIconKey, "menu", sMenuSelectors[i][1]);
-        String_keyAndStr(sIconAssetKey, "menu", sMenuSelectors[i][0]);
 
         // Add the component
-        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 3, 0, "secondary", "", "indicator");
-        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 0, -512, "secondary-lighten-0.2", "", sAssetKey);
-        Page_addComponentAsset(this, sIconKey, sIconContainerComponent, 0, 0, "accent", "", sIconAssetKey);
-
-        // Make the first component go to the center
-        if(i) Page_resetComponentInitialPosition(this, sIconKey, 512, PAGE_NULL_INT);
+        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 0, 3, "secondary-lighten-0.5", "", "indicator");
+        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 1, 2, "secondary-lighten-0.75", "", sAssetKey);
       }
-
-      // Set the initial location first
-      Page_resetComponentInitialPosition(this, sSelectionComponent, PAGE_NULL_INT, 100);
-      Page_resetComponentInitialPosition(this, sSelectorComponent, 6, PAGE_NULL_INT);
-
-      // Shift it down a bit
-      Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, 5, 0.7);
-      Page_setComponentTargetPosition(this, sSelectionComponent, PAGE_NULL_INT, 0, 0.9);
-      Page_setComponentTargetPosition(this, sIndicatorContainerComponent, PAGE_NULL_INT, 5, 0.9);
-      Page_setComponentTargetPosition(this, sPromptComponent, PAGE_NULL_INT, 7, 0.9);
 
       // Define initial user states
       if(Page_getUserState(this, "menu-selector") == -1) Page_setUserState(this, "menu-selector", 0);
@@ -162,70 +134,11 @@ void PageHandler_menu(p_obj pArgs_Page) {
           break;
         }
       }
-      
-      // Animations
-      switch(this->dStage) {
-        
-        case 0:   // After the title forms, go to next stage
-          if(Page_getComponentDist(this, sTitleComponent, 1) < MATH_E_NEG1)
-            Page_nextStage(this);
-        break;
 
-        case 1:   // Display the selector
-          for(i = 0, j = 0; i < dMenuSelectorLength; i++) {
+      Component *c = HashMap_get(this->componentManager.pComponentMap, sSelectorComponent);
 
-            // Create the key
-            String_keyAndStr(sIconKey, "menu", sMenuSelectors[i][1]);
-            
-            // Put the component out of view
-            Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, -512);
-
-            // Hide the components to the left
-            if(i < cMenuSelector) {
-              Page_setComponentTargetPosition(this, sIconKey, -512, PAGE_NULL_INT, -0.9995);
-
-            // Put the component in view
-            } else if(i == cMenuSelector) {
-              j = i;
-
-              Page_setComponentTargetPosition(this, sIconKey, 0, PAGE_NULL_INT, 0.8);
-              Page_resetComponentInitialPosition(this, sMenuSelectors[i][1], PAGE_NULL_INT, 1);
-              Page_resetComponentInitialPosition(this, sSelectorComponent, i * 4 + 6, PAGE_NULL_INT);
-
-            // Hide the components to the right
-            } else {
-              Page_setComponentTargetPosition(this, sIconKey, 512, PAGE_NULL_INT, -0.9995);
-            }
-
-          }
-          
-          // Get the current icon
-          String_keyAndStr(sIconKey, "menu", sMenuSelectors[j][1]);
-
-          // If it's already there, just fast forward the other components to their positions
-          if(Page_getComponentDist(this, sIconKey, 0) < MATH_E_POS1) {
-            for(i = 0; i < dMenuSelectorLength; i++) {
-              if(i != j) {
-                String_keyAndStr(sIconKey, "menu", sMenuSelectors[i][1]);
-                Page_setComponentTransitionSpeed(this, sIconKey, 1.0);
-              }
-            }
-          }
-        break;
-
-        case 2:   // User has chosen a page
-          Page_setComponentTargetPosition(this, sTitleComponent, PAGE_NULL_INT, -100, -0.984);
-          Page_setComponentTargetPosition(this, sSelectionComponent, PAGE_NULL_INT, 100, -0.984);
-
-          if(Page_getComponentDist(this, sSelectionComponent, 1) < MATH_E_POS1)
-            this->dStage++;
-        break;
-
-        default:  // The outro transition has ended
-          Page_idle(this);
-          Page_setNext(this, sMenuSelectors[cMenuSelector][0]);
-        break;
-      }
+      c->x = -1;
+      c->y = cMenuSelector * 4 + 2;
 
     break;
 

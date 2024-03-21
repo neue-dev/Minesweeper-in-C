@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-18 12:08:52
+ * @ Modified time: 2024-03-21 15:46:02
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -206,9 +206,10 @@ int File_writeBin(File *this, int n, p_obj pObject) {
     return -1;
 
   // If the pointer is somehow NULL
-  if(pObject == NULL)
+  if(pObject == NULL) {
     fclose(this->pFile);
     return -1;
+  }
 
   // Get the position of the "cursor" before writing
   fpos = ftell(this->pFile);

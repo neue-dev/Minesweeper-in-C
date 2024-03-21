@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-14 00:50:35
+ * @ Modified time: 2024-03-21 16:05:25
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -67,17 +67,6 @@ struct Page {
   ComponentManager componentManager;                            // We store the components both through a tree and a hashmap
   Buffer *pBuffer;                                              // This is where all our content will be displayed
   HashMap *pUserStates;                                         // This are custom user-defined states (which we can use for selectors, etc.)                    
-
-  HashMap *pColorStates;                                        // The foreground and background colors for each component
-  HashMap *pRenderStates;                                       // Float states that describe the positions of different components
-  HashMap *pPixelStates;                                        // These are the rounded off versions of the pRenderStates above
-                      
-  HashMap *pColorTargetStates;                                  // What colors to be approached
-  HashMap *pRenderTargetStates;                                 // These are what the render states try to approach
-  HashMap *pTransitionSpeeds;                                   // How fast each component should switch between states
-
-  char sStateKeyArray[PAGE_MAX_STATES][STRING_KEY_MAX_LENGTH];  // The keys to all our states
-  int dStateCount;                                              // How many states we have at the moment
                     
   unsigned long long dT;                                        // A variable that stores the current frame number
   unsigned int dStage;                                          // An int that tells us what stage anims are in
@@ -120,15 +109,6 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pShar
 
   // Empty hashmaps
   this->pUserStates = HashMap_create();
-  this->pColorStates = HashMap_create();
-  this->pRenderStates = HashMap_create();
-  this->pPixelStates = HashMap_create();
-  this->pColorTargetStates = HashMap_create();
-  this->pRenderTargetStates = HashMap_create();
-  this->pTransitionSpeeds = HashMap_create();
-
-  // Currently no states
-  this->dStateCount = 0;
   
   // Set dT to 0 and dStage to 0
   this->dT = 0ULL;
@@ -213,14 +193,7 @@ char Page_getUserState(Page *this, char *sStateKey) {
  * @param   { int }             Whether or not the page was able to update.
 */
 int Page_update(Page *this) {
-  
   int i, j;
-  float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
-  int *pColorState, *pColorTargetState, *pPixelState;
-  char sStateKey[STRING_KEY_MAX_LENGTH];
-  
-  Component *pComponent;
-  char *sComponentKeyArray[PAGE_MAX_COMPONENTS];
 
   // The page isn't active
   if(this->ePageStatus == PAGE_INACTIVE)
@@ -232,69 +205,6 @@ int Page_update(Page *this) {
 
   // Update the page states
   this->fHandler(this);
-  
-  // Perform some fixins
-  for(i = 0; i < this->dStateCount; i++) {
-
-    // Get the key
-    strcpy(sStateKey, this->sStateKeyArray[i]);
-
-    // Retrieve the values
-    pColorState = HashMap_get(this->pColorStates, sStateKey);
-    pRenderState = HashMap_get(this->pRenderStates, sStateKey);
-    pPixelState = HashMap_get(this->pPixelStates, sStateKey);
-
-    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
-    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
-    pTransitionSpeed = HashMap_get(this->pTransitionSpeeds, sStateKey);
-
-    // Ease out
-    if(*pTransitionSpeed > 0) {
-      *pRenderState = Math_easeOut(*pRenderState, *pRenderTargetState, *pTransitionSpeed);
-      *pColorState = Math_easeOut(*pColorState * 1.0, *pColorTargetState * 1.0, *pTransitionSpeed);
-
-    // Ease in
-    } else if(*pTransitionSpeed < 0) {
-      *pRenderState = Math_easeIn(*pRenderState, *pRenderTargetState, *pTransitionSpeed * -1.0);
-      *pColorState = Math_easeIn(*pColorState * 1.0, *pColorTargetState * 1.0, *pTransitionSpeed * -1.0);
-    }
-
-    // Update the state values
-    *pPixelState = (int) round(*pRenderState);
-  }
-
-  // Update component states
-  HashMap_getKeys(this->componentManager.pComponentMap, sComponentKeyArray);
-  
-  for(i = 0; i < this->dComponentCount; i++) {
-
-    // Get the component first
-    pComponent = HashMap_get(this->componentManager.pComponentMap, sComponentKeyArray[i]);
-
-    // If we're not dealing witht the root
-    if(strcmp(pComponent->sName, "root")) {
-
-      // For each of the associated states
-      for(j = 0; j < 4; j++) {
-
-        // Create the key
-        String_keyAndId(sStateKey, pComponent->sName, j);
-        
-        // Retrieve the values
-        pColorState = HashMap_get(this->pColorStates, sStateKey);
-        pRenderState = HashMap_get(this->pRenderStates, sStateKey);
-        pPixelState = HashMap_get(this->pPixelStates, sStateKey);
-
-        // Put the values into the component
-        switch(j) {
-          case 0: pComponent->x = *pPixelState; break;
-          case 1: pComponent->y = *pPixelState; break;
-          case 2: pComponent->w = *pPixelState; break;
-          case 3: pComponent->h = *pPixelState; break;
-        }
-      }
-    }
-  }
     
   // Increment time state
   this->dT++;
@@ -327,11 +237,6 @@ int Page_update(Page *this) {
 void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, char *sColorFGKey, char *sColorBGKey) {
   int i;
 
-  // The different component states
-  float *pRenderState, *pRenderTargetState, *pTransitionSpeed;
-  int *pColorState, *pColorTargetState, *pPixelState;
-  char sStateKey[STRING_KEY_MAX_LENGTH];
-
   // The colors we want from the theme  
   color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
   color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
@@ -343,59 +248,6 @@ void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, i
   // Add a component; exit if not successful
   if(!ComponentManager_add(&this->componentManager, sKey, sParentKey, x, y, w, h, dAssetHeight, aAsset, colorFG, colorBG))
     return;
-
-  // Create a new state for that component
-  // Each component is always given 4 states
-  for(i = 0; i < 4; i++) {
-
-    // We don't kill the string because its added to the hashmaps below
-    String_keyAndId(sStateKey, sKey, i);
-
-    // Create pointers
-    pRenderState = calloc(1, sizeof(float));
-    pColorState = calloc(1, sizeof(int));
-    pPixelState = calloc(1, sizeof(int));
-
-    pRenderTargetState = calloc(1, sizeof(float));
-    pColorTargetState = calloc(1, sizeof(int));
-    pTransitionSpeed = calloc(1, sizeof(float));
-
-    // Generate allocations for each state
-    HashMap_add(this->pColorStates, sStateKey, pColorState);
-    HashMap_add(this->pRenderStates, sStateKey, pRenderState);
-    HashMap_add(this->pPixelStates, sStateKey, pPixelState);
-
-    HashMap_add(this->pColorTargetStates, sStateKey, pColorTargetState);
-    HashMap_add(this->pRenderTargetStates, sStateKey, pRenderTargetState);
-    HashMap_add(this->pTransitionSpeeds, sStateKey, pTransitionSpeed);
-
-    // Set the values of the states
-    *pTransitionSpeed = 0.75;
-    
-    // Set appropriate values
-    switch(i) {
-      case 0:
-        *pRenderTargetState = *pRenderState = (*pPixelState = x) * 1.0;
-        *pColorTargetState = *pColorState = colorFG;
-      break;
-      
-      case 1:
-        *pRenderTargetState = *pRenderState = (*pPixelState = y) * 1.0;
-        *pColorTargetState = *pColorState = colorBG;
-      break;
-      
-      case 2:
-        *pRenderTargetState = *pRenderState = (*pPixelState = w) * 1.0;
-      break;
-
-      case 3:
-        *pRenderTargetState = *pRenderState = (*pPixelState = h) * 1.0;
-      break;
-    }
-
-    // Append the state key to the array
-    strcpy(this->sStateKeyArray[this->dStateCount++], sStateKey);    
-  }
 
   this->dComponentCount++;
 }
@@ -496,284 +348,6 @@ void Page_addComponentContainer(Page *this, char *sKey, char *sParentKey, int x,
 */
 void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey) {
   Page_addComponent(this, sKey, sParentKey, x, y, w, h, 0, NULL, sColorFGKey, sColorBGKey);
-}
-
-/**
- * Sets the target position for a certain component.
- * Also requires to specify the speed at which the component should get there.
- * 
- * @param   { Page * }                this              The page to modify.
- * @param   { char * }                sKey              An identifier for the component.
- * @param   { int }                   x                 The x-coordinate the component will go to. PAGE_INT_NULL if none.
- * @param   { int }                   y                 The y-coordinate the component will go to. PAGE_INT_NULL if none.
- * @param   { int }                   w                 The width the component will approach. -1 if none.
- * @param   { int }                   h                 The height the component will approach. -1 if none.
- * @param   { char * }                sColorFGKey       A color key for the foreground from the theme manager.
- * @param   { char * }                sColorBGKey       A color key for the background from the theme manager.
- * @param   { float }                 fTransitionSpeed  How fast the component will go its target values.
-*/
-void Page_setComponentTarget(Page *this, char *sKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey, float fTransitionSpeed) {
-  int i;
-
-  // The target and transition parameters
-  float *pRenderTargetState, *pTransitionSpeed;
-  int *pColorTargetState;
-  char sStateKey[STRING_KEY_MAX_LENGTH];
-
-  // The colors we want from the theme  
-  color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
-  color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
-  
-  for(i = 0; i < 4; i++) {
-
-    // Create the key
-    String_keyAndId(sStateKey, sKey, i);
-
-    // Retrieve the values
-    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
-    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
-    pTransitionSpeed = HashMap_get(this->pTransitionSpeeds, sStateKey);
-
-    // Set the values of the states
-    *pTransitionSpeed = fTransitionSpeed;
-    
-    // Set appropriate values
-    switch(i) {
-      case 0:
-        if(x > PAGE_NULL_INT)
-          *pRenderTargetState = x * 1.0;
-
-        if(colorFG > -1)
-          *pColorTargetState = colorFG;
-      break;
-      
-      case 1:
-        if(y > PAGE_NULL_INT)
-          *pRenderTargetState = y * 1.0;
-
-        if(colorBG > -1)
-          *pColorTargetState = colorBG;
-      break;
-      
-      case 2:
-        if(w > -1)
-          *pRenderTargetState = w * 1.0;
-      break;
-
-      case 3:
-        if(h > -1)
-          *pRenderTargetState = h * 1.0;
-      break;
-    }
-  }
-}
-
-/**
- * A shorthand function for _setComponentTarget().
- * Only accepts parameters for changing position.
- * 
- * @param   { Page * }  this              The page to modify.
- * @param   { char * }  sKey              The component to modify.
- * @param   { int }     x                 The target x of the component.
- * @param   { int }     y                 The target y of the component.
- * @param   { float }   fTransitionSpeed  How fast the component should move.
-*/
-void Page_setComponentTargetPosition(Page *this, char *sKey, int x, int y, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, x, y, -1, -1, "", "", fTransitionSpeed);
-}
-
-/**
- * A shorthand function for _setComponentTarget().
- * Only accepts parameters for changing size.
- * 
- * @param   { Page * }  this              The page to modify.
- * @param   { char * }  sKey              The component to modify.
- * @param   { int }     w                 The target width of the component.
- * @param   { int }     h                 The target height of the component.
- * @param   { float }   fTransitionSpeed  How fast the component should move.
-*/
-void Page_setComponentTargetSize(Page *this, char *sKey, int w, int h, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, "", "", fTransitionSpeed);
-}
-
-/**
- * A shorthand function for _setComponentTarget().
- * Only accepts parameters for changing color.
- * 
- * @param   { Page * }  this              The page to modify.
- * @param   { char * }  sKey              The component to modify.
- * @param   { char * }  sColorFGKey       A color key for the foreground from the theme manager.
- * @param   { char * }  sColorBGKey       A color key for the background from the theme manager.
- * @param   { float }   fTransitionSpeed  How fast the component should move.
-*/
-void Page_setComponentTargetColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, sColorFGKey, sColorBGKey, fTransitionSpeed);
-}
-
-/**
- * A shorthand function for _setComponentTarget().
- * Only accepts parameters for transition speed.
- * 
- * @param   { Page * }  this              The page to modify.
- * @param   { char * }  sKey              The component to modify.
- * @param   { float }   fTransitionSpeed  How fast the component should move.
-*/
-void Page_setComponentTransitionSpeed(Page *this, char *sKey, float fTransitionSpeed) {
-  Page_setComponentTarget(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, "", "", fTransitionSpeed);
-}
-
-/**
- * Returns the distance of the component from its target.
- * 
- * @param   { Page * }  this    The page to modify.
- * @param   { char * }  sKey    The component to read data from.
- * @param   { int }     dParam  Which value we're specifically getting the distances of.
-*/
-float Page_getComponentDist(Page *this, char *sKey, int dParam) {
-  int i;
-  float *pRenderState, *pRenderTargetState;
-  int *pColorState, *pColorTargetState;
-  char sStateKey[STRING_KEY_MAX_LENGTH];
-  
-  // A for loop makes things easier here
-  for(i = 0; i < 4; i++) {
-
-    // Create the key
-    String_keyAndId(sStateKey, sKey, i);
-
-    // Retrieve the values
-    pColorState = HashMap_get(this->pColorStates, sStateKey);
-    pRenderState = HashMap_get(this->pRenderStates, sStateKey);
-
-    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
-    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
-    
-    // Set appropriate values
-    // I KNOW this switch statement couldve been simplified but Id rather keep it explicit for my own sake
-    switch(dParam) {
-      case 0:   // Distance of x values
-        if(i == 0) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
-      case 1:   // Distance of y values
-        if(i == 1) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
-      case 2:   // Distance of w values
-        if(i == 2) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
-      case 3:   // Distance of h values
-        if(i == 3) { return Math_dist1d(*pRenderState, *pRenderTargetState); } break;
-      
-      case 5:   // Distance of FG color values
-        if(i == 0) { return Graphics_getColorDist(*pColorState, *pColorTargetState); } break;
-      case 6:   // Distance of FG color values
-        if(i == 1) { return Graphics_getColorDist(*pColorState, *pColorTargetState); } break;
-    }
-  }
-
-  return 0.0;
-}
-
-/**
- * Sets the initial starting values of the component.
- * 
- * @param   { Page * }                this              The page to modify.
- * @param   { char * }                sKey              An identifier for the component.
- * @param   { int }                   x                 The x-coordinate the component will start at. PAGE_INT_NULL if none.
- * @param   { int }                   y                 The y-coordinate the component will start at. PAGE_INT_NULL if none.
- * @param   { int }                   w                 The width the component will start with. -1 if none.
- * @param   { int }                   h                 The height the component will start with. -1 if none.
- * @param   { char * }                sColorFGKey       A color key for the foreground from the theme manager.
- * @param   { char * }                sColorBGKey       A color key for the background from the theme manager.
-*/
-void Page_resetComponentInitial(Page *this, char *sKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey) {
-  int i;
-  
-  // The initial states
-  float *pRenderState, *pRenderTargetState;
-  int *pColorState, *pColorTargetState;
-  char sStateKey[STRING_KEY_MAX_LENGTH];
-
-  // The colors we want from the theme  
-  color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
-  color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
-  
-  for(i = 0; i < 4; i++) {
-
-    // Create the key
-    String_keyAndId(sStateKey, sKey, i);
-
-    // Retrieve the values
-    pColorState = HashMap_get(this->pColorStates, sStateKey);
-    pRenderState = HashMap_get(this->pRenderStates, sStateKey);
-
-    pColorTargetState = HashMap_get(this->pColorTargetStates, sStateKey);
-    pRenderTargetState = HashMap_get(this->pRenderTargetStates, sStateKey);
-    
-    // Set appropriate values
-    switch(i) {
-      case 0:
-        if(x > PAGE_NULL_INT)
-          *pRenderTargetState = *pRenderState = x * 1.0;
-
-        if(colorFG > -1)
-          *pColorTargetState = *pColorState = colorFG;
-      break;
-      
-      case 1:
-        if(y > PAGE_NULL_INT)
-          *pRenderTargetState = *pRenderState = y * 1.0;
-
-        if(colorBG > -1)
-          *pColorTargetState = *pColorState = colorBG;
-      break;
-      
-      case 2:
-        if(w > -1)
-          *pRenderTargetState = *pRenderState = w * 1.0;
-      break;
-
-      case 3:
-        if(h > -1)
-          *pRenderTargetState = *pRenderState = h * 1.0;
-      break;
-    }
-  }
-}
-
-/**
- * A shorthand function for _resetComponentInitial().
- * Sets only the position of a component.
- * 
- * @param   { Page * }                this              The page to modify.
- * @param   { char * }                sKey              An identifier for the component.
- * @param   { int }                   x                 The x-coordinate the component will start at. PAGE_INT_NULL if none.
- * @param   { int }                   y                 The y-coordinate the component will start at. PAGE_INT_NULL if none.
-*/
-void Page_resetComponentInitialPosition(Page *this, char *sKey, int x, int y) {
-  Page_resetComponentInitial(this, sKey, x, y, -1, -1, "", "");
-}
-
-/**
- * A shorthand function for _resetComponentInitial().
- * Sets only the size of a component.
- * 
- * @param   { Page * }                this              The page to modify.
- * @param   { char * }                sKey              An identifier for the component.
- * @param   { int }                   w                 The width the component will start at. -1 if none.
- * @param   { int }                   h                 The width the component will start at. -1 if none
-*/
-void Page_resetComponentInitialSize(Page *this, char *sKey, int w, int h) {
-  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, w, h, "", "");
-}
-
-/**
- * A shorthand function for _resetComponentInitial().
- * Sets only the color of a component.
- * 
- * @param   { Page * }                this              The page to modify.
- * @param   { char * }                sKey              An identifier for the component.
- * @param   { char * }                sColorFGKey       A color key for the foreground from the theme manager.
- * @param   { char * }                sColorBGKey       A color key for the background from the theme manager.
-*/
-void Page_resetComponentInitialColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey) {
-  Page_resetComponentInitial(this, sKey, PAGE_NULL_INT, PAGE_NULL_INT, -1, -1, sColorFGKey, sColorBGKey);
 }
 
 /**

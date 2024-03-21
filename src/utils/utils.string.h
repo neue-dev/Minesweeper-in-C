@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-13 23:51:32
+ * @ Modified time: 2024-03-21 15:55:41
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -138,7 +138,7 @@ void String_keyAndChar(char *sKey, char *sKeyName, char sKeyChar) {
 }
 
 /**
- * Creates a key with the following format: <key_name>-<key_char>.
+ * Creates a key with the following format: <key_name>-<key_str>.
  * 
  * @param   { char * }  sKey      Where we want to store the key.
  * @param   { char * }  sKeyName  The name of the key.
