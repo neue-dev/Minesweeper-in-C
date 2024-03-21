@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-21 16:32:43
+ * @ Modified time: 2024-03-21 19:48:33
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -39,7 +39,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
   int dTitleLength = strlen(sTitle);
 
   // Refers to assets and components
-  char *sTitleKey[STRING_KEY_MAX_LENGTH];
+  char sTitleKey[STRING_KEY_MAX_LENGTH];
   char sIndicatorKey[STRING_KEY_MAX_LENGTH];
   char sAssetKey[STRING_KEY_MAX_LENGTH];
 
