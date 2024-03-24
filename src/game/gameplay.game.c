@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-24 17:16:48
+ * @ Modified time: 2024-03-24 17:27:30
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -95,7 +95,7 @@ void Gameplay_setUpField(Field *pField, GameType eGameType, GameDifficulty eGame
  * Selects the custom level based on the player's input.
  * 
  * @param   { File * }      A pointer to the custom level's file.
- * @return  { File * }
+ * @return  { File * }      A pointer to the custom level's file.
 */
 File *Gameplay_selectCustomLevel() {
     char *sPath;        // The path of the file
