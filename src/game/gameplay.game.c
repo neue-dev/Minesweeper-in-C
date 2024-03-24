@@ -133,7 +133,7 @@ void Gameplay_setUpCustomLevel(File *pCustomLevel, Field *pField) {
     for(i = 0; i < dWidth; i++) {
         for(j = 0; j < dHeight; j++) {
 
-            fscanf(pFile, "%c", &dCell);
+            fscanf(pFile, "%c ", &dCell);
 
             // Sets the specific bit of the field to 1 if there is a mine
             if(dCell == "X")
