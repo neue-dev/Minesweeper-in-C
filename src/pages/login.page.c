@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 19:14:37
+ * @ Modified time: 2024-03-25 19:26:48
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -84,10 +84,17 @@ void PageHandler_login(p_obj pArgs_Page) {
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 
+        // Exits the actual program
+        case 27:
+          EventStore_set(this->pSharedEventStore, "terminate", 'y');
+        break;
+
+        // Switch fields
         case '\t':
           Page_setUserState(this, "login-current-field", (cLoginCurrentField + 1) % 2);
         break;
 
+        // Go to menu
         case '\n': case '\r':
           Page_idle(this);
           Page_setNext(this, "menu");

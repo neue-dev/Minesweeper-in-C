@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-25 12:46:01
+ * @ Modified time: 2024-03-25 19:25:18
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -246,8 +246,8 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Update the page
   PageManager_update(&this->pageManager);
 
-  // Update 
-  if(EventStore_get(&this->eventStore, "key-pressed") == 'q')
+  // Termination condition
+  if(EventStore_get(&this->eventStore, "terminate") == 'y')
     this->bState = 0;
 
   // Reset event store each time
