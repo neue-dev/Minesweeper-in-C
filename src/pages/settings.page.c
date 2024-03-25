@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 21:47:09
+ * @ Modified time: 2024-03-25 21:50:13
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -119,7 +119,7 @@ void PageHandler_settings(p_obj pArgs_Page) {
 
           // Emphasize selected keybind
           String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[(int) cSettingsSelector]);
-          Page_setComponentColor(this, sKeybindKey, "accent", "secondary");
+          Page_setComponentColor(this, sKeybindKey, "secondary", "accent");
 
           // If a valid key is pressed
           if(EventStore_get(this->pSharedEventStore, "key-pressed") >= 32 || 
