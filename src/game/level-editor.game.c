@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-24 17:22:20
+ * @ Modified time: 2024-03-25 8:43:20
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -28,15 +28,6 @@ void LevelEditor_createLevel() {
 
     LevelEditor_isValidName(sFileName);         // Checks if the name of the level is valid
     LevelEditor_nameExists(sFileName);          // Checks if the name of the level exists
-
-    // TODO: enter number of rows and columns
-
-    // TODO: place mines
-    // TODO: delete mines
-
-    // TODO: check if the mine placement is valid
-    // TODO: finish and save
-
 }
 
 /**
@@ -45,13 +36,7 @@ void LevelEditor_createLevel() {
  * @param   { Field * }     sName       The file name of the level to be created.
 */
 void LevelEditor_isValidName(char *sName) {
-    int i;
 
-    // Checks if all the characters of sName are capital letters.
-    while(sName[i] != '\0') {
-        if(!(sName[i++] >= 'A' && sName[i++] <= 'B'))
-            LevelEditor_handleError(ERROR_TYPE_INVALID_NAME);
-    }
 }
 
 /**
@@ -60,16 +45,7 @@ void LevelEditor_isValidName(char *sName) {
  * @param   { Field * }     sName       The file name of the level to be created.
 */
 void LevelEditor_nameExists(char *sName) {
-    int i = 0;
-    FILE *pLevels = fopen("./levels/levels.txt", "r");
-    char dummy[1] = "";
-
-    fscanf(pLevels, "%s", dummy);
-    while(!feof(pLevels)) {
-        //
-    }
-
-    fclose(pLevels);
+    
 }
 
 /**
@@ -85,7 +61,7 @@ void LevelEditor_isValidField() {
  * 
 */
 void LevelEditor_saveFile() {
-    // TODO: add the file name to level.txt
+
 }
 
 /**

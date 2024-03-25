@@ -1,13 +1,11 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-24 17:39:11
+ * @ Modified time: 2024-03-25 8:43:11
  * @ Description:
  * 
  * Executes tasks involved in-game.
  */
-
-// TODO: edit #include paths
 
 #include "field.obj.h"
 
@@ -105,7 +103,7 @@ File *Gameplay_selectCustomLevel() {
     // TODO: acquire the inputted file name
 
     // Completes the file path with the file name.
-    sprintf(sPath, sizeof(*sPath) + sizeof(char)*11, "./levels/%s.txt", sPath);
+    sprintf(sPath, sizeof(*sPath) + sizeof(char)*13, "./levels/%s.txt", sPath);
 
     File *pCustomLevel = File_create(sPath);
 
@@ -154,8 +152,6 @@ void Gameplay_setUpCustomLevel(File *pCustomLevel, Field *pField) {
  * 
 */
 void Gameplay_play() {
-
-    // TODO: enable player actions here
 
 }
 
