@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 12:25:17
+ * @ Modified time: 2024-03-25 21:04:00
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -14,6 +14,8 @@
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
 
+#include "../settings.c"
+
 /**
  * Configures the main menu.
  * 
@@ -22,19 +24,33 @@
 void PageHandler_settings(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, dMargin;
+  int i, dWidth, dHeight, dMargin;
 
   // Components
   char *sSettingsComponent = "settings.fixed";
   char *sSettingsContainerComponent = "settings-container.col";
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
+  char *sThemeSelectorComponent = "theme-selector.aleft-x.atop-y";
   char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
   // Page title and asset
   char *sPageTitleFont = "body-font";
   char *sPageTitle = "settings";
   char sPageTitleKey[STRING_KEY_MAX_LENGTH];
+
+  // Where we store the keybinds, and a temp var for keybind keys
+  int dKeybindCount = 0;
+  char *sKeybindArray[32];
+  char sKeybindKey[STRING_KEY_MAX_LENGTH];
+  char sKeybindDisplay[STRING_KEY_MAX_LENGTH];
+
+  // Setting parameters
+  char cSettingsSelectorCount = 0;
+  char cSettingsSelector = 0;
+
+  // Retrieve the keybinds
+  Settings_getKeybinds(&dKeybindCount, sKeybindArray);
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -56,13 +72,31 @@ void PageHandler_settings(p_obj pArgs_Page) {
       Page_addComponentContext(this, sSettingsComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
       Page_addComponentContainer(this, sSettingsContainerComponent, sSettingsComponent, dMargin, dMargin / 2);
       Page_addComponentAsset(this, sTitleComponent, sSettingsContainerComponent, -1, 1, "", "", sPageTitleKey);
-      Page_addComponentText(this, sDividerComponent, sSettingsContainerComponent, 0, 0, "accent", "", String_repeat("▄", dWidth - dMargin * 2));
+      Page_addComponentText(this, sDividerComponent, sSettingsContainerComponent, 0, 0, "accent", "", 
+        String_repeat("▄", dWidth - dMargin * 2));
       Page_addComponentText(this, sPromptTextComponent, sSettingsComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
-      
+      Page_addComponentText(this, sThemeSelectorComponent, sSettingsContainerComponent, 0, 0, "", "", 
+        String_join("\t\t", "-", 0, "active-theme:\t", this->pSharedThemeManager->sActiveTheme, "-"));
+
+      // Append the compoennts for the keybind settings
+      for(i = 0; i < dKeybindCount; i++) {
+        String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
+        sprintf(sKeybindDisplay, "%-29s %c", sKeybindArray[i], EventStore_get(this->pSharedEventStore, sKeybindArray[i]));
+        Page_addComponentText(this, sKeybindKey, sSettingsContainerComponent, 0, 0, "", "", sKeybindDisplay);
+      }
+
+      // Set selector states; note that we have dKeybindCount + 1 because we also have a theming setting
+      if(Page_getUserState(this, "settings-selector") == -1) Page_setUserState(this, "settings-selector", 0);
+      if(Page_getUserState(this, "settings-selector-count") == -1) Page_setUserState(this, "settings-selector-count", dKeybindCount + 1);
+    
     break;
 
     case PAGE_ACTIVE_RUNNING:
+
+      // Retrieve some information
+      cSettingsSelector = Page_getUserState(this, "settings-selector");
+      cSettingsSelectorCount = Page_getUserState(this, "settings-selector-count");
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
@@ -73,10 +107,31 @@ void PageHandler_settings(p_obj pArgs_Page) {
           Page_setNext(this, "menu");
         break;
 
+        // Select a different setting
+        case '\t':
+          Page_setUserState(this, "settings-selector", ((int) cSettingsSelector + 1) % ((int) cSettingsSelectorCount));
+
         default:
+          
+          // Ligten all components
+          Page_setComponentColor(this, sThemeSelectorComponent, "secondary-lighten-0.5", "primary");
+
+          for(i = 0; i < dKeybindCount; i++) {
+            String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
+            Page_setComponentColor(this, sKeybindKey, "secondary-lighten-0.5", "primary");
+          }
+
+          // Change the color based on which setting is selected
+          if(cSettingsSelector == 0) {
+            Page_setComponentColor(this, sThemeSelectorComponent, "accent", "secondary");
+          } else { 
+            String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[(int) cSettingsSelector - 1]);
+            Page_setComponentColor(this, sKeybindKey, "accent", "secondary");
+          }
 
         break;
       }
+        
 
     break;
 

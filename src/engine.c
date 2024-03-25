@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-25 19:25:18
+ * @ Modified time: 2024-03-25 20:11:46
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -40,6 +40,7 @@
 
 // The events we have for our program
 #include "./events.c"
+#include "./settings.c"
 
 // Some definitions for identifiers
 #define ENGINE_EVENT_LISTENERS "engine-event-listeners"
@@ -150,7 +151,7 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "login");
+  PageManager_setActive(&this->pageManager, "settings");
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
@@ -199,6 +200,11 @@ void Engine_init(Engine *this) {
     Engine_main,                                  // The main routine
     this,                                         // The engine itself
     0);                                           // A dummy value
+
+  /**
+   * Finally, we configure the settings
+  */
+  Settings_init(&this->eventStore, &this->themeManager);
 }
 
 /**
