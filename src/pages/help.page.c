@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 12:04:03
+ * @ Modified time: 2024-03-25 12:13:12
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -61,12 +61,12 @@ void PageHandler_help(p_obj pArgs_Page) {
       Page_addComponentAsset(this, sTitleComponent, sHelpContainerComponent, -1, 1, "", "", sPageTitleKey);
       Page_addComponentText(this, sDividerComponent, sHelpContainerComponent, 0, 0, "accent", "", String_repeat("▄", dWidth - dMargin * 2));
       Page_addComponentText(this, sBodyTextComponent, sHelpContainerComponent, 0, 2, "", "",
-        String_join("\n", "-", dWidth - dMargin * 2,
-          "MINEZ is a minesweeper spin-off implemented in C with some neat bonus features.",
+        String_join("\n", "-", dWidth / 2 - dMargin,
+          "MINEZ is a minesweeper spin-off implemented in C with some neat features.",
           "","",
-          "The goal of the game is to identify all the cells with mines on them through numerical hints provided throughout the grid.",
+          "The goal of the game is to identify all the cells with mines on them.",
           "","",
-          "Each hint tells us how many mines are adjacent to any given cell. To indicate the presence of a mine, simply plant a flag on it.",
+          "Numerical hints are provided on the grid to help you deduce where mines are. Each hint tells you how many mines are adjacent to a given cell. You must use flags to indicate the presence of a mine on a cell.",
           "","",
           "More information about the controls can be found in the settings, although these will also be given as you play along.",
           "-"
