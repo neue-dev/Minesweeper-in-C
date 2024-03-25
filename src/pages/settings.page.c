@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 21:40:40
+ * @ Modified time: 2024-03-25 21:47:09
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -76,9 +76,7 @@ void PageHandler_settings(p_obj pArgs_Page) {
       Page_addComponentText(this, sDividerComponent, sSettingsContainerComponent, 0, 0, "accent", "", String_repeat("▄", dWidth - dMargin * 2));
       Page_addComponentText(this, sPromptTextComponent, sSettingsComponent, dWidth - dMargin, dHeight - dMargin / 2, "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
       Page_addComponentText(this, sSelectorPromptComponent, sSettingsContainerComponent, 0, 1, "", "", "[tab] to navigate; [any key] to change settings");
-      Page_addComponentText(this, sThemeSelectorComponent, sSettingsContainerComponent, 0, 2, "", "", 
-        String_join("\t\t", "-", 0, "active-theme:\t", this->pSharedThemeManager->sActiveTheme, "-"));
-
+      
       // Append the compoennts for the keybind settings
       for(i = 0; i < dKeybindCount; i++) {
         String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
@@ -86,10 +84,9 @@ void PageHandler_settings(p_obj pArgs_Page) {
         Page_addComponentText(this, sKeybindKey, sSettingsContainerComponent, 0, 1, "", "", sKeybindDisplay);
       }
 
-
       // Set selector states; note that we have dKeybindCount + 1 because we also have a theming setting
       if(Page_getUserState(this, "settings-selector") == -1) Page_setUserState(this, "settings-selector", 0);
-      if(Page_getUserState(this, "settings-selector-count") == -1) Page_setUserState(this, "settings-selector-count", dKeybindCount + 1);
+      if(Page_getUserState(this, "settings-selector-count") == -1) Page_setUserState(this, "settings-selector-count", dKeybindCount);
     
     break;
 
@@ -115,48 +112,33 @@ void PageHandler_settings(p_obj pArgs_Page) {
         default:
           
           // Ligten all components
-          Page_setComponentColor(this, sThemeSelectorComponent, "secondary-lighten-0.5", "primary");
           for(i = 0; i < dKeybindCount; i++) {
             String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
             Page_setComponentColor(this, sKeybindKey, "secondary-lighten-0.5", "primary");
           }
 
-          // Change the color based on which setting is selected
-          // Also update the event store if a key happens to be pressed
-          if(cSettingsSelector == 0) {
-            Page_setComponentColor(this, sThemeSelectorComponent, "accent", "secondary");
+          // Emphasize selected keybind
+          String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[(int) cSettingsSelector]);
+          Page_setComponentColor(this, sKeybindKey, "accent", "secondary");
 
-            // If a valid key is pressed
-            if(EventStore_get(this->pSharedEventStore, "key-pressed") >= 32 || 
-              EventStore_get(this->pSharedEventStore, "key-pressed") == 10 ||
-              EventStore_get(this->pSharedEventStore, "key-pressed") == 13)
-              EventStore_set(this->pSharedEventStore, "active-theme", 0);
-              
-          // We're possibly updating a key bind
-          } else { 
-            String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[(int) cSettingsSelector - 1]);
-            Page_setComponentColor(this, sKeybindKey, "accent", "secondary");
+          // If a valid key is pressed
+          if(EventStore_get(this->pSharedEventStore, "key-pressed") >= 32 || 
+            EventStore_get(this->pSharedEventStore, "key-pressed") == 10 ||
+            EventStore_get(this->pSharedEventStore, "key-pressed") == 13) {
+            
+            // We update the keybind
+            EventStore_set(this->pSharedEventStore, sKeybindArray[(int) cSettingsSelector], 
+              EventStore_get(this->pSharedEventStore, "key-pressed"));
 
-            // If a valid key is pressed
-            if(EventStore_get(this->pSharedEventStore, "key-pressed") >= 32 || 
-              EventStore_get(this->pSharedEventStore, "key-pressed") == 10 ||
-              EventStore_get(this->pSharedEventStore, "key-pressed") == 13) {
-              
-              // We update the keybind
-              EventStore_set(this->pSharedEventStore, sKeybindArray[(int) cSettingsSelector - 1], 
-                EventStore_get(this->pSharedEventStore, "key-pressed"));
-
-              // We also update the UI to reflect this
-              sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[(int) cSettingsSelector - 1], 
-                String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[(int) cSettingsSelector - 1])));
-              Page_setComponentText(this, sKeybindKey, sKeybindDisplay);
-            }
+            // We also update the UI to reflect this
+            sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[(int) cSettingsSelector], 
+              String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[(int) cSettingsSelector])));
+            Page_setComponentText(this, sKeybindKey, sKeybindDisplay);
           }
 
         break;
       }
         
-
     break;
 
     default:
