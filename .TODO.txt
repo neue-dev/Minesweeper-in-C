@@ -1,3 +1,5 @@
+NOTE TO SELF: col or row contexts resize based on children, so contexts may have some buggy-looking traits
+
 FIX abottom-y
 
 REPRESENT ACCOUNT DATA IN binary

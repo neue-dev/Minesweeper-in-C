@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-25 13:44:46
+ * @ Modified time: 2024-03-25 17:58:02
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -334,9 +334,6 @@ typedef struct EventStore {
   HashMap *pValueStore;           // Where we will store the values updated by events
   HashMap *pValueHistories;       // A history of the values taken on by a certain parameter
   HashMap *pValueStrings;         // When we want to deal with string input + backspace handling
-  HashMap *pValueStringLengths;   // The length of our value strings
-
-  int dValueCount;            // The number of values we have stored at the moment
 
 } EventStore;
 
@@ -349,9 +346,6 @@ void EventStore_init(EventStore *this) {
   this->pValueStore = HashMap_create();
   this->pValueHistories = HashMap_create();
   this->pValueStrings = HashMap_create();
-  this->pValueStringLengths = HashMap_create();
-
-  this->dValueCount = 0;
 }
 
 /**
@@ -363,7 +357,6 @@ void EventStore_exit(EventStore *this) {
   HashMap_kill(this->pValueStore);
   HashMap_kill(this->pValueHistories);
   HashMap_kill(this->pValueStrings);
-  HashMap_kill(this->pValueStringLengths);
 }
 
 /**
@@ -374,36 +367,30 @@ void EventStore_exit(EventStore *this) {
  * 
  * @param   { EventStore * }  this    The event store instance to modify.
  * @param   { char * }        sKey    The key of the object we want to modify.
- * @param   { int }           cValue  The value we want to store at the location of the provided key.
+ * @param   { char }          cValue  The value we want to store at the location of the provided key.
 */
 void EventStore_set(EventStore *this, char *sKey, char cValue) {
+  int i;
   
-  int i, *pStringLength = calloc(1, sizeof(int));
   char *pChar = String_alloc(1);
   char *sHistory, sNewHistory[EVENT_MAX_HISTORY_LEN + 1];
-  char *sString;
   
   // Copy the value unto the pointer first
   *pChar = cValue;
 
   // Add new entry if it doesn't exist yet
-  if(HashMap_get(this->pValueStore, sKey) == NULL) {
+  if(HashMap_get(this->pValueStore, sKey) == NULL) {    
     HashMap_add(this->pValueHistories, sKey, String_alloc(EVENT_MAX_HISTORY_LEN));
-    HashMap_add(this->pValueStrings, sKey, String_alloc(EVENT_MAX_STRING_LEN));
-    this->dValueCount++;
   
   // Delete old entry if still there
   } else {
     HashMap_del(this->pValueStore, sKey);
-    HashMap_del(this->pValueStringLengths, sKey);
   }
 
   // Get the current values so we can modify them
   sHistory = HashMap_get(this->pValueHistories, sKey);
-  sString = HashMap_get(this->pValueStrings, sKey);
 
-  // We update the history of the value
-  // We shift everything by 1 to the left
+  // We update the history of the value; we shift everything to the left by 1
   if(strlen(sHistory) >= EVENT_MAX_HISTORY_LEN) {
     strcpy(sNewHistory, sHistory);
 
@@ -419,8 +406,38 @@ void EventStore_set(EventStore *this, char *sKey, char cValue) {
     sHistory[strlen(sHistory)] = cValue;
   }
 
-  // We update the current string
-  // We don't shift anything cuz it's appended to the right
+  // Add a new entry
+  HashMap_add(this->pValueStore, sKey, pChar);
+}
+
+/**
+ * This function updates a string value stored by the event store object.
+ * The new value appended to the string is based on the current value stored in sValueKey.
+ * 
+ * @param   { EventStore * }  this        The event store instance to modify.
+ * @param   { char * }        sValueKey   The key of the value we append to the string.
+ * @param   { char * }        sStringKey  The key of the string we want to modify.
+*/
+void EventStore_setString(EventStore *this, char *sValueKey, char *sStringKey) {
+  char *sString;
+  char cValue;
+
+  // If the value store is currently null, we append a null character
+  if(HashMap_get(this->pValueStore, sValueKey) == NULL)
+    cValue = 0;
+  
+  // Otherwise, we append the stored character
+  else
+    cValue = *((char *) HashMap_get(this->pValueStore, sValueKey));
+
+  // Add new entry if it doesn't exist yet
+  if(HashMap_get(this->pValueStrings, sStringKey) == NULL)
+    HashMap_add(this->pValueStrings, sStringKey, String_alloc(EVENT_MAX_STRING_LEN));
+  
+  // Get the current values so we can modify them
+  sString = HashMap_get(this->pValueStrings, sStringKey);
+
+  // It's too long so we only wait for backspaces/del
   if(strlen(sString) >= EVENT_MAX_STRING_LEN) {
     
     // Only if backspace/del, we do smth
@@ -428,6 +445,7 @@ void EventStore_set(EventStore *this, char *sKey, char cValue) {
       if(strlen(sString))
         sString[strlen(sString) - 1] = 0;
     
+  // It's not too long so we update the string
   } else {
 
     // Append character or do backspace/del
@@ -436,13 +454,6 @@ void EventStore_set(EventStore *this, char *sKey, char cValue) {
     else if(strlen(sString))
       sString[strlen(sString) - 1] = 0;
   }
-
-  // Update string length
-  *pStringLength = strlen(sString);
-
-  // Add a new entry
-  HashMap_add(this->pValueStore, sKey, pChar);
-  HashMap_add(this->pValueStringLengths, sKey, pStringLength);
 }
 
 /**
@@ -463,19 +474,6 @@ char EventStore_get(EventStore *this, char *sKey) {
 }
 
 /**
- * Resets a certain value on the event store.
- * 
- * @param   { EventStore * }  this  The event store instance to modify.
- * @param   { char * }        sKey  The key of the object we want to modify.
-*/
-void EventStore_clear(EventStore *this, char *sKey) {
-  char *pValue = HashMap_get(this->pValueStore, sKey);
-
-  if(pValue != NULL)
-    *pValue = 0;
-}
-
-/**
  * This function gets the value stored by the entry with a given key.
  * 
  * @param   { EventStore * }  this  The event store instance to modify.
@@ -487,9 +485,39 @@ char *EventStore_getHistory(EventStore *this, char *sKey) {
 
   // The entry doesn't exist
   if(sHistory == NULL)
-    return NULL;
+    return "";
 
   return sHistory;
+}
+
+/**
+ * This function returns the value of the current input string indicated by the key.
+ * 
+ * @param   { EventStore * }  this  The event store instance to modify.
+ * @param   { char * }        sKey  The key of the object we want to modify.
+ * @return  { char * }              A string of characters that represents the history of values stored by that key.
+*/
+char *EventStore_getString(EventStore *this, char *sKey) {
+  char *sString = HashMap_get(this->pValueStrings, sKey);
+
+  // The entry doesn't exist
+  if(sString == NULL)
+    return "";
+
+  return sString;
+}
+
+/**
+ * Resets a certain value on the event store.
+ * 
+ * @param   { EventStore * }  this  The event store instance to modify.
+ * @param   { char * }        sKey  The key of the object we want to modify.
+*/
+void EventStore_clear(EventStore *this, char *sKey) {
+  char *pValue = HashMap_get(this->pValueStore, sKey);
+
+  if(pValue != NULL)
+    *pValue = 0;
 }
 
 /**

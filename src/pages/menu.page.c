@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 12:24:24
+ * @ Modified time: 2024-03-25 19:23:41
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -85,7 +85,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, 0, 0);
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, -2, "accent", "accent", "selector");
       Page_addComponentText(this, sPromptComponent, sSelectionComponent, 0, 27, 
-        "secondary-lighten-0.5", "", "[wasd] to browse, [enter] to select");
+        "secondary-lighten-0.5", "", "[tab] to browse, [enter] to select");
 
       // Add the indicators and headers
       for(i = 0; i < dMenuSelectorLength; i++) {
@@ -115,20 +115,21 @@ void PageHandler_menu(p_obj pArgs_Page) {
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 
         // Increment menu selector
-        case 'D': case 'd': case 39:
-        case 'S': case 's': case 40:
-          Page_setUserState(this, "menu-selector", cMenuSelector - dMenuSelectorLength + 1 ? cMenuSelector + 1 : cMenuSelector);
+        case '\t':
+          Page_setUserState(this, "menu-selector", ((int) cMenuSelector + 1) % dMenuSelectorLength);
         break;
 
-        // Decrement menu selector
-        case 'A': case 'a': case 37:
-        case 'W': case 'w': case 38:
-          Page_setUserState(this, "menu-selector", cMenuSelector ? cMenuSelector - 1 : cMenuSelector);
-        break;
-
+        // Move to page
         case '\n': case '\r':
           Page_idle(this);
-          Page_setNext(this, sMenuSelectors[(int) cMenuSelector][0]);
+
+          // Bring the user to the login page when they logout
+          if(!strcmp(sMenuSelectors[(int) cMenuSelector][0], "logout"))
+            Page_setNext(this, "login");
+            
+          // Otherwise, bring the user to the page they selected
+          else
+            Page_setNext(this, sMenuSelectors[(int) cMenuSelector][0]);
         break;
 
         default:

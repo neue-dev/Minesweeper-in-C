@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-21 22:25:55
+ * @ Modified time: 2024-03-25 19:09:23
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -560,6 +560,11 @@ int ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, i
 
 /**
  * Set the position of a specified component.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
 */
 void ComponentManager_setPos(ComponentManager *this, char *sKey, int x, int y) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
@@ -573,6 +578,11 @@ void ComponentManager_setPos(ComponentManager *this, char *sKey, int x, int y) {
 
 /**
  * Set the size of a specified component.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { int }                   w             The width of the component.
+ * @param   { int }                   h             The height of the component.
 */
 void ComponentManager_setSize(ComponentManager *this, char *sKey, int w, int h) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
@@ -585,7 +595,12 @@ void ComponentManager_setSize(ComponentManager *this, char *sKey, int w, int h) 
 }
 
 /**
- * Set the size of a specified component.
+ * Set the color of a specified component.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { color }                 colorFG       The foreground color of the component.
+ * @param   { color }                 colorBG       The background color of the component.
 */
 void ComponentManager_setColor(ComponentManager *this, char *sKey, color colorFG, color colorBG) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
@@ -595,6 +610,25 @@ void ComponentManager_setColor(ComponentManager *this, char *sKey, color colorFG
 
   if(colorBG != COMPONENT_NO_CHANGE)
     pComponent->colorBG = colorBG;
+}
+
+/**
+ * Set the asset of the specified component.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { int }                   dAssetHeight  The height of the provided asset.
+ * @param   { char ** }               aAsset        The actual information stored by the asset.
+*/
+void ComponentManager_setAsset(ComponentManager *this, char *sKey, int dAssetHeight, char **aAsset) {
+  Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  // Remove the original asset first
+  free(pComponent->aAsset);
+
+  // Store the new asset and its height
+  pComponent->aAsset = aAsset;
+  pComponent->dAssetHeight = dAssetHeight;
 }
 
 /**
@@ -636,7 +670,7 @@ void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
     }
 
     // If the component has colors
-    if(pComponent->colorFG > -1 || pComponent->colorBG > -1) {
+    if(pComponent->colorFG > COMPONENT_NO_CHANGE || pComponent->colorBG > COMPONENT_NO_CHANGE) {
       Buffer_contextRect(
         pBuffer, 
         pComponent->dRenderX, 

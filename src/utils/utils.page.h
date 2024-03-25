@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-25 12:23:47
+ * @ Modified time: 2024-03-25 18:25:21
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -375,7 +375,10 @@ void Page_setComponentSize(Page *this, char *sKey, int w, int h) {
 /**
  * Changes the color of a component.
  * 
- * // ! change the input to color keys
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to modify.
+ * @param   { char * }  sColorFGKey   The foreground color of the component, based on theme.
+ * @param   { char * }  sColorBGKey   The background color of the component, based on theme.
 */
 void Page_setComponentColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey) {
 
@@ -383,7 +386,48 @@ void Page_setComponentColor(Page *this, char *sKey, char *sColorFGKey, char *sCo
   color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
   color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
 
-  ComponentManager_setColor(&this->componentManager, sKey, colorFG, colorBG);
+  ComponentManager_setColor(&this->componentManager, sKey, 
+    colorFG < 0 ? COMPONENT_NO_CHANGE : colorFG, 
+    colorBG < 0 ? COMPONENT_NO_CHANGE : colorBG);
+}
+
+/**
+ * Changes the text stored by a component.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to modify.
+ * @param   { char * }  sColorFGKey   The foreground color of the component, based on theme.
+ * @param   { char * }  sColorBGKey   The background color of the component, based on theme.
+*/
+void Page_setComponentText(Page *this, char *sKey, char *sText) {
+
+  int dChar = 0, dLines = 0, dLineLength = 1024; 
+  char **aAsset = calloc(256, sizeof(*aAsset));
+
+  // Init the first line
+  aAsset[dLines] = String_alloc(dLineLength);
+
+  // Peruse the text
+  while(*sText) {
+    
+    // Copy character to current line
+    if(*sText != '\n' && dChar < dLineLength) {
+      aAsset[dLines][dChar++] = *sText;
+    
+    // New line
+    } else {
+      dLines++;
+      dChar = 0;
+
+      aAsset[dLines] = String_alloc(dLineLength);
+    }
+
+    sText++;
+  }
+  
+  // Update the size and content of the component
+  ComponentManager_setSize(&this->componentManager, sKey, String_charCount(aAsset[0]), dLines + 1);
+  ComponentManager_setAsset(&this->componentManager, sKey, dLines + 1, aAsset);
 }
 
 /**
