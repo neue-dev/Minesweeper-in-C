@@ -1,16 +1,18 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-24 17:27:30
+ * @ Modified time: 2024-03-24 17:39:11
  * @ Description:
  * 
  * Executes tasks involved in-game.
  */
 
-#include "./game/field.obj.h"
+// TODO: edit #include paths
 
-#include "./utils.file.h"
-#include "./utils.grid.h"
+#include "field.obj.h"
+
+#include "../utils/utils.file.h"
+#include "../utils/utils.grid.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -102,8 +104,8 @@ File *Gameplay_selectCustomLevel() {
 
     // TODO: acquire the inputted file name
 
-    // Concatinates the file name and the rest of the file path's text
-    snprintf(sPath, sizeof(*sPath), "./game/levels/%s.txt", sPath);
+    // Completes the file path with the file name.
+    sprintf(sPath, sizeof(*sPath) + sizeof(char)*11, "./levels/%s.txt", sPath);
 
     File *pCustomLevel = File_create(sPath);
 
