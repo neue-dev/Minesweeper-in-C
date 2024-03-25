@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-21 15:48:41
+ * @ Modified time: 2024-03-25 12:58:16
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -24,11 +24,18 @@ void PageHandler_login(p_obj pArgs_Page) {
   Page *this = (Page *) pArgs_Page;
   int dWidth, dHeight;
 
+  // Header details
+  char *sHeader = "login";
+  char *sHeaderFont = "body-font";
+  char sHeaderKey[STRING_KEY_MAX_LENGTH];
+
   // Component names
-  char *sIntroComponent = "intro.fixed";
-  char *sOuterBoxComponent = "box-outer.row-col.center-y.center-x.acenter-x.acenter-y";
-  char *sInnerBoxComponent = "box-inner.row-col.center-y.center-x.acenter-x.acenter-y";
-  char *sLogoComponent = "logo.acenter-x.acenter-y";
+  char *sLoginComponent = "login.col";
+  char *sLogoComponent = "logo.acenter-x.atop-y";
+  char *sHeaderComponent = "header.acenter-x.atop-y";
+  char *sFieldContainerComponent = "field-container.col.acenter-x.atop-y";
+  char *sUsernameComponent = "username.acenter-x";
+  char *sPasswordComponent = "password.acenter-x";
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -39,61 +46,22 @@ void PageHandler_login(p_obj pArgs_Page) {
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
 
+      // Create the header
+      String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
+      AssetManager_createTextAsset(this->pSharedAssetManager, sHeader, sHeaderFont);
+
       // Create component tree
-      Page_addComponentContext(this, sIntroComponent, "root", 0, 0, dWidth, dHeight, "primary-darken-1.0", "primary-darken-1.0");
-      Page_addComponentContext(this, sOuterBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 160, 80, "accent", "accent");
-      Page_addComponentContext(this, sInnerBoxComponent, sIntroComponent, dWidth / 2, dHeight / 2, 156, 78, "secondary", "primary");
-      Page_addComponentAsset(this, sLogoComponent, "root", dWidth / 2, 100, "", "", "logo");
+      Page_addComponentContext(this, sLoginComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
+      Page_addComponentAsset(this, sLogoComponent, sLoginComponent, dWidth / 2, 5, "primary", "secondary", "logo");
+      Page_addComponentAsset(this, sHeaderComponent, sLoginComponent, dWidth / 2, 2, "", "", sHeaderKey);
+      Page_addComponentContainer(this, sFieldContainerComponent, sLoginComponent, dWidth / 2, 5);
+      Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 0, 0, "", "", "Enter username: ");
+      Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 0, 0, "", "", "Enter password: ");
 
-      // Set initials
-      // Page_resetComponentInitialSize(this, sOuterBoxComponent, 0, 0);
-      // Page_resetComponentInitialSize(this, sInnerBoxComponent, 0, 0);
-
-      // Page_setComponentTargetSize(this, sOuterBoxComponent, 25, 12, 0.0);
-      // Page_setComponentTargetSize(this, sInnerBoxComponent, 21, 10, 0.0);
-      // Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, dHeight / 2, 0.0);
-      
     break;
 
     case PAGE_ACTIVE_RUNNING:
 
-      // Animations
-      // switch(this->dStage) {
-        
-      //   case 0:   // Currently empty screen  
-      //     if(this->dT > 16) 
-      //       Page_nextStage(this);
-      //   break;
-
-      //   case 1:   // Make the box enlarge
-      //     Page_setComponentTransitionSpeed(this, sOuterBoxComponent, 0.5);
-      //     Page_setComponentTransitionSpeed(this, sInnerBoxComponent, 0.5);
-
-      //     if(Page_getComponentDist(this, sInnerBoxComponent, 2) < MATH_E_NEG1)
-      //       Page_nextStage(this);
-      //   break;
-
-      //   case 2:   // Make the logo fly to the center
-      //     Page_setComponentTransitionSpeed(this, sLogoComponent, 0.84);
-
-      //     if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG5)
-      //       Page_nextStage(this);
-      //   break;
-
-      //   case 3:   // Make the screen white
-      //     Page_setComponentTargetPosition(this, sLogoComponent, PAGE_NULL_INT, -16, -0.9);
-      //     Page_setComponentTargetSize(this, sOuterBoxComponent, 160, 80, 0.45);
-      //     Page_setComponentTargetSize(this, sInnerBoxComponent, 156, 78, 0.45);
-
-      //     if(Page_getComponentDist(this, sLogoComponent, 1) < MATH_E_NEG1)
-      //       Page_nextStage(this);
-      //   break;
-        
-      //   default:  // Make the page idle and set the next page to menu
-      //     Page_idle(this);
-      //     Page_setNext(this, "menu");
-      //   break;
-      // }
 
     break;
 
