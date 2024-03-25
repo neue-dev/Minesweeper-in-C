@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-12 22:20:28
+ * @ Modified time: 2024-03-25 13:44:46
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -29,6 +29,7 @@
 
 // How much data we're willing to chain in an event store object
 #define EVENT_MAX_HISTORY_LEN (1 << 8)
+#define EVENT_MAX_STRING_LEN (1 << 8)
 
 typedef enum EventType EventType;
 
@@ -330,10 +331,12 @@ void Event_resolve(Event *this, EventStore *pEventStore) {
 */
 typedef struct EventStore {
   
-  HashMap *pValueStore;       // Where we will store the values updated by events
-  HashMap *pValueHistories;   // A history of the values taken on by a certain parameter
+  HashMap *pValueStore;           // Where we will store the values updated by events
+  HashMap *pValueHistories;       // A history of the values taken on by a certain parameter
+  HashMap *pValueStrings;         // When we want to deal with string input + backspace handling
+  HashMap *pValueStringLengths;   // The length of our value strings
 
-  int dValueCount;            // The number of values we have stored at the moment.
+  int dValueCount;            // The number of values we have stored at the moment
 
 } EventStore;
 
@@ -345,6 +348,8 @@ typedef struct EventStore {
 void EventStore_init(EventStore *this) {
   this->pValueStore = HashMap_create();
   this->pValueHistories = HashMap_create();
+  this->pValueStrings = HashMap_create();
+  this->pValueStringLengths = HashMap_create();
 
   this->dValueCount = 0;
 }
@@ -357,6 +362,8 @@ void EventStore_init(EventStore *this) {
 void EventStore_exit(EventStore *this) {
   HashMap_kill(this->pValueStore);
   HashMap_kill(this->pValueHistories);
+  HashMap_kill(this->pValueStrings);
+  HashMap_kill(this->pValueStringLengths);
 }
 
 /**
@@ -370,39 +377,72 @@ void EventStore_exit(EventStore *this) {
  * @param   { int }           cValue  The value we want to store at the location of the provided key.
 */
 void EventStore_set(EventStore *this, char *sKey, char cValue) {
-  int i;
+  
+  int i, *pStringLength = calloc(1, sizeof(int));
   char *pChar = String_alloc(1);
   char *sHistory, sNewHistory[EVENT_MAX_HISTORY_LEN + 1];
+  char *sString;
   
   // Copy the value unto the pointer first
   *pChar = cValue;
 
-  // Delete old entry if its still there
-  if(HashMap_get(this->pValueStore, sKey) != NULL) {
-    sHistory = HashMap_get(this->pValueHistories, sKey);
-
-    // We shift everything by 1 to the left
-    if(strlen(sHistory) >= EVENT_MAX_HISTORY_LEN) {
-      strcpy(sNewHistory, sHistory);
-
-      for(i = 1; i < EVENT_MAX_HISTORY_LEN; i++)
-        sNewHistory[i - 1] = sNewHistory[i];
-      sNewHistory[i - 1] = cValue;
-
-    // We just append it to the end of the array
-    } else {
-      sHistory[strlen(sHistory)] = cValue;
-    }
-
-    HashMap_del(this->pValueStore, sKey);
-  } else {
+  // Add new entry if it doesn't exist yet
+  if(HashMap_get(this->pValueStore, sKey) == NULL) {
     HashMap_add(this->pValueHistories, sKey, String_alloc(EVENT_MAX_HISTORY_LEN));
-
+    HashMap_add(this->pValueStrings, sKey, String_alloc(EVENT_MAX_STRING_LEN));
     this->dValueCount++;
+  
+  // Delete old entry if still there
+  } else {
+    HashMap_del(this->pValueStore, sKey);
+    HashMap_del(this->pValueStringLengths, sKey);
   }
+
+  // Get the current values so we can modify them
+  sHistory = HashMap_get(this->pValueHistories, sKey);
+  sString = HashMap_get(this->pValueStrings, sKey);
+
+  // We update the history of the value
+  // We shift everything by 1 to the left
+  if(strlen(sHistory) >= EVENT_MAX_HISTORY_LEN) {
+    strcpy(sNewHistory, sHistory);
+
+    for(i = 1; i < EVENT_MAX_HISTORY_LEN; i++)
+      sNewHistory[i - 1] = sNewHistory[i];
+    sNewHistory[i - 1] = cValue;
+
+    // Copy the truncated history back
+    strcpy(sHistory, sNewHistory);
+
+  // We just append it to the end of the array
+  } else {
+    sHistory[strlen(sHistory)] = cValue;
+  }
+
+  // We update the current string
+  // We don't shift anything cuz it's appended to the right
+  if(strlen(sString) >= EVENT_MAX_STRING_LEN) {
+    
+    // Only if backspace/del, we do smth
+    if(cValue == 8 || cValue == 127)
+      if(strlen(sString))
+        sString[strlen(sString) - 1] = 0;
+    
+  } else {
+
+    // Append character or do backspace/del
+    if(cValue != 8 && cValue != 127)
+      sString[strlen(sString)] = cValue;
+    else if(strlen(sString))
+      sString[strlen(sString) - 1] = 0;
+  }
+
+  // Update string length
+  *pStringLength = strlen(sString);
 
   // Add a new entry
   HashMap_add(this->pValueStore, sKey, pChar);
+  HashMap_add(this->pValueStringLengths, sKey, pStringLength);
 }
 
 /**
