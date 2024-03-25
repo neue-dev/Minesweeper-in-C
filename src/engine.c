@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-21 15:49:42
+ * @ Modified time: 2024-03-25 12:22:41
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -126,7 +126,7 @@ void Engine_init(Engine *this) {
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/header-font.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/body-font.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/icon.asset.txt");
-  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/intro.asset.txt");
+  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/logo.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/menu.asset.txt");
 
   // I have no idea why but this makes the game launch faster ????
@@ -238,7 +238,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
 
-  // Go to menu when intro is done
+  // Update the page
   PageManager_update(&this->pageManager);
 
   // Update 

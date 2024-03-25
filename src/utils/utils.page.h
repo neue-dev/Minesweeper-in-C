@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-21 22:34:37
+ * @ Modified time: 2024-03-25 12:23:47
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -193,7 +193,6 @@ char Page_getUserState(Page *this, char *sStateKey) {
  * @param   { int }             Whether or not the page was able to update.
 */
 int Page_update(Page *this) {
-  int i, j;
 
   // The page isn't active
   if(this->ePageStatus == PAGE_INACTIVE)
@@ -235,7 +234,6 @@ int Page_update(Page *this) {
  * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
 */
 void Page_addComponent(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, int dAssetHeight, char **aAsset, char *sColorFGKey, char *sColorBGKey) {
-  int i;
 
   // The colors we want from the theme  
   color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);

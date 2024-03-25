@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 12:17:28
+ * @ Modified time: 2024-03-25 12:24:24
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -22,7 +22,7 @@
 void PageHandler_menu(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, i, j;
+  int dWidth, dHeight, i;
 
   // Component names
   char *sMenuComponent = "menu.fixed";
@@ -37,7 +37,6 @@ void PageHandler_menu(p_obj pArgs_Page) {
   // Variables for the title
   char *sTitle = "minez";
   char *sTitleFont = "header-font";
-  int dTitleLength = strlen(sTitle);
 
   // Refers to assets and components
   char sLogoKey[STRING_KEY_MAX_LENGTH] = "logo";

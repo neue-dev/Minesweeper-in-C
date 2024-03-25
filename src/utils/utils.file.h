@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-21 15:46:02
+ * @ Modified time: 2024-03-25 12:23:11
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -139,7 +139,6 @@ void File_readText(File *this, int n, int *h, char **sOutputBuffer) {
  * @param   { p_obj }     pOutputObject   The object to write the data to.
 */
 void File_readBinObject(File *this, int dOffset, int n, p_obj pOutputObject) {
-  int i = 0;
 
   // Open the file
   this->pFile = fopen(this->sPath, "rb");
