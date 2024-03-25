@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-21 21:58:12
+ * @ Modified time: 2024-03-25 21:23:23
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -269,6 +269,35 @@ char *String_repeat(char *sUnit, int dLength) {
     strcat(sOutput, sUnit);
 
   return sOutput;
+}
+
+/**
+ * Converts an escape character into an escaped sequence of characters.
+ * If the character is not an escape character, the function returns the original char.
+ * 
+ * @param   { char }    c   The escape character we want to convert.
+ * @return  { char * }      The escaped sequence representing the character.
+*/
+char *String_renderEscChar(char c) {
+  char *sDefaultOut;
+
+  switch(c) {
+    case '\a': return "\\a";
+    case '\b': return "\\b";
+    case '\e': return "\\e";
+    case '\f': return "\\f";
+    case '\n': return "\\n";
+    case '\r': return "\\r";
+    case '\t': return "\\t";
+    case '\v': return "\\v";
+    
+    // Just return the original character
+    default: 
+      sDefaultOut = String_alloc(1); 
+      sDefaultOut[0] = c;
+      
+      return sDefaultOut; 
+  }
 }
 
 // You are in Windows

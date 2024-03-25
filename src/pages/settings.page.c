@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 21:04:00
+ * @ Modified time: 2024-03-25 21:21:26
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -82,7 +82,8 @@ void PageHandler_settings(p_obj pArgs_Page) {
       // Append the compoennts for the keybind settings
       for(i = 0; i < dKeybindCount; i++) {
         String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
-        sprintf(sKeybindDisplay, "%-29s %c", sKeybindArray[i], EventStore_get(this->pSharedEventStore, sKeybindArray[i]));
+        sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[i], 
+          String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[i])));
         Page_addComponentText(this, sKeybindKey, sSettingsContainerComponent, 0, 0, "", "", sKeybindDisplay);
       }
 
