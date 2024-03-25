@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 11:56:53
+ * @ Modified time: 2024-03-25 12:01:14
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -128,8 +128,8 @@ void PageHandler_menu(p_obj pArgs_Page) {
         break;
 
         case '\n': case '\r':
-          this->ePageStatus = PAGE_ACTIVE_IDLE;
-          this->sNextName = sMenuSelectors[(int) cMenuSelector][0];
+          Page_idle(this);
+          Page_setNext(this, sMenuSelectors[(int) cMenuSelector][0]);
         break;
 
         default:
@@ -144,10 +144,12 @@ void PageHandler_menu(p_obj pArgs_Page) {
       for(i = 0; i < dMenuSelectorLength; i++)
         Page_setComponentColor(this, sMenuSelectors[i][1], "secondary-lighten-0.5", "");      
       Page_setComponentColor(this, sMenuSelectors[(int) cMenuSelector][1], "secondary-lighten-0.08", "");
+
     break;
 
     default:
-      // ! exit the page
+      //  At this point, the page manager should detect that the page has become idle
+      //  After that, the page manager should switch control to the page indicated by this->sNextPage
     break;
   }
 }
