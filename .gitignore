@@ -4,10 +4,12 @@
 *.exe
 *.o
 
-# Ignore debug files
+# Ignore debug files and execs
 log.unix.txt
 log.win.txt
 utils.debug.h
+minesweeper.win.exe
+minesweeper.unix.o
 
 # Ignore drafting files
 .draft.*
