@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 21:21:26
+ * @ Modified time: 2024-03-25 21:35:33
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -84,7 +84,7 @@ void PageHandler_settings(p_obj pArgs_Page) {
         String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
         sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[i], 
           String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[i])));
-        Page_addComponentText(this, sKeybindKey, sSettingsContainerComponent, 0, 0, "", "", sKeybindDisplay);
+        Page_addComponentText(this, sKeybindKey, sSettingsContainerComponent, 0, 1, "", "", sKeybindDisplay);
       }
 
       // Set selector states; note that we have dKeybindCount + 1 because we also have a theming setting
@@ -116,18 +116,41 @@ void PageHandler_settings(p_obj pArgs_Page) {
           
           // Ligten all components
           Page_setComponentColor(this, sThemeSelectorComponent, "secondary-lighten-0.5", "primary");
-
           for(i = 0; i < dKeybindCount; i++) {
             String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
             Page_setComponentColor(this, sKeybindKey, "secondary-lighten-0.5", "primary");
           }
 
           // Change the color based on which setting is selected
+          // Also update the event store if a key happens to be pressed
           if(cSettingsSelector == 0) {
             Page_setComponentColor(this, sThemeSelectorComponent, "accent", "secondary");
+
+            // If a valid key is pressed
+            if(EventStore_get(this->pSharedEventStore, "key-pressed") >= 32 || 
+              EventStore_get(this->pSharedEventStore, "key-pressed") == 10 ||
+              EventStore_get(this->pSharedEventStore, "key-pressed") == 13)
+              EventStore_set(this->pSharedEventStore, "active-theme", 0);
+              
+          // We're possibly updating a key bind
           } else { 
             String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[(int) cSettingsSelector - 1]);
             Page_setComponentColor(this, sKeybindKey, "accent", "secondary");
+
+            // If a valid key is pressed
+            if(EventStore_get(this->pSharedEventStore, "key-pressed") >= 32 || 
+              EventStore_get(this->pSharedEventStore, "key-pressed") == 10 ||
+              EventStore_get(this->pSharedEventStore, "key-pressed") == 13) {
+              
+              // We update the keybind
+              EventStore_set(this->pSharedEventStore, sKeybindArray[(int) cSettingsSelector - 1], 
+                EventStore_get(this->pSharedEventStore, "key-pressed"));
+
+              // We also update the UI to reflect this
+              sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[(int) cSettingsSelector - 1], 
+                String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[(int) cSettingsSelector - 1])));
+              Page_setComponentText(this, sKeybindKey, sKeybindDisplay);
+            }
           }
 
         break;

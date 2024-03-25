@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-25 21:23:23
+ * @ Modified time: 2024-03-25 21:34:42
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -287,7 +287,7 @@ char *String_renderEscChar(char c) {
     case '\e': return "\\e";
     case '\f': return "\\f";
     case '\n': return "\\n";
-    case '\r': return "\\r";
+    case '\r': return "\\n";    // Fck windows, we're calling '\r' as '\n'
     case '\t': return "\\t";
     case '\v': return "\\v";
     
