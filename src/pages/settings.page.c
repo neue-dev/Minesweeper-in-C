@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 21:35:33
+ * @ Modified time: 2024-03-25 21:40:40
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -32,6 +32,7 @@ void PageHandler_settings(p_obj pArgs_Page) {
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
   char *sThemeSelectorComponent = "theme-selector.aleft-x.atop-y";
+  char *sSelectorPromptComponent = "selector-prompt.aleft-x.atop-y";
   char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
   // Page title and asset
@@ -72,20 +73,19 @@ void PageHandler_settings(p_obj pArgs_Page) {
       Page_addComponentContext(this, sSettingsComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
       Page_addComponentContainer(this, sSettingsContainerComponent, sSettingsComponent, dMargin, dMargin / 2);
       Page_addComponentAsset(this, sTitleComponent, sSettingsContainerComponent, -1, 1, "", "", sPageTitleKey);
-      Page_addComponentText(this, sDividerComponent, sSettingsContainerComponent, 0, 0, "accent", "", 
-        String_repeat("▄", dWidth - dMargin * 2));
-      Page_addComponentText(this, sPromptTextComponent, sSettingsComponent, dWidth - dMargin, dHeight - dMargin / 2, 
-        "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
-      Page_addComponentText(this, sThemeSelectorComponent, sSettingsContainerComponent, 0, 0, "", "", 
+      Page_addComponentText(this, sDividerComponent, sSettingsContainerComponent, 0, 0, "accent", "", String_repeat("▄", dWidth - dMargin * 2));
+      Page_addComponentText(this, sPromptTextComponent, sSettingsComponent, dWidth - dMargin, dHeight - dMargin / 2, "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
+      Page_addComponentText(this, sSelectorPromptComponent, sSettingsContainerComponent, 0, 1, "", "", "[tab] to navigate; [any key] to change settings");
+      Page_addComponentText(this, sThemeSelectorComponent, sSettingsContainerComponent, 0, 2, "", "", 
         String_join("\t\t", "-", 0, "active-theme:\t", this->pSharedThemeManager->sActiveTheme, "-"));
 
       // Append the compoennts for the keybind settings
       for(i = 0; i < dKeybindCount; i++) {
         String_keyAndStr(sKeybindKey, "keybind", sKeybindArray[i]);
-        sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[i], 
-          String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[i])));
+        sprintf(sKeybindDisplay, "%-29s %s", sKeybindArray[i], String_renderEscChar(EventStore_get(this->pSharedEventStore, sKeybindArray[i])));
         Page_addComponentText(this, sKeybindKey, sSettingsContainerComponent, 0, 1, "", "", sKeybindDisplay);
       }
+
 
       // Set selector states; note that we have dKeybindCount + 1 because we also have a theming setting
       if(Page_getUserState(this, "settings-selector") == -1) Page_setUserState(this, "settings-selector", 0);
