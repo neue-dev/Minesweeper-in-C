@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-21 22:05:20
+ * @ Modified time: 2024-03-25 11:56:53
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -113,44 +113,37 @@ void PageHandler_menu(p_obj pArgs_Page) {
       dMenuSelectorLength = Page_getUserState(this, "menu-selector-length");
 
       // Switch based on what key was last pressed
-      if(this->dStage < 2) {
-        switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 
-          // Increment menu selector
-          case 'D': case 'd': case 39:
-          case 'S': case 's': case 40:
-            Page_setUserState(this, "menu-selector", cMenuSelector - dMenuSelectorLength + 1 ? cMenuSelector + 1 : cMenuSelector);
-          break;
+        // Increment menu selector
+        case 'D': case 'd': case 39:
+        case 'S': case 's': case 40:
+          Page_setUserState(this, "menu-selector", cMenuSelector - dMenuSelectorLength + 1 ? cMenuSelector + 1 : cMenuSelector);
+        break;
 
-          // Decrement menu selector
-          case 'A': case 'a': case 37:
-          case 'W': case 'w': case 38:
-            Page_setUserState(this, "menu-selector", cMenuSelector ? cMenuSelector - 1 : cMenuSelector);
-          break;
+        // Decrement menu selector
+        case 'A': case 'a': case 37:
+        case 'W': case 'w': case 38:
+          Page_setUserState(this, "menu-selector", cMenuSelector ? cMenuSelector - 1 : cMenuSelector);
+        break;
 
-          case '\n': case '\r':
-            this->dStage++;
-          break;
+        case '\n': case '\r':
+          this->ePageStatus = PAGE_ACTIVE_IDLE;
+          this->sNextName = sMenuSelectors[(int) cMenuSelector][0];
+        break;
 
-          default:
+        default:
 
-          break;
-        }
+        break;
       }
 
-      Component *c = HashMap_get(this->componentManager.pComponentMap, sSelectorComponent);
+      // Update the selector
+      Page_setComponentPos(this, sSelectorComponent, -1, ((int) cMenuSelector) * 4 + 2);
 
-      c->x = -1;
-      c->y = cMenuSelector * 4 + 2;
-
-      for(i = 0; i < dMenuSelectorLength; i++) {
-        c = HashMap_get(this->componentManager.pComponentMap, sMenuSelectors[i][1]);
-        c->colorFG = 0xcccccc;
-      }
-      
-      c = HashMap_get(this->componentManager.pComponentMap, sMenuSelectors[(int) cMenuSelector][1]);
-      c->colorFG = 0x212121;
-
+      // Update the links
+      for(i = 0; i < dMenuSelectorLength; i++)
+        Page_setComponentColor(this, sMenuSelectors[i][1], "secondary-lighten-0.5", "");      
+      Page_setComponentColor(this, sMenuSelectors[(int) cMenuSelector][1], "secondary-lighten-0.08", "");
     break;
 
     default:

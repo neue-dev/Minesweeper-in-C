@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-21 16:05:25
+ * @ Modified time: 2024-03-21 22:34:37
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -348,6 +348,44 @@ void Page_addComponentContainer(Page *this, char *sKey, char *sParentKey, int x,
 */
 void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey) {
   Page_addComponent(this, sKey, sParentKey, x, y, w, h, 0, NULL, sColorFGKey, sColorBGKey);
+}
+
+/**
+ * Changes the position of the component.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to modify.
+ * @param   { int }     x             The x-coordinate of the component.
+ * @param   { int }     y             The y-coordinate of the component.
+*/
+void Page_setComponentPos(Page *this, char *sKey, int x, int y) {
+  ComponentManager_setPos(&this->componentManager, sKey, x, y);
+}
+
+/**
+ * Changes the size of the component.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to modify.
+ * @param   { int }     w             The width of the component.
+ * @param   { int }     h             The height of the component.
+*/
+void Page_setComponentSize(Page *this, char *sKey, int w, int h) {
+  ComponentManager_setSize(&this->componentManager, sKey, w, h);
+}
+
+/**
+ * Changes the color of a component.
+ * 
+ * // ! change the input to color keys
+*/
+void Page_setComponentColor(Page *this, char *sKey, char *sColorFGKey, char *sColorBGKey) {
+
+  // The colors we want from the theme
+  color colorFG = ThemeManager_getActive(this->pSharedThemeManager, sColorFGKey);
+  color colorBG = ThemeManager_getActive(this->pSharedThemeManager, sColorBGKey);
+
+  ComponentManager_setColor(&this->componentManager, sKey, colorFG, colorBG);
 }
 
 /**

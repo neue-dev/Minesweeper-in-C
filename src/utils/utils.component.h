@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-21 15:44:23
+ * @ Modified time: 2024-03-21 22:25:55
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -15,6 +15,16 @@
 #include "./utils.buffer.h"
 #include "./utils.queue.h"
 
+// Some useful constants
+#define COMPONENT_FAR_RIGHT 1024  // Components we dont wanna see
+#define COMPONENT_FAR_BOTTOM 256
+#define COMPONENT_FAR_LEFT -1024
+#define COMPONENT_FAR_TOP -256
+
+// Integer values we don't wanna change
+#define COMPONENT_NO_CHANGE -99999
+
+// Max number of children per component
 #define COMPONENT_MAX_CHILD_COUNT (1 << 8)
 
 typedef enum ComponentType ComponentType;
@@ -495,8 +505,8 @@ void ComponentManager_init(ComponentManager *this) {
 }
 
 /**
- * Initializes the component manager.
- * ! todo
+ * Exits the component manager.
+ * 
  * @param		{ ComponentManager * }		this	A pointer to the instance to clean up.
 */
 void ComponentManager_exit(ComponentManager *this) {
@@ -546,6 +556,45 @@ int ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, i
   HashMap_add(this->pComponentMap, sKey, pChild);
 
   return 1;
+}
+
+/**
+ * Set the position of a specified component.
+*/
+void ComponentManager_setPos(ComponentManager *this, char *sKey, int x, int y) {
+  Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  if(x != COMPONENT_NO_CHANGE)
+    pComponent->x = x;
+
+  if(y != COMPONENT_NO_CHANGE)
+    pComponent->y = y;
+}
+
+/**
+ * Set the size of a specified component.
+*/
+void ComponentManager_setSize(ComponentManager *this, char *sKey, int w, int h) {
+  Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  if(w != COMPONENT_NO_CHANGE)
+    pComponent->w = w;
+
+  if(h != COMPONENT_NO_CHANGE)
+    pComponent->h = h;
+}
+
+/**
+ * Set the size of a specified component.
+*/
+void ComponentManager_setColor(ComponentManager *this, char *sKey, color colorFG, color colorBG) {
+  Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  if(colorFG != COMPONENT_NO_CHANGE)
+    pComponent->colorFG = colorFG;
+
+  if(colorBG != COMPONENT_NO_CHANGE)
+    pComponent->colorBG = colorBG;
 }
 
 /**
