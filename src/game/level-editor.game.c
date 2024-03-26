@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-26 16:40:29
+ * @ Modified time: 2024-03-26 21:25:24
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -16,11 +16,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LEVELS_FILE_PATH "src/game/levels/levels.txt"
-#define LEVELS_FOLDER_PATH "src/game/levels/"
+#define LEVELS_FILE_PATH "build/levels/level0.txt"
+#define LEVELS_FOLDER_PATH "build/levels/"
 #define LEVELS_FOLDER_LENGTH 16
 
-#define NAME_MAX_LENGTH 1 << 4
+#define NAME_MAX_LENGTH (1 << 4)
 #define NAME_MAX_SIZE sizeof(char)*(NAME_MAX_LENGTH + 1)
 
 #define PATH_MAX_LENGTH LEVELS_FOLDER_LENGTH + NAME_MAX_LENGTH + 4
@@ -102,7 +102,7 @@ void LevelEditor_nameExists(char *sKey) {
     // Opens the text file containing the list of level names
     FILE *pLevels = fopen(LEVELS_FILE_PATH, "r");
     
-    char sName[NAME_MAX_LENGTH + 1] = {};
+    char sName[NAME_MAX_LENGTH + 1] = { 0 };
 
     if(pLevels == NULL)
         return; // TODO: error handling

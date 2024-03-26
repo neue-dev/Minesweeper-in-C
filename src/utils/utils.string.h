@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-25 21:34:42
+ * @ Modified time: 2024-03-26 21:23:26
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -16,6 +16,7 @@
 #include <stdio.h>
 
 #define STRING_KEY_MAX_LENGTH (1 << 8)
+#define STRING_FILENAME_MAX_LENGTH (1 << 8)
 
 /**
  * //
@@ -297,6 +298,28 @@ char *String_renderEscChar(char c) {
       sDefaultOut[0] = c;
       
       return sDefaultOut; 
+  }
+}
+
+/**
+ * Checks if a string has only valid characters. 
+*/
+int String_isValidFilename(char *sFilename) {
+  
+  // Checks if the name's length exceeds the max or is 0
+  if(strlen(sFilename) > STRING_FILENAME_MAX_LENGTH || strlen(sFilename) == 0)
+      LevelEditor_invalidName();
+
+  //Checks if the name contains invalid characters
+  int i;
+  for(i = 0; i < strlen(sFilename); i++) {
+      
+      if(!((sName[i] >= 'A' && sName[i] <= 'Z') ||
+            (sName[i] >= 'a' && sName[i] <= 'z') ||
+            (sName[i] >= '0' && sName[i] <= '9') ||
+            sName[i] == '-' || sName[i] == '_')) {
+              LevelEditor_invalidName();
+      }
   }
 }
 
