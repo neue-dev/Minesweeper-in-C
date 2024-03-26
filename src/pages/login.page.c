@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:03:46
+ * @ Modified time: 2024-03-26 21:20:02
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -40,6 +40,7 @@ void PageHandler_login(p_obj pArgs_Page) {
   char *sUsernameComponent = "username.aleft-x";
   char *sPasswordComponent = "password.aleft-x";
   char *sFieldPromptComponent = "field-prompt.aleft-x";
+  char *sErrorPromptComponent = "error-prompt.aleft-x";
 
   // Input fields
   char *sUsernameField;
@@ -71,7 +72,8 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter password:");
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 4, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
 
       // Define initial user states
       if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", cLoginCurrentField);
@@ -83,6 +85,10 @@ void PageHandler_login(p_obj pArgs_Page) {
       // Key handling
       cLoginCurrentField = Page_getUserState(this, "login-current-field");
       cLoginFieldCount = Page_getUserState(this, "login-field-count");
+
+      // Retrieve the user input 
+      sUsernameField = EventStore_getString(this->pSharedEventStore, "username-input");
+      sPasswordField = EventStore_getString(this->pSharedEventStore, "password-input");
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
@@ -97,10 +103,21 @@ void PageHandler_login(p_obj pArgs_Page) {
           Page_setUserState(this, "login-current-field", (cLoginCurrentField + 1) % (int) cLoginFieldCount);
         break;
 
-        // Go to menu
+        // Do input checking, then go to menu if successful
         case '\n': case '\r':
-          Page_idle(this);
-          Page_setNext(this, "menu");
+          
+          // Some fields are empty
+          if(!strlen(sUsernameField) ||
+            !strlen(sPasswordField)) {
+              
+            Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
+            
+          // If successful
+          } else {
+            Page_idle(this);
+            Page_setNext(this, "menu");
+          }
+
         break;
 
         default:
@@ -124,12 +141,12 @@ void PageHandler_login(p_obj pArgs_Page) {
             Page_setComponentColor(this, sPasswordComponent, "accent", "");          
           }
 
+          // Clear the error
+          if(EventStore_get(this->pSharedEventStore, "key-pressed"))
+            Page_setComponentText(this, sErrorPromptComponent, "");
+
         break;
       }
-
-      // Retrieve the user input 
-      sUsernameField = EventStore_getString(this->pSharedEventStore, "username-input");
-      sPasswordField = EventStore_getString(this->pSharedEventStore, "password-input");
 
       // Indicate the user input on screen
       Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "<username>");

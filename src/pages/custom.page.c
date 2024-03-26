@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:04:17
+ * @ Modified time: 2024-03-26 21:18:25
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -71,11 +71,12 @@ void PageHandler_custom(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sFieldContainerComponent, sCustomFormComponent, dWidth / 2 - dMargin / 2, 4);
       Page_addComponentText(this, sFilenamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter filename:");
       Page_addComponentText(this, sFilenameComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sWidthPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of rows (5-10):");
+      Page_addComponentText(this, sWidthPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of cols (5-15):");
       Page_addComponentText(this, sWidthComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sHeightPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of cols (5-15):");
+      Page_addComponentText(this, sHeightPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of rows (5-10):");
       Page_addComponentText(this, sHeightComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 4, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
       
       // Define initial user states
       if(Page_getUserState(this, "custom-current-field") == -1) Page_setUserState(this, "custom-current-field", cCustomCurrentField);
@@ -87,6 +88,11 @@ void PageHandler_custom(p_obj pArgs_Page) {
       // Key handling
       cCustomCurrentField = Page_getUserState(this, "custom-current-field");
       cCustomFieldCount = Page_getUserState(this, "custom-field-count");
+
+      // Retrieve the user input 
+      sFilenameField = EventStore_getString(this->pSharedEventStore, "filename-input");
+      sWidthField = EventStore_getString(this->pSharedEventStore, "width-input");
+      sHeightField = EventStore_getString(this->pSharedEventStore, "height-input");
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
@@ -104,22 +110,18 @@ void PageHandler_custom(p_obj pArgs_Page) {
         // Do input checking then go to level editor when valid
         case '\n': case '\r':
 
-          // Get the inputs first
-          sFilenameField = EventStore_getString(this->pSharedEventStore, "filename-input");
-          sWidthField = EventStore_getString(this->pSharedEventStore, "width-input");
-          sHeightField = EventStore_getString(this->pSharedEventStore, "height-input");
-
           // If one of the fields are empty
           if(!strlen(sFilenameField) || 
             !strlen(sWidthField) || 
             !strlen(sHeightField)) {
 
+            Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
             
-            
+          // If all the information is valid
+          } else {
+            Page_idle(this);
+            Page_setNext(this, "menu"); 
           }
-
-          Page_idle(this);
-          Page_setNext(this, "menu");
         break;
 
         default:
@@ -157,13 +159,12 @@ void PageHandler_custom(p_obj pArgs_Page) {
             Page_setComponentColor(this, sHeightComponent, "accent", "");     
           }
 
+          // Clear the error
+          if(EventStore_get(this->pSharedEventStore, "key-pressed"))
+            Page_setComponentText(this, sErrorPromptComponent, "");
+
         break;
       }
-
-      // Retrieve the user input 
-      sFilenameField = EventStore_getString(this->pSharedEventStore, "filename-input");
-      sWidthField = EventStore_getString(this->pSharedEventStore, "width-input");
-      sHeightField = EventStore_getString(this->pSharedEventStore, "height-input");
 
       // Indicate the user input on screen
       Page_setComponentText(this, sFilenameComponent, strlen(sFilenameField) ? sFilenameField : "<filename>");
