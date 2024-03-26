@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-25 12:23:11
+ * @ Modified time: 2024-03-26 16:51:15
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -12,6 +12,8 @@
 
 #ifndef UTILS_FILE_
 #define UTILS_FILE_
+
+#include "./utils.types.h"
 
 #include <stdio.h>
 
