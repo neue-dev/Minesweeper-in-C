@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-26 13:45:51
+ * @ Modified time: 2024-03-26 20:23:58
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -21,6 +21,8 @@
 typedef enum GameType GameType;
 typedef enum GameDifficulty GameDifficulty;
 
+typedef struct Game Game;
+
 // Game types chosen by the user
 enum GameType {
     GAME_TYPE_CLASSIC,      // Classic game type
@@ -33,40 +35,44 @@ enum GameDifficulty {
     GAME_DIFFICULTY_NONE            // Custom game: No difficulty
 };
 
+struct Game {
+    GameType eGameType;
+    GameDifficulty eGameDifficulty;
+
+    Field field;
+};
+
 /**
  * Sets the game type based on the player's input.
- * 
- * @return	{ GameType }            The game type.
+ *
+ * @param   { Game * }      this        The game to modify. 
+ * @param	{ GameType }    eGameType   The game type.
 */
-GameType Gameplay_setType() {
-    GameType eGameType;
-
-    // TODO: acquire the user's input here
- 
-    return eGameType;
+void Gameplay_setType(Game *this, GameType eGameType) {
+    this->eGameType = eGameType;
 }
 
 /**
  * Sets the game's difficulty based on the player's input.
  * 
- * @return	{ GameDifficulty }      The game difficulty.
+ * @param   { Game * }              this                The game to modify. 
+ * @param	{ GameDifficulty }      eGameDifficulty     The game difficulty.
 */
-GameDifficulty Gameplay_setDifficulty() {
-    GameDifficulty eGameDifficulty;
-
-    // TODO: acquire the user's input here
- 
-    return eGameDifficulty;
+void Gameplay_setDifficulty(Game *this, GameDifficulty eGameDifficulty) {
+    this->eGameDifficulty = eGameDifficulty;
 }
 
 /**
  * Sets up the game's field.
  * 
- * @param   { Field * }             pField               A pointer to the game's field.
+ * @param   { Game * }              this                 A pointer to the game's field.
  * @param   { Game Type }           eGameType            Game type chosen by the player.
  * @param   { Game Difficulty }     eGameDifficulty      Game difficulty chosen by the player.
 */
-void Gameplay_setUpField(Field *pField, GameType eGameType, GameDifficulty eGameDifficulty) {
+void Gameplay_setUpField(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) {
+
+    // Retrieve the field from the game object
+    Field *pField = &this->field;
 
     // Game type: Classic
     if(eGameType == GAME_TYPE_CLASSIC) {
