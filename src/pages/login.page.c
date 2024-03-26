@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 19:26:48
+ * @ Modified time: 2024-03-26 20:29:40
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -44,7 +44,8 @@ void PageHandler_login(p_obj pArgs_Page) {
   // Input fields
   char *sUsernameField;
   char *sPasswordField;
-  char cLoginCurrentField;
+  char cLoginCurrentField = 0;
+  char cLoginFieldCount = 2;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -72,14 +73,15 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
 
       // Define initial user states
-      if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", 0);
-
+      if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", cLoginCurrentField);
+      if(Page_getUserState(this, "login-field-count") == -1) Page_setUserState(this, "login-field-count", cLoginFieldCount);
     break;
 
     case PAGE_ACTIVE_RUNNING:
 
       // Key handling
       cLoginCurrentField = Page_getUserState(this, "login-current-field");
+      cLoginFieldCount = Page_getUserState(this, "login-field-count");
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
@@ -91,7 +93,7 @@ void PageHandler_login(p_obj pArgs_Page) {
 
         // Switch fields
         case '\t':
-          Page_setUserState(this, "login-current-field", (cLoginCurrentField + 1) % 2);
+          Page_setUserState(this, "login-current-field", (cLoginCurrentField + 1) % (int) cLoginFieldCount);
         break;
 
         // Go to menu
