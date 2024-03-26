@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-26 16:31:36
+ * @ Modified time: 2024-03-26 16:40:29
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -63,7 +63,7 @@ void LevelEditor_createLevel() {
     // TODO: user action - save level
     
     LevelEditor_isValidField();         // Checks if the number of mines placed is valid
-    LevelEditor_saveFile(sFileName);    // Creates and saves the file for the custom level
+    LevelEditor_saveLevel(sFileName);   // Creates and saves the file for the custom level
 }
 
 /**
@@ -139,11 +139,11 @@ void LevelEditor_isValidField() {
 }
 
 /**
- * Saves the custom level file.
+ * Saves a custom level by creating a text file to save its data.
  * 
  * @param   { char * }  sFileName   Name of the custom level to be saved.
 */
-void LevelEditor_saveFile(char *sFileName) {
+void LevelEditor_saveLevel(char *sFileName) {
 
     // Creates a pointer to the path's string
     char *sPath = String_alloc(PATH_MAX_LENGTH);
