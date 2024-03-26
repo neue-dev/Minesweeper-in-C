@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-26 21:43:36
+ * @ Modified time: 2024-03-26 21:51:02
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -62,34 +62,9 @@ void LevelEditor_createLevel() {
 
     // TODO: user action - save level
     
-    LevelEditor_isValidField();         // Checks if the number of mines placed is valid
+    // TODO: check the file name's validity
+    
     LevelEditor_saveLevel(sFilename);   // Creates and saves the file for the custom level
-}
-
-/**
- * Checks if the file name of the level to be created is valid.
- * 
- * Valid file names solely consist of alphanumeric characters, hyphens, and underscores.
- * 
- * @param   { char * }     sName       The file name of the level to be created.
-*/
-void LevelEditor_isValidName(char *sName) {
-
-    // Checks if the name's length exceeds the max or is 0
-    if(strlen(sName) > NAME_MAX_LENGTH || strlen(sName) == 0)
-        LevelEditor_invalidName();
-
-    //Checks if the name contains invalid characters
-    int i;
-    for(i = 0; i < strlen(sName); i++) {
-        
-        if(!((sName[i] >= 'A' && sName[i] <= 'Z') ||
-             (sName[i] >= 'a' && sName[i] <= 'z') ||
-             (sName[i] >= '0' && sName[i] <= '9') ||
-              sName[i] == '-' || sName[i] == '_')) {
-                LevelEditor_invalidName();
-        }
-    }
 }
 
 /**
