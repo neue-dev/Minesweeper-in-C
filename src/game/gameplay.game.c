@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-26 20:23:58
+ * @ Modified time: 2024-03-26 21:46:28
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -92,10 +92,12 @@ void Gameplay_setUpField(Game *this, GameType eGameType, GameDifficulty eGameDif
     } else {
 
         // Acquires the file of the chosen custom level
-        File *pCustomLevel = Gameplay_selectCustomLevel();
+        //! uncomment this later
+        // File *pCustomLevel = Gameplay_selectCustomLevel();
 
         // Sets up the field based on the custom level's specs
-        Gameplay_setUpCustomLevel(pCustomLevel, pField);
+        // ! uncomment this too
+        // Gameplay_setUpCustomLevel(pCustomLevel, pField);
 
     }
 }
