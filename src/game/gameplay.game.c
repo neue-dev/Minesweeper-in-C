@@ -1,11 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-25 9:31:06
+ * @ Modified time: 2024-03-26 13:45:51
  * @ Description:
  * 
  * Executes tasks involved in-game.
  */
+
+#ifndef GAMEPLAY_
+#define GAMEPLAY_
 
 #include "field.obj.h"
 
@@ -195,3 +198,4 @@ void Gameplay_end() {
     // TODO: Code this function considering the GUI.
 }
 
+#endif
