@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-26 21:25:24
+ * @ Modified time: 2024-03-26 21:43:36
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -186,7 +186,7 @@ void LevelEditor_saveLevel(char *sFilename) {
         return; // TODO: error-handling
 
     // Adds the level's name to the file
-    fprintf(pLevel, "\n%s", sFilename);
+    fprintf(pLevel, "%s\n", sFilename);
 
     fclose(pLevel);
 }
