@@ -47,12 +47,12 @@ struct {
  * 
 */
 void LevelEditor_createLevel() {
-    char *sFileName;        // Inputted name of the to-be-created custom level
+    char *sFilename;        // Inputted name of the to-be-created custom level
 
     // TODO: user action - input file name (don't create the file yet!)
 
-    LevelEditor_isValidName(sFileName); // Checks if the name of the level is valid
-    LevelEditor_nameExists(sFileName);  // Checks if the name of the level exists
+    LevelEditor_isValidName(sFilename); // Checks if the name of the level is valid
+    LevelEditor_nameExists(sFilename);  // Checks if the name of the level exists
 
     // TODO: user action - input width and height (5-10, 5-15) (don't save this in the file yet!)
 
@@ -63,7 +63,7 @@ void LevelEditor_createLevel() {
     // TODO: user action - save level
     
     LevelEditor_isValidField();         // Checks if the number of mines placed is valid
-    LevelEditor_saveLevel(sFileName);   // Creates and saves the file for the custom level
+    LevelEditor_saveLevel(sFilename);   // Creates and saves the file for the custom level
 }
 
 /**
@@ -141,15 +141,15 @@ void LevelEditor_isValidField() {
 /**
  * Saves a custom level by creating a text file to save its data.
  * 
- * @param   { char * }  sFileName   Name of the custom level to be saved.
+ * @param   { char * }  sFilename   Name of the custom level to be saved.
 */
-void LevelEditor_saveLevel(char *sFileName) {
+void LevelEditor_saveLevel(char *sFilename) {
 
     // Creates a pointer to the path's string
     char *sPath = String_alloc(PATH_MAX_LENGTH);
 
     // Concatinates the folder path and file name to create the full file path
-    snprintf(sPath, PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sFileName);
+    snprintf(sPath, PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sFilename);
 
     // Creates and opens the file for the newly-created custom level
     FILE *pLevel = fopen(sPath, "w");
@@ -186,7 +186,7 @@ void LevelEditor_saveLevel(char *sFileName) {
         return; // TODO: error-handling
 
     // Adds the level's name to the file
-    fprintf(pLevel, "\n%s", sFileName);
+    fprintf(pLevel, "\n%s", sFilename);
 
     fclose(pLevel);
 }

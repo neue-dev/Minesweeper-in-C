@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:21:27
+ * @ Modified time: 2024-03-26 21:37:09
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -109,7 +109,6 @@ void PageHandler_login(p_obj pArgs_Page) {
           // Some fields are empty
           if(!strlen(sUsernameField) ||
             !strlen(sPasswordField)) {
-              
             Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
             
           // If successful

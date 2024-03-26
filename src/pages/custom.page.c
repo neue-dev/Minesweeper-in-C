@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:18:25
+ * @ Modified time: 2024-03-26 21:36:55
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -114,9 +114,22 @@ void PageHandler_custom(p_obj pArgs_Page) {
           if(!strlen(sFilenameField) || 
             !strlen(sWidthField) || 
             !strlen(sHeightField)) {
-
             Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
-            
+
+          // If the filename is invalid            
+          } else if(!String_isValidFilename(sFilenameField)) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: filename has invalid characters.");
+
+          // If the width or height is invalid
+          } else if(!atoi(sWidthField) || !atoi(sHeightField)) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: invalid width or height.");
+
+          // If the width or height is out of range
+          // ! DONT MAKE THIS HARDCODED, STORE THESE IN MACROS IN ONE OF THE GAME FILES
+          } else if(atoi(sWidthField) > 15 || atoi(sWidthField) < 5 || 
+            atoi(sHeightField) > 10 || atoi(sHeightField) < 5) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: width or height is out of range.");
+
           // If all the information is valid
           } else {
             Page_idle(this);
