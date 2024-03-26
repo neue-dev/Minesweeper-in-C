@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-26 20:28:00
+ * @ Modified time: 2024-03-26 20:39:32
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -155,7 +155,7 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "login");
+  PageManager_setActive(&this->pageManager, "custom");
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
