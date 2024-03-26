@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 20:29:40
+ * @ Modified time: 2024-03-26 21:03:46
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -22,24 +22,24 @@
 void PageHandler_login(p_obj pArgs_Page) {
   
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight;
+  int dWidth, dHeight, dMargin;
 
   // Header details
-  char *sHeader = "login";
+  char *sHeader = "profile login";
   char *sHeaderFont = "body-font";
   char sHeaderKey[STRING_KEY_MAX_LENGTH];
 
   // Component names
   char *sLoginComponent = "login.fixed";
   char *sLoginFormComponent = "login-form.col";
-  char *sLogoComponent = "logo.acenter-x.atop-y";
+  char *sLogoComponent = "logo.aleft-x.atop-y";
   char *sHeaderComponent = "header.acenter-x.atop-y";
-  char *sFieldContainerComponent = "field-container.col.acenter-x.atop-y";
-  char *sUsernamePromptComponent = "username-prompt.acenter-x";
-  char *sPasswordPromptComponent = "password-prompt.acenter-x";
-  char *sUsernameComponent = "username.acenter-x";
-  char *sPasswordComponent = "password.acenter-x";
-  char *sFieldPromptComponent = "field-prompt.acenter-x";
+  char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
+  char *sUsernamePromptComponent = "username-prompt.aleft-x";
+  char *sPasswordPromptComponent = "password-prompt.aleft-x";
+  char *sUsernameComponent = "username.aleft-x";
+  char *sPasswordComponent = "password.aleft-x";
+  char *sFieldPromptComponent = "field-prompt.aleft-x";
 
   // Input fields
   char *sUsernameField;
@@ -55,6 +55,7 @@ void PageHandler_login(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
+      dMargin = 46;
 
       // Create the header
       String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
@@ -63,14 +64,14 @@ void PageHandler_login(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponentContext(this, sLoginComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
       Page_addComponentContainer(this, sLoginFormComponent, sLoginComponent, 0, 0);
-      Page_addComponentAsset(this, sLogoComponent, sLoginFormComponent, dWidth / 2, 5, "primary", "secondary", "logo");
-      Page_addComponentAsset(this, sHeaderComponent, sLoginFormComponent, dWidth / 2, 2, "", "", sHeaderKey);
-      Page_addComponentContainer(this, sFieldContainerComponent, sLoginFormComponent, dWidth / 2, 5);
+      // Page_addComponentAsset(this, sLogoComponent, sLoginFormComponent, dWidth / 2 - dMargin / 2 + 1, 5, "primary", "secondary", "logo");
+      Page_addComponentAsset(this, sHeaderComponent, sLoginFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
+      Page_addComponentContainer(this, sFieldContainerComponent, sLoginFormComponent, dWidth / 2 - dMargin / 2, 4);
       Page_addComponentText(this, sUsernamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter username:");
       Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 2, "", "", "Enter password:");
+      Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter password:");
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 4, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
 
       // Define initial user states
       if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", cLoginCurrentField);

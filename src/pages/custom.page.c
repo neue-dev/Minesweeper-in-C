@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 20:51:57
+ * @ Modified time: 2024-03-26 21:04:17
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -22,7 +22,7 @@
 void PageHandler_custom(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, dMargin, i;
+  int dWidth, dHeight, dMargin;
 
   // Header details
   char *sHeader = "custom level";
@@ -33,22 +33,22 @@ void PageHandler_custom(p_obj pArgs_Page) {
   char *sCustomComponent = "custom.fixed";
   char *sCustomFormComponent = "custom-form.col";
   char *sHeaderComponent = "header.acenter-x.atop-y";
-  char *sFieldContainerComponent = "field-container.col.acenter-x.atop-y";
-  char *sFilenamePromptComponent = "filename-prompt.acenter-x";
-  char *sWidthPromptComponent = "width-prompt.acenter-x";
-  char *sHeightPromptComponent = "height-prompt.acenter-x";
-  char *sFilenameComponent = "filename.acenter-x";
-  char *sWidthComponent = "width.acenter-x";
-  char *sHeightComponent = "height.acenter-x";
-  char *sFieldPromptComponent = "field-prompt.acenter-x";
+  char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
+  char *sFilenamePromptComponent = "filename-prompt.aleft-x";
+  char *sWidthPromptComponent = "width-prompt.aleft-x";
+  char *sHeightPromptComponent = "height-prompt.aleft-x";
+  char *sFilenameComponent = "filename.aleft-x";
+  char *sWidthComponent = "width.aleft-x";
+  char *sHeightComponent = "height.aleft-x";
+  char *sFieldPromptComponent = "field-prompt.aleft-x";
+  char *sErrorPromptComponent = "error-prompt.aleft-x";
 
-  // Field handling
-  char cCustomCurrentField = 0;
-  char cCustomFieldCount = 3;
-
+  // Input fields
   char *sFilenameField;
   char *sWidthField;
   char *sHeightField;
+  char cCustomCurrentField = 0;
+  char cCustomFieldCount = 3;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -58,6 +58,7 @@ void PageHandler_custom(p_obj pArgs_Page) {
             // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
+      dMargin = 48;
 
       // Create the header
       String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
@@ -66,15 +67,15 @@ void PageHandler_custom(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponentContext(this, sCustomComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
       Page_addComponentContainer(this, sCustomFormComponent, sCustomComponent, 0, 0);
-      Page_addComponentAsset(this, sHeaderComponent, sCustomFormComponent, dWidth / 2, 8, "", "", sHeaderKey);
-      Page_addComponentContainer(this, sFieldContainerComponent, sCustomFormComponent, dWidth / 2, 4);
+      Page_addComponentAsset(this, sHeaderComponent, sCustomFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
+      Page_addComponentContainer(this, sFieldContainerComponent, sCustomFormComponent, dWidth / 2 - dMargin / 2, 4);
       Page_addComponentText(this, sFilenamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter filename:");
       Page_addComponentText(this, sFilenameComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sWidthPromptComponent, sFieldContainerComponent, 1, 2, "", "", "Enter number of rows (5-10):");
+      Page_addComponentText(this, sWidthPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of rows (5-10):");
       Page_addComponentText(this, sWidthComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sHeightPromptComponent, sFieldContainerComponent, 1, 2, "", "", "Enter number of cols (5-15):");
+      Page_addComponentText(this, sHeightPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of cols (5-15):");
       Page_addComponentText(this, sHeightComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 4, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
       
       // Define initial user states
       if(Page_getUserState(this, "custom-current-field") == -1) Page_setUserState(this, "custom-current-field", cCustomCurrentField);
@@ -100,8 +101,23 @@ void PageHandler_custom(p_obj pArgs_Page) {
           Page_setUserState(this, "custom-current-field", (cCustomCurrentField + 1) % (int) cCustomFieldCount);
         break;
 
-        // Go to menu
+        // Do input checking then go to level editor when valid
         case '\n': case '\r':
+
+          // Get the inputs first
+          sFilenameField = EventStore_getString(this->pSharedEventStore, "filename-input");
+          sWidthField = EventStore_getString(this->pSharedEventStore, "width-input");
+          sHeightField = EventStore_getString(this->pSharedEventStore, "height-input");
+
+          // If one of the fields are empty
+          if(!strlen(sFilenameField) || 
+            !strlen(sWidthField) || 
+            !strlen(sHeightField)) {
+
+            
+            
+          }
+
           Page_idle(this);
           Page_setNext(this, "menu");
         break;
