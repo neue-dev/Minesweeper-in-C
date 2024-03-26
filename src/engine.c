@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-26 21:43:55
+ * @ Modified time: 2024-03-26 21:58:55
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -85,7 +85,7 @@ struct Engine {
   ThreadManager threadManager;        // Manages the different threads of the program
 
   // The actual game object
-  Game standardGame;                  // Holds the state of the game
+  Game standardGame;                  // Holds the state of a standard game
   Game customGame;                    // The level editor
 
   int bState;                         // The state of the engine

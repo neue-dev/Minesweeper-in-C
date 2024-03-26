@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:36:55
+ * @ Modified time: 2024-03-26 21:59:24
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -96,11 +96,6 @@ void PageHandler_custom(p_obj pArgs_Page) {
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
-
-        // Exits the actual program
-        case 27:
-          EventStore_set(this->pSharedEventStore, "terminate", 'y');
-        break;
 
         // Switch fields
         case '\t':
