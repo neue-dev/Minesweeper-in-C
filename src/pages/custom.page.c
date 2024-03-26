@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-13 15:07:11
+ * @ Modified time: 2024-03-26 20:26:04
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -22,7 +22,7 @@
 void PageHandler_custom(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, i;
+  int dWidth, dHeight, dMargin, i;
 
   // Component names
   char *sHelpComponent = "help-fixed";
