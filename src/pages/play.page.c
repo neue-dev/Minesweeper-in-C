@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 22:10:59
+ * @ Modified time: 2024-03-26 22:42:31
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -25,7 +25,7 @@ void PageHandler_play(p_obj pArgs_Page) {
   int dWidth, dHeight, dMargin;
 
   // Header details
-  char *sHeader = "play game";
+  char *sHeader = "play a game";
   char *sHeaderFont = "body-font";
   char sHeaderKey[STRING_KEY_MAX_LENGTH];
 
@@ -41,6 +41,12 @@ void PageHandler_play(p_obj pArgs_Page) {
   char *sFieldPromptComponent = "field-prompt.aleft-x";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
 
+  // Input fields
+  char *sTypeField;
+  char *sFileordiffField;
+  char cPlayCurrentField = 0;
+  char cPlayFieldCount = 2;
+
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
@@ -49,7 +55,7 @@ void PageHandler_play(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 48;
+      dMargin = 42;
 
       // Create the header
       String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
@@ -60,33 +66,121 @@ void PageHandler_play(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sPlayFormComponent, sPlayComponent, 0, 0);
       Page_addComponentAsset(this, sHeaderComponent, sPlayFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayFormComponent, dWidth / 2 - dMargin / 2, 4);
-      Page_addComponentText(this, sTypePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter game type [classic/custom]:");
+      Page_addComponentText(this, sTypePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter game type:");
       Page_addComponentText(this, sTypeComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sFileordiffPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter difficulty/filename:");
+      Page_addComponentText(this, sFileordiffPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter difficulty - if classic:\n      filename   - if custom:");
       Page_addComponentText(this, sFileordiffComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 1, "secondary", "accent", "");
       Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
       
       // Define initial user states
-      // if(Page_getUserState(this, "custom-current-field") == -1) Page_setUserState(this, "custom-current-field", cCustomCurrentField);
-      // if(Page_getUserState(this, "custom-field-count") == -1) Page_setUserState(this, "custom-field-count", cCustomFieldCount);
+      if(Page_getUserState(this, "play-current-field") == -1) Page_setUserState(this, "play-current-field", cPlayCurrentField);
+      if(Page_getUserState(this, "play-field-count") == -1) Page_setUserState(this, "play-field-count", cPlayFieldCount);
       
     break;
 
     case PAGE_ACTIVE_RUNNING:
       
-      // Animations
-      switch(this->dStage) {
-        
-        case 0: 
+      // Key handling
+      cPlayCurrentField = Page_getUserState(this, "play-current-field");
+      cPlayFieldCount = Page_getUserState(this, "play-field-count");
+
+      // Retrieve the user input 
+      sTypeField = EventStore_getString(this->pSharedEventStore, "type-input");
+      sFileordiffField = EventStore_getString(this->pSharedEventStore, "fileordiff-input");
+
+      // Switch based on what key was last pressed
+      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+
+        // Switch fields
+        case '\t':
+          Page_setUserState(this, "play-current-field", ((int) cPlayCurrentField + 1) % (int) cPlayFieldCount);
+        break;
+
+        // Do input checking then go to level editor when valid
+        case '\n': case '\r':
+
+          // If one of the fields are empty
+          if(!strlen(sTypeField) || 
+            !strlen(sFileordiffField)) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
+
+          // If invalid mode
+          } else if(strcmp(sTypeField, "classic") && strcmp(sTypeField, "custom")) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: invalid game type; check whitespaces.");
+
+          // If classic mode
+          } else if(!strcmp(sTypeField, "classic")) {
+            
+            // It's not easy or difficult
+            if(strcmp(sFileordiffField, "easy") && 
+              strcmp(sFileordiffField, "difficult")) {
+              Page_setComponentText(this, sErrorPromptComponent, "Error: classic has only [easy/difficult].");              
+            
+            // Proceed to a classic game
+            } else {
+              // ! todo, configure game here
+              Page_idle(this);
+              Page_setNext(this, "menu"); 
+            }
           
+          // If custom mode
+          } else if(!strcmp(sTypeField, "custom")) {
+            
+            // Check for valid filename
+            if(!String_isValidFilename(sFileordiffField)) {
+              Page_setComponentText(this, sErrorPromptComponent, "Error: invalid filename for custom game.");              
+            
+            // Check if file exists
+            // ! todo
+            } else if(0) {
+              Page_setComponentText(this, sErrorPromptComponent, "Error: file not found for custom game.");              
+
+            // Proceed to custom game
+            } else {
+              // ! todo, configure game here
+              Page_idle(this);
+              Page_setNext(this, "menu"); 
+            }
+          }
+        break;
+
+        default:
+        
+          // Update the values of the current inputted username
+          if(cPlayCurrentField == 0) { 
+            EventStore_setString(this->pSharedEventStore, "key-pressed", "type-input");
+
+            Page_setComponentColor(this, sTypePromptComponent, "primary", "");
+            Page_setComponentColor(this, sTypeComponent, "accent", "");
+            Page_setComponentColor(this, sFileordiffPromptComponent, "primary-darken-0.75", "");
+            Page_setComponentColor(this, sFileordiffComponent, "primary-darken-0.75", "");
+
+          // Update the values of the current inputted password
+          } else if(cPlayCurrentField == 1) {
+            EventStore_setString(this->pSharedEventStore, "key-pressed", "fileordiff-input");      
+
+            Page_setComponentColor(this, sTypePromptComponent, "primary-darken-0.75", "");
+            Page_setComponentColor(this, sTypeComponent, "primary-darken-0.75", "");
+            Page_setComponentColor(this, sFileordiffPromptComponent, "primary", "");
+            Page_setComponentColor(this, sFileordiffComponent, "accent", "");
+          }
+
+          // Clear the error
+          if(EventStore_get(this->pSharedEventStore, "key-pressed"))
+            Page_setComponentText(this, sErrorPromptComponent, "");
+
         break;
       }
+
+      // Indicate the user input on screen
+      Page_setComponentText(this, sTypeComponent, strlen(sTypeField) ? sTypeField : "[classic/custom]");
+      Page_setComponentText(this, sFileordiffComponent, strlen(sFileordiffField) ? sFileordiffField : "[easy/difficult] OR <filename>");
 
     break;
 
     default:
-      // ! exit the page
+
     break;
   }
 }

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:47:18
+ * @ Modified time: 2024-03-26 22:22:51
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -99,7 +99,7 @@ void PageHandler_login(p_obj pArgs_Page) {
 
         // Switch fields
         case '\t':
-          Page_setUserState(this, "login-current-field", (cLoginCurrentField + 1) % (int) cLoginFieldCount);
+          Page_setUserState(this, "login-current-field", ((int) cLoginCurrentField + 1) % (int) cLoginFieldCount);
         break;
 
         // Do input checking, then go to menu if successful

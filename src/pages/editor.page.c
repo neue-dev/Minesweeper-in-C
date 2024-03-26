@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 22:13:43
+ * @ Modified time: 2024-03-26 22:22:56
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -99,7 +99,7 @@ void PageHandler_editor(p_obj pArgs_Page) {
 
         // Switch fields
         case '\t':
-          Page_setUserState(this, "editor-current-field", (cEditorCurrentField + 1) % (int) cEditorFieldCount);
+          Page_setUserState(this, "editor-current-field", ((int) cEditorCurrentField + 1) % (int) cEditorFieldCount);
         break;
 
         // Do input checking then go to level editor when valid
