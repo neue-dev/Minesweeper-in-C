@@ -13,6 +13,7 @@ minesweeper.unix.o
 
 # Ignore drafting files
 .draft.*
+**/.draft
 
 # Don't ignore the build files
 !build/
