@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-27 14:35:31
+ * @ Modified time: 2024-03-27 15:19:36
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -25,14 +25,6 @@
 
 #define PATH_MAX_LENGTH LEVELS_FOLDER_LENGTH + NAME_MAX_LENGTH + 4
 #define PATH_MAX_SIZE sizeof(char)*(PATH_MAX_LENGTH + 1)
-
-typedef enum ErrorType ErrorType;
-
-enum ErrorType {
-    ERROR_TYPE_INVALID_NAME,
-    ERROR_TYPE_NAME_EXISTS,
-    ERROR_TYPE_INVALID_FIELD
-};
 
 struct {
     int dWidth;
