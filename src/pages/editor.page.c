@@ -1,14 +1,14 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 21:36:55
+ * @ Modified time: 2024-03-26 22:22:56
  * @ Description:
  * 
- * This file defines the page handler for the help page.
+ * This file defines the page handler for the editor page.
  */
 
-#ifndef PAGE_CUSTOM_
-#define PAGE_CUSTOM_
+#ifndef PAGE_EDITOR_
+#define PAGE_EDITOR_
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -19,19 +19,19 @@
  * 
  * @param   { p_obj }   pArgs_Page  The page instance we need to configure.
 */
-void PageHandler_custom(p_obj pArgs_Page) {
+void PageHandler_editor(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
   int dWidth, dHeight, dMargin;
 
   // Header details
-  char *sHeader = "custom level";
+  char *sHeader = "level editor";
   char *sHeaderFont = "body-font";
   char sHeaderKey[STRING_KEY_MAX_LENGTH];
 
   // Component names
-  char *sCustomComponent = "custom.fixed";
-  char *sCustomFormComponent = "custom-form.col";
+  char *sEditorComponent = "editor.fixed";
+  char *sEditorFormComponent = "editor-form.col";
   char *sHeaderComponent = "header.acenter-x.atop-y";
   char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
   char *sFilenamePromptComponent = "filename-prompt.aleft-x";
@@ -47,28 +47,28 @@ void PageHandler_custom(p_obj pArgs_Page) {
   char *sFilenameField;
   char *sWidthField;
   char *sHeightField;
-  char cCustomCurrentField = 0;
-  char cCustomFieldCount = 3;
+  char cEditorCurrentField = 0;
+  char cEditorFieldCount = 3;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
     case PAGE_ACTIVE_INIT:
 
-            // Get the dimensions 
+      // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 48;
+      dMargin = 44;
 
       // Create the header
       String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
       AssetManager_createTextAsset(this->pSharedAssetManager, sHeader, sHeaderFont);
 
       // Create component tree
-      Page_addComponentContext(this, sCustomComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sCustomFormComponent, sCustomComponent, 0, 0);
-      Page_addComponentAsset(this, sHeaderComponent, sCustomFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
-      Page_addComponentContainer(this, sFieldContainerComponent, sCustomFormComponent, dWidth / 2 - dMargin / 2, 4);
+      Page_addComponentContext(this, sEditorComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
+      Page_addComponentContainer(this, sEditorFormComponent, sEditorComponent, 0, 0);
+      Page_addComponentAsset(this, sHeaderComponent, sEditorFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
+      Page_addComponentContainer(this, sFieldContainerComponent, sEditorFormComponent, dWidth / 2 - dMargin / 2, 4);
       Page_addComponentText(this, sFilenamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter filename:");
       Page_addComponentText(this, sFilenameComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sWidthPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of cols (5-15):");
@@ -79,15 +79,15 @@ void PageHandler_custom(p_obj pArgs_Page) {
       Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
       
       // Define initial user states
-      if(Page_getUserState(this, "custom-current-field") == -1) Page_setUserState(this, "custom-current-field", cCustomCurrentField);
-      if(Page_getUserState(this, "custom-field-count") == -1) Page_setUserState(this, "custom-field-count", cCustomFieldCount);
+      if(Page_getUserState(this, "editor-current-field") == -1) Page_setUserState(this, "editor-current-field", cEditorCurrentField);
+      if(Page_getUserState(this, "editor-field-count") == -1) Page_setUserState(this, "editor-field-count", cEditorFieldCount);
     break;
 
     case PAGE_ACTIVE_RUNNING:
       
       // Key handling
-      cCustomCurrentField = Page_getUserState(this, "custom-current-field");
-      cCustomFieldCount = Page_getUserState(this, "custom-field-count");
+      cEditorCurrentField = Page_getUserState(this, "editor-current-field");
+      cEditorFieldCount = Page_getUserState(this, "editor-field-count");
 
       // Retrieve the user input 
       sFilenameField = EventStore_getString(this->pSharedEventStore, "filename-input");
@@ -97,14 +97,9 @@ void PageHandler_custom(p_obj pArgs_Page) {
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
 
-        // Exits the actual program
-        case 27:
-          EventStore_set(this->pSharedEventStore, "terminate", 'y');
-        break;
-
         // Switch fields
         case '\t':
-          Page_setUserState(this, "custom-current-field", (cCustomCurrentField + 1) % (int) cCustomFieldCount);
+          Page_setUserState(this, "editor-current-field", ((int) cEditorCurrentField + 1) % (int) cEditorFieldCount);
         break;
 
         // Do input checking then go to level editor when valid
@@ -140,7 +135,7 @@ void PageHandler_custom(p_obj pArgs_Page) {
         default:
         
           // Update the values of the current inputted username
-          if(cCustomCurrentField == 0) { 
+          if(cEditorCurrentField == 0) { 
             EventStore_setString(this->pSharedEventStore, "key-pressed", "filename-input");
 
             Page_setComponentColor(this, sFilenamePromptComponent, "primary", "");
@@ -151,7 +146,7 @@ void PageHandler_custom(p_obj pArgs_Page) {
             Page_setComponentColor(this, sHeightComponent, "primary-darken-0.75", "");
 
           // Update the values of the current inputted password
-          } else if(cCustomCurrentField == 1) {
+          } else if(cEditorCurrentField == 1) {
             EventStore_setString(this->pSharedEventStore, "key-pressed", "width-input");      
 
             Page_setComponentColor(this, sFilenamePromptComponent, "primary-darken-0.75", "");
@@ -161,7 +156,7 @@ void PageHandler_custom(p_obj pArgs_Page) {
             Page_setComponentColor(this, sHeightPromptComponent, "primary-darken-0.75", "");
             Page_setComponentColor(this, sHeightComponent, "primary-darken-0.75", "");      
           
-          } else if(cCustomCurrentField == 2) {
+          } else if(cEditorCurrentField == 2) {
             EventStore_setString(this->pSharedEventStore, "key-pressed", "height-input");      
 
             Page_setComponentColor(this, sFilenamePromptComponent, "primary-darken-0.75", "");
@@ -187,7 +182,7 @@ void PageHandler_custom(p_obj pArgs_Page) {
     break;
 
     default:
-      // ! exit the page
+
     break;
   }
 }

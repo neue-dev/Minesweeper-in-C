@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 21:54:14
+ * @ Modified time: 2024-03-26 21:46:57
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -31,7 +31,6 @@ void PageHandler_settings(p_obj pArgs_Page) {
   char *sSettingsContainerComponent = "settings-container.col";
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
-  char *sThemeSelectorComponent = "theme-selector.aleft-x.atop-y";
   char *sSelectorPromptComponent = "selector-prompt.aleft-x.atop-y";
   char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
