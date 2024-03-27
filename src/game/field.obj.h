@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-02 16:17:54
+ * @ Modified time: 2024-03-27 21:36:24
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -15,6 +15,9 @@
 
 #include <stdlib.h>
 #include <time.h>
+
+#define FIELD_MAX_ROWS    10
+#define FIELD_MAX_COLUMNS 15
 
 typedef struct Field Field;
 
@@ -30,6 +33,11 @@ struct Field {
   Grid *pMineGrid;  // Where we store the mines
   Grid *pFlagGrid;  // Where we store the flags
 
+  // Determines which specific tiles have been inspected
+  Grid *pInspectGrid; 
+
+  // Determines the number of mines adjacent to each tile without a mine
+  int aNumbers[FIELD_MAX_ROWS][FIELD_MAX_COLUMNS];
 };
 
 /**
@@ -74,7 +82,7 @@ void Field_clearFlags(Field *this) {
  * @param   { Field * }   this    The field object to modify.
  * @param   { int }       dMines  The number of mines to create
 */
-void Field_populate(Field *this, int dMines) {
+void Field_populateRandom(Field *this, int dMines) {
 
   // If there's too many mines to fit the grid, we won't allow that
   if(dMines >= this->dWidth * this->dHeight)
@@ -103,6 +111,95 @@ void Field_populate(Field *this, int dMines) {
     Grid_setBit(this->pMineGrid, 
       dLocation % this->dWidth, 
       dLocation / this->dWidth, 1);
+  }
+}
+
+/**
+ * Populates the mine grid with mines from a custom level.
+ * 
+ * @param   { Field * }   this    The field object to modify.
+ * @param   { char * }    sPath   The path of the level's file.
+*/
+void Field_populateCustom(Field *this, char *sPath) {
+  int i, j;
+  char cTile;
+  
+  // Opens the file of the custom level
+  FILE *pLevel = fopen(sPath, "r");
+
+  if(pLevel == NULL)
+    return; // TODO: error-handling
+  
+  // Gets the width and height of the field
+  fscanf("%d %d ", &this->dWidth, &this->dHeight);
+
+  // Loops through each tile
+  for(i = 0; i < this->dWidth; i++) {
+    for(j = 0; j < this->dHeight; j++) {
+
+      // Gets the tile's representing character
+      fscanf("%c ", &cTile);
+
+      // Places a mine on the tile if its character is 'X'
+      if(cTile == 'X')
+        Grid_setBit(this->pMineGrid, i, j, 1);
+      
+      // Does not place a mine on the tile if its character is '.'
+      else
+        Grid_setBit(this->pMineGrid, i, j, 0);
+    }
+  }
+
+  fclose(pLevel);
+}
+
+/**
+ * Specifies the numbers of each tile.
+ * Each number corresponds to the number of mines directly adjacent to the tile.
+ * 
+ * @param   { Field * }   this    The field object to modify.
+*/
+void Field_setNumbers(Field *this) {
+  int i, j, k, l;
+  int dMines; // Number of mines adjacent to the tile
+
+  // Loops through each tile
+  for(i = 0; i < this->dWidth; i++) {
+    for(j = 0; j < this->dHeight; j++) {
+
+      // Sets the initial count to 0
+      dMines = 0;
+
+      // Sets dMines to -1 if a mine has been found
+      if(Grid_getBit(this->pMineGrid, i, j))
+        dMines = -1;
+
+      // Executes the following code if a mine has not been found
+      else {
+
+        // The following nested loops checks each adjacent tile
+
+        // Loops through each row (top, middle, bottom)
+        for(k = -1; k <= 1; k++) {
+          if(i + k >= 0 && i + k <= this->dWidth - 1) {  // Checks if the tile is within bounds (row)
+
+            // Loops through each column (left, middle, right)
+            for(l = -1; l <= 1; l++) {
+                if(j + l >= 0 && j + l <= this->dHeight - 1) {  // Checks if the tile is within bounds (col)
+
+                  // Increments dMines if an adjacent mine has been found
+                  if(Grid_getBit(this->pMineGrid, i + k, j + l))
+                    dMines++;
+                }
+            }
+          }
+        }
+
+      }
+
+      // Sets the number of adjacent mines
+      this->aNumbers[i][j] = dMines;
+    }
   }
 }
 
