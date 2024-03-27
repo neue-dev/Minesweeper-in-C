@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-27 20:22:02
+ * @ Modified time: 2024-03-27 20:54:55
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PROFILES_FILE_PATH "../data/profiles/profiles.txt"
+#define PROFILES_FILE_PATH "../data/profiles.data.txt"
 
 #define PROFILES_MAX_NUM 10
 
