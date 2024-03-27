@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-27 21:36:24
+ * @ Modified time: 2024-03-27 21:49:15
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -154,8 +154,7 @@ void Field_populateCustom(Field *this, char *sPath) {
 }
 
 /**
- * Specifies the numbers of each tile.
- * Each number corresponds to the number of mines directly adjacent to the tile.
+ * Specifies the number of mines adjacent to each tile.
  * 
  * @param   { Field * }   this    The field object to modify.
 */
