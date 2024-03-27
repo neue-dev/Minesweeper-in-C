@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-26 21:51:02
+ * @ Modified time: 2024-03-27 14:35:31
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LEVELS_FILE_PATH "build/levels/level0.txt"
+#define LEVELS_FILE_PATH "build/levels/levels.txt"
 #define LEVELS_FOLDER_PATH "build/levels/"
 #define LEVELS_FOLDER_LENGTH 16
 
