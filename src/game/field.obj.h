@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-27 21:49:15
+ * @ Modified time: 2024-03-27 23:07:23
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -176,18 +176,18 @@ void Field_setNumbers(Field *this) {
       // Executes the following code if a mine has not been found
       else {
 
-        // The following nested loops checks each adjacent tile
+        // The following loops checks each adjacent tile
 
         // Loops through each row (top, middle, bottom)
-        for(k = -1; k <= 1; k++) {
-          if(i + k >= 0 && i + k <= this->dWidth - 1) {  // Checks if the tile is within bounds (row)
+        for(k = i - 1; k <= i + 1; k++) {
+          if(k >= 0 && k <= this->dWidth - 1) {  // Checks if the tile is within bounds (row)
 
             // Loops through each column (left, middle, right)
-            for(l = -1; l <= 1; l++) {
-                if(j + l >= 0 && j + l <= this->dHeight - 1) {  // Checks if the tile is within bounds (col)
+            for(l = j - 1; l <= j + 1; l++) {
+                if(j >= 0 && j <= this->dHeight - 1) {  // Checks if the tile is within bounds (col)
 
                   // Increments dMines if an adjacent mine has been found
-                  if(Grid_getBit(this->pMineGrid, i + k, j + l))
+                  if(Grid_getBit(this->pMineGrid, k, l))
                     dMines++;
                 }
             }
@@ -200,6 +200,17 @@ void Field_setNumbers(Field *this) {
       this->aNumbers[i][j] = dMines;
     }
   }
+}
+
+/**
+ * Considers a tile inspected.
+ * 
+ * @param   { Field * }   this    The field object to modify.
+ * @param   { int }       x       The x-coordinate of the tile to be inspected.
+ * @param   { int }       y       The y-coordinate of the tile to be inspected.
+*/
+void Field_inspect(Field *pField, int x, int y) {
+  Grid_setBit(pField->pInspectGrid, x, y, 1);
 }
 
 #endif
