@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-27 20:20:57
+ * @ Modified time: 2024-03-27 20:22:02
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -21,15 +21,6 @@
 
 #define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 2) // +2 includes \0 and \n
 #define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 2)
-
-void Profile_create(char *sName);
-void Profile_select(char *sName);
-void Profile_delete(char *sName);
-
-void Profile_maxNumReached();
-void Profile_invalidName();
-void Profile_exists();
-void Profile_doesNotExist();
 
 /**
  * Creates a new profile.
