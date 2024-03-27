@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-27 15:19:36
+ * @ Modified time: 2024-03-27 23:09:47
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -18,7 +18,7 @@
 
 #define LEVELS_FILE_PATH "build/levels/levels.txt"
 #define LEVELS_FOLDER_PATH "build/levels/"
-#define LEVELS_FOLDER_LENGTH 16
+#define LEVELS_FOLDER_LENGTH strlen(LEVELS_FOLDER_PATH)
 
 #define NAME_MAX_LENGTH (1 << 4)
 #define NAME_MAX_SIZE sizeof(char)*(NAME_MAX_LENGTH + 1)
