@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 17:02:48
+ * @ Modified time: 2024-03-28 17:08:51
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -32,8 +32,10 @@ struct Game {
 void Game_init(Game *this) {
   this->dTime = 0;
 
-  // ! change dimensions
+  // ! change dimensions, change numbe rof mines
   Field_init(&this->gameField, 15, 10);
+  Field_populateRandom(&this->gameField, 20);
+  Field_setNumbers(&this->gameField);
 }
 
 /**
@@ -64,7 +66,8 @@ char *Game_displayGrid(Game *this) {
 
         // The number to be shown
         dNumber = this->gameField.aNumbers[y][x];
-        sprintf(sNumberText, "| %d ", dNumber);
+        dNumber = dNumber < 0 ? 'X' : dNumber + 48;
+        sprintf(sNumberText, "| %c ", dNumber);
         
         // If upper left corner
         if(!y && !x) {
