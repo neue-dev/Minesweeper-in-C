@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 20:50:34
+ * @ Modified time: 2024-03-28 20:52:04
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -57,6 +57,7 @@ enum GameOutcome {
 struct Game {
   Field gameField;              // Game field
   
+  int dWidth, dHeight;          // Game field dimensions
   int dTime;                    // Game timer
 
   GameType eType;
@@ -76,6 +77,18 @@ void Game_init(Game *this) {
   Field_init(&this->gameField, 10, 10);
   Field_populateRandom(&this->gameField, 8);
   Field_setNumbers(&this->gameField);
+}
+
+/**
+ * Ends the game.
+ * 
+ * @param   { Game * }           this         The data of the recently-ended game.
+ * @param   { GameOutcome }      eOutcome     How the game was ended.
+*/
+void Game_end(Game *this, GameOutcome eOutcome) {
+
+    // Saves the outcome to the game data
+    this->eOutcome = eOutcome;
 }
 
 /**

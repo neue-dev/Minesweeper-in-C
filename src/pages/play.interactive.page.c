@@ -10,7 +10,7 @@
 #ifndef PAGE_PLAY_INTERACTIVE_
 #define PAGE_PLAY_INTERACTIVE_
 
-#include "../game/gameplay.game.c"
+#include "../game/gameplay.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"

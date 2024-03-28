@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 20:30:39
- * @ Modified time: 2024-03-28 20:49:05
+ * @ Modified time: 2024-03-28 20:53:14
+ * @ Modified time: 2024-03-28 20:53:24
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -22,39 +22,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-/**
- * Initiates the gameplay.
- * 
-*/
-void Gameplay_start() {
-    int eType;          // Game type (classic/custom)
-    int eDifficulty;    // Game difficulty (easy/difficult)
-
-    // Allocates memory for the field object
-    // Field *pField = Field_create()
-
-    // TODO: input game type
-
-    // Sets up the game according to the game type
-    // Gameplay_selectType(eType, pField);
-        
-
-}
-
-/**
- * Ends the game.
- * 
- * @param   { Game * }           this         The data of the recently-ended game.
- * @param   { GameOutcome }      eOutcome     How the game was ended.
-*/
-void Gameplay_end(Game *this, GameOutcome eOutcome) {
-
-    // Saves the outcome to the game data
-    // this->eOutcome = eOutcome;
-
-    // TODO: Code this function considering the GUI.
-}
 
 /**
  * Intializes the field's data according to the difficulty.
@@ -170,7 +137,7 @@ void Gameplay_inspect(Game *this, int x, int y) {
 
     // Ends the game if a mine has been inspected
     if(Grid_getBit(pField->pMineGrid, x, y)) {
-        Gameplay_end(this, GAMEPLAY_OUTCOME_LOSS);
+        Game_end(this, GAMEPLAY_OUTCOME_LOSS);
         return;
     }
 
