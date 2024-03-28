@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 16:54:37
+ * @ Modified time: 2024-03-28 16:57:23
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -62,7 +62,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
-      Page_addComponentAsset(this, sFieldCursorComponent, sFieldContainerComponent, 0, 0, "accent", "", "field-cursor");
+      Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
 
       // Define initial user states
       if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
@@ -125,8 +125,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
       // Update UI
       Page_setComponentPos(this, sFieldCursorComponent, 
-        cCursorX * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
-        cCursorY * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1);
+        cCursorX * GAME_CELL_WIDTH, 
+        cCursorY * GAME_CELL_HEIGHT);
 
       // For each cell, check if it's been inspected, and if so, change color
       for(x = 0; x < pGame->gameField.dWidth; x++) {
