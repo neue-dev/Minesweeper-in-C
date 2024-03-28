@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-29 00:46:13
+ * @ Modified time: 2024-03-29 01:40:00
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -13,9 +13,9 @@
 #include "./field.obj.h"
 
 #include "../utils/utils.grid.h"
+#include "../utils/utils.types.h"
 #include "../utils/utils.string.h"
 
-#include <time.h>
 #include <math.h>
 
 #define GAME_CELL_HEIGHT 2
@@ -62,14 +62,16 @@ enum GameOutcome {
 
 
 struct Game {
-  Field gameField;              // Game field
+  Field gameField;                            // Game field
   
-  int dCursorX, dCursorY;       // The cursor of the player
-  time_t startTime, endTime;    // Used for computing the time
+  int dCursorX, dCursorY;                     // The cursor of the player
+  time_t startTime, endTime;                  // Used for computing the time
+  time_t frameStart, frameEnd;                // Used for computing fps 
+  int dFrameCount, dLastFPS;
 
   GameType eType;
   GameDifficulty eDifficulty;   
-  GameOutcome eOutcome;         // Some data about the game
+  GameOutcome eOutcome;                       // Some data about the game
 };
 
 /**
@@ -91,6 +93,12 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   // Start the timer
   time(&this->startTime);
   time(&this->endTime);
+  time(&this->frameStart);
+  time(&this->frameEnd);
+
+  // Set fps counters
+  this->dFrameCount = 0;
+  this->dLastFPS = 0;
 }
 
 /**
@@ -300,7 +308,6 @@ void Game_inspect(Game *this, int x, int y) {
             // Marks the tile as inspected
             if(pField->aNumbers[j][i] >= 0)
               Field_inspect(pField, i, j);
-
           }
         }
       }
@@ -337,9 +344,9 @@ void Game_removeFlag (Game *this) {
  * @param   { Game * }  this  The game object to modify.
 */
 void Game_incrementX(Game *this) {
-  int dCursorXPrev = this->dCursorX;
+  // int dCursorXPrev = this->dCursorX;
   int dCursorXNew = this->dCursorX;
-  int dCursorY = this->dCursorY;
+  // int dCursorY = this->dCursorY;
   
   // Look for a tile that hasn't been inspected
   // do {
@@ -357,9 +364,9 @@ void Game_incrementX(Game *this) {
  * @param   { Game * }  this  The game object to modify.
 */
 void Game_decrementX(Game *this) {
-  int dCursorXPrev = this->dCursorX;
+  // int dCursorXPrev = this->dCursorX;
   int dCursorXNew = this->dCursorX;
-  int dCursorY = this->dCursorY;
+  // int dCursorY = this->dCursorY;
   
   // Look for a tile that hasn't been inspected
   // do {
@@ -377,9 +384,9 @@ void Game_decrementX(Game *this) {
  * @param   { Game * }  this  The game object to modify.
 */
 void Game_incrementY(Game *this) {
-  int dCursorYPrev = this->dCursorY;
+  // int dCursorYPrev = this->dCursorY;
   int dCursorYNew = this->dCursorY;
-  int dCursorX = this->dCursorX;
+  // int dCursorX = this->dCursorX;
   
   // Look for a tile that hasn't been inspected
   // do {
@@ -397,9 +404,9 @@ void Game_incrementY(Game *this) {
  * @param   { Game * }  this  The game object to modify.
 */
 void Game_decrementY(Game *this) {
-  int dCursorYPrev = this->dCursorY;
+  // int dCursorYPrev = this->dCursorY;
   int dCursorYNew = this->dCursorY;
-  int dCursorX = this->dCursorX;
+  // int dCursorX = this->dCursorX;
   
   // Look for a tile that hasn't been inspected
   // do {
@@ -464,11 +471,42 @@ char *Game_getMinesLeft(Game *this) {
   char *sMineString = String_alloc(16);
   int dMinesLeft = this->gameField.dMines - Grid_getCount(this->gameField.pFlagGrid);
   
-  // Cerate the string
+  // Create the string
   sprintf(sMineString, "%d mines", dMinesLeft);
 
   return sMineString;
 }
 
-#endif
+/**
+ * Returns how many fps the game is running at.
+ * Default is 32.
+ * 
+ * @param   { Game * }   this   The game object to read.
+ * @return  { char * }          A string describing the frame rate of the game.
+*/
+char *Game_getFPS(Game *this) {
+  char *sFPSString = String_alloc(16);
+  
+  // Get the time now
+  time(&this->frameEnd);
 
+  // It's been a second
+  if(difftime(this->frameEnd, this->frameStart)) {
+    this->dLastFPS = this->dFrameCount + 1;
+    this->dFrameCount = 0;  
+
+    // Get the time for the next frame  
+    time(&this->frameStart);
+
+  // It hasn't been a second. keep counting frames
+  } else {
+    this->dFrameCount++;
+  }
+
+  // Create the string and return it
+  sprintf(sFPSString, "%d fps", this->dLastFPS);
+  
+  return sFPSString;
+}
+
+#endif

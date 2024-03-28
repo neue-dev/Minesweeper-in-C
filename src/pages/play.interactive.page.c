@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 01:10:38
+ * @ Modified time: 2024-03-29 01:22:10
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -226,7 +226,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
         pGame->dCursorY * GAME_CELL_HEIGHT);
 
       // Game information text
-      sprintf(sGameInfoText, "time elapsed:    %s\nmines left:      %s\n",
+      sprintf(sGameInfoText, "frame rate:      %s\ntime elapsed:    %s\nmines left:      %s\n",
+        Game_getFPS(pGame),
         Game_getTime(pGame),
         Game_getMinesLeft(pGame));
       Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
