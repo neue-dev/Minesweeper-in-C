@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-25 18:25:21
+ * @ Modified time: 2024-03-28 10:46:24
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -96,8 +96,10 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pShar
   
   // Initialize the handler and component manager
   this->fHandler = fHandler;
-  this->dComponentCount = 1;                        // The root component
-  ComponentManager_init(&this->componentManager);   // Init the component tree and other stuff
+  this->dComponentCount = 1;  // The root component
+
+  // Init the component tree and other stuff
+  ComponentManager_init(&this->componentManager);
   
   // Currently none
   this->sNextName = NULL;
@@ -349,6 +351,69 @@ void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, i
 }
 
 /**
+ * Creates a popup component.
+ * Appends the component to the root element by default.
+ * The component is also screen centered by default.
+ * 
+ * //!jsdoc
+*/
+void Page_addComponentPopup(Page *this, char *sKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey, char *sBodyText, char *sOption1, char *sOption2) {
+  int i;
+
+  // Holds the component keys
+  char sPopupComponent[STRING_KEY_MAX_LENGTH];
+  char sPopupBackgroundComponent[STRING_KEY_MAX_LENGTH];
+  char sPopupTextComponent[STRING_KEY_MAX_LENGTH];
+  char sPopupOptionsComponent[STRING_KEY_MAX_LENGTH];
+  char sPopupOption1Component[STRING_KEY_MAX_LENGTH];
+  char sPopupOption2Component[STRING_KEY_MAX_LENGTH];
+  char sPopupButtonCurrentKey[STRING_KEY_MAX_LENGTH]; 
+  char sPopupButtonCountKey[STRING_KEY_MAX_LENGTH];
+
+  // Define the component keys
+  sprintf(sPopupComponent, "popup-%s.fixed.acenter-x.acenter-y", sKey);
+  sprintf(sPopupTextComponent, "popup-text-%s.acenter-x.atop-y", sKey);
+  sprintf(sPopupOptionsComponent, "popup-options-%s.fixed.acenter-x.abottom-y", sKey);
+  sprintf(sPopupOption1Component, "popup-option1-%s.aright-x.abottom-y", sKey);
+  sprintf(sPopupOption2Component, "popup-option2-%s.aleft-x.abottom-y", sKey);
+
+  // For handling the component
+  sprintf(sPopupButtonCurrentKey, "popup-button-current-%s", sKey);
+  sprintf(sPopupButtonCountKey, "popup-button-count-%s", sKey);
+
+  // Create the popup and its background
+  Page_addComponentContainer(this, sPopupComponent, "root", x, y);
+
+  for(i = 0; i < h; i++) {
+    sprintf(sPopupBackgroundComponent, "popup-%s-bg-clear-%d.acenter-x.atop-y", sKey, i);
+    Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorFGKey, sColorFGKey, String_repeat(" ", w + 2));
+    
+    sprintf(sPopupBackgroundComponent, "popup-%s-bg-border-%d.acenter-x.atop-y", sKey, i);
+    Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorBGKey, sColorBGKey, String_repeat(" ", w));
+    
+    if(i > 0 && i < h - 1) {
+      sprintf(sPopupBackgroundComponent, "popup-%s-bg-%d.acenter-x.atop-y", sKey, i);
+      Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorFGKey, sColorFGKey, String_repeat(" ", w - 4));
+    }
+  }
+  
+  // The popup body text and options
+  Page_addComponentText(this, sPopupTextComponent, sPopupComponent, 0, -2, sColorBGKey, "", sBodyText);
+  Page_addComponentContainer(this, sPopupOptionsComponent, sPopupComponent, 0, 2);
+  Page_addComponentText(this, sPopupOption1Component, sPopupOptionsComponent, -2, 0, sColorFGKey, sColorBGKey, sOption1);
+  Page_addComponentText(this, sPopupOption2Component, sPopupOptionsComponent, 2, 0, sColorBGKey, sColorFGKey, sOption2);
+
+  // Make it hidden but above all elements
+  ComponentManager_setZIndex(&this->componentManager, sPopupComponent, 1);
+  ComponentManager_setHidden(&this->componentManager, sPopupComponent, 1);
+
+  // Create the states of the component
+  Page_setUserState(this, sPopupButtonCurrentKey, 0);
+  Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);
+  Page_setUserState(this, "is-popup", 0);
+}
+
+/**
  * Changes the position of the component.
  * 
  * @param   { Page * }  this          The page we want to modify.
@@ -431,6 +496,20 @@ void Page_setComponentText(Page *this, char *sKey, char *sText) {
 }
 
 /**
+ * Changes the text stored by a popup.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to modify.
+ * @param   { char * }  sText         The text for the popup.
+*/
+void Page_setComponentPopupText(Page *this, char *sKey, char *sText) {
+  char sPopupTextComponent[STRING_KEY_MAX_LENGTH];
+  sprintf(sPopupTextComponent, "popup-text-%s.acenter-x.atop-y", sKey);
+
+  Page_setComponentText(this, sPopupTextComponent, sText);
+}
+
+/**
  * Sets what page will be rendered next after the current page finishes running.
  * 
  * @param   { Page * }  this    The page to modify.
@@ -438,6 +517,95 @@ void Page_setComponentText(Page *this, char *sKey, char *sText) {
 */
 void Page_setNext(Page *this, char *sNext) {
   this->sNextName = sNext;
+}
+
+/**
+ * Enables a popup.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to enable.
+*/
+void Page_enableComponentPopup(Page *this, char *sKey) {
+  char sPopupComponent[STRING_KEY_MAX_LENGTH];
+  sprintf(sPopupComponent, "popup-%s.fixed.acenter-x.acenter-y", sKey);
+
+  // Make the component visible
+  ComponentManager_setHidden(&this->componentManager, sPopupComponent, 0);
+
+  // Enable component boolean
+  Page_setUserState(this, "is-popup", 1);
+}
+
+/**
+ * Disables a popup.
+ * Also saves the response of the user in the page state.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to disable.
+*/
+void Page_disableComponentPopup(Page *this, char *sKey) {
+  char sPopupComponent[STRING_KEY_MAX_LENGTH];
+  sprintf(sPopupComponent, "popup-%s.fixed.acenter-x.acenter-y", sKey);
+
+  // Make the component visible
+  ComponentManager_setHidden(&this->componentManager, sPopupComponent, 1);
+
+  // Enable component boolean
+  Page_setUserState(this, "is-popup", 0);
+}
+
+/**
+ * Toggles a popup option.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to disable.
+*/
+void Page_toggleComponentPopup(Page *this, char *sKey, char *sFGColorKey, char *sBGColorKey) {
+
+  // Component keys and states
+  char sPopupOption1Component[STRING_KEY_MAX_LENGTH];
+  char sPopupOption2Component[STRING_KEY_MAX_LENGTH];
+  char sPopupButtonCurrentKey[STRING_KEY_MAX_LENGTH]; 
+  char sPopupButtonCountKey[STRING_KEY_MAX_LENGTH];
+  char cPopupButtonCurrent;
+  char cPopupButtonCount;
+
+  // Define the component keys
+  sprintf(sPopupOption1Component, "popup-option1-%s.aright-x.abottom-y", sKey);
+  sprintf(sPopupOption2Component, "popup-option2-%s.aleft-x.abottom-y", sKey);
+
+  // For handling the component
+  sprintf(sPopupButtonCurrentKey, "popup-button-current-%s", sKey);
+  sprintf(sPopupButtonCountKey, "popup-button-count-%s", sKey);
+
+  // Get the page states and update them
+  cPopupButtonCurrent = Page_getUserState(this, sPopupButtonCurrentKey);
+  cPopupButtonCount = Page_getUserState(this, sPopupButtonCountKey);
+
+  Page_setUserState(this, sPopupButtonCurrentKey, ((int) cPopupButtonCurrent + 1) % cPopupButtonCount);
+
+  // Change the UI to reflect option change
+  if(Page_getUserState(this, sPopupButtonCurrentKey) == 0) {
+    Page_setComponentColor(this, sPopupOption1Component, sFGColorKey, sBGColorKey);
+    Page_setComponentColor(this, sPopupOption2Component, sBGColorKey, sFGColorKey);
+  } else {
+    Page_setComponentColor(this, sPopupOption1Component, sBGColorKey, sFGColorKey);
+    Page_setComponentColor(this, sPopupOption2Component, sFGColorKey, sBGColorKey);
+  }
+}
+
+/**
+ * Returns the response of the user to the popup.
+ * In other words, which option they selected.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to disable.
+*/
+int Page_readComponentPopup(Page *this, char *sKey) {
+  char sPopupButtonCurrentKey[STRING_KEY_MAX_LENGTH];
+  sprintf(sPopupButtonCurrentKey, "popup-button-current-%s", sKey);
+
+  return (int) Page_getUserState(this, sPopupButtonCurrentKey);
 }
 
 /**

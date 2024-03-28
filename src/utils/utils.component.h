@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-25 19:09:23
+ * @ Modified time: 2024-03-28 10:26:12
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -87,6 +87,9 @@ struct Component {
   char sName[STRING_KEY_MAX_LENGTH];                // The name of the component
                                                     // This is important so we can get its states in the page class
 
+  int zIndex;                                       // Default is 0; helps with layering
+  int bIsHidden;                                    // Whether or not the component is hidden
+
   Component *pParent;                               // The parent component
   Component *pChildren[COMPONENT_MAX_CHILD_COUNT];  // The children components
   int dChildCount;                                  // How many children we currently have
@@ -158,6 +161,10 @@ Component *Component_init(Component *this, char *sName, Component *pParent, int 
   
   // Copy the name string
   strcpy(this->sName, sName);
+
+  // Set the z index and the hidden boolean
+  this->zIndex = 0;
+  this->bIsHidden = 0;
 
   // Default component type
   this->eComponentType = COMPONENT_FIXED;
@@ -595,6 +602,33 @@ void ComponentManager_setSize(ComponentManager *this, char *sKey, int w, int h) 
 }
 
 /**
+ * Set the z index of a specified component.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { int }                   zIndex        The new zIndex.
+*/
+void ComponentManager_setZIndex(ComponentManager *this, char *sKey, int zIndex) {
+  Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  pComponent->zIndex = zIndex;
+}
+
+/**
+ * Sets the visibility of a component.
+ * 1 means hidden, 0 means visible.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { int }                   bIsHidden     The new value of bIsHidden.
+*/
+void ComponentManager_setHidden(ComponentManager *this, char *sKey, int bIsHidden) {
+  Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  pComponent->bIsHidden = bIsHidden;
+}
+
+/**
  * Set the color of a specified component.
  * 
  * @param		{ ComponentManager * }		this          The component manager.
@@ -638,7 +672,7 @@ void ComponentManager_setAsset(ComponentManager *this, char *sKey, int dAssetHei
  * @param   { Buffer * }            pBuffer   The buffer to render components to.
 */
 void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
-  int i;
+  int i, z = 0;
   Component *pComponent = NULL;
   Component *pChildComponent;
 
@@ -656,43 +690,65 @@ void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
   while(Queue_getHead(this->pRenderQueue) != NULL) {
     
     // Get the head component first
-    pComponent = (Component *) Queue_getHead(this->pRenderQueue);
+    pComponent = Queue_getHead(this->pRenderQueue);
 
-    // Add its children to the render queue
-    for(i = 0; i < pComponent->dChildCount; i++) {
-      pChildComponent = pComponent->pChildren[i];
+    // If z index is greater than current
+    if(pComponent->zIndex > z) {
+      Queue_pop(this->pRenderQueue);
+      Queue_push(this->pRenderQueue, pComponent);
+    
+      // Store the new z index
+      // Note that this solution fails when two adjacent components have the same z index greater than 0
+      // Thus, the program restricts that any z index > 0 must be unique
+      z = pComponent->zIndex;
 
-      // Compute its position based on parent offsets
-      Component_config(pChildComponent);
+    // Otherwise, check if component is hidden
+    } else if(pComponent->bIsHidden) {
+      Queue_pop(this->pRenderQueue);
 
-      // Push the child to the queue
-      Queue_push(this->pRenderQueue, pChildComponent);
+    // If not, render it
+    } else {
+
+      // Add its children to the render queue
+      for(i = 0; i < pComponent->dChildCount; i++) {
+        pChildComponent = pComponent->pChildren[i];
+
+        // Compute its position based on parent offsets
+        Component_config(pChildComponent);
+
+        // Push the child to the queue
+        Queue_push(this->pRenderQueue, pChildComponent);
+      }
+
+      // If the component has colors
+      if(pComponent->colorFG > COMPONENT_NO_CHANGE || pComponent->colorBG > COMPONENT_NO_CHANGE) {
+        Buffer_contextRect(
+          pBuffer, 
+          pComponent->dRenderX, 
+          pComponent->dRenderY, 
+          pComponent->dRenderW ? pComponent->dRenderW : pComponent->w, 
+          pComponent->dRenderH ? pComponent->dRenderH : pComponent->h, 
+          pComponent->colorFG, 
+          pComponent->colorBG);
+      }
+
+      // If the component has an asset
+      if(pComponent->aAsset != NULL) {
+        Buffer_write(
+          pBuffer, 
+          pComponent->dRenderX, 
+          pComponent->dRenderY, 
+          pComponent->dAssetHeight, 
+          pComponent->aAsset);
+      }
+
+      // Store the new z index
+      z = pComponent->zIndex;
+
+      // Remove the head component
+      Queue_pop(this->pRenderQueue);
+
     }
-
-    // If the component has colors
-    if(pComponent->colorFG > COMPONENT_NO_CHANGE || pComponent->colorBG > COMPONENT_NO_CHANGE) {
-      Buffer_contextRect(
-        pBuffer, 
-        pComponent->dRenderX, 
-        pComponent->dRenderY, 
-        pComponent->dRenderW ? pComponent->dRenderW : pComponent->w, 
-        pComponent->dRenderH ? pComponent->dRenderH : pComponent->h, 
-        pComponent->colorFG, 
-        pComponent->colorBG);
-    }
-
-    // If the component has an asset
-    if(pComponent->aAsset != NULL) {
-      Buffer_write(
-        pBuffer, 
-        pComponent->dRenderX, 
-        pComponent->dRenderY, 
-        pComponent->dAssetHeight, 
-        pComponent->aAsset);
-    }
-
-    // Remove the head component
-    Queue_pop(this->pRenderQueue);
   }
 
   // Reset the cursor home position
