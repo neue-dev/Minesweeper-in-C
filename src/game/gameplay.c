@@ -1,11 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
-<<<<<<< HEAD
- * @ Modified time: 2024-03-28 20:24:31
-=======
- * @ Modified time: 2024-03-28 17:50:56
->>>>>>> be5443ef7b73dc8c45d98797900f7a680bf05b2c
+ * @ Modified time: 2024-03-28 20:53:14
+ * @ Modified time: 2024-03-28 20:55:31
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -15,8 +12,8 @@
 #define GAMEPLAY_
 
 #include "field.obj.h"
-#include "game-data.class.h"
-#include "profile.game.c"
+// #include "profile.game.c"
+#include "./game.c"
 
 #include "../utils/utils.file.h"
 #include "../utils/utils.grid.h"
@@ -24,82 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-#define LEVELS_FILE_PATH "../data/levels.data.txt"
-#define LEVELS_FOLDER_PATH ".../build/levels/"
-
-#define LEVEL_NAME_MAX_LENGTH (1 << 4)
-#define LEVEL_PATH_MAX_SIZE strlen(LEVELS_FOLDER_PATH) + strlen(LEVELS_FILE_PATH) + sizeof(char)*5
-
-#define GAME_EASY_ROWS     8
-#define GAME_EASY_COLUMNS  8
-#define GAME_EASY_MINES    10
-
-#define GAME_DIFFICULT_ROWS    10
-#define GAME_DIFFICULT_COLUMNS 15 
-#define GAME_DIFFICULT_MINES   35
-
-typedef enum GameType GameType;
-typedef enum GameDifficulty GameDifficulty;
-typedef enum GameOutcome GameOutcome;
-
-typedef struct GameData GameData;
-
-// Game types chosen by the user
-enum GameType {
-    GAMEPLAY_TYPE_CLASSIC,      // Classic game type
-    GAMEPLAY_TYPE_CUSTOM        // Custom game type
-};
-
-enum GameDifficulty {
-    GAMEPLAY_DIFFICULTY_EASY,           // Classic game: Easy
-    GAMEPLAY_DIFFICULTY_DIFFICULT       // Classic game: Difficult
-};
-
-enum GameOutcome {
-    GAMEPLAY_OUTCOME_QUIT,           // The game ends by the player quitting manually
-    GAMEPLAY_OUTCOME_LOSS,           // The game ends by the player losing
-    GAMEPLAY_OUTCOME_WIN             // The game ends by the player winning
-};
-
-/**
- * Initiates the gameplay.
- * 
-*/
-void Gameplay_start() {
-    int eType;          // Game type (classic/custom)
-    int eDifficulty;    // Game difficulty (easy/difficult)
-
-    // Allocates memory for the game data
-    GameData *pGameData = GameData_create();
-
-    // Allocates memory for the field object
-    Field *pField = Field_create();
-
-    // TODO: input game type
-
-    // Sets up the game according to the game type
-    Gameplay_selectType(eType, pField);
-
-    // Save the game type
-    pGameData->eType = eType;
-        
-
-}
-
-/**
- * Ends the game.
- * 
- * @param   { GameOutcome }      eOutcome     How the game was ended.
- * @param   { GameData }         pGameData    The data of the recently-ended game.
-*/
-void Gameplay_end(GameOutcome eOutcome, GameData *pGameData) {
-
-    // Saves the outcome to the game data
-    pGameData->eOutcome = eOutcome;
-
-    // TODO: Code this function considering the GUI.
-}
 
 /**
  * Intializes the field's data according to the difficulty.
@@ -200,10 +121,11 @@ void Gameplay_selectType(GameType eType, Field *pField) {
  * @param   { Field * }     pField      The field to be modified.
  * @param   { int }         x           The tile's x-coordinate in index notation.
  * @param   { int }         y           The tile's y-coordinate in index notation.
- * @param   { GameData }    pGameData   The data of the current game.
 */
-void Gameplay_inspect(Field *pField, int x, int y, GameData *pGameData) {
+void Gameplay_inspect(Game *this, int x, int y) {
     int i, j;
+
+    Field *pField = &this->gameField;
 
     // If there is a flag there, don't inspect it
     if(Grid_getBit(pField->pFlagGrid, x, y))
@@ -214,7 +136,7 @@ void Gameplay_inspect(Field *pField, int x, int y, GameData *pGameData) {
 
     // Ends the game if a mine has been inspected
     if(Grid_getBit(pField->pMineGrid, x, y)) {
-        Gameplay_end(GAMEPLAY_OUTCOME_LOSS, pGameData);
+        Game_end(this, GAMEPLAY_OUTCOME_LOSS);
         return;
     }
 
@@ -235,7 +157,7 @@ void Gameplay_inspect(Field *pField, int x, int y, GameData *pGameData) {
                         // only when it hasn't been inspected
                         if(!pField->aNumbers[i][j] && 
                            !Grid_getBit(pField->pInspectGrid, i, j))
-                            Gameplay_inspect(pField, i, j, pGameData);
+                            Gameplay_inspect(this, i, j);
 
                         // Marks the tile as inspected
                         if(pField->aNumbers[i][j] >= 0)

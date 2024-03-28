@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 16:21:02
+ * @ Modified time: 2024-03-28 21:01:09
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -9,6 +9,8 @@
 
 #ifndef PAGE_EDITOR_INTERACTIVE_
 #define PAGE_EDITOR_INTERACTIVE_
+
+#include "../game/gameplay.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -22,6 +24,7 @@
 void PageHandler_editorI(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
+  Game *pGame = (Game *) this->pSharedObject;
   int dWidth, dHeight;
 
   // Component names

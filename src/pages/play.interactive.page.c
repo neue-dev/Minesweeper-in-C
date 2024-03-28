@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 20:22:50
+ * @ Modified time: 2024-03-28 21:00:02
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -10,7 +10,7 @@
 #ifndef PAGE_PLAY_INTERACTIVE_
 #define PAGE_PLAY_INTERACTIVE_
 
-#include "../game/game.c"
+#include "../game/gameplay.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -133,7 +133,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
         case '\n': case '\r':
 
           // Do the inspection algorithm
-          Gameplay_inspect(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+          Gameplay_inspect(pGame, (int) cCursorX, (int) cCursorY);
 
           // Display the actual grid
           sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);

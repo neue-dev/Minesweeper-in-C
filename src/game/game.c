@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 19:36:04
+ * @ Modified time: 2024-03-28 20:59:10
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -11,17 +11,58 @@
 #define GAME_
 
 #include "./field.obj.h"
-#include "./gameplay.game.c"
 #include "../utils/utils.grid.h"
 
 #define GAME_CELL_HEIGHT 2
 #define GAME_CELL_WIDTH 4
 
+#define LEVELS_FILE_PATH "../data/levels.data.txt"
+#define LEVELS_FOLDER_PATH ".../build/levels/"
+
+#define LEVEL_NAME_MAX_LENGTH (1 << 4)
+#define LEVEL_PATH_MAX_SIZE strlen(LEVELS_FOLDER_PATH) + strlen(LEVELS_FILE_PATH) + sizeof(char)*5
+
+#define GAME_EASY_ROWS     8
+#define GAME_EASY_COLUMNS  8
+#define GAME_EASY_MINES    10
+
+#define GAME_DIFFICULT_ROWS    10
+#define GAME_DIFFICULT_COLUMNS 15 
+#define GAME_DIFFICULT_MINES   35
+
+typedef enum GameType GameType;
+typedef enum GameDifficulty GameDifficulty;
+typedef enum GameOutcome GameOutcome;
+
 typedef struct Game Game;
 
+// Game types chosen by the user
+enum GameType {
+  GAMEPLAY_TYPE_CLASSIC,            // Classic game type
+  GAMEPLAY_TYPE_CUSTOM              // Custom game type
+};
+
+enum GameDifficulty {
+  GAMEPLAY_DIFFICULTY_EASY,         // Classic game: Easy
+  GAMEPLAY_DIFFICULTY_DIFFICULT     // Classic game: Difficult
+};
+
+enum GameOutcome {
+  GAMEPLAY_OUTCOME_QUIT,            // The game ends by the player quitting manually
+  GAMEPLAY_OUTCOME_LOSS,            // The game ends by the player losing
+  GAMEPLAY_OUTCOME_WIN              // The game ends by the player winning
+};
+
+
 struct Game {
-  Field gameField;  // Game field
-  int dTime;        // Game timer
+  Field gameField;              // Game field
+  
+  int dWidth, dHeight;          // Game field dimensions
+  int dTime;                    // Game timer
+
+  GameType eType;
+  GameDifficulty eDifficulty;   
+  GameOutcome eOutcome;         // Some data about the game
 };
 
 /**
@@ -36,6 +77,18 @@ void Game_init(Game *this) {
   Field_init(&this->gameField, 10, 10);
   Field_populateRandom(&this->gameField, 8);
   Field_setNumbers(&this->gameField);
+}
+
+/**
+ * Ends the game.
+ * 
+ * @param   { Game * }           this         The data of the recently-ended game.
+ * @param   { GameOutcome }      eOutcome     How the game was ended.
+*/
+void Game_end(Game *this, GameOutcome eOutcome) {
+
+    // Saves the outcome to the game data
+    this->eOutcome = eOutcome;
 }
 
 /**
