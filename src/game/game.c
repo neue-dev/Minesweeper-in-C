@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-28 23:38:25
+ * @ Modified time: 2024-03-29 00:17:51
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -14,6 +14,8 @@
 
 #include "../utils/utils.grid.h"
 #include "../utils/utils.string.h"
+
+#include <time.h>
 
 #define GAME_CELL_HEIGHT 2
 #define GAME_CELL_WIDTH 4
@@ -62,7 +64,7 @@ struct Game {
   Field gameField;              // Game field
   
   int dCursorX, dCursorY;       // The cursor of the player
-  int dTime;                    // Game timer
+  time_t startTime, endTime;    // Used for computing the time
 
   GameType eType;
   GameDifficulty eDifficulty;   
@@ -76,8 +78,7 @@ struct Game {
 */
 void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) {
 
-  // Set the timer and some other params
-  this->dTime = 0;
+  // Set the game params
   this->eOutcome = GAME_OUTCOME_PENDING;
   this->eType = eGameType;
   this->eDifficulty = eGameDifficulty;
@@ -85,6 +86,10 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   // The game's cursor
   this->dCursorX = 0;
   this->dCursorY = 0;
+
+  // Start the timer
+  time(&this->startTime);
+  time(&this->endTime);
 }
 
 /**
@@ -407,7 +412,7 @@ void Game_decrementY(Game *this) {
 /**
  * How many characters wide the grid is.
  * 
- * @param   { Game * }   this   The field object to read.
+ * @param   { Game * }   this   The game object to read.
  * @return  { int }             The width of the field in characters.
 */
 int Game_getCharWidth(Game *this) {
@@ -417,11 +422,35 @@ int Game_getCharWidth(Game *this) {
 /**
  * How many characters tall the grid is.
  * 
- * @param   { Game * }   this   The field object to read.
+ * @param   { Game * }   this   The game object to read.
  * @return  { int }             The height of the field in characters.
 */
 int Game_getCharHeight(Game *this) {
   return this->gameField.dHeight * GAME_CELL_HEIGHT + 1;
+}
+
+/**
+ * Returns the time elapsed since the game started.
+ * 
+ * @param   { Game * }   this   The game object to read.
+ * @return  { char * }          A string describing the time elapsed.
+*/
+char *Game_getTime(Game *this) {
+  char *sTimeString = String_alloc(16);
+  int dSeconds;
+
+  // Update the timer
+  time(&this->endTime);
+
+  // Get the difference between the times
+  dSeconds = round(difftime(this->endTime, this->startTime));
+
+  // Create the time string
+  sprintf(sTimeString, (dSeconds % 60) < 10 ? "%d:0%d" : "%d:%d", 
+    dSeconds / 60, 
+    dSeconds % 60);
+
+  return sTimeString;
 }
 
 #endif

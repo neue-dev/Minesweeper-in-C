@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 23:53:44
+ * @ Modified time: 2024-03-29 00:13:17
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -219,7 +219,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
       // Game information text
       sprintf(sGameInfoText, "time elapsed:    %s\nmines left:      %s\n",
-        "Hello world", "haagen daas");
+        Game_getTime(pGame), "haagen daas");
       Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
 
       // Prompt text
