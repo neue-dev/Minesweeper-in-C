@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 11:39:23
+ * @ Modified time: 2024-03-28 12:03:30
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -248,20 +248,6 @@ char *Field_displayGrid(Field *pField) {
             case 1: strcat(sGridText, "│   "); break;
           }
 
-        // Bottom left corner
-        } else if (y == dHeight - 1 && !x){
-          switch(i) {
-            case 0: strcat(sGridText, "╚───"); break;
-            case 1: break;
-          }
-
-        // Bottom edge
-        } else if (y == dHeight - 1 && x){
-          switch(i) {
-            case 0: strcat(sGridText, "╩───"); break;
-            case 1: break;
-          }
-
         // Center pieces
         } else if(y && x) {
           switch(i) {
@@ -285,13 +271,6 @@ char *Field_displayGrid(Field *pField) {
           case 1: strcat(sGridText, "│"); break;
         }
 
-      // Lower right corner
-      } else if(y == dHeight - 1) {
-        switch(i) {
-          case 0: strcat(sGridText, "╝"); break;
-          case 1: break;
-        }
-
       // Right edge
       } else {
         switch(i) {
@@ -303,6 +282,26 @@ char *Field_displayGrid(Field *pField) {
       strcat(sGridText, "\n");
     }
   }
+
+  // Bottom edge
+  for(x = 0; x < dWidth; x++) {
+    for(i = 0; i < 4; i++) {
+
+      // Bottom right corner
+      if(x == dWidth - 1 && i == 3) strcat(sGridText, "─╝");
+
+      // Bottom left corner
+      else if(!x && !i) strcat(sGridText, "╚");
+      
+      // Bottom edge
+      else if(!i) strcat(sGridText, "╩");
+      
+      // Everything else
+      else strcat(sGridText, "─");
+    }
+  }
+  
+  strcat(sGridText, "\n");
   
   return sGridText;
 }

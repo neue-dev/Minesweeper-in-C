@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 11:40:37
+ * @ Modified time: 2024-03-28 12:04:10
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -29,6 +29,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
+  char *sFieldCursor = "field-cursor.fixed";
 
   // The cursor location for changing the mine field
   char cCursorX = 0;
@@ -47,6 +48,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "seconadary", "primary");
       Page_addComponentText(this, "test.acenter-x.acenter-y", sPlayIComponent, dWidth / 2, dHeight / 2, "secondary", "primary", "test");
+      Page_addComponentAsset(this, sFieldCursor, sPlayIComponent, 0, 0, "accent", "", "field-cursor");
 
       // Define initial user states
       if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
@@ -72,6 +74,12 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Page_setNext(this, "menu");
         break;
 
+        // WASD movement
+        case 'S': case 's': Page_setUserState(this, "play-i-cursor-y", (cCursorY + 1) % pGame->gameField.dHeight); break;
+        case 'W': case 'w': Page_setUserState(this, "play-i-cursor-y", (cCursorY + pGame->gameField.dHeight - 1) % pGame->gameField.dHeight); break;
+        case 'D': case 'd': Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth); break;
+        case 'A': case 'a': Page_setUserState(this, "play-i-cursor-x", (cCursorX + pGame->gameField.dWidth - 1) % pGame->gameField.dWidth); break;
+
         // Check the field if valid then save file after
         case '\n': case '\r':
 
@@ -85,6 +93,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
         break;
       }
 
+      // Update UI
+      // ! DONT MAKE THE POSITIONING HARDCODED
+      Page_setComponentPos(this, sFieldCursor, cCursorX * 4 + 52, cCursorY * 2 + 7);
 
     break;
 
