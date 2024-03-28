@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 21:40:22
- * @ Modified time: 2024-03-28 21:40:22
+ * @ Modified time: 2024-03-28 21:40:36
+ * @ Modified time: 2024-03-28 22:06:19
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -45,6 +45,7 @@ enum GameType {
 };
 
 enum GameDifficulty {
+  GAME_DIFFICULTY_NONE,         // It's actually a custom game
   GAME_DIFFICULTY_EASY,         // Classic game: Easy
   GAME_DIFFICULTY_DIFFICULT     // Classic game: Difficult
 };
@@ -69,20 +70,77 @@ struct Game {
 };
 
 /**
+ * Intializes the field's data according to the custom game's specs.
+ * // ! fix
+ * 
+ * @param   { Field * }     pField   The field to be modified.
+ * @param   { sName * }     sName    Name of the custom level.
+*/
+void Game_initCustom(Field *pField, char *sName) {
+    
+  // Declares the path of the custom level's file.
+  char *sPath = String_alloc(LEVEL_PATH_MAX_SIZE);
+
+  // Sets the cutom level's file path
+  snprintf(sPath, LEVEL_PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sName);
+
+  // Populates the field with mines
+  Field_populateCustom(pField, sPath);
+
+  // Deallocates the memory for the file path's string
+  String_kill(sPath);
+}
+
+/**
  * Initializes the game object.
  * 
  * @param   { Game * }  this  The game object.
 */
-void Game_init(Game *this, GameDifficulty eGameDifficulty) {
+void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) {
 
   // Set the timer and some other params
   this->dTime = 0;
   this->eOutcome = GAME_OUTCOME_PENDING;
+  this->eType = eGameType;
   this->eDifficulty = eGameDifficulty;
+}
 
-  // ! change dimensions, change numbe rof mines
-  Field_init(&this->gameField, 10, 10);
-  Field_populateRandom(&this->gameField, 8);
+/**
+ * Sets up the field of the game based on the type and the difficulty.
+ * 
+ * @param   { Game * }  this  The game object to set up.
+*/
+void Game_init(Game *this) {
+
+  // Classic mode
+  if(this->eType == GAME_TYPE_CLASSIC) {
+
+    // For easy mode
+    if(this->eDifficulty == GAME_DIFFICULTY_EASY) {
+        
+      // Sets up the field's width and height
+      Field_init(&this->gameField, GAME_EASY_COLUMNS, GAME_EASY_ROWS * 0 + 2);
+      
+      // Populates the field with mines 
+      Field_populateRandom(&this->gameField, GAME_EASY_MINES);
+    }
+    
+    // For difficult mode
+    else {
+
+      // Sets up the field's width and height
+      Field_init(&this->gameField, GAME_DIFFICULT_COLUMNS, GAME_DIFFICULT_ROWS);
+
+      // Populates the field with mines
+      Field_populateRandom(&this->gameField, GAME_DIFFICULT_MINES);
+    }
+  
+  // Custom mode
+  } else {
+    // ! change this later,, read from file instead
+    Field_init(&this->gameField, 10, 10);
+  }
+
   Field_setNumbers(&this->gameField);
 }
 
@@ -94,8 +152,8 @@ void Game_init(Game *this, GameDifficulty eGameDifficulty) {
 */
 void Game_end(Game *this, GameOutcome eOutcome) {
 
-    // Saves the outcome to the game data
-    this->eOutcome = eOutcome;
+  // Saves the outcome to the game data
+  this->eOutcome = eOutcome;
 }
 
 /**
@@ -124,7 +182,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
       for(x = 0; x < dWidth; x++) {
 
         // The number to be shown
-        dNumber = this->gameField.aNumbers[x][y];
+        dNumber = this->gameField.aNumbers[y][x];
         dNumber = dNumber < 0 ? 'X' : dNumber + 48;
 
         // If the cell hasn't been inspected, turn it into a space
@@ -208,101 +266,6 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
   free(sNumberText);
 }
 
-
-/**
- * Intializes the field's data according to the difficulty.
- * This function is used for classic games.
- * 
- * @param   { GameDifficulty }    eGameDifficulty   The game's difficulty.
- * @param   { Field * }     pField   The field to be modified.
-*/
-void Gameplay_initClassic(GameDifficulty eDifficulty, Field *pField) {
-
-  // For easy mode
-  if(eDifficulty == GAME_DIFFICULTY_EASY) {
-      
-    // Sets up the field's width and height
-    pField->dWidth = GAME_EASY_ROWS;
-    pField->dHeight = GAME_EASY_COLUMNS;
-    
-    // Populates the field with mines 
-    Field_populateRandom(pField, GAME_EASY_MINES);
-  }
-  
-  // For difficult mode
-  else {
-
-    // Sets up the field's width and height
-    pField->dWidth = GAME_DIFFICULT_ROWS;
-    pField->dHeight = GAME_DIFFICULT_COLUMNS;
-
-    // Populates the field with mines
-    Field_populateRandom(pField, GAME_DIFFICULT_MINES);
-  }
-}
-
-/**
- * Intializes the field's data according to the custom game's specs.
- * // ! fix
- * 
- * @param   { Field * }     pField   The field to be modified.
- * @param   { sName * }     sName    Name of the custom level.
-*/
-void Gameplay_initCustom(Field *pField, char *sName) {
-    
-  // Declares the path of the custom level's file.
-  char *sPath = String_alloc(LEVEL_PATH_MAX_SIZE);
-
-  // Sets the cutom level's file path
-  snprintf(sPath, LEVEL_PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sName);
-
-  // Populates the field with mines
-  Field_populateCustom(pField, sPath);
-
-  // Deallocates the memory for the file path's string
-  String_kill(sPath);
-}
-
-/**
- * Selects the type of game (classic or custom) to be played.
- * 
- * @param   { GameType }    eType    The type of game to be played.
- * @param   { Field * }     pField   The field to be modified.
-*/
-void Gameplay_selectType(GameType eType, Field *pField) {
-
-  // For classic games
-  if(eType == GAME_TYPE_CLASSIC) {
-
-    GameDifficulty eDifficulty;
-    // TODO: input game difficulty
-
-    //! remove this line later on
-    eDifficulty = GAME_DIFFICULTY_EASY;
-
-    Gameplay_initClassic(eDifficulty, pField);
-
-  // For custom games
-  } else {
-
-    // TODO: input custom level name
-    char *sName = "";
-    
-    // TODO: check if the level exists; if not, handle the error
-
-    Gameplay_initCustom(pField, sName);
-  }
-
-  // Initializes each of the tile's flag placement status
-  Grid_clear(pField->pFlagGrid, 0);
-
-  // Initializes each of the tile's inspection status
-  Grid_clear(pField->pInspectGrid, 0);
-
-  // Specifies the number of mines adjacent to each tile
-  Field_setNumbers(pField);
-}
-
 /**
  * Inspects a tile.
  * 
@@ -329,25 +292,25 @@ void Game_inspect(Game *this, int x, int y) {
   }
 
   // Cascades the inspection if the number on the tile is 0
-  if(pField->aNumbers[x][y] == 0) {
+  if(pField->aNumbers[y][x] == 0) {
 
     // The following loops check each adjacent tile within bounds of the field
     // Loops through each row
     for(i = x - 1; i <= x + 1; i++) {
-      if(i >= 0 && i <= pField->dHeight - 1) {
+      if(i >= 0 && i <= pField->dWidth - 1) {
 
         // Loops through each column
         for(j = y - 1; j <= y + 1; j++) {
-          if(j >= 0 && j <= pField->dWidth - 1) {
+          if(j >= 0 && j <= pField->dHeight - 1) {
 
             // Recures the function if the number on the tile is 0
             // only when it hasn't been inspected
-            if(!pField->aNumbers[i][j] && 
+            if(!pField->aNumbers[j][i] && 
               !Grid_getBit(pField->pInspectGrid, i, j))
               Game_inspect(this, i, j);
 
             // Marks the tile as inspected
-            if(pField->aNumbers[i][j] >= 0)
+            if(pField->aNumbers[j][i] >= 0)
               Field_inspect(pField, i, j);
 
           }

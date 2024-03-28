@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:04:17
+ * @ Modified time: 2024-03-28 21:55:18
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -128,8 +128,9 @@ void PageHandler_play(p_obj pArgs_Page) {
             
             // Proceed to a classic game
             } else {
-              if(!strcmp(sFileordiffField, "easy")) Game_init(pGame, GAME_DIFFICULTY_EASY);
-              if(!strcmp(sFileordiffField, "difficult")) Game_init(pGame, GAME_DIFFICULTY_DIFFICULT);
+              if(!strcmp(sFileordiffField, "easy")) Game_setup(pGame, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY);
+              if(!strcmp(sFileordiffField, "difficult")) Game_setup(pGame, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT);
+              Game_init(pGame);
 
               Page_idle(this);
               Page_setNext(this, "play-i"); 
