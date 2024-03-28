@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 21:40:36
- * @ Modified time: 2024-03-28 22:06:19
+ * @ Modified time: 2024-03-28 22:09:14
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -193,21 +193,21 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
         sprintf(sNumberText, "| %c ", dNumber);
 
         // If upper left corner
-        if(!x && !y) {
+        if(!y && !x) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╔───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;
           }
         
         // Top edge
-        } else if(x && !y) {
+        } else if(!y && x) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╦───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;
           }
 
         // Center pieces
-        } else if(x && y) {
+        } else if(y && x) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╬───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;
