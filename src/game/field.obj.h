@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 18:30:46
+ * @ Modified time: 2024-03-28 19:15:57
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -62,9 +62,9 @@ void Field_init(Field *this, int dWidth, int dHeight) {
   this->pFlagGrid = Grid_create(dWidth, dHeight);
   this->pInspectGrid = Grid_create(dWidth, dHeight);
 
-  for(i = 0; i < dWidth; i++)
-    for(j = 0; j < dHeight; j++)
-      this->aNumbers[j][i] = 0;
+  for(i = 0; i < dHeight; i++)
+    for(j = 0; j < dWidth; j++)
+      this->aNumbers[i][j] = 0;
 }
 
 /**
@@ -143,8 +143,8 @@ void Field_populateCustom(Field *this, char *sPath) {
   fscanf(pLevel, "%d %d ", &this->dWidth, &this->dHeight);
 
   // Loops through each tile
-  for(i = 0; i < this->dWidth; i++) {
-    for(j = 0; j < this->dHeight; j++) {
+  for(i = 0; i < this->dHeight; i++) {
+    for(j = 0; j < this->dWidth; j++) {
 
       // Gets the tile's representing character
       fscanf(pLevel, "%c ", &cTile);
@@ -172,8 +172,8 @@ void Field_setNumbers(Field *this) {
   int dMines; // Number of mines adjacent to the tile
 
   // Loops through each tile
-  for(i = 0; i < this->dWidth; i++) {
-    for(j = 0; j < this->dHeight; j++) {
+  for(i = 0; i < this->dHeight; i++) {
+    for(j = 0; j < this->dWidth; j++) {
 
       // Sets the initial count to 0
       dMines = 0;
@@ -189,11 +189,11 @@ void Field_setNumbers(Field *this) {
 
         // Loops through each row (top, middle, bottom)
         for(k = i - 1; k <= i + 1; k++) {
-          if(k >= 0 && k <= this->dWidth - 1) {  // Checks if the tile is within bounds (row)
+          if(k >= 0 && k <= this->dHeight - 1) {  // Checks if the tile is within bounds (row)
 
             // Loops through each column (left, middle, right)
             for(l = j - 1; l <= j + 1; l++) {
-                if(j >= 0 && j <= this->dHeight - 1) {  // Checks if the tile is within bounds (col)
+                if(j >= 0 && j <= this->dWidth - 1) {  // Checks if the tile is within bounds (col)
 
                   // Increments dMines if an adjacent mine has been found
                   if(Grid_getBit(this->pMineGrid, k, l))
@@ -206,7 +206,7 @@ void Field_setNumbers(Field *this) {
       }
 
       // Sets the number of adjacent mines
-      this->aNumbers[j][i] = dMines;
+      this->aNumbers[i][j] = dMines;
     }
   }
 }

@@ -1,11 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
-<<<<<<< HEAD
- * @ Modified time: 2024-03-28 18:27:57
-=======
- * @ Modified time: 2024-03-28 17:50:56
->>>>>>> be5443ef7b73dc8c45d98797900f7a680bf05b2c
+ * @ Modified time: 2024-03-28 19:11:36
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -189,26 +185,26 @@ void Gameplay_inspect(Field *pField, int x, int y) {
     // }
 
     // Cascades the inspection if the number on the tile is 0
-    if(pField->aNumbers[y][x] == 0) {
+    if(pField->aNumbers[x][y] == 0) {
 
         // The following loops check each adjacent tile within bounds of the field
 
         // Loops through each row
         for(i = x - 1; i <= x + 1; i++) {
-            if(i >= 0 && i <= pField->dWidth - 1) {
+            if(i >= 0 && i <= pField->dHeight - 1) {
 
                 // Loops through each column
                 for(j = y - 1; j <= y + 1; j++) {
-                    if(j >= 0 && j <= pField->dHeight - 1) {
+                    if(j >= 0 && j <= pField->dWidth - 1) {
 
                         // Recures the function if the number on the tile is 0
                         // only when it hasn't been inspected
-                        if(!pField->aNumbers[j][i] && 
+                        if(!pField->aNumbers[i][j] && 
                             !Grid_getBit(pField->pInspectGrid, i, j))
                             Gameplay_inspect(pField, i, j);
 
                         // Marks the tile as inspected
-                        if(pField->aNumbers[j][i] >= 0)
+                        if(pField->aNumbers[i][j] >= 0)
                             Field_inspect(pField, i, j);
 
                     }
