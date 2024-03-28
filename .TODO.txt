@@ -1,6 +1,5 @@
-NOTE TO SELF: col or row contexts resize based on children, so contexts may have some buggy-looking traits
-trim for whitespace in input fields?
-FIX abottom-y
+RESET THE GAME OBJECT AFTER GAME OVER OR WHEN QUITTING??
+to save or not to save progress when quitting.
 
 REPRESENT ACCOUNT DATA IN binary
 THEME DATA DONT PUT IN BINARY SO WE CAN CHANGE IT

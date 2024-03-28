@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 22:57:28
+ * @ Modified time: 2024-03-28 23:53:44
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -34,17 +34,21 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
-  char *sHeaderComponent = "header.fixed.acenter-x";
-  char *sFooterComponent = "footer.fixed.acenter-x.atop-y";
+  char *sHeaderComponent = "header.fixed.aleft-x.atop-y";
+  char *sFooterComponent = "footer.fixed.aleft-x.atop-y";
   char *sFieldContainerComponent = "field-container.fixed";
   char *sFieldComponent = "field.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
-  char *sGamePrompt = "game-prompt.fixed.acenter-x.abottom-y";
+  char *sGamePromptComponent = "game-prompt.fixed.aleft-x.abottom-y";
+  char *sGameInfoComponent = "game-info.fixed.aleft-x.atop-y";
 
   // For inspect components
   char sInspectKey[STRING_KEY_MAX_LENGTH];
   char sFlagKey[STRING_KEY_MAX_LENGTH];
+
+  // Some of the component contents
   char sGamePromptText[STRING_KEY_MAX_LENGTH];
+  char sGameInfoText[STRING_KEY_MAX_LENGTH];
 
   // Buffer for minesweeper grid 
   char *sGridBuffer;
@@ -64,22 +68,13 @@ void PageHandler_playI(p_obj pArgs_Page) {
       
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2, 0);
-      Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2, dHeight - dMargin);
+      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, 4);
+      Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dHeight - dMargin);
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
-      Page_addComponentText(this, sGamePrompt, sFooterComponent, 0, 0, "", "", "");
-
-      // Prompt text
-      sprintf(sGamePromptText, "[%s%s%s%s] to move; [enter] to inspect a tile; [%s] to place a flag",
-        String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
-        
-      Page_setComponentText(this, sGamePrompt, sGamePromptText);
+      Page_addComponentText(this, sGameInfoComponent, sHeaderComponent, 0, 0, "", "", "");
+      Page_addComponentText(this, sGamePromptComponent, sFooterComponent, 0, 0, "", "", "");
 
       // This is stupid but LMAO
       for(x = 0; x < pGame->gameField.dWidth; x++) {
@@ -215,13 +210,26 @@ void PageHandler_playI(p_obj pArgs_Page) {
           }
 
         break;
-
       }
 
       // Update UI
       Page_setComponentPos(this, sFieldCursorComponent, 
         pGame->dCursorX * GAME_CELL_WIDTH, 
         pGame->dCursorY * GAME_CELL_HEIGHT);
+
+      // Game information text
+      sprintf(sGameInfoText, "time elapsed:    %s\nmines left:      %s\n",
+        "Hello world", "haagen daas");
+      Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
+
+      // Prompt text
+      sprintf(sGamePromptText, "%s%s%s%s    to move\nenter   to inspect a tile\n%s       to place a flag",
+        String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
+      Page_setComponentText(this, sGamePromptComponent, sGamePromptText);
 
     break;
 
