@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 19:11:36
+ * @ Modified time: 2024-03-28 19:47:32
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -35,7 +35,9 @@
 
 typedef enum GameType GameType;
 typedef enum GameDifficulty GameDifficulty;
-typedef enum GameEnding GameEnding;
+typedef enum GameOutcome GameOutcome;
+
+typedef struct GameData GameData;
 
 // Game types chosen by the user
 enum GameType {
@@ -48,10 +50,19 @@ enum GameDifficulty {
     GAMEPLAY_DIFFICULTY_DIFFICULT       // Classic game: Difficult
 };
 
-enum GameEnding {
-    GAMEPLAY_ENDS_BY_QUITTING,       // The game ends by the player quitting manually
-    GAMEPLAY_ENDS_BY_LOSING,         // The game ends by the player losing
-    GAMEPLAY_ENDS_BY_WINNING         // The game ends by the player winning
+enum GameOutcome {
+    GAMEPLAY_OUTCOME_QUIT,           // The game ends by the player quitting manually
+    GAMEPLAY_OUTCOME_LOSS,           // The game ends by the player losing
+    GAMEPLAY_OUTCOME_WIN             // The game ends by the player winning
+};
+
+struct GameData {
+    int eType;          // Game type (classic/custom)
+    int eDifficulty;    // Game difficulty (easy/difficult)
+    int eOutcome;       // Game outcome (quit/loss/win)
+
+    int dFieldWidth;    // Width of the game's minefield
+    int dFieldHeight;   // Height of the game's minefield
 };
 
 /**
@@ -65,9 +76,9 @@ void Gameplay_start() {
 /**
  * Ends the game.
  * 
- * @param   { GameEnding }      eEnding     How the game was ended.
+ * @param   { GameOutcome }      eOutcome     How the game was ended.
 */
-void Gameplay_end(GameEnding eEnding) {
+void Gameplay_end(GameOutcome eOutcome) {
     // TODO: Code this function considering the GUI.
 }
 
@@ -178,11 +189,10 @@ void Gameplay_inspect(Field *pField, int x, int y) {
     Field_inspect(pField, x, y);
 
     // Ends the game if a mine has been inspected
-    // ! we should probably bring this condition out since the function is recursive
-    // if(Grid_getBit(pField->pMineGrid, x, y)) {
-    //     Gameplay_end(GAMEPLAY_ENDS_BY_LOSING);
-    //     return;
-    // }
+    if(Grid_getBit(pField->pMineGrid, x, y)) {
+        Gameplay_end(GAMEPLAY_OUTCOME_LOSS);
+        return;
+    }
 
     // Cascades the inspection if the number on the tile is 0
     if(pField->aNumbers[x][y] == 0) {
@@ -200,7 +210,7 @@ void Gameplay_inspect(Field *pField, int x, int y) {
                         // Recures the function if the number on the tile is 0
                         // only when it hasn't been inspected
                         if(!pField->aNumbers[i][j] && 
-                            !Grid_getBit(pField->pInspectGrid, i, j))
+                           !Grid_getBit(pField->pInspectGrid, i, j))
                             Gameplay_inspect(pField, i, j);
 
                         // Marks the tile as inspected
