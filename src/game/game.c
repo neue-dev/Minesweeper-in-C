@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 21:40:36
- * @ Modified time: 2024-03-28 22:09:14
+ * @ Modified time: 2024-03-28 22:30:59
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -119,7 +119,7 @@ void Game_init(Game *this) {
     if(this->eDifficulty == GAME_DIFFICULTY_EASY) {
         
       // Sets up the field's width and height
-      Field_init(&this->gameField, GAME_EASY_COLUMNS, GAME_EASY_ROWS * 0 + 2);
+      Field_init(&this->gameField, GAME_EASY_COLUMNS, GAME_EASY_ROWS);
       
       // Populates the field with mines 
       Field_populateRandom(&this->gameField, GAME_EASY_MINES);

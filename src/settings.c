@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-25 19:43:14
- * @ Modified time: 2024-03-28 18:43:04
+ * @ Modified time: 2024-03-28 22:42:30
  * @ Description:
  * 
  * Stores some important settings for keybinds and what not.
@@ -54,11 +54,10 @@ void Settings_getKeybinds(int *dKeybindCount, char *sKeybindArray[]) {
   sKeybindArray[2] = "game-move-left";
   sKeybindArray[3] = "game-move-right";
   sKeybindArray[4] = "game-toggle-flag";
-  sKeybindArray[5] = "game-edit-cell";
-  sKeybindArray[6] = "game-toggle-pause";
-  sKeybindArray[7] = "game-quit";
+  sKeybindArray[5] = "game-toggle-pause";
+  sKeybindArray[6] = "game-quit";
 
-  *dKeybindCount = 8;
+  *dKeybindCount = 7;
 }
 
 /**

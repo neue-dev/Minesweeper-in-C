@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:34:52
+ * @ Modified time: 2024-03-28 22:42:33
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -44,9 +44,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
   // For inspect components
   char sInspectKey[STRING_KEY_MAX_LENGTH];
   char sFlagKey[STRING_KEY_MAX_LENGTH];
-
-  // Prompt
   char sGamePromptText[STRING_KEY_MAX_LENGTH];
+
+  // Buffer for minesweeper grid 
   char *sGridBuffer;
 
   // The cursor location for changing the mine field
@@ -73,7 +73,17 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
-      Page_addComponentText(this, sGamePrompt, sFooterComponent, 0, 0, "", "", "[]");
+      Page_addComponentText(this, sGamePrompt, sFooterComponent, 0, 0, "", "", "");
+
+      // Prompt text
+      sprintf(sGamePromptText, "[%s%s%s%s] to move; [enter] to inspect a tile; [%s] to place a flag",
+        String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
+        String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
+        
+      Page_setComponentText(this, sGamePrompt, sGamePromptText);
 
       // This is stupid but LMAO
       for(x = 0; x < pGame->gameField.dWidth; x++) {
@@ -114,6 +124,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Game_displayGrid(pGame, sGridBuffer);
       Page_setComponentText(this, sFieldComponent, sGridBuffer);
       String_kill(sGridBuffer);
+
     break;
 
     case PAGE_ACTIVE_RUNNING:
