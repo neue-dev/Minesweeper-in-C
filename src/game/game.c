@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 17:21:50
+ * @ Modified time: 2024-03-28 17:52:43
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -44,7 +44,7 @@ void Game_init(Game *this) {
  * @param   { Game * }   this   The field object to display.
  * @return  { char * }          The text asset representing the grid.
 */
-char *Game_displayGrid(Game *this) {
+void Game_displayGrid(Game *this, char *sOutputBuffer) {
   int x, y, i, dNumber;
 
   // The actual field
@@ -54,7 +54,6 @@ char *Game_displayGrid(Game *this) {
   // Some important consts
   int dWidth = pField->dWidth;
   int dHeight = pField->dHeight;
-  char *sGridText = calloc(dWidth * 4 * dHeight * 16, sizeof(char));
   char *sNumberText = calloc(4, 1);
 
   // For each row
@@ -67,34 +66,40 @@ char *Game_displayGrid(Game *this) {
         // The number to be shown
         dNumber = this->gameField.aNumbers[y][x];
         dNumber = dNumber < 0 ? 'X' : dNumber + 48;
+
+        // If the cell hasn't been inspected, turn it into a space
+        if(!Grid_getBit(this->gameField.pInspectGrid, x, y))
+          dNumber = 32;
+
+        // Create the text displaying the number
         sprintf(sNumberText, "| %c ", dNumber);
-        
+
         // If upper left corner
         if(!y && !x) {
           switch(i) {
-            case 0: strcat(sGridText, "╔───"); break;
-            case 1: strcat(sGridText, sNumberText); break;
+            case 0: strcat(sOutputBuffer, "╔───"); break;
+            case 1: strcat(sOutputBuffer, sNumberText); break;
           }
         
         // Top edge
         } else if(!y && x) {
           switch(i) {
-            case 0: strcat(sGridText, "╦───"); break;
-            case 1: strcat(sGridText, sNumberText); break;
+            case 0: strcat(sOutputBuffer, "╦───"); break;
+            case 1: strcat(sOutputBuffer, sNumberText); break;
           }
 
         // Center pieces
         } else if(y && x) {
           switch(i) {
-            case 0: strcat(sGridText, "╬───"); break;
-            case 1: strcat(sGridText, sNumberText); break;
+            case 0: strcat(sOutputBuffer, "╬───"); break;
+            case 1: strcat(sOutputBuffer, sNumberText); break;
           }
           
         // Left edge
         } else {
           switch(i) {
-            case 0: strcat(sGridText, "╠───"); break;
-            case 1: strcat(sGridText, sNumberText); break;
+            case 0: strcat(sOutputBuffer, "╠───"); break;
+            case 1: strcat(sOutputBuffer, sNumberText); break;
           }
         }
       } 
@@ -102,19 +107,19 @@ char *Game_displayGrid(Game *this) {
       // Upper right corner
       if(!y) {
         switch(i) {
-          case 0: strcat(sGridText, "╗"); break;
-          case 1: strcat(sGridText, "│"); break;
+          case 0: strcat(sOutputBuffer, "╗"); break;
+          case 1: strcat(sOutputBuffer, "│"); break;
         }
 
       // Right edge
       } else {
         switch(i) {
-          case 0: strcat(sGridText, "╣"); break;
-          case 1: strcat(sGridText, "│"); break;
+          case 0: strcat(sOutputBuffer, "╣"); break;
+          case 1: strcat(sOutputBuffer, "│"); break;
         }
       }
 
-      strcat(sGridText, "\n");
+      strcat(sOutputBuffer, "\n");
     }
   }
 
@@ -123,22 +128,24 @@ char *Game_displayGrid(Game *this) {
     for(i = 0; i < 4; i++) {
 
       // Bottom right corner
-      if(x == dWidth - 1 && i == 3) strcat(sGridText, "─╝");
+      if(x == dWidth - 1 && i == 3) strcat(sOutputBuffer, "─╝");
 
       // Bottom left corner
-      else if(!x && !i) strcat(sGridText, "╚");
+      else if(!x && !i) strcat(sOutputBuffer, "╚");
       
       // Bottom edge
-      else if(!i) strcat(sGridText, "╩");
+      else if(!i) strcat(sOutputBuffer, "╩");
       
       // Everything else
-      else strcat(sGridText, "─");
+      else strcat(sOutputBuffer, "─");
     }
   }
   
-  strcat(sGridText, "\n");
+  // Last newline
+  strcat(sOutputBuffer, "\n");
   
-  return sGridText;
+  // Free the text
+  free(sNumberText);
 }
 
 /**

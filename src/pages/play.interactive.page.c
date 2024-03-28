@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 17:07:52
+ * @ Modified time: 2024-03-28 17:59:30
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -30,17 +30,24 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
   Game *pGame = (Game *) this->pSharedObject;
-  int dWidth, dHeight, x, y;
+  int dWidth, dHeight, dMargin, x, y;
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
+  char *sHeaderComponent = "header.fixed.acenter-x";
+  char *sFooterComponent = "footer.fixed.acenter-x.atop-y";
   char *sFieldContainerComponent = "field-container.fixed";
   char *sFieldComponent = "field.acenter-x.acenter-y";
   char *sFieldInspectComponent = "field-inspect.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
+  char *sGamePrompt = "game-prompt.fixed.acenter-x.abottom-y";
 
   // For inspect components
   char sInspectKey[STRING_KEY_MAX_LENGTH];
+
+  // Prompt
+  char sGamePromptText[STRING_KEY_MAX_LENGTH];
+  char *sGridBuffer;
 
   // The cursor location for changing the mine field
   char cCursorX = 0;
@@ -57,12 +64,16 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
+      dMargin = 4;
       
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
+      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2, 0);
+      Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2, dHeight - dMargin);
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
+      Page_addComponentText(this, sGamePrompt, sFooterComponent, 0, 0, "", "", "[]");
 
       // Define initial user states
       if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
@@ -72,6 +83,12 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // ! move this elsewhere?
       Game_init(pGame);
       Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
+
+      // Display the actual grid
+      sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
+      Game_displayGrid(pGame, sGridBuffer);
+      Page_setComponentText(this, sFieldComponent, sGridBuffer);
+      String_kill(sGridBuffer);
     break;
 
     case PAGE_ACTIVE_RUNNING:
@@ -94,9 +111,13 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
         // Check the field if valid then save file after
         case '\n': case '\r':
-
-          // !fix this
           Gameplay_inspect(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+
+          // Display the actual grid
+          sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
+          Game_displayGrid(pGame, sGridBuffer);
+          Page_setComponentText(this, sFieldComponent, sGridBuffer);
+          String_kill(sGridBuffer);
         break;
 
         default:
@@ -117,9 +138,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
           if(cKeyPressed == tolower(Settings_getGameMoveRight(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
             Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth);
-
-          // Display the actual grid
-          Page_setComponentText(this, sFieldComponent, Game_displayGrid(pGame));
         break;
       }
 

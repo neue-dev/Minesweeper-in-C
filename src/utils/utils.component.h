@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-28 10:26:12
+ * @ Modified time: 2024-03-28 17:58:31
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
