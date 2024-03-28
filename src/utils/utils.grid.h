@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 10:53:17
- * @ Modified time: 2024-03-04 20:58:42
+ * @ Modified time: 2024-03-29 00:25:28
  * @ Description:
  * 
  * A grid class that can help us create blocks of text before printing them.
@@ -137,6 +137,23 @@ void Grid_clear(Grid *this, int n) {
   // Set them all back to 0
   for(i = 0; i < this->dHeight; i++)
     this->dBitArray[i] = n ? -1 : 0;
+}
+
+/**
+ * Returns how many bits are turned on.
+ * 
+ * @param   { Grid * }  this  The grid instance we wish to read.
+ * @return  { int }           How many bits have a 1 value.
+*/
+int Grid_getCount(Grid *this) {
+  int i, j, dCount = 0;
+
+  for(i = 0; i < this->dWidth; i++)
+    for(j = 0; j < this->dHeight; j++)
+      if(Grid_getBit(this, i, j))
+        dCount++;
+
+  return dCount;
 }
 
 #endif

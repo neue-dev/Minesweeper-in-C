@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-29 00:17:51
+ * @ Modified time: 2024-03-29 00:25:59
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -451,6 +451,22 @@ char *Game_getTime(Game *this) {
     dSeconds % 60);
 
   return sTimeString;
+}
+
+/**
+ * Returns the number of mines left.
+ * 
+ * @param   { Game * }   this   The game object to read.
+ * @return  { char * }          A string describing the mines left.
+*/
+char *Game_getMinesLeft(Game *this) {
+  char *sMineString = String_alloc(16);
+  int dMinesLeft = this->gameField.dMines - Grid_getCount(this->gameField.pFlagGrid);
+  
+  // Cerate the string
+  sprintf(sMineString, "%d mines", dMinesLeft);
+
+  return sMineString;
 }
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 22:03:56
+ * @ Modified time: 2024-03-29 00:21:17
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -31,6 +31,7 @@ struct Field {
 
   int dWidth;       // The width of the grid
   int dHeight;      // The height of the grid
+  int dMines;       // The total number of mines
 
   Grid *pMineGrid;  // Where we store the mines
   Grid *pFlagGrid;  // Where we store the flags
@@ -57,6 +58,7 @@ void Field_init(Field *this, int dWidth, int dHeight) {
 
   this->dWidth = dWidth;
   this->dHeight = dHeight;
+  this->dMines = 0;
 
   this->pMineGrid = Grid_create(dWidth, dHeight);
   this->pFlagGrid = Grid_create(dWidth, dHeight);
@@ -97,6 +99,9 @@ void Field_populateRandom(Field *this, int dMines) {
   if(dMines >= this->dWidth * this->dHeight)
     return;
 
+  // Set the current number of mines to 0
+  this->dMines = 0;
+
   // We will use a clock to seed our RNG
   srand((unsigned) time(NULL));
 
@@ -120,6 +125,9 @@ void Field_populateRandom(Field *this, int dMines) {
     Grid_setBit(this->pMineGrid, 
       dLocation % this->dWidth, 
       dLocation / this->dWidth, 1);
+
+    // Increment number of mines
+    this->dMines++;
   }
 }
 
@@ -136,9 +144,13 @@ void Field_populateCustom(Field *this, char *sPath) {
   // Opens the file of the custom level
   FILE *pLevel = fopen(sPath, "r");
 
+  // File was not found
   if(pLevel == NULL)
     return; // TODO: error-handling
   
+  // Set the number of mines to 0 at first
+  this->dMines = 0;
+
   // Gets the width and height of the field
   fscanf(pLevel, "%d %d ", &this->dWidth, &this->dHeight);
 
@@ -150,12 +162,14 @@ void Field_populateCustom(Field *this, char *sPath) {
       fscanf(pLevel, "%c ", &cTile);
 
       // Places a mine on the tile if its character is 'X'
-      if(cTile == 'X')
+      if(cTile == 'X') {
         Grid_setBit(this->pMineGrid, i, j, 1);
-      
+        this->dMines++;
+
       // Does not place a mine on the tile if its character is '.'
-      else
+      } else {
         Grid_setBit(this->pMineGrid, i, j, 0);
+      }
     }
   }
 
