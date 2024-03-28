@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 00:26:13
+ * @ Modified time: 2024-03-29 01:10:38
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -64,11 +64,11 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 4;
+      dMargin = 3;
       
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, 4);
+      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dMargin);
       Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dHeight - dMargin);
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
@@ -124,8 +124,16 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
         // Escape character to go back
         case 27:
+
+          // Reset the component manager
+          Page_resetComponents(this);
+
+          // Go to menu
           Page_idle(this);
           Page_setNext(this, "menu");
+
+          // Prevent stuff from accessing the borked component manager
+          return;
         break;
 
         // Check the field if valid then save file after
@@ -166,10 +174,10 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
             // If does not have a flag
             if(!Grid_getBit(pGame->gameField.pFlagGrid, pGame->dCursorX, pGame->dCursorY))
-              Game_addFlag(&pGame->gameField);
+              Game_addFlag(pGame);
             
             // If already has a flag
-            else Game_removeFlag(&pGame->gameField);
+            else Game_removeFlag(pGame);
           }
           
           // For each cell, check if it's been inspected, and if so, change color
@@ -224,7 +232,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
 
       // Prompt text
-      sprintf(sGamePromptText, "%s%s%s%s    to move\nenter   to inspect a tile\n%s       to place a flag",
+      sprintf(sGamePromptText, "%s%s%s%s    to move\nenter   to inspect a tile\n%s       to place a flag\nesc     to go back to menu",
         String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
         String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
         String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),

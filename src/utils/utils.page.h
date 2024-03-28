@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-28 11:08:07
+ * @ Modified time: 2024-03-29 01:00:36
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -513,6 +513,15 @@ void Page_setComponentPopupText(Page *this, char *sKey, char *sText) {
 }
 
 /**
+ * Resets the component tree of the page.
+ * 
+ * @param   { Page * }  this  The page to reset.
+*/
+void Page_resetComponents(Page *this) {
+  ComponentManager_reset(&this->componentManager);
+}
+
+/**
  * Sets what page will be rendered next after the current page finishes running.
  * 
  * @param   { Page * }  this    The page to modify.
@@ -771,11 +780,13 @@ void PageManager_setActive(PageManager *this, char *sPageKey) {
 void PageManager_update(PageManager *this) {
   Page *pPage = HashMap_get(this->pPageMap, this->sActivePage);
 
-  if(Page_update(pPage))
+  if(Page_update(pPage) && pPage->ePageStatus == PAGE_ACTIVE_RUNNING)
     Page_render(pPage);
 
-  if(pPage->ePageStatus == PAGE_ACTIVE_IDLE && pPage->sNextName != NULL)
+  if(pPage->ePageStatus == PAGE_ACTIVE_IDLE && pPage->sNextName != NULL) {
+    pPage->ePageStatus = PAGE_ACTIVE_INIT;
     PageManager_setActive(this, pPage->sNextName);
+  }
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-28 21:29:24
+ * @ Modified time: 2024-03-29 01:10:08
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -757,6 +757,24 @@ void ComponentManager_render(ComponentManager *this, Buffer *pBuffer) {
   // Print the buffer
   Buffer_print(pBuffer);
   Buffer_kill(pBuffer);
+}
+
+/**
+ * Removes all the components stored by the manager.
+ * Resets the component map too.
+ * 
+ * @param   { ComponentManager * }  this      The component manager.
+*/
+void ComponentManager_reset(ComponentManager *this) {
+  int i;
+  
+  // Refresh the hashmap too
+  HashMap_kill(this->pComponentMap);
+  this->pComponentMap = HashMap_create();
+
+  // Add the new root element to the new hashmap
+  this->pRoot = Component_create("root", NULL, 0, 0, 0, 0, 0, NULL, -1, -1);
+  HashMap_add(this->pComponentMap, "root", this->pRoot);  
 }
 
 #endif

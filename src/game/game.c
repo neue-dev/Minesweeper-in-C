@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-29 00:25:59
+ * @ Modified time: 2024-03-29 00:46:13
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -16,6 +16,7 @@
 #include "../utils/utils.string.h"
 
 #include <time.h>
+#include <math.h>
 
 #define GAME_CELL_HEIGHT 2
 #define GAME_CELL_WIDTH 4
