@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-28 14:34:03
+ * @ Modified time: 2024-03-28 16:56:01
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -33,6 +33,7 @@
 */
 void LevelEditor_createLevel(char *sName) {
     int dWidth, dHeight;    // Width and height of a field
+    int x, y;               // The x and y coordinates of the tile where a mine is placed
     Grid *pMines;           // Locations where mines are placed
     int bFinished;          // Determines whether the level can now be saved
 
@@ -42,6 +43,15 @@ void LevelEditor_createLevel(char *sName) {
     // TODO: input width and height of the field
 
     // TODO: input locations where mines are to be placed
+    while(!bFinished) {
+
+        // Initializes the mine grid
+        Grid_clear(pMines, 0);
+
+        // TODO: event-handling
+        // TODO: input x and y coordinates
+        LevelEditor_placeMine(pMines, x, y);
+    }
 
     // Checks if the level is valid
     LevelEditor_countMines(pMines, dWidth, dHeight);
@@ -147,9 +157,12 @@ void LevelEditor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
 /**
  * Places a mine on a tile.
  * 
+ * @param   { int }     pMines      Grid where the mines are placed.
+ * @param   { int }     x           The x-coordinate of the tile.
+ * @param   { int }     y           The y-coordinate of the tile.   
 */
-void LevelEditor_placeMine(int x, int y) {
-
+void LevelEditor_placeMine(Grid *pMines, int x, int y) {
+    Grid_setBit(pMines, x, y, 1);
 }
 
 /**
