@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 16:27:50
+ * @ Modified time: 2024-03-28 17:21:24
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -193,6 +193,10 @@ void Gameplay_inspect(Field *pField, int x, int y) {
                 // Loops through each column
                 for(j = y - 1; j <= y + 1; j++) {
                     if(j >= 0 && j <= pField->dHeight - 1) {
+
+                        // Inspects the tile if it contains a number greater than 0
+                        if(pField->aNumbers[i][j] > 0)
+                            Field_inspect(pField, x, y);
 
                         // Recures the function if the number on the tile is 0
                         if(pField->aNumbers[i][j] == 0)
