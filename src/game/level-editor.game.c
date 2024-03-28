@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-28 19:21:08
+ * @ Modified time: 2024-03-28 19:31:38
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -123,7 +123,7 @@ void LevelEditor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
         return; // TODO: error-handling
 
     // Prints the width and height of the field onto the file
-    fprintf("%d %d\n", dWidth, dHeight);
+    fprintf("%d %d\n", dHeight, dWidth);
 
     // Prints the mines onto the text file
     for(i = 0; i < dHeight; i++) {
