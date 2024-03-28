@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 19:29:42
+ * @ Modified time: 2024-03-28 19:36:04
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -57,11 +57,11 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
   char *sNumberText = calloc(4, 1);
 
   // For each row
-  for(x = 0; x < dHeight; x++) {
+  for(y = 0; y < dHeight; y++) {
     for(i = 0; i < 2; i++) {
       
       // For each cell in the row
-      for(y = 0; y < dWidth; y++) {
+      for(x = 0; x < dWidth; x++) {
 
         // The number to be shown
         dNumber = this->gameField.aNumbers[x][y];
@@ -82,7 +82,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
           }
         
         // Top edge
-        } else if(!x && y) {
+        } else if(x && !y) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╦───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;
@@ -105,7 +105,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
       } 
 
       // Upper right corner
-      if(!x) {
+      if(!y) {
         switch(i) {
           case 0: strcat(sOutputBuffer, "╗"); break;
           case 1: strcat(sOutputBuffer, "│"); break;
@@ -124,14 +124,14 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
   }
 
   // Bottom edge
-  for(y = 0; y < dWidth; y++) {
+  for(x = 0; x < dWidth; x++) {
     for(i = 0; i < 4; i++) {
 
       // Bottom right corner
-      if(y == dWidth - 1 && i == 3) strcat(sOutputBuffer, "─╝");
+      if(x == dWidth - 1 && i == 3) strcat(sOutputBuffer, "─╝");
 
       // Bottom left corner
-      else if(!y && !i) strcat(sOutputBuffer, "╚");
+      else if(!x && !i) strcat(sOutputBuffer, "╚");
       
       // Bottom edge
       else if(!i) strcat(sOutputBuffer, "╩");
