@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:00:02
+ * @ Modified time: 2024-03-28 21:07:01
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -74,12 +74,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
       Page_addComponentText(this, sGamePrompt, sFooterComponent, 0, 0, "", "", "[]");
-
-      // ! move this elsewhere?
-      // Initialize the game
-      Game_init(pGame);
-      // Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
-      // !
 
       // This is stupid but LMAO
       for(x = 0; x < pGame->gameField.dWidth; x++) {

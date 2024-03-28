@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
  * @ Modified time: 2024-03-28 20:53:14
- * @ Modified time: 2024-03-28 20:55:31
+ * @ Modified time: 2024-03-28 21:08:16
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -32,7 +32,7 @@
 void Gameplay_initClassic(GameDifficulty eDifficulty, Field *pField) {
 
     // For easy mode
-    if(eDifficulty == GAMEPLAY_DIFFICULTY_EASY) {
+    if(eDifficulty == GAME_DIFFICULTY_EASY) {
         
         // Sets up the field's width and height
         pField->dWidth = GAME_EASY_ROWS;
@@ -84,13 +84,13 @@ void Gameplay_initCustom(Field *pField, char *sName) {
 void Gameplay_selectType(GameType eType, Field *pField) {
 
     // For classic games
-    if(eType == GAMEPLAY_TYPE_CLASSIC) {
+    if(eType == GAME_TYPE_CLASSIC) {
 
         GameDifficulty eDifficulty;
         // TODO: input game difficulty
 
         //! remove this line later on
-        eDifficulty = GAMEPLAY_DIFFICULTY_EASY;
+        eDifficulty = GAME_DIFFICULTY_EASY;
 
         Gameplay_initClassic(eDifficulty, pField);
 
@@ -136,7 +136,7 @@ void Gameplay_inspect(Game *this, int x, int y) {
 
     // Ends the game if a mine has been inspected
     if(Grid_getBit(pField->pMineGrid, x, y)) {
-        Game_end(this, GAMEPLAY_OUTCOME_LOSS);
+        Game_end(this, GAME_OUTCOME_LOSS);
         return;
     }
 
