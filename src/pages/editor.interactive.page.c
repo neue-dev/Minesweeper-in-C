@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 08:58:02
+ * @ Modified time: 2024-03-28 16:21:02
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -22,7 +22,7 @@
 void PageHandler_editorI(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
-  int dWidth, dHeight, dMargin;
+  int dWidth, dHeight;
 
   // Component names
   char *sEditorIComponent = "editor-i.fixed";
@@ -39,7 +39,6 @@ void PageHandler_editorI(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 44;
 
       // Create component tree
       Page_addComponentContext(this, sEditorIComponent, "root", 0, 0, dWidth, dHeight, "seconadary", "primary");

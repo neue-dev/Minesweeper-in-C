@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 16:12:46
+ * @ Modified time: 2024-03-28 16:20:47
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -19,6 +19,7 @@
 #include "../settings.c"
 
 #include <string.h>
+#include <ctype.h>
 
 /**
  * Configures the main menu.
@@ -29,7 +30,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
   Game *pGame = (Game *) this->pSharedObject;
-  int dWidth, dHeight, dMargin;
+  int dWidth, dHeight;
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
@@ -52,8 +53,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 44;
-
+      
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
@@ -67,6 +67,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Initialize the game
       // ! move this elsewhere?
       Game_init(pGame);
+      Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
     break;
 
     case PAGE_ACTIVE_RUNNING:
@@ -90,6 +91,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
         // Check the field if valid then save file after
         case '\n': case '\r':
 
+          // !fix this
+          Gameplay_inspect(&pGame->gameField, (int) cCursorX, (int) cCursorY);
         break;
 
         default:

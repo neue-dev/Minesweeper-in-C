@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 16:06:55
+ * @ Modified time: 2024-03-28 16:22:07
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -133,14 +133,14 @@ void Field_populateCustom(Field *this, char *sPath) {
     return; // TODO: error-handling
   
   // Gets the width and height of the field
-  fscanf("%d %d ", &this->dWidth, &this->dHeight);
+  fscanf(pLevel, "%d %d ", &this->dWidth, &this->dHeight);
 
   // Loops through each tile
   for(i = 0; i < this->dWidth; i++) {
     for(j = 0; j < this->dHeight; j++) {
 
       // Gets the tile's representing character
-      fscanf("%c ", &cTile);
+      fscanf(pLevel, "%c ", &cTile);
 
       // Places a mine on the tile if its character is 'X'
       if(cTile == 'X')

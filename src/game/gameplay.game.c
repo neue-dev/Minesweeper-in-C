@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 13:35:09
+ * @ Modified time: 2024-03-28 16:25:06
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -23,7 +23,7 @@
 #define LEVELS_FOLDER_PATH ".../build/levels/"
 
 #define LEVEL_NAME_MAX_LENGTH (1 << 4)
-#define LEVEL_PATH_MAX_SIZE strlen(LEVELS_FOLDER_PATH) + strlen(LEVEL_NAME_MAX_LENGTH) + sizeof(char)*5
+#define LEVEL_PATH_MAX_SIZE strlen(LEVELS_FOLDER_PATH) + strlen(LEVELS_FILE_PATH) + sizeof(char)*5
 
 #define GAME_EASY_ROWS     8
 #define GAME_EASY_COLUMNS  8
@@ -60,43 +60,6 @@ enum GameEnding {
 */
 void Gameplay_start() {
     // TODO: Code this function considering the inputs and GUI.
-}
-
-/**
- * Selects the type of game (classic or custom) to be played.
- * 
- * @param   { GameType }    eType    The type of game to be played.
- * @param   { Field * }     pField   The field to be modified.
-*/
-void Gameplay_selectType(GameType eType, Field *pField) {
-
-    // For classic games
-    if(eType == GAMEPLAY_TYPE_CLASSIC) {
-
-        GameDifficulty eDifficulty;
-        // TODO: input game difficulty
-
-        Gameplay_initClassic(eDifficulty, pField);
-
-    // For custom games
-    } else {
-
-        char *sName;
-        // TODO: input custom level name
-
-        // TODO: check if the level exists; if not, handle the error
-
-        Gameplay_initCustom(pField, sName);
-    }
-
-    // Initializes each of the tile's flag placement status
-    Grid_clear(pField->pFlagGrid, 0);
-
-    // Initializes each of the tile's inspection status
-    Grid_clear(pField->pInspectGrid, 0);
-
-    // Specifies the number of mines adjacent to each tile
-    Field_setNumbers(pField);
 }
 
 /**
@@ -150,6 +113,43 @@ void Gameplay_initCustom(Field *pField, char *sName) {
 
     // Deallocates the memory for the file path's string
     String_kill(sPath);
+}
+
+/**
+ * Selects the type of game (classic or custom) to be played.
+ * 
+ * @param   { GameType }    eType    The type of game to be played.
+ * @param   { Field * }     pField   The field to be modified.
+*/
+void Gameplay_selectType(GameType eType, Field *pField) {
+
+    // For classic games
+    if(eType == GAMEPLAY_TYPE_CLASSIC) {
+
+        GameDifficulty eDifficulty;
+        // TODO: input game difficulty
+
+        Gameplay_initClassic(eDifficulty, pField);
+
+    // For custom games
+    } else {
+
+        char *sName;
+        // TODO: input custom level name
+
+        // TODO: check if the level exists; if not, handle the error
+
+        Gameplay_initCustom(pField, sName);
+    }
+
+    // Initializes each of the tile's flag placement status
+    Grid_clear(pField->pFlagGrid, 0);
+
+    // Initializes each of the tile's inspection status
+    Grid_clear(pField->pInspectGrid, 0);
+
+    // Specifies the number of mines adjacent to each tile
+    Field_setNumbers(pField);
 }
 
 /**
