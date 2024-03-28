@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-28 21:16:35
+ * @ Modified time: 2024-03-28 21:46:51
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -28,7 +28,7 @@
 
 // +4 includes ".txt"
 #define PROFILE_FILE_PATH_MAX_LENGTH (PROFILE_FOLDER_PATH_LENGTH + PROFILE_NAME_MAX_LENGTH + 4)
-#define PROFILE_FILE_PATH_MAX_SIZE (sPROFILE_FILE_PATH_MAX_LENGTH + 1)
+#define PROFILE_FILE_PATH_MAX_SIZE sizeof(char)*(PROFILE_FILE_PATH_MAX_LENGTH + 1)
 
 #define PROFILE_NAME_MAX_LENGTH 20
 #define PROFILE_NAME_MIN_LENGTH 3
@@ -233,7 +233,6 @@ void Profile_delete(char *sName) {
         return; // Exits the function
     }
         
-
     // Concatinates the key's string with \n, considering that fgets does this.
     // This is to prevent runtime errors with strcmp().
     strcat(sName, "\n");
@@ -284,13 +283,39 @@ void Profile_delete(char *sName) {
  * @param   { char * }      sName       Name of the profile.
 */
 void Profile_save(char *sName) {
+    int i;
 
     // Path of the profile's text file
-    // char *sPath = String_alloc();    
+    char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
 
+    // Completes the file path of the profile's text file
+    snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", PROFILE_FOLDER_PATH, sName);
 
+    // Creates and opens the profile's text file
+    FILE *pProfile = fopen(sPath, "w");
 
-    // FILE *pProfile = fopen();
+    // Prints the profile's name on the file
+    fprintf("%s\n", sName);
+
+    // Prints the initial number of games won for each game type
+    // Respective game types: Classic - Easy, Classic - Difficult, Custom
+    fprintf(pProfile, "0 0 0\n");
+
+    // Prints the initial game data of the three most recent games
+    for(i = 0; i < 3; i++) {
+
+        // Prints out the game's initial type, difficulty, outcome, and
+        //    the field's width and height
+        fprintf(pProfile, "-1 -1 -1 1 1\n");
+
+        // Prints out the game's initial field
+        fprintf(pProfile, ".\n");
+    }
+
+    // Deallocates the memory of the name's string
+    String_kill(sPath);
+
+    fclose(pProfile);
 }
 
 /**
