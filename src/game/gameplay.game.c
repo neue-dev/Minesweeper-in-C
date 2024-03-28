@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
  * @ Modified time: 2024-03-28 20:30:39
- * @ Modified time: 2024-03-28 20:40:05
+ * @ Modified time: 2024-03-28 20:49:05
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -22,41 +22,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-#define LEVELS_FILE_PATH "../data/levels.data.txt"
-#define LEVELS_FOLDER_PATH ".../build/levels/"
-
-#define LEVEL_NAME_MAX_LENGTH (1 << 4)
-#define LEVEL_PATH_MAX_SIZE strlen(LEVELS_FOLDER_PATH) + strlen(LEVELS_FILE_PATH) + sizeof(char)*5
-
-#define GAME_EASY_ROWS     8
-#define GAME_EASY_COLUMNS  8
-#define GAME_EASY_MINES    10
-
-#define GAME_DIFFICULT_ROWS    10
-#define GAME_DIFFICULT_COLUMNS 15 
-#define GAME_DIFFICULT_MINES   35
-
-typedef enum GameType GameType;
-typedef enum GameDifficulty GameDifficulty;
-typedef enum GameOutcome GameOutcome;
-
-// Game types chosen by the user
-enum GameType {
-    GAMEPLAY_TYPE_CLASSIC,      // Classic game type
-    GAMEPLAY_TYPE_CUSTOM        // Custom game type
-};
-
-enum GameDifficulty {
-    GAMEPLAY_DIFFICULTY_EASY,           // Classic game: Easy
-    GAMEPLAY_DIFFICULTY_DIFFICULT       // Classic game: Difficult
-};
-
-enum GameOutcome {
-    GAMEPLAY_OUTCOME_QUIT,           // The game ends by the player quitting manually
-    GAMEPLAY_OUTCOME_LOSS,           // The game ends by the player losing
-    GAMEPLAY_OUTCOME_WIN             // The game ends by the player winning
-};
 
 /**
  * Initiates the gameplay.
