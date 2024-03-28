@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-29 01:00:36
+ * @ Modified time: 2024-03-29 02:17:47
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -519,6 +519,7 @@ void Page_setComponentPopupText(Page *this, char *sKey, char *sText) {
 */
 void Page_resetComponents(Page *this) {
   ComponentManager_reset(&this->componentManager);
+  this->dComponentCount = 1;
 }
 
 /**

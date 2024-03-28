@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:17:17
- * @ Modified time: 2024-03-29 01:03:50
+ * @ Modified time: 2024-03-29 02:17:54
  * @ Description:
  * 
  * A utility library for creating hash tables with a max size of 1 << 16 (2^16) elements.
@@ -180,8 +180,10 @@ void HashMap_kill(HashMap *this) {
   // We free all of the contents of the hashmap
   for(i = 0; i < this->dEntryMaxSlots; i++) {
     if(this->pEntries[i] != NULL) {
-      free(this->pEntries[i]->pObject);
-      free(this->pEntries[i]);
+      if(this->pEntries[i]->pObject != NULL)
+        free(this->pEntries[i]->pObject);
+      
+      HashMapEntry_kill(this->pEntries[i]);
     }
   }
   

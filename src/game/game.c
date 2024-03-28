@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-29 01:40:00
+ * @ Modified time: 2024-03-29 01:53:44
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -114,20 +114,15 @@ void Game_init(Game *this) {
     // For easy mode
     if(this->eDifficulty == GAME_DIFFICULTY_EASY) {
         
-      // Sets up the field's width and height
+      // Sets up the field's width and height and populate with mines
       Field_init(&this->gameField, GAME_EASY_COLUMNS, GAME_EASY_ROWS);
-      
-      // Populates the field with mines 
       Field_populateRandom(&this->gameField, GAME_EASY_MINES);
-    }
     
     // For difficult mode
-    else {
+    } else {
 
-      // Sets up the field's width and height
+      // Sets up the field's width and height and populate with mines
       Field_init(&this->gameField, GAME_DIFFICULT_COLUMNS, GAME_DIFFICULT_ROWS);
-
-      // Populates the field with mines
       Field_populateRandom(&this->gameField, GAME_DIFFICULT_MINES);
     }
   
@@ -137,6 +132,7 @@ void Game_init(Game *this) {
     Field_init(&this->gameField, 10, 10);
   }
 
+  // Compute the numbers for the field
   Field_setNumbers(&this->gameField);
 }
 
@@ -147,6 +143,10 @@ void Game_init(Game *this) {
  * @param   { GameOutcome }      eOutcome     How the game was ended.
 */
 void Game_end(Game *this, GameOutcome eOutcome) {
+
+  // Destroy game data
+  Field_clearMines(&this->gameField);
+  Field_clearFlags(&this->gameField);
 
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
