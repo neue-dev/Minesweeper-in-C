@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 08:48:29
+ * @ Modified time: 2024-03-28 09:00:40
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -134,7 +134,7 @@ void PageHandler_editor(p_obj pArgs_Page) {
           // If all the information is valid
           } else {
             Page_idle(this);
-            Page_setNext(this, "menu"); 
+            Page_setNext(this, "editor-i"); 
           }
         break;
 

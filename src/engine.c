@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-28 08:39:57
+ * @ Modified time: 2024-03-28 08:59:27
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -35,7 +35,9 @@
 #include "./pages/login.page.c"
 #include "./pages/menu.page.c"
 #include "./pages/play.page.c"
+#include "./pages/play.interactive.page.c"
 #include "./pages/editor.page.c"
+#include "./pages/editor.interactive.page.c"
 #include "./pages/account.page.c"
 #include "./pages/settings.page.c"
 #include "./pages/help.page.c"
@@ -155,7 +157,9 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "login", PageHandler_login);
   PageManager_createPage(&this->pageManager, "menu", PageHandler_menu);
   PageManager_createPage(&this->pageManager, "play", PageHandler_play);
+  PageManager_createPage(&this->pageManager, "play-i", PageHandler_playI);
   PageManager_createPage(&this->pageManager, "editor", PageHandler_editor);
+  PageManager_createPage(&this->pageManager, "editor-i", PageHandler_editorI);
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
