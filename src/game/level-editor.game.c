@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-28 19:31:38
+ * @ Modified time: 2024-03-28 21:06:35
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -21,10 +21,11 @@
 #define LEVELS_FOLDER_PATH_LENGTH   strlen(LEVELS_FOLDER_PATH)
 
 #define LEVEL_NAME_MAX_LENGTH   100
-#define LEVEL_NAME_MAX_SIZE     sizeof(char)*(LEVEL_NAME_MAX_LENGTH + 2)    // +2 includes \n and \0
+#define LEVEL_NAME_MAX_SIZE     sizeof(char)*(LEVEL_NAME_MAX_LENGTH + 2) // +2 includes \n and \0
 
-#define LEVEL_FILE_PATH_MAX_LENGTH  (LEVEL_NAME_MAX_LENGTH + LEVELS_FOLDER_PATH_LENGTH)
-#define LEVEL_FILE_PATH_MAX_SIZE    sizeof(char)*(LEVEL_FILE_PATH_MAX_LENGTH + 2)
+// +1 includes \0
+#define LEVEL_FILE_PATH_MAX_LENGTH  (LEVEL_NAME_MAX_LENGTH + LEVELS_FOLDER_PATH_LENGTH + 1) 
+#define LEVEL_FILE_PATH_MAX_SIZE    sizeof(char)*(LEVEL_FILE_PATH_MAX_LENGTH + 1)
 
 /**
  * Creates a new custom level.
