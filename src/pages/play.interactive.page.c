@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:07:01
+ * @ Modified time: 2024-03-28 21:23:14
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -87,7 +87,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
             sFlagKey, 
             sFieldContainerComponent, 
             
-            x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2 + 2, 
+            x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2 + 1, 
             y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2,  
             
             "accent2", "", "");
@@ -196,7 +196,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
               
               // If there's a flag on it
               if(Grid_getBit(pGame->gameField.pFlagGrid, x, y))
-                Page_setComponentText(this, sFlagKey, "P");
+                Page_setComponentText(this, sFlagKey, "▐▀ ");
               
               // Remove flag if it exists
               else
