@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 16:28:29
+ * @ Modified time: 2024-03-28 16:47:51
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -12,6 +12,7 @@
 
 #include "./field.obj.h"
 #include "./gameplay.game.c"
+#include "../utils/utils.grid.h"
 
 #define GAME_CELL_HEIGHT 2
 #define GAME_CELL_WIDTH 4
@@ -59,7 +60,9 @@ char *Game_displayGrid(Game *this) {
       
       // For each cell in the row
       for(x = 0; x < dWidth; x++) {
-        dNumber = pField->aNumbers[y][x];
+
+        // The number to be shown
+        dNumber = this->gameField.aNumbers[y][x];
         
         // If upper left corner
         if(!y && !x) {
