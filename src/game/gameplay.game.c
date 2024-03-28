@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 17:48:27
+ * @ Modified time: 2024-03-28 17:49:07
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -207,7 +207,6 @@ void Gameplay_inspect(Field *pField, int x, int y) {
                 }
             }
         }
-    }
 }
 
 /**
