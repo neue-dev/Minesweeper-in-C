@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 16:20:47
+ * @ Modified time: 2024-03-28 16:54:37
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -30,13 +30,17 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
   Game *pGame = (Game *) this->pSharedObject;
-  int dWidth, dHeight;
+  int dWidth, dHeight, x, y;
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
   char *sFieldContainerComponent = "field-container.fixed";
   char *sFieldComponent = "field.acenter-x.acenter-y";
+  char *sFieldInspectComponent = "field-inspect.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
+
+  // For inspect components
+  char sInspectKey[STRING_KEY_MAX_LENGTH];
 
   // The cursor location for changing the mine field
   char cCursorX = 0;
@@ -57,7 +61,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
-      Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "test");
+      Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldContainerComponent, 0, 0, "accent", "", "field-cursor");
 
       // Define initial user states
@@ -123,6 +127,27 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_setComponentPos(this, sFieldCursorComponent, 
         cCursorX * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
         cCursorY * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1);
+
+      // For each cell, check if it's been inspected, and if so, change color
+      for(x = 0; x < pGame->gameField.dWidth; x++) {
+        for(y = 0; y < pGame->gameField.dHeight; y++) {
+
+          // Check if it's been inspected
+          if(Grid_getBit(pGame->gameField.pInspectGrid, x, y)) {
+
+            // Unique key for each component
+            sprintf(sInspectKey, "inspector-%d-%d", x, y);
+
+            // Create the component
+            Page_addComponentContext(this, sInspectKey, sFieldContainerComponent, 
+              x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
+              y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
+              GAME_CELL_WIDTH + 1, 
+              GAME_CELL_HEIGHT + 1, 
+              "primary-darken-0.25", "");
+          }
+        }
+      }
 
     break;
 
