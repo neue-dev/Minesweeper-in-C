@@ -1,2 +1,2 @@
-[night]primary:010600,secondary:eeece8,accent:0e70fe,accent2:ff2400,anti-accent:bd7d4c
+[night]primary:010600,secondary:eeece8,accent:0e70fe,accent2:df1600,anti-accent:bd7d4c
 [red gash]primary:f2efea,secondary:252627,accent:bb0a21,accent2:b41b2a,anti-accent:748386

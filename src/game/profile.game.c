@@ -10,7 +10,7 @@
 #ifndef PROFILE_
 #define PROFILE_
 
-#include "gameplay.c"
+#include "game.c"
 #include "game.c"
 #include "game.c"
 

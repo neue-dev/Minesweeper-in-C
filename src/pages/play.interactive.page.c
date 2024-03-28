@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:26:42
+ * @ Modified time: 2024-03-28 21:34:52
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -10,7 +10,7 @@
 #ifndef PAGE_PLAY_INTERACTIVE_
 #define PAGE_PLAY_INTERACTIVE_
 
-#include "../game/gameplay.c"
+#include "../game/game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -101,7 +101,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
             x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2 + 1, 
             y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2,  
             
-            "accent2-darken-0.33", "", " ");
+            "accent2-darken-0.36", "", " ");
         }
       }
 
@@ -138,7 +138,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
         case '\n': case '\r':
 
           // Do the inspection algorithm
-          Gameplay_inspect(pGame, (int) cCursorX, (int) cCursorY);
+          Game_inspect(pGame, (int) cCursorX, (int) cCursorY);
 
           // Display the actual grid
           sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
@@ -172,10 +172,10 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
             // If does not have a flag
             if(!Grid_getBit(pGame->gameField.pFlagGrid, (int) cCursorX, (int) cCursorY))
-              Gameplay_addFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+              Game_addFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
             
             // If already has a flag
-            else Gameplay_removeFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+            else Game_removeFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
           }
           
           // For each cell, check if it's been inspected, and if so, change color

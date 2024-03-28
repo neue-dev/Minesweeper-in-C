@@ -10,7 +10,7 @@
 #ifndef PAGE_PLAY_
 #define PAGE_PLAY_
 
-#include "../game/gameplay.c"
+#include "../game/game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
