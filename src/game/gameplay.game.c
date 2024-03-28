@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-27 23:14:40
+ * @ Modified time: 2024-03-28 13:35:09
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -88,6 +88,9 @@ void Gameplay_selectType(GameType eType, Field *pField) {
 
         Gameplay_initCustom(pField, sName);
     }
+
+    // Initializes each of the tile's flag placement status
+    Grid_clear(pField->pFlagGrid, 0);
 
     // Initializes each of the tile's inspection status
     Grid_clear(pField->pInspectGrid, 0);
