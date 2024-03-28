@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-27 20:54:55
+ * @ Modified time: 2024-03-28 14:27:36
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -255,6 +255,7 @@ void Profile_delete(char *sName) {
 */
 void Profile_maxNumReached() {
     // TODO: Code this function considering the GUI.
+    //       Display the error message.
 }
 
 /**
@@ -264,6 +265,7 @@ void Profile_maxNumReached() {
 */
 void Profile_invalidName() {
     // TODO: Code this function considering the GUI.
+    //       Display the error message.
 }
 
 /**
@@ -273,6 +275,7 @@ void Profile_invalidName() {
 */
 void Profile_exists() {
     // TODO: Code this function considering the GUI.
+    //       Display the error message.
 }
 
 /**
@@ -282,4 +285,5 @@ void Profile_exists() {
 */
 void Profile_doesNotExist() {
     // TODO: Code this function considering the GUI.
+    //       Display the error message.
 }
