@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 18:20:54
+ * @ Modified time: 2024-03-28 20:22:50
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -38,12 +38,12 @@ void PageHandler_playI(p_obj pArgs_Page) {
   char *sFooterComponent = "footer.fixed.acenter-x.atop-y";
   char *sFieldContainerComponent = "field-container.fixed";
   char *sFieldComponent = "field.acenter-x.acenter-y";
-  char *sFieldInspectComponent = "field-inspect.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
   char *sGamePrompt = "game-prompt.fixed.acenter-x.abottom-y";
 
   // For inspect components
   char sInspectKey[STRING_KEY_MAX_LENGTH];
+  char sFlagKey[STRING_KEY_MAX_LENGTH];
 
   // Prompt
   char sGamePromptText[STRING_KEY_MAX_LENGTH];
@@ -75,14 +75,34 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
       Page_addComponentText(this, sGamePrompt, sFooterComponent, 0, 0, "", "", "[]");
 
+      // ! move this elsewhere?
+      // Initialize the game
+      Game_init(pGame);
+      // Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
+      // !
+
+      // This is stupid but LMAO
+      for(x = 0; x < pGame->gameField.dWidth; x++) {
+        for(y = 0; y < pGame->gameField.dHeight; y++) {
+
+          // The key
+          sprintf(sFlagKey, "flag-%d-%d", x, y);
+
+          // Create the component
+          Page_addComponentText(this, 
+            sFlagKey, 
+            sFieldContainerComponent, 
+            
+            x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2 + 2, 
+            y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2,  
+            
+            "accent2", "", "");
+        }
+      }
+
       // Define initial user states
       if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
       if(Page_getUserState(this, "play-i-cursor-y") == -1) Page_setUserState(this, "play-i-cursor-y", cCursorY);
-
-      // Initialize the game
-      // ! move this elsewhere?
-      Game_init(pGame);
-      // Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
 
       // Display the actual grid
       sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
@@ -111,6 +131,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
         // Check the field if valid then save file after
         case '\n': case '\r':
+
+          // Do the inspection algorithm
           Gameplay_inspect(&pGame->gameField, (int) cCursorX, (int) cCursorY);
 
           // Display the actual grid
@@ -138,34 +160,64 @@ void PageHandler_playI(p_obj pArgs_Page) {
           if(cKeyPressed == tolower(Settings_getGameMoveRight(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
             Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth);
+
+          // Flag placement
+          if(cKeyPressed == tolower(Settings_getGameToggleFlag(this->pSharedEventStore)) ||
+            cKeyPressed == toupper(Settings_getGameToggleFlag(this->pSharedEventStore))) {
+
+            // If does not have a flag
+            if(!Grid_getBit(pGame->gameField.pFlagGrid, (int) cCursorX, (int) cCursorY))
+              Gameplay_addFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+            
+            // If already has a flag
+            else Gameplay_removeFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+          }
+          
+          // For each cell, check if it's been inspected, and if so, change color
+          for(x = 0; x < pGame->gameField.dWidth; x++) {
+            for(y = 0; y < pGame->gameField.dHeight; y++) {
+
+              // Check if it's been inspected
+              if(Grid_getBit(pGame->gameField.pInspectGrid, x, y)) {
+
+                // Unique key for each component
+                sprintf(sInspectKey, "inspector-%d-%d", x, y);
+
+                // Create the component
+                Page_addComponentContext(this, 
+                  sInspectKey, 
+                  sFieldContainerComponent, 
+                  
+                  x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
+                  y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
+                  
+                  GAME_CELL_WIDTH + 1, 
+                  GAME_CELL_HEIGHT + 1, 
+                  
+                  "primary-darken-0.25", "");
+              }
+              
+              // The key
+              sprintf(sFlagKey, "flag-%d-%d", x, y);
+              
+              // If there's a flag on it
+              if(Grid_getBit(pGame->gameField.pFlagGrid, x, y))
+                Page_setComponentText(this, sFlagKey, "P");
+              
+              // Remove flag if it exists
+              else
+                Page_setComponentText(this, sFlagKey, "");
+            }
+          }
+
         break;
+
       }
 
       // Update UI
       Page_setComponentPos(this, sFieldCursorComponent, 
         cCursorX * GAME_CELL_WIDTH, 
         cCursorY * GAME_CELL_HEIGHT);
-
-      // For each cell, check if it's been inspected, and if so, change color
-      for(x = 0; x < pGame->gameField.dWidth; x++) {
-        for(y = 0; y < pGame->gameField.dHeight; y++) {
-
-          // Check if it's been inspected
-          if(Grid_getBit(pGame->gameField.pInspectGrid, x, y)) {
-
-            // Unique key for each component
-            sprintf(sInspectKey, "inspector-%d-%d", x, y);
-
-            // Create the component
-            Page_addComponentContext(this, sInspectKey, sFieldContainerComponent, 
-              x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
-              y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
-              GAME_CELL_WIDTH + 1, 
-              GAME_CELL_HEIGHT + 1, 
-              "primary-darken-0.25", "");
-          }
-        }
-      }
 
     break;
 

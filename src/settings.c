@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-25 19:43:14
- * @ Modified time: 2024-03-28 17:39:52
+ * @ Modified time: 2024-03-28 18:43:04
  * @ Description:
  * 
  * Stores some important settings for keybinds and what not.
@@ -99,6 +99,16 @@ char Settings_getGameMoveLeft(EventStore *pSharedEventStore) {
 */
 char Settings_getGameMoveRight(EventStore *pSharedEventStore) {
   return EventStore_get(pSharedEventStore, "game-move-right");
+}
+
+/**
+ * Returns the key bound to the toggle flag functionality.
+ * 
+ * @param   { EventStore * }  pSharedEventStore   The event store to access the data from.
+ * @param   { char }                              The key bound to toggle flag.
+*/
+char Settings_getGameToggleFlag(EventStore *pSharedEventStore) {
+  return EventStore_get(pSharedEventStore, "game-toggle-flag");
 }
 
 #endif

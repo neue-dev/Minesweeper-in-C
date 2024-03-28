@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
 <<<<<<< HEAD
- * @ Modified time: 2024-03-28 18:27:57
+ * @ Modified time: 2024-03-28 20:24:31
 =======
  * @ Modified time: 2024-03-28 17:50:56
 >>>>>>> be5443ef7b73dc8c45d98797900f7a680bf05b2c
@@ -178,6 +178,10 @@ void Gameplay_selectType(GameType eType, Field *pField) {
 void Gameplay_inspect(Field *pField, int x, int y) {
     int i, j;
 
+    // If there is a flag there, don't inspect it
+    if(Grid_getBit(pField->pFlagGrid, x, y))
+        return;
+
     // Considers the specific tile inspected
     Field_inspect(pField, x, y);
 
@@ -219,25 +223,31 @@ void Gameplay_inspect(Field *pField, int x, int y) {
 }
 
 /**
- * Adds a flag on a tile.
+ * Adds a flag on a tile only if it hasn't been inspected.
+ * Also marks it as inspected.
  * 
  * @param   { Field * }     pField   The field to be modified.
  * @param   { int }         x        The tile's x-coordinate in index notation.
  * @param   { int }         y        The tile's y-coordinate in index notation.
 */
 void Gameplay_addFlag (Field *pField, int x, int y) {
-    Grid_setBit(pField->pFlagGrid, x, y, 1);
+    if(!Grid_getBit(pField->pInspectGrid, x, y)) {
+        Grid_setBit(pField->pFlagGrid, x, y, 1);
+    }
 }
 
 /**
- * Removes a flag from a tile.
+ * Removes a flag from a tile only if it currently has a flag.
+ * Also marks it as uninspected.
  * 
  * @param   { Field * }     pField   The field to be modified.
  * @param   { int }         x        The tile's x-coordinate in index notation.
  * @param   { int }         y        The tile's y-coordinate in index notation.
 */
 void Gameplay_removeFlag (Field *pField, int x, int y) {
-    Grid_setBit(pField->pFlagGrid, x, y, 0);
+    if(Grid_getBit(pField->pFlagGrid, x, y)) {
+        Grid_setBit(pField->pFlagGrid, x, y, 0);
+    }
 }
 
 #endif
