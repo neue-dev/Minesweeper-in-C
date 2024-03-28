@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 19:47:32
+ * @ Modified time: 2024-03-28 20:13:10
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -11,6 +11,8 @@
 #define GAMEPLAY_
 
 #include "field.obj.h"
+#include "game-data.class.h"
+#include "profile.game.c"
 
 #include "../utils/utils.file.h"
 #include "../utils/utils.grid.h"
@@ -56,29 +58,42 @@ enum GameOutcome {
     GAMEPLAY_OUTCOME_WIN             // The game ends by the player winning
 };
 
-struct GameData {
-    int eType;          // Game type (classic/custom)
-    int eDifficulty;    // Game difficulty (easy/difficult)
-    int eOutcome;       // Game outcome (quit/loss/win)
-
-    int dFieldWidth;    // Width of the game's minefield
-    int dFieldHeight;   // Height of the game's minefield
-};
-
 /**
  * Initiates the gameplay.
  * 
 */
 void Gameplay_start() {
-    // TODO: Code this function considering the inputs and GUI.
+    int eType;          // Game type (classic/custom)
+    int eDifficulty;    // Game difficulty (easy/difficult)
+
+    // Allocates memory for the game data
+    GameData *pGameData = GameData_create();
+
+    // Allocates memory for the field object
+    Field *pField = Field_create();
+
+    // TODO: input game type
+
+    // Sets up the game according to the game type
+    Gameplay_selectType(eType, pField);
+
+    // Save the game type
+    pGameData->eType = eType;
+        
+
 }
 
 /**
  * Ends the game.
  * 
  * @param   { GameOutcome }      eOutcome     How the game was ended.
+ * @param   { GameData }         pGameData    The data of the recently-ended game.
 */
-void Gameplay_end(GameOutcome eOutcome) {
+void Gameplay_end(GameOutcome eOutcome, GameData *pGameData) {
+
+    // Saves the outcome to the game data
+    pGameData->eOutcome = eOutcome;
+
     // TODO: Code this function considering the GUI.
 }
 
@@ -157,9 +172,9 @@ void Gameplay_selectType(GameType eType, Field *pField) {
     // For custom games
     } else {
 
-        char *sName = "";
         // TODO: input custom level name
-
+        char *sName = "";
+        
         // TODO: check if the level exists; if not, handle the error
 
         Gameplay_initCustom(pField, sName);
@@ -178,11 +193,12 @@ void Gameplay_selectType(GameType eType, Field *pField) {
 /**
  * Inspects a tile.
  * 
- * @param   { Field * }     pField   The field to be modified.
- * @param   { int }         x        The tile's x-coordinate in index notation.
- * @param   { int }         y        The tile's y-coordinate in index notation.
+ * @param   { Field * }     pField      The field to be modified.
+ * @param   { int }         x           The tile's x-coordinate in index notation.
+ * @param   { int }         y           The tile's y-coordinate in index notation.
+ * @param   { GameData }    pGameData   The data of the current game.
 */
-void Gameplay_inspect(Field *pField, int x, int y) {
+void Gameplay_inspect(Field *pField, int x, int y, GameData *pGameData) {
     int i, j;
 
     // Considers the specific tile inspected
@@ -190,7 +206,7 @@ void Gameplay_inspect(Field *pField, int x, int y) {
 
     // Ends the game if a mine has been inspected
     if(Grid_getBit(pField->pMineGrid, x, y)) {
-        Gameplay_end(GAMEPLAY_OUTCOME_LOSS);
+        Gameplay_end(GAMEPLAY_OUTCOME_LOSS, pGameData);
         return;
     }
 
@@ -211,7 +227,7 @@ void Gameplay_inspect(Field *pField, int x, int y) {
                         // only when it hasn't been inspected
                         if(!pField->aNumbers[i][j] && 
                            !Grid_getBit(pField->pInspectGrid, i, j))
-                            Gameplay_inspect(pField, i, j);
+                            Gameplay_inspect(pField, i, j, pGameData);
 
                         // Marks the tile as inspected
                         if(pField->aNumbers[i][j] >= 0)
