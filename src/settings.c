@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-25 19:43:14
- * @ Modified time: 2024-03-25 20:16:31
+ * @ Modified time: 2024-03-28 15:38:37
  * @ Description:
  * 
  * Stores some important settings for keybinds and what not.
@@ -59,6 +59,46 @@ void Settings_getKeybinds(int *dKeybindCount, char *sKeybindArray[]) {
   sKeybindArray[7] = "game-quit";
 
   *dKeybindCount = 8;
+}
+
+/**
+ * Returns the key bound to the move up functionality.
+ * 
+ * @param   { EventStore * }  pSharedEventStore   The event store to access the data from.
+ * @param   { char }                              The key bound to up.
+*/
+char Settings_getGameMoveUp(EventStore *pSharedEventStore) {
+  return EventStore_get(pSharedEventStore, "game-move-up");
+}
+
+/**
+ * Returns the key bound to the move down functionality.
+ * 
+ * @param   { EventStore * }  pSharedEventStore   The event store to access the data from.
+ * @param   { char }                              The key bound to down.
+*/
+char Settings_getGameMoveDown(EventStore *pSharedEventStore) {
+  return EventStore_get(pSharedEventStore, "game-move-down");
+}
+
+/**
+ * Returns the key bound to the move left functionality.
+ * 
+ * @param   { EventStore * }  pSharedEventStore   The event store to access the data from.
+ * @param   { char }                              The key bound to left.
+*/
+char Settings_getGameMoveLeft(EventStore *pSharedEventStore) {
+  return EventStore_get(pSharedEventStore, "game-move-left");
+}
+
+/**
+ * Returns the key bound to the move right functionality.
+ * 
+ * @param   { EventStore * }  pSharedEventStore   The event store to access the data from.
+ * @param   { char }                              The key bound to right.
+*/
+char Settings_getGameMoveRight(EventStore *pSharedEventStore) {
+  return EventStore_get(pSharedEventStore, "game-move-right");
 }
 
 #endif

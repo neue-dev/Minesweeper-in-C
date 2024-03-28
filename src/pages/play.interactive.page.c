@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 12:05:39
+ * @ Modified time: 2024-03-28 15:45:26
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -15,6 +15,10 @@
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
+
+#include "../settings.c"
+
+#include <string.h>
 
 /**
  * Configures the main menu.
@@ -34,6 +38,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
   // The cursor location for changing the mine field
   char cCursorX = 0;
   char cCursorY = 0;
+
+  // Pressed key
+  char cKeyPressed = 0;
   
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -62,11 +69,14 @@ void PageHandler_playI(p_obj pArgs_Page) {
     case PAGE_ACTIVE_RUNNING:
       
       // Key handling
+      cKeyPressed = EventStore_get(this->pSharedEventStore, "key-pressed");
+      
+      // Cursor handling
       cCursorX = Page_getUserState(this, "play-i-cursor-x");
       cCursorY = Page_getUserState(this, "play-i-cursor-y");
 
       // Switch based on what key was last pressed
-      switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+      switch(cKeyPressed) {
 
         // Escape character to go back
         case 27:
@@ -74,18 +84,29 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Page_setNext(this, "menu");
         break;
 
-        // WASD movement
-        case 'S': case 's': Page_setUserState(this, "play-i-cursor-y", (cCursorY + 1) % pGame->gameField.dHeight); break;
-        case 'W': case 'w': Page_setUserState(this, "play-i-cursor-y", (cCursorY + pGame->gameField.dHeight - 1) % pGame->gameField.dHeight); break;
-        case 'D': case 'd': Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth); break;
-        case 'A': case 'a': Page_setUserState(this, "play-i-cursor-x", (cCursorX + pGame->gameField.dWidth - 1) % pGame->gameField.dWidth); break;
-
         // Check the field if valid then save file after
         case '\n': case '\r':
 
         break;
 
         default:
+
+          // WASD movement
+          if(cKeyPressed == tolower(Settings_getGameMoveUp(this->pSharedEventStore)) ||
+            cKeyPressed == toupper(Settings_getGameMoveUp(this->pSharedEventStore)))
+            Page_setUserState(this, "play-i-cursor-y", (cCursorY + pGame->gameField.dHeight - 1) % pGame->gameField.dHeight);
+
+          if(cKeyPressed == tolower(Settings_getGameMoveDown(this->pSharedEventStore)) ||
+            cKeyPressed == toupper(Settings_getGameMoveDown(this->pSharedEventStore)))
+            Page_setUserState(this, "play-i-cursor-y", (cCursorY + 1) % pGame->gameField.dHeight);
+
+          if(cKeyPressed == tolower(Settings_getGameMoveLeft(this->pSharedEventStore)) ||
+            cKeyPressed == toupper(Settings_getGameMoveLeft(this->pSharedEventStore)))
+            Page_setUserState(this, "play-i-cursor-x", (cCursorX + pGame->gameField.dWidth - 1) % pGame->gameField.dWidth);          
+          
+          if(cKeyPressed == tolower(Settings_getGameMoveRight(this->pSharedEventStore)) ||
+            cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
+            Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth);
 
           // ! remove all things having to do with "test"
           Page_setComponentText(this, "test.acenter-x.acenter-y", Field_displayGrid(&pGame->gameField));
