@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 18:30:32
+ * @ Modified time: 2024-03-28 19:36:04
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -64,7 +64,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
       for(x = 0; x < dWidth; x++) {
 
         // The number to be shown
-        dNumber = this->gameField.aNumbers[y][x];
+        dNumber = this->gameField.aNumbers[x][y];
         dNumber = dNumber < 0 ? 'X' : dNumber + 48;
 
         // If the cell hasn't been inspected, turn it into a space
@@ -75,21 +75,21 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
         sprintf(sNumberText, "| %c ", dNumber);
 
         // If upper left corner
-        if(!y && !x) {
+        if(!x && !y) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╔───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;
           }
         
         // Top edge
-        } else if(!y && x) {
+        } else if(x && !y) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╦───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;
           }
 
         // Center pieces
-        } else if(y && x) {
+        } else if(x && y) {
           switch(i) {
             case 0: strcat(sOutputBuffer, "╬───"); break;
             case 1: strcat(sOutputBuffer, sNumberText); break;

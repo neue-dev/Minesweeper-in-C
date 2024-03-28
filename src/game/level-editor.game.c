@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-28 16:56:01
+ * @ Modified time: 2024-03-28 19:31:38
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -123,17 +123,17 @@ void LevelEditor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
         return; // TODO: error-handling
 
     // Prints the width and height of the field onto the file
-    fprintf("%d %d\n", dWidth, dHeight);
+    fprintf("%d %d\n", dHeight, dWidth);
 
     // Prints the mines onto the text file
-    for(i = 0; i < dWidth; i++) {
-        for(j = 0; j < dHeight; j++) {
+    for(i = 0; i < dHeight; i++) {
+        for(j = 0; j < dWidth; j++) {
 
             // Prints 'X' for tiles with mines and '.' for tiles without mines
             fprintf("%c", GridgetBit(pMines, i, j) ? 'X' : '.');
 
             // Prints space between tiles and a new line every after each row (except the last)
-            fprintf("%c", (i == dWidth - 1 && j != dHeight - 1) ? '\n' : ' ');
+            fprintf("%c", (i == dHeight - 1 && j != dWidth - 1) ? '\n' : ' ');
         }
     }
 
@@ -178,8 +178,8 @@ int LevelEditor_countMines(Grid *pMines, int dWidth, int dHeight) {
     int dMines = 0; // Number of mines on the grid
 
     // Loops through each tile
-    for(i = 0; i < dWidth; i++) {
-        for(j = 0; j < dHeight; j++) {
+    for(i = 0; i < dHeight; i++) {
+        for(j = 0; j < dWidth; j++) {
 
             // Increments dMines when a mine is found
             if(Grid_getBit(pMines, i, j))
