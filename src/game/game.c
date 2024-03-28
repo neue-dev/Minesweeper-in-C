@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 16:15:45
+ * @ Modified time: 2024-03-28 16:28:29
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -42,7 +42,7 @@ void Game_init(Game *this) {
  * @return  { char * }          The text asset representing the grid.
 */
 char *Game_displayGrid(Game *this) {
-  int x, y, i, j, dNumber;
+  int x, y, i, dNumber;
 
   // The actual field
   // Don't mind why this is a pointer, it didn't have to be LMAO

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 16:25:06
+ * @ Modified time: 2024-03-28 16:27:50
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -60,6 +60,15 @@ enum GameEnding {
 */
 void Gameplay_start() {
     // TODO: Code this function considering the inputs and GUI.
+}
+
+/**
+ * Ends the game.
+ * 
+ * @param   { GameEnding }      eEnding     How the game was ended.
+*/
+void Gameplay_end(GameEnding eEnding) {
+    // TODO: Code this function considering the GUI.
 }
 
 /**
@@ -129,12 +138,15 @@ void Gameplay_selectType(GameType eType, Field *pField) {
         GameDifficulty eDifficulty;
         // TODO: input game difficulty
 
+        //! remove this line later on
+        eDifficulty = GAMEPLAY_DIFFICULTY_EASY;
+
         Gameplay_initClassic(eDifficulty, pField);
 
     // For custom games
     } else {
 
-        char *sName;
+        char *sName = "";
         // TODO: input custom level name
 
         // TODO: check if the level exists; if not, handle the error
@@ -166,7 +178,7 @@ void Gameplay_inspect(Field *pField, int x, int y) {
     Field_inspect(pField, x, y);
 
     // Ends the game if a mine has been inspected
-    if(Grid_getBit(pField, x, y))
+    if(Grid_getBit(pField->pMineGrid, x, y))
         Gameplay_end(GAMEPLAY_ENDS_BY_LOSING);
 
     // Cascades the inspection if the number on the tile is 0
@@ -212,15 +224,6 @@ void Gameplay_addFlag (Field *pField, int x, int y) {
 */
 void Gameplay_removeFlag (Field *pField, int x, int y) {
     Grid_setBit(pField->pFlagGrid, x, y, 0);
-}
-
-/**
- * Ends the game.
- * 
- * @param   { GameEnding }      eEnding     How the game was ended.
-*/
-void Gameplay_end(GameEnding eEnding) {
-    // TODO: Code this function considering the GUI.
 }
 
 #endif
