@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 16:27:50
+ * @ Modified time: 2024-03-28 17:14:30
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -178,8 +178,10 @@ void Gameplay_inspect(Field *pField, int x, int y) {
     Field_inspect(pField, x, y);
 
     // Ends the game if a mine has been inspected
-    if(Grid_getBit(pField->pMineGrid, x, y))
+    if(Grid_getBit(pField->pMineGrid, x, y)) {
         Gameplay_end(GAMEPLAY_ENDS_BY_LOSING);
+        return;
+    }
 
     // Cascades the inspection if the number on the tile is 0
     if(pField->aNumbers[x][y] == 0) {
