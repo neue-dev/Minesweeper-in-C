@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 17:17:37
+ * @ Modified time: 2024-03-28 17:20:10
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -196,12 +196,17 @@ void Gameplay_inspect(Field *pField, int x, int y) {
                 for(j = y - 1; j <= y + 1; j++) {
                     if(j >= 0 && j <= pField->dHeight - 1) {
 
+                        // Mark as inspected the other numbers too
+                        if(pField->aNumbers[i][j] > 0) {
+                            Field_inspect(pField, i, j);
+                        
                         // Recures the function if the number on the tile is 0
                         // only when i != 0 or j != 0 AND
                         // only when it hasn't been inspected
-                        if(pField->aNumbers[i][j] == 0 && i && j)
+                        } else if(pField->aNumbers[i][j] == 0 && i && j) {
                             if(!Grid_getBit(pField->pInspectGrid, i, j))
                                 Gameplay_inspect(pField, i, j);
+                        }
                     }
                 }
             }
