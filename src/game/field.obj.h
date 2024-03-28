@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-27 23:07:23
+ * @ Modified time: 2024-03-28 11:39:23
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -15,6 +15,8 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
+#include <string.h>
 
 #define FIELD_MAX_ROWS    10
 #define FIELD_MAX_COLUMNS 15
@@ -211,6 +213,98 @@ void Field_setNumbers(Field *this) {
 */
 void Field_inspect(Field *pField, int x, int y) {
   Grid_setBit(pField->pInspectGrid, x, y, 1);
+}
+
+/**
+ * Creates a display of the grid as a text asset.
+*/
+char *Field_displayGrid(Field *pField) {
+  int x, y, i, j, dNumber;
+
+  // SOme important consts
+  int dWidth = pField->dWidth;
+  int dHeight = pField->dHeight;
+  char *sGridText = calloc(dWidth * 4 * dHeight * 16, sizeof(char));
+
+  // For each row
+  for(y = 0; y < dHeight; y++) {
+    for(i = 0; i < 2; i++) {
+      
+      // For each cell in the row
+      for(x = 0; x < dWidth; x++) {
+        dNumber = pField->aNumbers[y][x];
+        
+        // If upper left corner
+        if(!y && !x) {
+          switch(i) {
+            case 0: strcat(sGridText, "╔───"); break;
+            case 1: strcat(sGridText, "│   "); break;
+          }
+        
+        // Top edge
+        } else if(!y && x) {
+          switch(i) {
+            case 0: strcat(sGridText, "╦───"); break;
+            case 1: strcat(sGridText, "│   "); break;
+          }
+
+        // Bottom left corner
+        } else if (y == dHeight - 1 && !x){
+          switch(i) {
+            case 0: strcat(sGridText, "╚───"); break;
+            case 1: break;
+          }
+
+        // Bottom edge
+        } else if (y == dHeight - 1 && x){
+          switch(i) {
+            case 0: strcat(sGridText, "╩───"); break;
+            case 1: break;
+          }
+
+        // Center pieces
+        } else if(y && x) {
+          switch(i) {
+            case 0: strcat(sGridText, "╬───"); break;
+            case 1: strcat(sGridText, "│   "); break;
+          }
+          
+        // Left edge
+        } else {
+          switch(i) {
+            case 0: strcat(sGridText, "╠───"); break;
+            case 1: strcat(sGridText, "│   "); break;
+          }
+        }
+      } 
+
+      // Upper right corner
+      if(!y) {
+        switch(i) {
+          case 0: strcat(sGridText, "╗"); break;
+          case 1: strcat(sGridText, "│"); break;
+        }
+
+      // Lower right corner
+      } else if(y == dHeight - 1) {
+        switch(i) {
+          case 0: strcat(sGridText, "╝"); break;
+          case 1: break;
+        }
+
+      // Right edge
+      } else {
+        switch(i) {
+          case 0: strcat(sGridText, "╣"); break;
+          case 1: strcat(sGridText, "│"); break;
+        }
+      }
+
+      strcat(sGridText, "\n");
+    }
+  }
+  
+  return sGridText;
 }
 
 #endif

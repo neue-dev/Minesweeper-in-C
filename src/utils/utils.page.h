@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-28 10:46:24
+ * @ Modified time: 2024-03-28 11:08:07
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -62,6 +62,8 @@ struct Page {
   AssetManager *pSharedAssetManager;                            // A reference to a shared asset manager so we can access all assets
   EventStore *pSharedEventStore;                                // Where we can access values modified by events
   ThemeManager *pSharedThemeManager;                            // What we use to manager the colors across pages
+  p_obj pSharedObject;                                          // Can refer to any piece of shared state the page might need
+                                                                // We use this primarily for the game objects
                     
   int dComponentCount;                                          // How many components we have
   ComponentManager componentManager;                            // We store the components both through a tree and a hashmap
@@ -108,6 +110,7 @@ Page *Page_init(Page *this, AssetManager *pSharedAssetManager, EventStore *pShar
   this->pSharedAssetManager = pSharedAssetManager;
   this->pSharedEventStore = pSharedEventStore;
   this->pSharedThemeManager = pSharedThemeManager;
+  this->pSharedObject = NULL;
 
   // Empty hashmaps
   this->pUserStates = HashMap_create();
@@ -773,6 +776,19 @@ void PageManager_update(PageManager *this) {
 
   if(pPage->ePageStatus == PAGE_ACTIVE_IDLE && pPage->sNextName != NULL)
     PageManager_setActive(this, pPage->sNextName);
+}
+
+/**
+ * Gives a page a shared object.
+ * 
+ * @param   { PageManager * }   this            The page manager object.
+ * @param   { char * }          sPageKey        The page we want to modify.
+ * @param   { p_obj }           pSharedObject   The object we want to share to the page.
+*/
+void PageManager_givePage(PageManager *this, char *sPageKey, p_obj pSharedObject) {
+  Page *pPage = HashMap_get(this->pPageMap, sPageKey);
+
+  pPage->pSharedObject = pSharedObject;
 }
 
 #endif

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-28 10:51:18
+ * @ Modified time: 2024-03-28 11:08:23
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -14,12 +14,7 @@
 #define ENGINE_
 
 // Game-related constructs
-#include "./game/account.class.h"
-// #include "./game/field.obj.h"
-// #include "./game/level-editor.game.c"
-// #include "./game/gameplay.game.c"
-// #include "./game/profile.game.c"
-// #include "./game/stats.game.c"
+#include "./game/game.c"
 
 // Our utils
 #include "./utils/utils.page.h"
@@ -87,8 +82,8 @@ struct Engine {
   ThreadManager threadManager;        // Manages the different threads of the program
 
   // The actual game object
-  // Game standardGame;                  // Holds the state of a standard game
-  // Game customGame;                    // The level editor
+  Game standardGame;                  // Holds the state of a standard game
+  Game editorGame;                    // The level editor
 
   int bState;                         // The state of the engine
 
@@ -163,7 +158,12 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "play");
+  PageManager_setActive(&this->pageManager, "play-i");
+
+  // Give the interactive pages the game objects
+  PageManager_givePage(&this->pageManager, "play-i", &this->standardGame);
+  PageManager_givePage(&this->pageManager, "editor-i", &this->editorGame);
+
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
