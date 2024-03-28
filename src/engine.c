@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-28 15:35:06
+ * @ Modified time: 2024-03-28 21:02:06
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -161,7 +161,9 @@ void Engine_init(Engine *this) {
   PageManager_setActive(&this->pageManager, "play-i");
 
   // Give the interactive pages the game objects
+  PageManager_givePage(&this->pageManager, "play", &this->standardGame);
   PageManager_givePage(&this->pageManager, "play-i", &this->standardGame);
+  PageManager_givePage(&this->pageManager, "editor", &this->editorGame);
   PageManager_givePage(&this->pageManager, "editor-i", &this->editorGame);
 
 

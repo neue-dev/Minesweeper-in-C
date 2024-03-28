@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 20:52:04
+ * @ Modified time: 2024-03-28 20:59:10
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -38,19 +38,19 @@ typedef struct Game Game;
 
 // Game types chosen by the user
 enum GameType {
-    GAMEPLAY_TYPE_CLASSIC,      // Classic game type
-    GAMEPLAY_TYPE_CUSTOM        // Custom game type
+  GAMEPLAY_TYPE_CLASSIC,            // Classic game type
+  GAMEPLAY_TYPE_CUSTOM              // Custom game type
 };
 
 enum GameDifficulty {
-    GAMEPLAY_DIFFICULTY_EASY,           // Classic game: Easy
-    GAMEPLAY_DIFFICULTY_DIFFICULT       // Classic game: Difficult
+  GAMEPLAY_DIFFICULTY_EASY,         // Classic game: Easy
+  GAMEPLAY_DIFFICULTY_DIFFICULT     // Classic game: Difficult
 };
 
 enum GameOutcome {
-    GAMEPLAY_OUTCOME_QUIT,           // The game ends by the player quitting manually
-    GAMEPLAY_OUTCOME_LOSS,           // The game ends by the player losing
-    GAMEPLAY_OUTCOME_WIN             // The game ends by the player winning
+  GAMEPLAY_OUTCOME_QUIT,            // The game ends by the player quitting manually
+  GAMEPLAY_OUTCOME_LOSS,            // The game ends by the player losing
+  GAMEPLAY_OUTCOME_WIN              // The game ends by the player winning
 };
 
 

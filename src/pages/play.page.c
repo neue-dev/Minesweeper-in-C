@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 20:47:18
+ * @ Modified time: 2024-03-28 21:01:40
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -9,6 +9,8 @@
 
 #ifndef PAGE_PLAY_
 #define PAGE_PLAY_
+
+#include "../game/gameplay.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -22,6 +24,7 @@
 void PageHandler_play(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
+  Game *pGame = (Game *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
 
   // Header details
