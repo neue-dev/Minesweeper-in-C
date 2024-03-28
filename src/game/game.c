@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 20:59:10
- * @ Description:
+ * @ Modified time: 2024-03-28 21:04:47
+ * @ Modified time: 2024-03-28 21:07:05
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -38,19 +38,20 @@ typedef struct Game Game;
 
 // Game types chosen by the user
 enum GameType {
-  GAMEPLAY_TYPE_CLASSIC,            // Classic game type
-  GAMEPLAY_TYPE_CUSTOM              // Custom game type
+  GAME_TYPE_CLASSIC,            // Classic game type
+  GAME_TYPE_CUSTOM              // Custom game type
 };
 
 enum GameDifficulty {
-  GAMEPLAY_DIFFICULTY_EASY,         // Classic game: Easy
-  GAMEPLAY_DIFFICULTY_DIFFICULT     // Classic game: Difficult
+  GAME_DIFFICULTY_EASY,         // Classic game: Easy
+  GAME_DIFFICULTY_DIFFICULT     // Classic game: Difficult
 };
 
 enum GameOutcome {
-  GAMEPLAY_OUTCOME_QUIT,            // The game ends by the player quitting manually
-  GAMEPLAY_OUTCOME_LOSS,            // The game ends by the player losing
-  GAMEPLAY_OUTCOME_WIN              // The game ends by the player winning
+  GAME_OUTCOME_PENDING,         // The game is still ongoing
+  GAME_OUTCOME_QUIT,            // The game ends by the player quitting manually
+  GAME_OUTCOME_LOSS,            // The game ends by the player losing
+  GAME_OUTCOME_WIN              // The game ends by the player winning
 };
 
 
@@ -70,8 +71,12 @@ struct Game {
  * 
  * @param   { Game * }  this  The game object.
 */
-void Game_init(Game *this) {
+void Game_init(Game *this, GameDifficulty eGameDifficulty) {
+
+  // Set the timer and some other params
   this->dTime = 0;
+  this->eOutcome = GAME_OUTCOME_PENDING;
+  this->eDifficulty = eGameDifficulty;
 
   // ! change dimensions, change numbe rof mines
   Field_init(&this->gameField, 10, 10);

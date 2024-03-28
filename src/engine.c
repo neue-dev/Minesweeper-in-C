@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-28 21:02:06
+ * @ Modified time: 2024-03-28 21:07:58
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -15,6 +15,7 @@
 
 // Game-related constructs
 #include "./game/game.c"
+#include "./game/gameplay.c"
 
 // Our utils
 #include "./utils/utils.page.h"
@@ -158,7 +159,7 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "play-i");
+  PageManager_setActive(&this->pageManager, "play");
 
   // Give the interactive pages the game objects
   PageManager_givePage(&this->pageManager, "play", &this->standardGame);

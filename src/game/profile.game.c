@@ -1,11 +1,18 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-28 14:27:36
+ * @ Modified time: 2024-03-28 21:16:35
  * @ Description:
  * 
  * Executes tasks involved in-game.
  */
+
+#ifndef PROFILE_
+#define PROFILE_
+
+#include "gameplay.c"
+#include "game.c"
+#include "game.c"
 
 #include "../utils/utils.string.h"
 
@@ -16,11 +23,34 @@
 
 #define PROFILES_MAX_NUM 10
 
+#define PROFILE_FOLDER_PATH "../data/profiles/"
+#define PROFILE_FOLDER_PATH_LENGTH strlen(PROFILE_FOLDER_PATH)
+
+// +4 includes ".txt"
+#define PROFILE_FILE_PATH_MAX_LENGTH (PROFILE_FOLDER_PATH_LENGTH + PROFILE_NAME_MAX_LENGTH + 4)
+#define PROFILE_FILE_PATH_MAX_SIZE (sPROFILE_FILE_PATH_MAX_LENGTH + 1)
+
 #define PROFILE_NAME_MAX_LENGTH 20
 #define PROFILE_NAME_MIN_LENGTH 3
 
-#define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 2) // +2 includes \0 and \n
+// +2 includes \0 and \n
+#define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 2) 
 #define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 2)
+
+typedef struct Profile Profile;
+
+struct Profile {
+
+    char *sName;    // Name of the profile
+    char *sPath;    // Path of the profile's text file
+
+    int nClassicEasy;       // Classic: Easy games won
+    int nClassicDifficult;  // Classic: Difficult games won
+    int nCustom;            // Custom games won
+
+    // GameData gameData[3];   // Stores the data of the 3 most recent games
+    
+};
 
 /**
  * Creates a new profile.
@@ -249,6 +279,21 @@ void Profile_delete(char *sName) {
 }
 
 /**
+ * Saves the data newly-created profile in its corresponding text file.
+ * 
+ * @param   { char * }      sName       Name of the profile.
+*/
+void Profile_save(char *sName) {
+
+    // Path of the profile's text file
+    // char *sPath = String_alloc();    
+
+
+
+    // FILE *pProfile = fopen();
+}
+
+/**
  * An error-handling function.
  * Operates when the number of existing profiles exceed the max (10).
  * 
@@ -287,3 +332,5 @@ void Profile_doesNotExist() {
     // TODO: Code this function considering the GUI.
     //       Display the error message.
 }
+
+#endif
