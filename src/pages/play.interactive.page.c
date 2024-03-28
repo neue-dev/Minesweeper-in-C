@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 15:45:26
+ * @ Modified time: 2024-03-28 16:12:46
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -33,7 +33,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
-  char *sFieldCursor = "field-cursor.fixed";
+  char *sFieldContainerComponent = "field-container.fixed";
+  char *sFieldComponent = "field.acenter-x.acenter-y";
+  char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
 
   // The cursor location for changing the mine field
   char cCursorX = 0;
@@ -54,8 +56,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentText(this, "test.acenter-x.acenter-y", sPlayIComponent, dWidth / 2, dHeight / 2, "primary-darken-0.75", "", "test");
-      Page_addComponentAsset(this, sFieldCursor, sPlayIComponent, 0, 0, "accent", "", "field-cursor");
+      Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
+      Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "test");
+      Page_addComponentAsset(this, sFieldCursorComponent, sFieldContainerComponent, 0, 0, "accent", "", "field-cursor");
 
       // Define initial user states
       if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
@@ -108,15 +111,15 @@ void PageHandler_playI(p_obj pArgs_Page) {
             cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
             Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth);
 
-          // ! remove all things having to do with "test"
-          Page_setComponentText(this, "test.acenter-x.acenter-y", Field_displayGrid(&pGame->gameField));
-
+          // Display the actual grid
+          Page_setComponentText(this, sFieldComponent, Game_displayGrid(pGame));
         break;
       }
 
       // Update UI
-      // ! DONT MAKE THE POSITIONING HARDCODED
-      Page_setComponentPos(this, sFieldCursor, cCursorX * 4 + 52, cCursorY * 2 + 7);
+      Page_setComponentPos(this, sFieldCursorComponent, 
+        cCursorX * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
+        cCursorY * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1);
 
     break;
 

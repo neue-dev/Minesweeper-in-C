@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 12:03:30
+ * @ Modified time: 2024-03-28 16:06:55
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -213,97 +213,6 @@ void Field_setNumbers(Field *this) {
 */
 void Field_inspect(Field *pField, int x, int y) {
   Grid_setBit(pField->pInspectGrid, x, y, 1);
-}
-
-/**
- * Creates a display of the grid as a text asset.
-*/
-char *Field_displayGrid(Field *pField) {
-  int x, y, i, j, dNumber;
-
-  // SOme important consts
-  int dWidth = pField->dWidth;
-  int dHeight = pField->dHeight;
-  char *sGridText = calloc(dWidth * 4 * dHeight * 16, sizeof(char));
-
-  // For each row
-  for(y = 0; y < dHeight; y++) {
-    for(i = 0; i < 2; i++) {
-      
-      // For each cell in the row
-      for(x = 0; x < dWidth; x++) {
-        dNumber = pField->aNumbers[y][x];
-        
-        // If upper left corner
-        if(!y && !x) {
-          switch(i) {
-            case 0: strcat(sGridText, "╔───"); break;
-            case 1: strcat(sGridText, "│   "); break;
-          }
-        
-        // Top edge
-        } else if(!y && x) {
-          switch(i) {
-            case 0: strcat(sGridText, "╦───"); break;
-            case 1: strcat(sGridText, "│   "); break;
-          }
-
-        // Center pieces
-        } else if(y && x) {
-          switch(i) {
-            case 0: strcat(sGridText, "╬───"); break;
-            case 1: strcat(sGridText, "│   "); break;
-          }
-          
-        // Left edge
-        } else {
-          switch(i) {
-            case 0: strcat(sGridText, "╠───"); break;
-            case 1: strcat(sGridText, "│   "); break;
-          }
-        }
-      } 
-
-      // Upper right corner
-      if(!y) {
-        switch(i) {
-          case 0: strcat(sGridText, "╗"); break;
-          case 1: strcat(sGridText, "│"); break;
-        }
-
-      // Right edge
-      } else {
-        switch(i) {
-          case 0: strcat(sGridText, "╣"); break;
-          case 1: strcat(sGridText, "│"); break;
-        }
-      }
-
-      strcat(sGridText, "\n");
-    }
-  }
-
-  // Bottom edge
-  for(x = 0; x < dWidth; x++) {
-    for(i = 0; i < 4; i++) {
-
-      // Bottom right corner
-      if(x == dWidth - 1 && i == 3) strcat(sGridText, "─╝");
-
-      // Bottom left corner
-      else if(!x && !i) strcat(sGridText, "╚");
-      
-      // Bottom edge
-      else if(!i) strcat(sGridText, "╩");
-      
-      // Everything else
-      else strcat(sGridText, "─");
-    }
-  }
-  
-  strcat(sGridText, "\n");
-  
-  return sGridText;
 }
 
 #endif
