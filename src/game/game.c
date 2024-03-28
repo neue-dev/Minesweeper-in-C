@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 21:40:36
- * @ Modified time: 2024-03-28 22:30:59
+ * @ Modified time: 2024-03-28 22:57:40
+ * @ Modified time: 2024-03-28 22:58:23
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -61,35 +61,13 @@ enum GameOutcome {
 struct Game {
   Field gameField;              // Game field
   
-  int dWidth, dHeight;          // Game field dimensions
+  int dCursorX, dCursorY;       // The cursor of the player
   int dTime;                    // Game timer
 
   GameType eType;
   GameDifficulty eDifficulty;   
   GameOutcome eOutcome;         // Some data about the game
 };
-
-/**
- * Intializes the field's data according to the custom game's specs.
- * // ! fix
- * 
- * @param   { Field * }     pField   The field to be modified.
- * @param   { sName * }     sName    Name of the custom level.
-*/
-void Game_initCustom(Field *pField, char *sName) {
-    
-  // Declares the path of the custom level's file.
-  char *sPath = String_alloc(LEVEL_PATH_MAX_SIZE);
-
-  // Sets the cutom level's file path
-  snprintf(sPath, LEVEL_PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sName);
-
-  // Populates the field with mines
-  Field_populateCustom(pField, sPath);
-
-  // Deallocates the memory for the file path's string
-  String_kill(sPath);
-}
 
 /**
  * Initializes the game object.
@@ -103,6 +81,10 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   this->eOutcome = GAME_OUTCOME_PENDING;
   this->eType = eGameType;
   this->eDifficulty = eGameDifficulty;
+
+  // The game's cursor
+  this->dCursorX = 0;
+  this->dCursorY = 0;
 }
 
 /**
@@ -325,12 +307,10 @@ void Game_inspect(Game *this, int x, int y) {
  * Also marks it as inspected.
  * 
  * @param   { Game * }     this     The game object to be modified.
- * @param   { int }        x        The tile's x-coordinate in index notation.
- * @param   { int }        y        The tile's y-coordinate in index notation.
 */
-void Game_addFlag (Game *this, int x, int y) {
-  if(!Grid_getBit(this->gameField.pInspectGrid, x, y))
-    Grid_setBit(this->gameField.pFlagGrid, x, y, 1);
+void Game_addFlag (Game *this) {
+  if(!Grid_getBit(this->gameField.pInspectGrid, this->dCursorX, this->dCursorY))
+    Grid_setBit(this->gameField.pFlagGrid, this->dCursorX, this->dCursorY, 1);
 }
 
 /**
@@ -338,12 +318,90 @@ void Game_addFlag (Game *this, int x, int y) {
  * Also marks it as uninspected.
  * 
  * @param   { Game * }      this      The game object to be modified.
- * @param   { int }         x         The tile's x-coordinate in index notation.
- * @param   { int }         y         The tile's y-coordinate in index notation.
 */
-void Game_removeFlag (Game *this, int x, int y) {
-  if(Grid_getBit(this->gameField.pFlagGrid, x, y))
-    Grid_setBit(this->gameField.pFlagGrid, x, y, 0);
+void Game_removeFlag (Game *this) {
+  if(Grid_getBit(this->gameField.pFlagGrid, this->dCursorX, this->dCursorY))
+    Grid_setBit(this->gameField.pFlagGrid, this->dCursorX, this->dCursorY, 0);
+}
+
+/**
+ * Increments the cursor along the x axis (to the right).
+ * Skips tiles that have already been inspected.
+ * 
+ * @param   { Game * }  this  The game object to modify.
+*/
+void Game_incrementX(Game *this) {
+  int dCursorXPrev = this->dCursorX;
+  int dCursorXNew = this->dCursorX;
+  int dCursorY = this->dCursorY;
+  
+  // Look for a tile that hasn't been inspected
+  do {
+    dCursorXNew = (dCursorXNew + 1) % this->gameField.dWidth;
+  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
+
+  // If found, set the cursor there
+  this->dCursorX = dCursorXNew;
+}
+
+/**
+ * Decrements the cursor along the x axis (to the left).
+ * Skips tiles that have already been inspected.
+ * 
+ * @param   { Game * }  this  The game object to modify.
+*/
+void Game_decrementX(Game *this) {
+  int dCursorXPrev = this->dCursorX;
+  int dCursorXNew = this->dCursorX;
+  int dCursorY = this->dCursorY;
+  
+  // Look for a tile that hasn't been inspected
+  do {
+    dCursorXNew = (dCursorXNew - 1 + this->gameField.dWidth) % this->gameField.dWidth;
+  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
+
+  // If found, set the cursor there
+  this->dCursorX = dCursorXNew;
+}
+
+/**
+ * Increments the cursor along the y axis (down).
+ * Skips tiles that have already been inspected.
+ * 
+ * @param   { Game * }  this  The game object to modify.
+*/
+void Game_incrementY(Game *this) {
+  int dCursorYPrev = this->dCursorY;
+  int dCursorYNew = this->dCursorY;
+  int dCursorX = this->dCursorX;
+  
+  // Look for a tile that hasn't been inspected
+  do {
+    dCursorYNew = (dCursorYNew + 1) % this->gameField.dHeight;
+  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
+
+  // If found, set the cursor there
+  this->dCursorY = dCursorYNew;
+}
+
+/**
+ * Decrements the cursor along the y axis (up).
+ * Skips tiles that have already been inspected.
+ * 
+ * @param   { Game * }  this  The game object to modify.
+*/
+void Game_decrementY(Game *this) {
+  int dCursorYPrev = this->dCursorY;
+  int dCursorYNew = this->dCursorY;
+  int dCursorX = this->dCursorX;
+  
+  // Look for a tile that hasn't been inspected
+  do {
+    dCursorYNew = (dCursorYNew - 1 + this->gameField.dHeight) % this->gameField.dHeight;
+  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
+
+  // If found, set the cursor there
+  this->dCursorY = dCursorYNew;
 }
 
 /**

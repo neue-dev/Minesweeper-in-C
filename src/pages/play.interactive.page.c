@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 22:42:33
+ * @ Modified time: 2024-03-28 22:57:28
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -48,10 +48,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Buffer for minesweeper grid 
   char *sGridBuffer;
-
-  // The cursor location for changing the mine field
-  char cCursorX = 0;
-  char cCursorY = 0;
 
   // Pressed key
   char cKeyPressed = 0;
@@ -115,10 +111,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
         }
       }
 
-      // Define initial user states
-      if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
-      if(Page_getUserState(this, "play-i-cursor-y") == -1) Page_setUserState(this, "play-i-cursor-y", cCursorY);
-
       // Display the actual grid
       sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
       Game_displayGrid(pGame, sGridBuffer);
@@ -131,10 +123,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
       
       // Key handling
       cKeyPressed = EventStore_get(this->pSharedEventStore, "key-pressed");
-      
-      // Cursor handling
-      cCursorX = Page_getUserState(this, "play-i-cursor-x");
-      cCursorY = Page_getUserState(this, "play-i-cursor-y");
 
       // Switch based on what key was last pressed
       switch(cKeyPressed) {
@@ -149,7 +137,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
         case '\n': case '\r':
 
           // Do the inspection algorithm
-          Game_inspect(pGame, (int) cCursorX, (int) cCursorY);
+          Game_inspect(pGame, pGame->dCursorX, pGame->dCursorY);
 
           // Display the actual grid
           sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
@@ -163,30 +151,30 @@ void PageHandler_playI(p_obj pArgs_Page) {
           // WASD movement
           if(cKeyPressed == tolower(Settings_getGameMoveUp(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameMoveUp(this->pSharedEventStore)))
-            Page_setUserState(this, "play-i-cursor-y", (cCursorY + pGame->gameField.dHeight - 1) % pGame->gameField.dHeight);
-
+            Game_decrementY(pGame);
+            
           if(cKeyPressed == tolower(Settings_getGameMoveDown(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameMoveDown(this->pSharedEventStore)))
-            Page_setUserState(this, "play-i-cursor-y", (cCursorY + 1) % pGame->gameField.dHeight);
+            Game_incrementY(pGame);
 
           if(cKeyPressed == tolower(Settings_getGameMoveLeft(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameMoveLeft(this->pSharedEventStore)))
-            Page_setUserState(this, "play-i-cursor-x", (cCursorX + pGame->gameField.dWidth - 1) % pGame->gameField.dWidth);          
+            Game_decrementX(pGame);
           
           if(cKeyPressed == tolower(Settings_getGameMoveRight(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
-            Page_setUserState(this, "play-i-cursor-x", (cCursorX + 1) % pGame->gameField.dWidth);
+            Game_incrementX(pGame);
 
           // Flag placement
           if(cKeyPressed == tolower(Settings_getGameToggleFlag(this->pSharedEventStore)) ||
             cKeyPressed == toupper(Settings_getGameToggleFlag(this->pSharedEventStore))) {
 
             // If does not have a flag
-            if(!Grid_getBit(pGame->gameField.pFlagGrid, (int) cCursorX, (int) cCursorY))
-              Game_addFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+            if(!Grid_getBit(pGame->gameField.pFlagGrid, pGame->dCursorX, pGame->dCursorY))
+              Game_addFlag(&pGame->gameField);
             
             // If already has a flag
-            else Game_removeFlag(&pGame->gameField, (int) cCursorX, (int) cCursorY);
+            else Game_removeFlag(&pGame->gameField);
           }
           
           // For each cell, check if it's been inspected, and if so, change color
@@ -232,8 +220,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
       // Update UI
       Page_setComponentPos(this, sFieldCursorComponent, 
-        cCursorX * GAME_CELL_WIDTH, 
-        cCursorY * GAME_CELL_HEIGHT);
+        pGame->dCursorX * GAME_CELL_WIDTH, 
+        pGame->dCursorY * GAME_CELL_HEIGHT);
 
     break;
 
