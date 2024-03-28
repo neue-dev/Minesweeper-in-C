@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:23:14
+ * @ Modified time: 2024-03-28 21:26:42
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -91,6 +91,17 @@ void PageHandler_playI(p_obj pArgs_Page) {
             y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2,  
             
             "accent2", "", "");
+
+          sprintf(sFlagKey, "flag-darken-%d-%d", x, y);
+
+          Page_addComponentText(this, 
+            sFlagKey, 
+            sFieldContainerComponent, 
+            
+            x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2 + 1, 
+            y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2,  
+            
+            "accent2-darken-0.33", "", " ");
         }
       }
 
