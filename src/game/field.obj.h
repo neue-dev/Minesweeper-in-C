@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 17:06:36
+ * @ Modified time: 2024-03-28 18:27:09
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -91,6 +91,7 @@ void Field_clearFlags(Field *this) {
  * @param   { Field * }   this    The field object to modify.
  * @param   { int }       dMines  The number of mines to create
 */
+#include "../utils/utils.debug.h"
 void Field_populateRandom(Field *this, int dMines) {
 
   // If there's too many mines to fit the grid, we won't allow that
@@ -105,6 +106,9 @@ void Field_populateRandom(Field *this, int dMines) {
 
     // Choose a location to plant a mine
     int dLocation = rand() % (this->dWidth * this->dHeight);
+    
+    Debug_logStr("new loc");
+    Debug_logInt(dLocation);
 
     // While the selected bit already has a mine
     while(Grid_getBit(this->pMineGrid, 
@@ -114,6 +118,8 @@ void Field_populateRandom(Field *this, int dMines) {
       // Move to another cell and loop start if end is reached
       dLocation++;
       dLocation %= (this->dWidth * this->dHeight);
+
+      Debug_logInt(dLocation);
     }
 
     // Set the chosen bit
@@ -206,7 +212,7 @@ void Field_setNumbers(Field *this) {
       }
 
       // Sets the number of adjacent mines
-      this->aNumbers[i][j] = dMines;
+      this->aNumbers[j][i] = dMines;
     }
   }
 }

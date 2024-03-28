@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 18:02:31
+ * @ Modified time: 2024-03-28 18:20:54
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -82,7 +82,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Initialize the game
       // ! move this elsewhere?
       Game_init(pGame);
-      Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
+      // Gameplay_initClassic(GAMEPLAY_DIFFICULTY_EASY, &pGame->gameField);
 
       // Display the actual grid
       sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);

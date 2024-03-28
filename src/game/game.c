@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 18:07:52
+ * @ Modified time: 2024-03-28 18:29:24
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -33,8 +33,8 @@ void Game_init(Game *this) {
   this->dTime = 0;
 
   // ! change dimensions, change numbe rof mines
-  Field_init(&this->gameField, 15, 10);
-  Field_populateRandom(&this->gameField, 10);
+  Field_init(&this->gameField, 10, 10);
+  Field_populateRandom(&this->gameField, 5);
   Field_setNumbers(&this->gameField);
 }
 
