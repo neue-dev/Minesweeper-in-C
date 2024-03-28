@@ -15,7 +15,7 @@
 
 // Game-related constructs
 #include "./game/game.c"
-#include "./game/gameplay.c"
+#include "./game/game.c"
 
 // Our utils
 #include "./utils/utils.page.h"

@@ -10,7 +10,7 @@
 #ifndef PAGE_EDITOR_
 #define PAGE_EDITOR_
 
-#include "../game/gameplay.c"
+#include "../game/game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"

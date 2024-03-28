@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-28 17:58:31
+ * @ Modified time: 2024-03-28 21:29:24
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -25,7 +25,7 @@
 #define COMPONENT_NO_CHANGE -99999
 
 // Max number of children per component
-#define COMPONENT_MAX_CHILD_COUNT (1 << 8)
+#define COMPONENT_MAX_CHILD_COUNT (1 << 10)
 
 typedef enum ComponentType ComponentType;
 typedef enum ComponentAlignmentX ComponentAlignmentX;
