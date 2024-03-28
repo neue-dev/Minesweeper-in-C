@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:16:46
- * @ Modified time: 2024-03-28 17:21:24
+ * @ Modified time: 2024-03-28 17:48:27
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -178,8 +178,10 @@ void Gameplay_inspect(Field *pField, int x, int y) {
     Field_inspect(pField, x, y);
 
     // Ends the game if a mine has been inspected
-    if(Grid_getBit(pField->pMineGrid, x, y))
+    if(Grid_getBit(pField->pMineGrid, x, y)) {
         Gameplay_end(GAMEPLAY_ENDS_BY_LOSING);
+        return;
+    }
 
     // Cascades the inspection if the number on the tile is 0
     if(pField->aNumbers[x][y] == 0) {
@@ -194,13 +196,13 @@ void Gameplay_inspect(Field *pField, int x, int y) {
                 for(j = y - 1; j <= y + 1; j++) {
                     if(j >= 0 && j <= pField->dHeight - 1) {
 
-                        // Inspects the tile if it contains a number greater than 0
-                        if(pField->aNumbers[i][j] > 0)
-                            Field_inspect(pField, x, y);
-
                         // Recures the function if the number on the tile is 0
-                        if(pField->aNumbers[i][j] == 0)
-                            Gameplay_inspect(pField, i, j);
+                        // only when i != 0 or j != 0 AND
+                        // only when it hasn't been inspected
+                        } else if(pField->aNumbers[i][j] == 0 && i && j) {
+                            if(!Grid_getBit(pField->pInspectGrid, i, j))
+                                Gameplay_inspect(pField, i, j);
+                        }
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 16:47:51
+ * @ Modified time: 2024-03-28 17:12:30
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -32,8 +32,10 @@ struct Game {
 void Game_init(Game *this) {
   this->dTime = 0;
 
-  // ! change dimensions
+  // ! change dimensions, change numbe rof mines
   Field_init(&this->gameField, 15, 10);
+  Field_populateRandom(&this->gameField, 20);
+  Field_setNumbers(&this->gameField);
 }
 
 /**
@@ -53,6 +55,7 @@ char *Game_displayGrid(Game *this) {
   int dWidth = pField->dWidth;
   int dHeight = pField->dHeight;
   char *sGridText = calloc(dWidth * 4 * dHeight * 16, sizeof(char));
+  char *sNumberText = calloc(4, 1);
 
   // For each row
   for(y = 0; y < dHeight; y++) {
@@ -63,33 +66,35 @@ char *Game_displayGrid(Game *this) {
 
         // The number to be shown
         dNumber = this->gameField.aNumbers[y][x];
+        dNumber = dNumber < 0 ? 'X' : dNumber + 48;
+        sprintf(sNumberText, "| %c ", dNumber);
         
         // If upper left corner
         if(!y && !x) {
           switch(i) {
             case 0: strcat(sGridText, "╔───"); break;
-            case 1: strcat(sGridText, "│   "); break;
+            case 1: strcat(sGridText, sNumberText); break;
           }
         
         // Top edge
         } else if(!y && x) {
           switch(i) {
             case 0: strcat(sGridText, "╦───"); break;
-            case 1: strcat(sGridText, "│   "); break;
+            case 1: strcat(sGridText, sNumberText); break;
           }
 
         // Center pieces
         } else if(y && x) {
           switch(i) {
             case 0: strcat(sGridText, "╬───"); break;
-            case 1: strcat(sGridText, "│   "); break;
+            case 1: strcat(sGridText, sNumberText); break;
           }
           
         // Left edge
         } else {
           switch(i) {
             case 0: strcat(sGridText, "╠───"); break;
-            case 1: strcat(sGridText, "│   "); break;
+            case 1: strcat(sGridText, sNumberText); break;
           }
         }
       } 
