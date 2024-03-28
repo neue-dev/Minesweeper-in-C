@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-28 22:58:23
+ * @ Modified time: 2024-03-28 23:36:53
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -336,9 +336,9 @@ void Game_incrementX(Game *this) {
   int dCursorY = this->dCursorY;
   
   // Look for a tile that hasn't been inspected
-  do {
+  // do {
     dCursorXNew = (dCursorXNew + 1) % this->gameField.dWidth;
-  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
+  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
 
   // If found, set the cursor there
   this->dCursorX = dCursorXNew;
@@ -356,9 +356,9 @@ void Game_decrementX(Game *this) {
   int dCursorY = this->dCursorY;
   
   // Look for a tile that hasn't been inspected
-  do {
+  // do {
     dCursorXNew = (dCursorXNew - 1 + this->gameField.dWidth) % this->gameField.dWidth;
-  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
+  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
 
   // If found, set the cursor there
   this->dCursorX = dCursorXNew;
@@ -376,9 +376,9 @@ void Game_incrementY(Game *this) {
   int dCursorX = this->dCursorX;
   
   // Look for a tile that hasn't been inspected
-  do {
+  // do {
     dCursorYNew = (dCursorYNew + 1) % this->gameField.dHeight;
-  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
+  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
 
   // If found, set the cursor there
   this->dCursorY = dCursorYNew;
@@ -396,9 +396,9 @@ void Game_decrementY(Game *this) {
   int dCursorX = this->dCursorX;
   
   // Look for a tile that hasn't been inspected
-  do {
+  // do {
     dCursorYNew = (dCursorYNew - 1 + this->gameField.dHeight) % this->gameField.dHeight;
-  } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
+  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
 
   // If found, set the cursor there
   this->dCursorY = dCursorYNew;
