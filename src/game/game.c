@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 19:36:04
+ * @ Modified time: 2024-03-28 20:39:12
  * @ Description:
  * 
  * Holds the game struct that stores all of the game state.
@@ -11,7 +11,6 @@
 #define GAME_
 
 #include "./field.obj.h"
-#include "./gameplay.game.c"
 #include "../utils/utils.grid.h"
 
 #define GAME_CELL_HEIGHT 2
