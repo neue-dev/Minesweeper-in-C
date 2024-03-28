@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-25 17:58:02
+ * @ Modified time: 2024-03-28 08:45:58
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -448,11 +448,15 @@ void EventStore_setString(EventStore *this, char *sValueKey, char *sStringKey) {
   // It's not too long so we update the string
   } else {
 
-    // Append character or do backspace/del
-    if(cValue != 8 && cValue != 127)
-      sString[strlen(sString)] = cValue;
-    else if(strlen(sString))
+    // Append character if valid char 
+    if(cValue != 8 && cValue != 127) {
+      if(String_isValidChar(cValue))
+        sString[strlen(sString)] = cValue;
+
+    // Do backspace or dell
+    } else if(strlen(sString)) {
       sString[strlen(sString) - 1] = 0;
+    }
   }
 }
 

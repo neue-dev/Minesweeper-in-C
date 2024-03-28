@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-26 22:21:27
+ * @ Modified time: 2024-03-28 08:39:57
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -15,9 +15,9 @@
 
 // Game-related constructs
 #include "./game/account.class.h"
-#include "./game/field.obj.h"
+// #include "./game/field.obj.h"
 // #include "./game/level-editor.game.c"
-#include "./game/gameplay.game.c"
+// #include "./game/gameplay.game.c"
 // #include "./game/profile.game.c"
 // #include "./game/stats.game.c"
 
@@ -85,8 +85,8 @@ struct Engine {
   ThreadManager threadManager;        // Manages the different threads of the program
 
   // The actual game object
-  Game standardGame;                  // Holds the state of a standard game
-  Game customGame;                    // The level editor
+  // Game standardGame;                  // Holds the state of a standard game
+  // Game customGame;                    // The level editor
 
   int bState;                         // The state of the engine
 
@@ -159,7 +159,7 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "play");
+  PageManager_setActive(&this->pageManager, "login");
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
@@ -256,6 +256,10 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
 
   // Get the engine
   Engine *this = (Engine *) pArgs_Engine;
+
+  // If the game is done, return
+  if(!this->bState)
+    return;
 
   // Update the page
   PageManager_update(&this->pageManager);

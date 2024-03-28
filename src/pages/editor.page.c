@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-26 22:22:56
+ * @ Modified time: 2024-03-28 08:48:29
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -96,6 +96,12 @@ void PageHandler_editor(p_obj pArgs_Page) {
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+
+        // Escape character to go back
+        case 27:
+          Page_idle(this);
+          Page_setNext(this, "menu");
+        break;
 
         // Switch fields
         case '\t':

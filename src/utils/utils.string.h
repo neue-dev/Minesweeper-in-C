@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-26 21:32:47
+ * @ Modified time: 2024-03-28 08:38:19
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -329,6 +329,28 @@ int String_isValidFilename(char *sFilename) {
 
   // There were no problems with the filename
   return 1;
+}
+
+/**
+ * Returns whether or not a character is not an escape char.
+ * 
+ * @param   { char }  c   The character to check.
+ * @return  { int }       Whether or not the character can be "typed" by the user.
+*/
+int String_isValidChar(char c) {
+  switch(c) {
+
+    // Check for escape chars
+    case '\a': case '\b': case '\e': case '\f': 
+    case '\n': case '\r': case '\t': case '\v': 
+      return 0;
+    
+    // Just return the original character
+    default: 
+      if(c < 32 || c == 127) 
+        return 0;
+      return 1;
+  }
 }
 
 // You are in Windows

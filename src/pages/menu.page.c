@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 19:23:41
+ * @ Modified time: 2024-03-28 08:47:47
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -50,7 +50,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sMenuSelectorFont = "body-font";
   char *sMenuSelectors[6][2] = {
     { "play", "play.aleft-x"  },
-    { "custom", "custom.aleft-x" },
+    { "editor", "editor.aleft-x" },
     { "account", "account.aleft-x" },
     { "settings", "settings.aleft-x" },
     { "help", "help.aleft-x" },
