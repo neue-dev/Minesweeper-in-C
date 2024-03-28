@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-28 16:22:07
+ * @ Modified time: 2024-03-28 16:32:11
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -58,6 +58,7 @@ void Field_init(Field *this, int dWidth, int dHeight) {
 
   this->pMineGrid = Grid_create(dWidth, dHeight);
   this->pFlagGrid = Grid_create(dWidth, dHeight);
+  this->pInspectGrid = Grid_create(dWidth, dHeight);
 }
 
 /**
