@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 08:58:28
+ * @ Modified time: 2024-03-28 10:54:22
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -43,6 +43,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "seconadary", "primary");
+      Page_addComponentText(this, "test", sPlayIComponent, 10, 5, "accent", "secondary", "test");
 
       // Define initial user states
       if(Page_getUserState(this, "play-i-cursor-x") == -1) Page_setUserState(this, "play-i-cursor-x", cCursorX);
