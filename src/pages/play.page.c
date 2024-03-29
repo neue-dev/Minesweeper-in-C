@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 00:31:24
+ * @ Modified time: 2024-03-30 02:29:19
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -15,6 +15,8 @@
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
+
+#include <string.h>
 
 /**
  * Configures the main menu.
@@ -89,8 +91,8 @@ void PageHandler_play(p_obj pArgs_Page) {
       cPlayFieldCount = Page_getUserState(this, "play-field-count");
 
       // Retrieve the user input 
-      sTypeField = strupr(EventStore_getString(this->pSharedEventStore, "type-input"));
-      sFileordiffField = strupr(EventStore_getString(this->pSharedEventStore, "fileordiff-input"));
+      sTypeField = String_toUpper(EventStore_getString(this->pSharedEventStore, "type-input"));
+      sFileordiffField = String_toUpper(EventStore_getString(this->pSharedEventStore, "fileordiff-input"));
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {

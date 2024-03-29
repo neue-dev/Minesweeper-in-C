@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 22:20:53
+ * @ Modified time: 2024-03-30 02:19:37
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -15,6 +15,8 @@
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
 #include "../utils/utils.component.h"
+
+#include <string.h>
 
 /**
  * Configures the logjn page.
@@ -92,8 +94,8 @@ void PageHandler_login(p_obj pArgs_Page) {
       cKeyPressed = EventStore_get(this->pSharedEventStore, "key-pressed");
 
       // Retrieve the user input 
-      sUsernameField = strupr(EventStore_getString(this->pSharedEventStore, "username-input"));
-      sPasswordField = strupr(EventStore_getString(this->pSharedEventStore, "password-input"));
+      sUsernameField = String_toUpper(EventStore_getString(this->pSharedEventStore, "username-input"));
+      sPasswordField = String_toUpper(EventStore_getString(this->pSharedEventStore, "password-input"));
 
       // There's a popup
       if(Page_getUserState(this, "is-popup")) {

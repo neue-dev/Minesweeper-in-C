@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-03-08 10:16:17
+ * @ Modified time: 2024-03-30 02:30:13
  * @ Description:
  * 
  * A utility library for implementing some string related functionality
@@ -16,9 +16,37 @@
 #define UTILS_STRING_UNIX_
 
 #include <stdio.h>
+#include <string.h>
 
+/**
+ * Prints a string.
+ * 
+ * @param   { char * }  string  The string we want to print.
+*/
 void String_print(char *string) {
   printf("%s", string);
+}
+
+/**
+ * Converts a string to upper case.
+ * This thing leaks memory...
+ * 
+ * @param   { char * }  string  The string we want to convert.
+ * @return  { char * }          The uppercased string.
+*/
+char *String_toUpper(char *string) {
+  char *newString = calloc(1, strlen(string));
+  
+  // Return empty string if empty to begin with
+  if(!strlen(string))
+    return "";
+
+  // Convert to uppercase
+  do {
+    newString[strlen(newString)] = toupper(*string);
+  } while(*(++string));
+
+  return newString;
 }
 
 #endif
