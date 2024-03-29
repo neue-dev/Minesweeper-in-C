@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 14:44:01
+ * @ Modified time: 2024-03-29 16:35:18
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -131,6 +131,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
         // Submit popup
         else if(cKeyPressed == '\n' || cKeyPressed == '\r') {
           Page_disableComponentPopup(this, sPopupComponent);
+          Game_unpause(pGame);
 
           if(Page_readComponentPopup(this, sPopupComponent) == 0) {
 
@@ -154,6 +155,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
           // Escape character to go back
           case 27:
             Page_enableComponentPopup(this, sPopupComponent);
+            Game_pause(pGame);
           break;
 
           // Check the field if valid then save file after
@@ -210,18 +212,34 @@ void PageHandler_playI(p_obj pArgs_Page) {
                   // Unique key for each component
                   sprintf(sInspectKey, "inspector-%d-%d", x, y);
 
-                  // Create the component
-                  Page_addComponentContext(this, 
-                    sInspectKey, 
-                    sFieldContainerComponent, 
-                    
-                    x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
-                    y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
-                    
-                    GAME_CELL_WIDTH + 1, 
-                    GAME_CELL_HEIGHT + 1, 
-                    
-                    "primary-darken-0.25", "");
+                  // A lighter component for numbers > 0
+                  if(pGame->field.aNumbers[y][x] > 0) {
+                    Page_addComponentContext(this, 
+                      sInspectKey, 
+                      sFieldContainerComponent, 
+                      
+                      x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
+                      y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
+                      
+                      GAME_CELL_WIDTH + 1, 
+                      GAME_CELL_HEIGHT + 1, 
+                      
+                      "primary-darken-0.25", "");
+                  
+                  // A darker component
+                  } else {
+                    Page_addComponentContext(this, 
+                      sInspectKey, 
+                      sFieldContainerComponent, 
+                      
+                      x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
+                      y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
+                      
+                      GAME_CELL_WIDTH + 1, 
+                      GAME_CELL_HEIGHT + 1, 
+                      
+                      "primary-darken-0.5", "");
+                  }
                 }
                 
                 // The key

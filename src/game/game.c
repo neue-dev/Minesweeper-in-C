@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 14:41:06
+ * @ Modified time: 2024-03-29 16:35:29
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -64,17 +64,20 @@ enum GameOutcome {
 
 
 struct Game {
-  Field field;                                // Game field
+  Field field;                                  // Game field
   
-  int dCursorX, dCursorY;                     // The cursor of the player
-  int dFrameCount, dLastFPS;
-  time_t startTime, endTime;                  // Used for computing the time
-  time_t frameStart, frameEnd;                // Used for computing fps 
+  int dPauseOffset;                             // How many seconds paused in total
+  int dCursorX, dCursorY;                       // The cursor of the player
+  int dFrameCount, dLastFPS;                    // FPS counter
+  
+  time_t startTime, endTime;                    // Used for computing the time
+  time_t pauseStartTime, pauseEndTime;          // Used for accounting for pauses
+  time_t frameStart, frameEnd;                  // Used for computing fps 
 
   GameType eType;
   GameDifficulty eDifficulty;   
-  GameOutcome eOutcome;                       // Some data about the game
-  char *sFilename;                            // Where the custom game might come from
+  GameOutcome eOutcome;                         // Some data about the game
+  char sFilename[STRING_FILENAME_MAX_LENGTH];   // Where the custom game might come from
 };
 
 /**
@@ -103,6 +106,7 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty, 
   // Set fps counters
   this->dFrameCount = 0;
   this->dLastFPS = 0;
+  this->dPauseOffset = 0;
 }
 
 /**
@@ -188,7 +192,8 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
 
         // The number to be shown
         dNumber = this->field.aNumbers[y][x];
-        dNumber = dNumber < 0 ? 'X' : dNumber + 48;
+        dNumber = dNumber < 0 ? 'X' : dNumber + 48;   // X for mines //! remove later on
+        dNumber = dNumber == 48 ? '.' : dNumber;      // Add a dot for 0's
 
         // If the cell hasn't been inspected, turn it into a space
         if(!Grid_getBit(this->field.pInspectGrid, x, y))
@@ -353,6 +358,26 @@ void Game_removeFlag (Game *this) {
 }
 
 /**
+ * Pauses the game.
+ * 
+ * @param   { Game * }  this  The game object to modify.
+*/
+void Game_pause(Game *this) {
+  time(&this->pauseStartTime);
+}
+
+/**
+ * Unpauses the game.
+ * 
+ * @param   { Game * }  this  The game object to modify.
+*/
+void Game_unpause(Game *this) {
+  time(&this->pauseEndTime);
+
+  this->dPauseOffset += difftime(this->pauseEndTime, this->pauseStartTime);
+}
+
+/**
  * Increments the cursor along the x axis (to the right).
  * Skips tiles that have already been inspected.
  * 
@@ -466,7 +491,7 @@ char *Game_getTime(Game *this) {
   time(&this->endTime);
 
   // Get the difference between the times
-  dSeconds = round(difftime(this->endTime, this->startTime));
+  dSeconds = round(difftime(this->endTime, this->startTime)) - this->dPauseOffset;
 
   // Create the time string
   sprintf(sTimeString, (dSeconds % 60) < 10 ? "%d:0%d" : "%d:%d", 
