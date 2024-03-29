@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 15:56:19
+ * @ Modified time: 2024-03-29 16:06:17
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -35,20 +35,20 @@
 #define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 1) 
 #define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 1)
 
-typedef struct Profile Profile;
+// typedef struct Profile Profile;
 
-struct Profile {
+// struct Profile {
 
-    char *sName;    // Name of the profile
-    char *sPath;    // Path of the profile's text file
+//     char *sName;    // Name of the profile
+//     char *sPath;    // Path of the profile's text file
 
-    int nClassicEasy;       // Classic: Easy games won
-    int nClassicDifficult;  // Classic: Difficult games won
-    int nCustom;            // Custom games won
+//     int nClassicEasy;       // Classic: Easy games won
+//     int nClassicDifficult;  // Classic: Difficult games won
+//     int nCustom;            // Custom games won
 
-    Game *pGameData[3];     // Stores the data of the 3 most recent games
+//     Game *pGameData[3];     // Stores the data of the 3 most recent games
     
-};
+// };
 
 /**
  * Creates a new profile.

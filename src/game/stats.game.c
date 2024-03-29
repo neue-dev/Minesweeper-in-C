@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-29 14:57:07
+ * @ Modified time: 2024-03-29 16:06:41
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -16,75 +16,75 @@
 
 #include <stdio.h>
 
-/**
- * Copies the profile's stats from its text file to its object.
- * 
- * @param   { char * }      sName       Name of the profile.
- * @param   { Profile * }   pProfile    A pointer to the profile's object.
-*/
-Stats_updateObject(char *sName, Profile *pProfile) {
+// /**
+//  * Copies the profile's stats from its text file to its object.
+//  * 
+//  * @param   { char * }      sName       Name of the profile.
+//  * @param   { Profile * }   pProfile    A pointer to the profile's object.
+// */
+// Stats_updateObject(char *sName, Profile *pProfile) {
     
-    // Path of the profile's text file
-    char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
+//     // Path of the profile's text file
+//     char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
 
-    // Completes the file path of the profile's text file
-    snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", PROFILE_FOLDER_PATH, sName);
+//     // Completes the file path of the profile's text file
+//     snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", PROFILE_FOLDER_PATH, sName);
 
-    // Opens the profile's text file
-    FILE *pProfile = fopen(sPath, "r");
+//     // Opens the profile's text file
+//     FILE *pProfile = fopen(sPath, "r");
 
-    if(pProfile == NULL)
-        return; // TODO: error-handling
+//     if(pProfile == NULL)
+//         return; // TODO: error-handling
 
-    // Acquires the profile's name
-    fscanf("%s ", pProfile->sName);
+//     // Acquires the profile's name
+//     fscanf("%s ", pProfile->sName);
 
-    // Acquires the profile's number of wins
-    fscanf("%d %d %d ", pProfile->nClassicEasy, pProfile->nClassicDifficult,
-                        pProfile->nCustom);
+//     // Acquires the profile's number of wins
+//     fscanf("%d %d %d ", pProfile->nClassicEasy, pProfile->nClassicDifficult,
+//                         pProfile->nCustom);
 
-    // TODO: Acquire the profile's most recent game data
+//     // TODO: Acquire the profile's most recent game data
 
-    fclose(pProfile);
+//     fclose(pProfile);
 
-    // Deallocates the memory of the path's string
-    String_kill(sPath);
-}
+//     // Deallocates the memory of the path's string
+//     String_kill(sPath);
+// }
 
-/**
- * Copies the profile's stats from its object to its text file.
- * 
- * @param   { Profile * }   pProfile    A pointer to the profile's object.
-*/
-void Stats_updateFile(Profile *pProfile) {
+// /**
+//  * Copies the profile's stats from its object to its text file.
+//  * 
+//  * @param   { Profile * }   pProfile    A pointer to the profile's object.
+// */
+// void Stats_updateFile(Profile *pProfile) {
 
-    // Path of the profile's text file
-    char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
+//     // Path of the profile's text file
+//     char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
 
-    // Completes the file path of the profile's text file
-    snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", 
-                    PROFILE_FOLDER_PATH, pProfile->sName);
+//     // Completes the file path of the profile's text file
+//     snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", 
+//                     PROFILE_FOLDER_PATH, pProfile->sName);
 
-    // Opens the profile's text file
-    FILE *pProfile = fopen(sPath, "r");
+//     // Opens the profile's text file
+//     FILE *pProfile = fopen(sPath, "r");
 
-    if(pProfile == NULL)
-        return; // TODO: error-handling
+//     if(pProfile == NULL)
+//         return; // TODO: error-handling
 
-    // Prints out the profile's name
-    fprintf("%s\n", pProfile->sName);
+//     // Prints out the profile's name
+//     fprintf("%s\n", pProfile->sName);
 
-    // Prints out the profile's number of wins per game type
-    fprintf("%d %d %d\n", pProfile->nClassicEasy, pProfile->nClassicDifficult,
-                          pProfile->nCustom);
+//     // Prints out the profile's number of wins per game type
+//     fprintf("%d %d %d\n", pProfile->nClassicEasy, pProfile->nClassicDifficult,
+//                           pProfile->nCustom);
     
-    // TODO: Print out the profile's most recent game data
+//     // TODO: Print out the profile's most recent game data
 
-    fclose(pProfile);
+//     fclose(pProfile);
 
-    // Deallocates the memory of the path's string
-    String_kill(sPath);
-}
+//     // Deallocates the memory of the path's string
+//     String_kill(sPath);
+// }
 
 /**
  * Saves the data of a game that had recently ended.
@@ -93,8 +93,23 @@ void Stats_updateFile(Profile *pProfile) {
 */
 void Stats_saveGame(Game *pGame) {
     int i, j;
+    char *sCurrentProfile = String_alloc(PROFILE_NAME_MAX_LENGTH);
+    char *sProfileFilePath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);
 
-    // get profile name
+    // Opens the profile list
+    FILE *pProfiles = fopen(PROFILES_FILE_PATH, "r");
+
+    // Gets the name of the current profile
+    fscanf(pProfiles, "%s", sCurrentProfile);
+
+    fclose(pProfiles);
+
+    // Completes the path of the profile's text file
+    snprintf(sProfileFilePath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt",
+             PROFILE_FOLDER_PATH, sCurrentProfile);
+
+    // Opens the profile's text file
+
 
     // store main data + 2 games
     
@@ -103,7 +118,7 @@ void Stats_saveGame(Game *pGame) {
     // print 2 games
     
     // Opens the game's text file
-    FILE *pGame = fopen(GAME_FILE_PATH, "a");
+    FILE *pProfile = fopen(GAME_FILE_PATH, "a");
 
     // ! NEW GAME
 
@@ -156,6 +171,9 @@ void Stats_saveGame(Game *pGame) {
             fprintf(pGame, (j == pGame->field.dWidth - 1) ? "\n" : " ");
         }
     }
+
+    // Deallocates the memory of the currently-selected profile name
+    String_kill(sCurrentProfile);
 
     fclose(pGame);
 }
