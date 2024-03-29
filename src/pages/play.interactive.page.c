@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 01:54:43
+ * @ Modified time: 2024-03-29 14:44:01
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -41,6 +41,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
   char *sGamePromptComponent = "game-prompt.fixed.aleft-x.abottom-y";
   char *sGameInfoComponent = "game-info.fixed.aleft-x.atop-y";
+  char *sPopupComponent = "popup.fixed";
 
   // For inspect components
   char sInspectKey[STRING_KEY_MAX_LENGTH];
@@ -75,10 +76,11 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
       Page_addComponentText(this, sGameInfoComponent, sHeaderComponent, 0, 0, "", "", "");
       Page_addComponentText(this, sGamePromptComponent, sFooterComponent, 0, 0, "", "", "");
+      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 40, 16, "secondary", "accent", "Exit.to.main.menu??\nGame.wont.be.saved.\0", "yes", "nop");
 
       // This is stupid but LMAO
-      for(x = 0; x < pGame->gameField.dWidth; x++) {
-        for(y = 0; y < pGame->gameField.dHeight; y++) {
+      for(x = 0; x < pGame->field.dWidth; x++) {
+        for(y = 0; y < pGame->field.dHeight; y++) {
 
           // The key
           sprintf(sFlagKey, "flag-%d-%d", x, y);
@@ -119,127 +121,146 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Key handling
       cKeyPressed = EventStore_get(this->pSharedEventStore, "key-pressed");
 
-      // Switch based on what key was last pressed
-      switch(cKeyPressed) {
+      // If no popup is active
+      if(Page_getUserState(this, "is-popup")) {
 
-        // Escape character to go back
-        case 27:
+        // Switch between options
+        if(cKeyPressed == '\t')
+          Page_toggleComponentPopup(this, sPopupComponent, "secondary", "accent");
 
-          // Reset the component manager
-          Page_resetComponents(this);
+        // Submit popup
+        else if(cKeyPressed == '\n' || cKeyPressed == '\r') {
+          Page_disableComponentPopup(this, sPopupComponent);
 
-          // Go to menu
-          Page_idle(this);
-          Page_setNext(this, "menu");
+          if(Page_readComponentPopup(this, sPopupComponent) == 0) {
 
-          // Prevent stuff from accessing the borked component manager
-          return;
-        break;
+            // Reset component tree since the game UI needs that
+            Page_resetComponents(this);
 
-        // Check the field if valid then save file after
-        case '\n': case '\r':
+            // Go to menu next
+            Page_idle(this);
+            Page_setNext(this, "menu");
 
-          // Do the inspection algorithm
-          Game_inspect(pGame, pGame->dCursorX, pGame->dCursorY);
-
-          // Display the actual grid
-          sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
-          Game_displayGrid(pGame, sGridBuffer);
-          Page_setComponentText(this, sFieldComponent, sGridBuffer);
-          String_kill(sGridBuffer);
-        break;
-
-        default:
-
-          // WASD movement
-          if(cKeyPressed == tolower(Settings_getGameMoveUp(this->pSharedEventStore)) ||
-            cKeyPressed == toupper(Settings_getGameMoveUp(this->pSharedEventStore)))
-            Game_decrementY(pGame);
-            
-          if(cKeyPressed == tolower(Settings_getGameMoveDown(this->pSharedEventStore)) ||
-            cKeyPressed == toupper(Settings_getGameMoveDown(this->pSharedEventStore)))
-            Game_incrementY(pGame);
-
-          if(cKeyPressed == tolower(Settings_getGameMoveLeft(this->pSharedEventStore)) ||
-            cKeyPressed == toupper(Settings_getGameMoveLeft(this->pSharedEventStore)))
-            Game_decrementX(pGame);
-          
-          if(cKeyPressed == tolower(Settings_getGameMoveRight(this->pSharedEventStore)) ||
-            cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
-            Game_incrementX(pGame);
-
-          // Flag placement
-          if(cKeyPressed == tolower(Settings_getGameToggleFlag(this->pSharedEventStore)) ||
-            cKeyPressed == toupper(Settings_getGameToggleFlag(this->pSharedEventStore))) {
-
-            // If does not have a flag
-            if(!Grid_getBit(pGame->gameField.pFlagGrid, pGame->dCursorX, pGame->dCursorY))
-              Game_addFlag(pGame);
-            
-            // If already has a flag
-            else Game_removeFlag(pGame);
+            // Make sure the function doesn't try to access the borked component tree down there.
+            return;
           }
-          
-          // For each cell, check if it's been inspected, and if so, change color
-          for(x = 0; x < pGame->gameField.dWidth; x++) {
-            for(y = 0; y < pGame->gameField.dHeight; y++) {
+        }
 
-              // Check if it's been inspected
-              if(Grid_getBit(pGame->gameField.pInspectGrid, x, y)) {
+      } else {
 
-                // Unique key for each component
-                sprintf(sInspectKey, "inspector-%d-%d", x, y);
+        // Switch based on what key was last pressed
+        switch(cKeyPressed) {
 
-                // Create the component
-                Page_addComponentContext(this, 
-                  sInspectKey, 
-                  sFieldContainerComponent, 
-                  
-                  x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
-                  y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
-                  
-                  GAME_CELL_WIDTH + 1, 
-                  GAME_CELL_HEIGHT + 1, 
-                  
-                  "primary-darken-0.25", "");
-              }
+          // Escape character to go back
+          case 27:
+            Page_enableComponentPopup(this, sPopupComponent);
+          break;
+
+          // Check the field if valid then save file after
+          case '\n': case '\r':
+
+            // Do the inspection algorithm
+            Game_inspect(pGame, pGame->dCursorX, pGame->dCursorY);
+
+            // Display the actual grid
+            sGridBuffer = String_alloc(Game_getCharWidth(pGame) * Game_getCharHeight(pGame) * 4);
+            Game_displayGrid(pGame, sGridBuffer);
+            Page_setComponentText(this, sFieldComponent, sGridBuffer);
+            String_kill(sGridBuffer);
+          break;
+
+          default:
+
+            // WASD movement
+            if(cKeyPressed == tolower(Settings_getGameMoveUp(this->pSharedEventStore)) ||
+              cKeyPressed == toupper(Settings_getGameMoveUp(this->pSharedEventStore)))
+              Game_decrementY(pGame);
               
-              // The key
-              sprintf(sFlagKey, "flag-%d-%d", x, y);
+            if(cKeyPressed == tolower(Settings_getGameMoveDown(this->pSharedEventStore)) ||
+              cKeyPressed == toupper(Settings_getGameMoveDown(this->pSharedEventStore)))
+              Game_incrementY(pGame);
+
+            if(cKeyPressed == tolower(Settings_getGameMoveLeft(this->pSharedEventStore)) ||
+              cKeyPressed == toupper(Settings_getGameMoveLeft(this->pSharedEventStore)))
+              Game_decrementX(pGame);
+            
+            if(cKeyPressed == tolower(Settings_getGameMoveRight(this->pSharedEventStore)) ||
+              cKeyPressed == toupper(Settings_getGameMoveRight(this->pSharedEventStore)))
+              Game_incrementX(pGame);
+
+            // Flag placement
+            if(cKeyPressed == tolower(Settings_getGameToggleFlag(this->pSharedEventStore)) ||
+              cKeyPressed == toupper(Settings_getGameToggleFlag(this->pSharedEventStore))) {
+
+              // If does not have a flag
+              if(!Grid_getBit(pGame->field.pFlagGrid, pGame->dCursorX, pGame->dCursorY))
+                Game_addFlag(pGame);
               
-              // If there's a flag on it
-              if(Grid_getBit(pGame->gameField.pFlagGrid, x, y))
-                Page_setComponentText(this, sFlagKey, "▐▀ ");
-              
-              // Remove flag if it exists
-              else
-                Page_setComponentText(this, sFlagKey, "");
+              // If already has a flag
+              else Game_removeFlag(pGame);
             }
-          }
+            
+            // For each cell, check if it's been inspected, and if so, change color
+            for(x = 0; x < pGame->field.dWidth; x++) {
+              for(y = 0; y < pGame->field.dHeight; y++) {
 
-        break;
+                // Check if it's been inspected
+                if(Grid_getBit(pGame->field.pInspectGrid, x, y)) {
+
+                  // Unique key for each component
+                  sprintf(sInspectKey, "inspector-%d-%d", x, y);
+
+                  // Create the component
+                  Page_addComponentContext(this, 
+                    sInspectKey, 
+                    sFieldContainerComponent, 
+                    
+                    x * GAME_CELL_WIDTH - Game_getCharWidth(pGame) / 2, 
+                    y * GAME_CELL_HEIGHT - Game_getCharHeight(pGame) / 2 - 1, 
+                    
+                    GAME_CELL_WIDTH + 1, 
+                    GAME_CELL_HEIGHT + 1, 
+                    
+                    "primary-darken-0.25", "");
+                }
+                
+                // The key
+                sprintf(sFlagKey, "flag-%d-%d", x, y);
+                
+                // If there's a flag on it
+                if(Grid_getBit(pGame->field.pFlagGrid, x, y))
+                  Page_setComponentText(this, sFlagKey, "▐▀ ");
+                
+                // Remove flag if it exists
+                else
+                  Page_setComponentText(this, sFlagKey, "");
+              }
+            }
+
+          break;
+        }
+
+        // Update UI
+        Page_setComponentPos(this, sFieldCursorComponent, 
+          pGame->dCursorX * GAME_CELL_WIDTH, 
+          pGame->dCursorY * GAME_CELL_HEIGHT);
+
+        // Game information text
+        sprintf(sGameInfoText, "frame rate:      %s\ntime elapsed:    %s\nmines left:      %s\n",
+          Game_getFPS(pGame),
+          Game_getTime(pGame),
+          Game_getMinesLeft(pGame));
+        Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
+
+        // Prompt text
+        sprintf(sGamePromptText, "%s%s%s%s    to move\nenter   to inspect a tile\n%s       to place a flag\nesc     to go back to menu",
+          String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
+        Page_setComponentText(this, sGamePromptComponent, sGamePromptText);
       }
-
-      // Update UI
-      Page_setComponentPos(this, sFieldCursorComponent, 
-        pGame->dCursorX * GAME_CELL_WIDTH, 
-        pGame->dCursorY * GAME_CELL_HEIGHT);
-
-      // Game information text
-      sprintf(sGameInfoText, "frame rate:      %s\ntime elapsed:    %s\nmines left:      %s\n",
-        Game_getFPS(pGame),
-        Game_getTime(pGame),
-        Game_getMinesLeft(pGame));
-      Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
-
-      // Prompt text
-      sprintf(sGamePromptText, "%s%s%s%s    to move\nenter   to inspect a tile\n%s       to place a flag\nesc     to go back to menu",
-        String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
-        String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
-      Page_setComponentText(this, sGamePromptComponent, sGamePromptText);
 
     break;
 

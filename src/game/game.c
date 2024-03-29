@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-29 14:01:43
+ * @ Modified time: 2024-03-29 14:21:57
+ * @ Modified time: 2024-03-29 14:41:06
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -11,7 +11,8 @@
 #define GAME_
 
 #include "./field.obj.h"
-#include "./stats.game.c"
+// #include "./profile.game.c"
+// #include "./stats.game.c"
 
 #include "../utils/utils.grid.h"
 #include "../utils/utils.types.h"
@@ -63,12 +64,12 @@ enum GameOutcome {
 
 
 struct Game {
-  Field gameField;                            // Game field
+  Field field;                                // Game field
   
   int dCursorX, dCursorY;                     // The cursor of the player
+  int dFrameCount, dLastFPS;
   time_t startTime, endTime;                  // Used for computing the time
   time_t frameStart, frameEnd;                // Used for computing fps 
-  int dFrameCount, dLastFPS;
 
   GameType eType;
   GameDifficulty eDifficulty;   
@@ -118,25 +119,25 @@ void Game_init(Game *this) {
     if(this->eDifficulty == GAME_DIFFICULTY_EASY) {
         
       // Sets up the field's width and height and populate with mines
-      Field_init(&this->gameField, GAME_EASY_COLUMNS, GAME_EASY_ROWS);
-      Field_populateRandom(&this->gameField, GAME_EASY_MINES);
+      Field_init(&this->field, GAME_EASY_COLUMNS, GAME_EASY_ROWS);
+      Field_populateRandom(&this->field, GAME_EASY_MINES);
     
     // For difficult mode
     } else {
 
       // Sets up the field's width and height and populate with mines
-      Field_init(&this->gameField, GAME_DIFFICULT_COLUMNS, GAME_DIFFICULT_ROWS);
-      Field_populateRandom(&this->gameField, GAME_DIFFICULT_MINES);
+      Field_init(&this->field, GAME_DIFFICULT_COLUMNS, GAME_DIFFICULT_ROWS);
+      Field_populateRandom(&this->field, GAME_DIFFICULT_MINES);
     }
   
   // Custom mode
   } else {
     // ! change this later,, read from file instead
-    Field_init(&this->gameField, 10, 10);
+    Field_init(&this->field, 10, 10);
   }
 
   // Compute the numbers for the field
-  Field_setNumbers(&this->gameField);
+  Field_setNumbers(&this->field);
 }
 
 /**
@@ -147,14 +148,17 @@ void Game_init(Game *this) {
 */
 void Game_end(Game *this, GameOutcome eOutcome) {
   // Saves the game data
-  Stats_saveGame(this);
+  // Stats_saveGame(this);
 
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
 
   // Destroy game data
-  Field_clearMines(&this->gameField);
-  Field_clearFlags(&this->gameField);
+  Field_clearMines(&this->field);
+  Field_clearFlags(&this->field);
+
+  // Saves the outcome to the game data
+  this->eOutcome = eOutcome;
 }
 
 /**
@@ -168,7 +172,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
 
   // The actual field
   // Don't mind why this is a pointer, it didn't have to be LMAO
-  Field *pField = &this->gameField;
+  Field *pField = &this->field;
 
   // Some important consts
   int dWidth = pField->dWidth;
@@ -183,11 +187,11 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
       for(x = 0; x < dWidth; x++) {
 
         // The number to be shown
-        dNumber = this->gameField.aNumbers[y][x];
+        dNumber = this->field.aNumbers[y][x];
         dNumber = dNumber < 0 ? 'X' : dNumber + 48;
 
         // If the cell hasn't been inspected, turn it into a space
-        if(!Grid_getBit(this->gameField.pInspectGrid, x, y))
+        if(!Grid_getBit(this->field.pInspectGrid, x, y))
           dNumber = 32;
 
         // Create the text displaying the number
@@ -277,7 +281,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
 void Game_inspect(Game *this, int x, int y) {
   int i, j;
 
-  Field *pField = &this->gameField;
+  Field *pField = &this->field;
 
   // If there is a flag there, don't inspect it
   if(Grid_getBit(pField->pFlagGrid, x, y))
@@ -290,7 +294,7 @@ void Game_inspect(Game *this, int x, int y) {
   if(Grid_getBit(pField->pMineGrid, x, y)) {
 
     // Specifies the location where the mine exploded
-    this->gameField.aNumbers[y][x] = -2;
+    this->field.aNumbers[y][x] = -2;
 
     // Ends the game
     Game_end(this, GAME_OUTCOME_LOSS);
@@ -333,8 +337,8 @@ void Game_inspect(Game *this, int x, int y) {
  * @param   { Game * }     this     The game object to be modified.
 */
 void Game_addFlag (Game *this) {
-  if(!Grid_getBit(this->gameField.pInspectGrid, this->dCursorX, this->dCursorY))
-    Grid_setBit(this->gameField.pFlagGrid, this->dCursorX, this->dCursorY, 1);
+  if(!Grid_getBit(this->field.pInspectGrid, this->dCursorX, this->dCursorY))
+    Grid_setBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY, 1);
 }
 
 /**
@@ -344,8 +348,8 @@ void Game_addFlag (Game *this) {
  * @param   { Game * }      this      The game object to be modified.
 */
 void Game_removeFlag (Game *this) {
-  if(Grid_getBit(this->gameField.pFlagGrid, this->dCursorX, this->dCursorY))
-    Grid_setBit(this->gameField.pFlagGrid, this->dCursorX, this->dCursorY, 0);
+  if(Grid_getBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY))
+    Grid_setBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY, 0);
 }
 
 /**
@@ -361,8 +365,8 @@ void Game_incrementX(Game *this) {
   
   // Look for a tile that hasn't been inspected
   // do {
-    dCursorXNew = (dCursorXNew + 1) % this->gameField.dWidth;
-  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
+    dCursorXNew = (dCursorXNew + 1) % this->field.dWidth;
+  // } while(Grid_getBit(this->field.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
 
   // If found, set the cursor there
   this->dCursorX = dCursorXNew;
@@ -381,8 +385,8 @@ void Game_decrementX(Game *this) {
   
   // Look for a tile that hasn't been inspected
   // do {
-    dCursorXNew = (dCursorXNew - 1 + this->gameField.dWidth) % this->gameField.dWidth;
-  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
+    dCursorXNew = (dCursorXNew - 1 + this->field.dWidth) % this->field.dWidth;
+  // } while(Grid_getBit(this->field.pInspectGrid, dCursorXNew, dCursorY) && dCursorXNew != dCursorXPrev);
 
   // If found, set the cursor there
   this->dCursorX = dCursorXNew;
@@ -401,8 +405,8 @@ void Game_incrementY(Game *this) {
   
   // Look for a tile that hasn't been inspected
   // do {
-    dCursorYNew = (dCursorYNew + 1) % this->gameField.dHeight;
-  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
+    dCursorYNew = (dCursorYNew + 1) % this->field.dHeight;
+  // } while(Grid_getBit(this->field.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
 
   // If found, set the cursor there
   this->dCursorY = dCursorYNew;
@@ -421,8 +425,8 @@ void Game_decrementY(Game *this) {
   
   // Look for a tile that hasn't been inspected
   // do {
-    dCursorYNew = (dCursorYNew - 1 + this->gameField.dHeight) % this->gameField.dHeight;
-  // } while(Grid_getBit(this->gameField.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
+    dCursorYNew = (dCursorYNew - 1 + this->field.dHeight) % this->field.dHeight;
+  // } while(Grid_getBit(this->field.pInspectGrid, dCursorX, dCursorYNew) && dCursorYNew != dCursorYPrev);
 
   // If found, set the cursor there
   this->dCursorY = dCursorYNew;
@@ -435,7 +439,7 @@ void Game_decrementY(Game *this) {
  * @return  { int }             The width of the field in characters.
 */
 int Game_getCharWidth(Game *this) {
-  return this->gameField.dWidth * GAME_CELL_WIDTH + 1;
+  return this->field.dWidth * GAME_CELL_WIDTH + 1;
 }
 
 /**
@@ -445,7 +449,7 @@ int Game_getCharWidth(Game *this) {
  * @return  { int }             The height of the field in characters.
 */
 int Game_getCharHeight(Game *this) {
-  return this->gameField.dHeight * GAME_CELL_HEIGHT + 1;
+  return this->field.dHeight * GAME_CELL_HEIGHT + 1;
 }
 
 /**
@@ -480,7 +484,7 @@ char *Game_getTime(Game *this) {
 */
 char *Game_getMinesLeft(Game *this) {
   char *sMineString = String_alloc(16);
-  int dMinesLeft = this->gameField.dMines - Grid_getCount(this->gameField.pFlagGrid);
+  int dMinesLeft = this->field.dMines - Grid_getCount(this->field.pFlagGrid);
   
   // Create the string
   sprintf(sMineString, "%d mines", dMinesLeft);

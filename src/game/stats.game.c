@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-29 14:44:55
+ * @ Modified time: 2024-03-29 14:57:07
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -109,27 +109,29 @@ void Stats_saveGame(Game *pGame) {
 
     // Prints out the game data
     fprintf("%d %d %d %d %d\n", pGame->eType, pGame->eDifficulty, pGame->eOutcome,
-                                pGame->gameField.dWidth, pGame->gameField.dHeight);
+                                pGame->field.dWidth, pGame->field.dHeight);
 
     // Prints out the game's field
-    for(i = 0; i < pGame->gameField.dHeight; i++) {
-        for(j = 0; j < pGame->gameField.dWidth; j++) {
+    for(i = 0; i < pGame->field.dHeight; i++) {
+        for(j = 0; j < pGame->field.dWidth; j++) {
+            
+            
 
             // Prints out the flags
             // Outcome: quit/loss
             if(pGame->eOutcome != GAME_OUTCOME_WIN &&
-               Grid_getBit(pGame->gameField.pFlagGrid, j, i))
+               Grid_getBit(pGame->field.pFlagGrid, j, i))
                 fprintf(pGame, "F");
             
             // Prints out the mines
-            else if(pGame->gameField.aNumbers[i][j] < 0) {
+            else if(pGame->field.aNumbers[i][j] < 0) {
 
                 // Outcome: quit; Does not show any mine
                 if(pGame->eOutcome == GAME_OUTCOME_QUIT)
                     fprintf(pGame, "?");
 
                 // Outcome: loss; Shows the mine that exploded
-                else if(pGame->gameField.aNumbers[i][j] == -2)
+                else if(pGame->field.aNumbers[i][j] == -2)
                     fprintf(pGame, "H");
 
                 // Outcome: win/loss; Shows all unexploded mines
@@ -142,8 +144,8 @@ void Stats_saveGame(Game *pGame) {
                 // Outcome: win; Shows all numbers
                 // Outcome: quit/loss; Shows numbers that were revealed
                 if(pGame->eOutcome == GAME_OUTCOME_WIN ||
-                   Grid_getBit(pGame->gameField.pInspectGrid, j, i))
-                    fprintf(pGame, "%d", pGame->gameField.aNumbers[i][j]);
+                   Grid_getBit(pGame->field.pInspectGrid, j, i))
+                    fprintf(pGame, "%d", pGame->field.aNumbers[i][j]);
                 
                 // Outcome: quit/loss; Does not show numbers that were unrevealed
                 else
@@ -151,7 +153,7 @@ void Stats_saveGame(Game *pGame) {
             }
 
             // Prints out a newline after every row, and space otherwise
-            fprintf(pGame, (j == pGame->gameField.dWidth - 1) ? "\n" : " ");
+            fprintf(pGame, (j == pGame->field.dWidth - 1) ? "\n" : " ");
         }
     }
 

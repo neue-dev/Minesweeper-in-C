@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-28 21:07:58
+ * @ Modified time: 2024-03-29 14:22:56
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -14,7 +14,6 @@
 #define ENGINE_
 
 // Game-related constructs
-#include "./game/game.c"
 #include "./game/game.c"
 
 // Our utils

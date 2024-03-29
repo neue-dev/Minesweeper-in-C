@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 13:34:25
+ * @ Modified time: 2024-03-29 14:56:15
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -10,8 +10,6 @@
 #ifndef PROFILE_
 #define PROFILE_
 
-#include "game.c"
-#include "game.c"
 #include "game.c"
 
 #include "../utils/utils.string.h"
@@ -74,7 +72,8 @@ void Profile_create(char *sName) {
 
     // Checks if the name has the right number of characters (3 to 20)
     if(strlen(sName) < 3 || strlen(sName) > 20) {
-        Profile_invalidName();
+        // ! todo
+        // Profile_invalidName();
         return; // Exits the function
     }
 
@@ -83,7 +82,8 @@ void Profile_create(char *sName) {
 
     // Checks if the number of profiles exceed the max
     if(nProfiles == PROFILES_MAX_NUM) {
-        Profile_maxNumReached();
+        // ! todo
+        // Profile_maxNumReached();
         return; // Exits the function
     }
 
@@ -91,7 +91,8 @@ void Profile_create(char *sName) {
     i = 0;
     while(*(sName + i) != '\0') {
         if(*(sName + i) < 'A' || *(sName + i) > 'Z') {
-            Profile_invalidName();
+            // ! todo
+            // Profile_invalidName();
             return; // Exits the function
         }
         i++;
@@ -113,7 +114,8 @@ void Profile_create(char *sName) {
 
         // Checks if the name of the to-be-created profile already exists
         if(!bNameAdded && strcmp(sName, aProfiles[i]) == 0) {
-            Profile_exists();
+            // ! todo
+            // Profile_exists();
             return; // Exits the function
         }
 
@@ -215,11 +217,9 @@ void Profile_select(char *sKey) {
 
     // Deallocates the memory of the name's string
     String_kill(sName);
-
-    fclose(pProfiles);
-
-    // Operates when the profile has not been found in the while loop
-    Profile_doesNotExist();
+    
+    // ! todo
+    // Profile_doesNotExist();
 }
 
 /**
@@ -246,7 +246,8 @@ void Profile_delete(char *sName) {
 
     // If no profile can be deleted
     if(nProfiles == 0) {
-        Profile_doesNotExist();
+        // ! todo
+        // Profile_doesNotExist();
         return; // Exits the function
     }
         
@@ -269,7 +270,8 @@ void Profile_delete(char *sName) {
 
     // Checks if the profile has been found
     if(dProfileIndex == -1) {
-        Profile_doesNotExist();
+        // ! todo
+        // Profile_doesNotExist();
         return; // Exits the function
     }
 
@@ -312,7 +314,7 @@ void Profile_save(char *sName) {
     FILE *pProfile = fopen(sPath, "w");
 
     // Prints the profile's name on the file
-    fprintf("%s\n", sName);
+    fprintf(pProfile, "%s\n", sName);
 
     // Prints the initial number of games won for each game type
     // Respective game types: Classic - Easy, Classic - Difficult, Custom

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-29 02:17:47
+ * @ Modified time: 2024-03-29 14:00:43
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -401,8 +401,8 @@ void Page_addComponentPopup(Page *this, char *sKey, int x, int y, int w, int h, 
   }
   
   // The popup body text and options
-  Page_addComponentText(this, sPopupTextComponent, sPopupComponent, 0, -2, sColorBGKey, "", sBodyText);
-  Page_addComponentContainer(this, sPopupOptionsComponent, sPopupComponent, 0, 2);
+  Page_addComponentText(this, sPopupTextComponent, sPopupComponent, 0, -3, sColorBGKey, "", sBodyText);
+  Page_addComponentContainer(this, sPopupOptionsComponent, sPopupComponent, 0, 3);
   Page_addComponentText(this, sPopupOption1Component, sPopupOptionsComponent, -2, 0, sColorFGKey, sColorBGKey, sOption1);
   Page_addComponentText(this, sPopupOption2Component, sPopupOptionsComponent, 2, 0, sColorBGKey, sColorFGKey, sOption2);
 
