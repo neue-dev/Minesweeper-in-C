@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-29 02:18:27
+ * @ Modified time: 2024-03-30 03:05:51
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -576,6 +576,9 @@ int ComponentManager_add(ComponentManager *this, char *sKey, char *sParentKey, i
 void ComponentManager_setPos(ComponentManager *this, char *sKey, int x, int y) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
 
+  if(pComponent == NULL)
+    return;
+
   if(x != COMPONENT_NO_CHANGE)
     pComponent->x = x;
 
@@ -594,6 +597,9 @@ void ComponentManager_setPos(ComponentManager *this, char *sKey, int x, int y) {
 void ComponentManager_setSize(ComponentManager *this, char *sKey, int w, int h) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
 
+  if(pComponent == NULL)
+    return;
+
   if(w != COMPONENT_NO_CHANGE)
     pComponent->w = w;
 
@@ -611,6 +617,9 @@ void ComponentManager_setSize(ComponentManager *this, char *sKey, int w, int h) 
 void ComponentManager_setZIndex(ComponentManager *this, char *sKey, int zIndex) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
 
+  if(pComponent == NULL)
+    return;
+
   pComponent->zIndex = zIndex;
 }
 
@@ -625,6 +634,9 @@ void ComponentManager_setZIndex(ComponentManager *this, char *sKey, int zIndex) 
 void ComponentManager_setHidden(ComponentManager *this, char *sKey, int bIsHidden) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
 
+  if(pComponent == NULL)
+    return;
+
   pComponent->bIsHidden = bIsHidden;
 }
 
@@ -638,6 +650,9 @@ void ComponentManager_setHidden(ComponentManager *this, char *sKey, int bIsHidde
 */
 void ComponentManager_setColor(ComponentManager *this, char *sKey, color colorFG, color colorBG) {
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  if(pComponent == NULL)
+    return;
 
   if(colorFG != COMPONENT_NO_CHANGE)
     pComponent->colorFG = colorFG;
@@ -663,6 +678,17 @@ void ComponentManager_setAsset(ComponentManager *this, char *sKey, int dAssetHei
   // Store the new asset and its height
   pComponent->aAsset = aAsset;
   pComponent->dAssetHeight = dAssetHeight;
+}
+
+/**
+ * Checks if a component exists within the manager.
+ * 
+ * @param		{ ComponentManager * }		this          The component manager.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @return  { int }                                 Whether or not the component exists.
+*/
+int ComponentManager_exists(ComponentManager *this, char *sKey) {
+  return HashMap_get(this->pComponentMap, sKey) != NULL;
 }
 
 /**

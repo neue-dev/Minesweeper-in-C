@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 02:45:18
+ * @ Modified time: 2024-03-30 02:57:42
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -124,7 +124,8 @@ void Game_init(Game *this) {
         
       // Sets up the field's width and height and populate with mines
       Field_init(&this->field, GAME_EASY_COLUMNS, GAME_EASY_ROWS);
-      Field_populateRandom(&this->field, GAME_EASY_MINES);
+      Field_populateRandom(&this->field, GAME_EASY_MINES * 0 + 2);
+      //! remove * 0 + 2 above
     
     // For difficult mode
     } else {
@@ -516,6 +517,16 @@ int Game_hasWon(Game *this) {
 
   // All checks were passed
   return 1;
+}
+
+/**
+ * Checks just the enum.
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { int }           Whether or not the game was won.
+*/
+int Game_isWon(Game *this) {
+  return this->eOutcome == GAME_OUTCOME_WIN;
 }
 
 /**

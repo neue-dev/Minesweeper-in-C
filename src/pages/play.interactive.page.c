@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 02:44:10
+ * @ Modified time: 2024-03-30 03:06:20
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -202,6 +202,37 @@ void PageHandler_playI(p_obj pArgs_Page) {
           break;
 
           default:
+
+            // The user won
+            if(Game_isWon(pGame)) {
+              
+              // Turn the grid yellow
+              for(x = 0; x < pGame->field.dWidth; x++) {
+                for(y = 0; y < pGame->field.dHeight; y++) {
+
+                  // Check if it's been inspected
+                  if(Grid_getBit(pGame->field.pInspectGrid, x, y)) {
+
+                    // Unique key for each component
+                    sprintf(sInspectKey, "inspector-%d-%d", x, y);
+                    Page_setComponentColor(this, sInspectKey, "accent", "");
+                  }
+                  
+                  // The key
+                  sprintf(sFlagKey, "flag-%d-%d", x, y);
+                  
+                  // If there's a flag on it
+                  if(Grid_getBit(pGame->field.pFlagGrid, x, y))
+                    Page_setComponentText(this, sFlagKey, "▐▀ ");
+                  
+                  // Remove flag if it exists
+                  else
+                    Page_setComponentText(this, sFlagKey, "");
+                }
+              }
+
+              return;
+            }
 
             // The game ended
             if(Game_isDone(pGame)) {
