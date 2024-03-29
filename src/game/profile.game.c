@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 19:32:48
+ * @ Modified time: 2024-03-29 20:35:15
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -72,6 +72,8 @@ void Profile_init(Profile *this) {
  * @param		{ char * }			sPassword		The password provided.
  * @return	{ int }											Whether or not the operation wass successful.
 */
+//! REMOVE
+#include "../utils/utils.debug.h"
 int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 	int i, j;
 	File *pProfilesFile;
@@ -96,19 +98,20 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 
 	// The profile exists
 	for(i = 0; i < nProfileCount; i++) {
-		j = 0; 
 		sprintf(sProfileUsername, "");
+		sprintf(sProfilePassword, "");
 		
 		// Copy the name first without the newline
+		j = 0; 
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
-			sProfileUsername[strlen(sProfileUsername) - 1] = sProfilesArray[i][j]; j++;
-		}	
-		sProfileUsername[j] = 0; j++;
+			sprintf(sProfileUsername, "%s%c", sProfileUsername, sProfilesArray[i][j]); j++;
+		}
 		
 		// Copy the password
+		j++;
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
-			sProfilePassword[strlen(sProfilePassword) - 1] = sProfilesArray[i][j]; j++;
-		}	
+			sprintf(sProfilePassword, "%s%c", sProfilePassword, sProfilesArray[i][j]); j++;
+		}
 
 		// Compare the name
 		if(!strcmp(sProfileUsername, sUsername)) {
@@ -198,7 +201,7 @@ int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 
 		// Copy the name first without the newline
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
-			sProfileEntry[strlen(sProfileEntry) - 1] = sProfilesArray[i][j]; j++;
+			sProfileEntry[strlen(sProfileEntry)] = sProfilesArray[i][j]; j++;
 		}	
 		sProfileEntry[j] = 0;
 

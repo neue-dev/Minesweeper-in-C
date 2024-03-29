@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 19:30:05
+ * @ Modified time: 2024-03-29 20:26:35
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -132,10 +132,16 @@ void PageHandler_login(p_obj pArgs_Page) {
               
             // If successful
             } else {
-              Profile_create(pProfile, sUsernameField, sPasswordField);
-
-              Page_idle(this);
-              Page_setNext(this, "menu");
+              
+              // Login was successful
+              if(Profile_login(pProfile, sUsernameField, sPasswordField)) {
+                Page_idle(this);
+                Page_setNext(this, "menu");
+              
+              // Login was NOT successful
+              } else {
+                Page_setComponentText(this, sErrorPromptComponent, "Error: bad login attempt.");                
+              }
             }
 
           break;
