@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-28 22:12:41
+ * @ Modified time: 2024-03-29 13:45:09
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -87,11 +87,30 @@ void Stats_updateFile(Profile *pProfile) {
 }
 
 /**
- * Updates the data for the three most recent games.
- * Operates when a new game has recently ended.
+ * Saves the data of a game that had recently ended.
+ * 
+ * @param   { Game * }      pGame       The game object.
 */
-void Stats_addGame() {
-    // TODO: add functionalities
+void Stats_saveGame(Game *pGame) {
+    int i, j;
+    
+    // Opens the game's text file
+    FILE *pGame = fopen(GAME_FILE_PATH, "a");
+
+    // Prints out the game data
+    fprintf("%d %d %d %d %d\n", pGame->eType, pGame->eDifficulty, pGame->eOutcome,
+                                pGame->gameField.dWidth, pGame->gameField.dHeight);
+
+    // Prints out the game's field
+    for(i = 0; i < pGame->gameField.dHeight; i++) {
+        for(j = 0; j < pGame->gameField.dWidth; j++) {
+            
+            
+
+        }
+    }
+
+    fclose(pGame);
 }
 
 #endif
