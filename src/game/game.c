@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 00:30:31
+ * @ Modified time: 2024-03-30 02:45:18
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -333,6 +333,10 @@ void Game_inspect(Game *this, int x, int y) {
       }
     }
   }
+
+  // The user has cleared the board
+  if(Game_hasWon(this))
+    this->eOutcome = GAME_OUTCOME_WIN;
 }
 
 /**
@@ -478,6 +482,53 @@ int Game_getCharHeight(Game *this) {
 }
 
 /**
+ * Checks whether or not the game has been finished. 
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { int }           Whether or not the player has finished the game.
+*/
+int Game_hasWon(Game *this) {
+  int x, y;
+
+  // Check if all non-mine cells have been inspected
+  for(x = 0; x < this->field.dWidth; x++) {
+    for(y = 0; y < this->field.dHeight; y++) {
+      
+      // If it hasn't been inspected, and it doesn't have a mine
+      if(!Grid_getBit(this->field.pInspectGrid, x, y) &&
+        !Grid_getBit(this->field.pMineGrid, x, y)) {
+        
+        // User hasn't won
+        return 0;
+      }
+    } 
+  }
+
+  // The user has already won, so place flags on all mines
+  for(x = 0; x < this->field.dWidth; x++) {
+    for(y = 0; y < this->field.dHeight; y++) {
+      
+      // Place a flag if it has a mine
+      if(Grid_getBit(this->field.pMineGrid, x, y))
+        Grid_setBit(this->field.pFlagGrid, x, y, 1);
+    } 
+  }
+
+  // All checks were passed
+  return 1;
+}
+
+/**
+ * Returns whether or not the game has ended.
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { int }           Whether or not the game has ended.
+*/
+int Game_isDone(Game *this) {
+  return this->eOutcome != GAME_OUTCOME_PENDING;
+}
+
+/**
  * Returns the time elapsed since the game started.
  * 
  * @param   { Game * }   this   The game object to read.
@@ -487,8 +538,9 @@ char *Game_getTime(Game *this) {
   char *sTimeString = String_alloc(16);
   int dSeconds;
 
-  // Update the timer
-  time(&this->endTime);
+  // Update the timer ONLY if not done
+  if(!Game_isDone(this))
+    time(&this->endTime);
 
   // Get the difference between the times
   dSeconds = round(difftime(this->endTime, this->startTime)) - this->dPauseOffset;
@@ -547,16 +599,6 @@ char *Game_getFPS(Game *this) {
   sprintf(sFPSString, "%d fps", this->dLastFPS);
   
   return sFPSString;
-}
-
-/**
- * Returns whether or not the game has ended.
- * 
- * @param   { Game * }  this  The game object.
- * @return  { int }           Whether or not the game has ended.
-*/
-int Game_isDone(Game *this) {
-  return this->eOutcome != GAME_OUTCOME_PENDING;
 }
 
 /**
