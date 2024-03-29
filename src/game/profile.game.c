@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 19:11:55
+ * @ Modified time: 2024-03-29 19:32:48
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -25,15 +25,14 @@
 #define PROFILE_FOLDER_PATH_LENGTH strlen(PROFILE_FOLDER_PATH)
 
 // +4 includes ".txt"
-#define PROFILE_FILE_PATH_MAX_LENGTH (PROFILE_FOLDER_PATH_LENGTH + PROFILE_NAME_MAX_LENGTH + 4)
+#define PROFILE_FILE_PATH_MAX_LENGTH (PROFILE_FOLDER_PATH_LENGTH + PROFILE_USERNAME_MAX_LENGTH + 4)
 #define PROFILE_FILE_PATH_MAX_SIZE sizeof(char)*(PROFILE_FILE_PATH_MAX_LENGTH + 1)
 
 #define PROFILES_MAX_NUM 10
-#define PROFILE_NAME_MAX_LENGTH 20
-#define PROFILE_NAME_MIN_LENGTH 3
-
-#define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 1) 
-#define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 1)
+#define PROFILE_PASSWORD_MAX_LENGTH 32
+#define PROFILE_USERNAME_MAX_LENGTH 20
+#define PROFILE_PASSWORD_MIN_LENGTH 3
+#define PROFILE_USERNAME_MIN_LENGTH 3
 
 typedef enum ProfileError ProfileError;
 typedef struct Profile Profile;
@@ -41,16 +40,18 @@ typedef struct Profile Profile;
 enum ProfileError {
 	PROFILE_ERROR_NONE,
 	PROFILE_ERROR_NO_FILE,
+	PROFILE_ERROR_NOT_FOUND,
 	PROFILE_ERROR_ALREADY_EXISTS,
 	PROFILE_ERROR_INVALID_LENGTH,
-	PROFILE_ERROR_INVALID_CHARS
+	PROFILE_ERROR_INVALID_CHARS,
+	PROFILE_ERROR_INVALID_LOGIN,
 };
 
 /**
  * We pass this object to the engine.
 */
 struct Profile {
-  char sCurrentProfile[PROFILE_NAME_MAX_LENGTH + 1];
+  char sCurrentProfile[PROFILE_USERNAME_MAX_LENGTH + 1];
 	ProfileError eError;
 };
 
@@ -63,39 +64,117 @@ void Profile_init(Profile *this) {
 }
 
 /**
+ * Attempts to log into a profile given the credentials.
+ * This is some weak ass password storing (plain text bruh).
+ * 
+ * @param		{ Profile * }		this				The profile object.
+ * @param		{ char * }			sUsername		The username provided.
+ * @param		{ char * }			sPassword		The password provided.
+ * @return	{ int }											Whether or not the operation wass successful.
+*/
+int Profile_login(Profile *this, char *sUsername, char *sPassword) {
+	int i, j;
+	File *pProfilesFile;
+
+	// Store the profiles read from the file
+	int nProfileCount = 0;
+	char sProfileUsername[PROFILE_USERNAME_MAX_LENGTH + 1];
+	char sProfilePassword[PROFILE_PASSWORD_MAX_LENGTH + 1];
+	char *sProfilesArray[PROFILES_MAX_NUM];
+
+	// No data to cross check login
+	if(!File_exists(PROFILES_FILE_PATH)) {
+		this->eError = PROFILE_ERROR_NO_FILE;
+		return 0;
+	}
+
+	// Open the file
+	pProfilesFile = File_create(PROFILES_FILE_PATH);
+
+	// Read the text onto the output buffer
+	File_readText(pProfilesFile, PROFILES_MAX_NUM, &nProfileCount, sProfilesArray);
+
+	// The profile exists
+	for(i = 0; i < nProfileCount; i++) {
+		j = 0; 
+		sprintf(sProfileUsername, "");
+		
+		// Copy the name first without the newline
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
+			sProfileUsername[strlen(sProfileUsername) - 1] = sProfilesArray[i][j]; j++;
+		}	
+		sProfileUsername[j] = 0; j++;
+		
+		// Copy the password
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
+			sProfilePassword[strlen(sProfilePassword) - 1] = sProfilesArray[i][j]; j++;
+		}	
+
+		// Compare the name
+		if(!strcmp(sProfileUsername, sUsername)) {
+			
+			// Correct login
+			if(!strcmp(sProfilePassword, sPassword)) {
+				i = nProfileCount + 1;
+
+			// Invalid login
+			} else {
+				this->eError = PROFILE_ERROR_INVALID_LOGIN;
+				return 0;
+			}
+		}
+	}
+
+	// Profile waasn't found
+	if(i == nProfileCount) {
+		this->eError = PROFILE_ERROR_NOT_FOUND;
+		return 0;
+	}
+	
+	// Garbage collection
+	File_kill(pProfilesFile);
+	
+	// Successful
+	return 1;
+}
+
+/**
  * Sets the active profile to the one indicated.
  * 
  * @param		{ Profile * }		this		The profile object to modify.
  * @param   { char * }  		sName   Name of the to-be-created profile.
  * @return	{ int }									Returns whether or not the operation was successful.
 */
-int Profile_create(Profile *this, char *sName) {
+int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 	int i, j;
 	File *pProfilesFile;
 	
 	int nProfileCount = 0;
-	char sProfileName[PROFILE_NAME_MAX_LENGTH + 2];		// Plus 2 because we need a period and a nullbyte
+	char sProfileEntry[PROFILE_USERNAME_MAX_LENGTH + 1];
 	char *sNewProfile[1];
 	char *sProfilesArray[PROFILES_MAX_NUM];
 
 	// Name was of invalid size
-	if(strlen(sName) < PROFILE_NAME_MIN_SIZE || strlen(sName) > PROFILE_NAME_MAX_LENGTH) {
+	if(strlen(sUsername) < PROFILE_USERNAME_MIN_LENGTH || strlen(sUsername) > PROFILE_USERNAME_MAX_LENGTH) {
 		this->eError = PROFILE_ERROR_INVALID_LENGTH;
 		return 0;
 	}
 
+	// Password was too long
+	if(strlen(sPassword) < PROFILE_PASSWORD_MIN_LENGTH || strlen(sPassword) > PROFILE_PASSWORD_MAX_LENGTH)
+
 	// Checks if the name's characters are only capital letters
 	i = 0;
 	do {
-		if(sName[i] < 'A' || sName[i] > 'Z') {
+		if(sUsername[i] < 'A' || sUsername[i] > 'Z') {
 			this->eError = PROFILE_ERROR_INVALID_CHARS;
 			return 0;
 		}
-	} while(sName[++i]);
+	} while(sUsername[++i]);
 
 	// Set the current profile to the given name
-	sNewProfile[0] = String_alloc(strlen(sName) + 1);
-	strcpy(sNewProfile[0], sName);
+	sNewProfile[0] = String_alloc(strlen(sUsername) + strlen(sPassword) + 3);
+	strcpy(sNewProfile[0], sUsername);
 
 	// Creates the text file with the list of profiles
 	// Returns 0 if unsuccessful
@@ -114,17 +193,17 @@ int Profile_create(Profile *this, char *sName) {
 
 	// The profile already exists
 	for(i = 0; i < nProfileCount; i++) {
-		j = 0; 
-		sprintf(sProfileName, "");
-		
+		j = 0;
+		strcpy(sProfileEntry, "");
+
 		// Copy the name first without the newline
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
-			sProfileName[j] = sProfilesArray[i][j]; j++;
+			sProfileEntry[strlen(sProfileEntry) - 1] = sProfilesArray[i][j]; j++;
 		}	
-		sProfileName[j] = 0;
+		sProfileEntry[j] = 0;
 
 		// Compare the name
-		if(!strcmp(sProfileName, sName)) {
+		if(!strcmp(sProfileEntry, sUsername)) {
 			File_kill(pProfilesFile);
 
 			this->eError = PROFILE_ERROR_ALREADY_EXISTS;
@@ -133,6 +212,8 @@ int Profile_create(Profile *this, char *sName) {
 	}
 
 	// Otherwise, append the profile to the file
+	strcat(sNewProfile[0], ";");
+	strcat(sNewProfile[0], sPassword);
 	strcat(sNewProfile[0], ";");
 	File_writeText(pProfilesFile, 1, sNewProfile);
 
@@ -153,7 +234,7 @@ void Profile_select(char *sKey) {
     int i;
     int nProfiles;
     int bProfileFound = 0;
-    char *sCurrentProfile = String_alloc(PROFILE_NAME_MAX_LENGTH);
+    char *sCurrentProfile = String_alloc(PROFILE_USERNAME_MAX_LENGTH);
 
     // Opens the text file with the list of profiles
     FILE *pProfiles = fopen(PROFILES_FILE_PATH, "r");
@@ -162,7 +243,7 @@ void Profile_select(char *sKey) {
         return; // TODO: error-handling
 
     // An array of the profile names
-    char aProfiles[PROFILES_MAX_NUM][PROFILE_NAME_MAX_LENGTH + 1] = {{}};
+    char aProfiles[PROFILES_MAX_NUM][PROFILE_USERNAME_MAX_LENGTH + 1] = {{}};
 
     // Gets the previously-selected profile name
     fscanf(pProfiles, "%s ", sCurrentProfile);
@@ -224,7 +305,7 @@ void Profile_delete(char *sName) {
     int i;
     int nProfiles;
     int dProfileIndex = -1;
-    char *sCurrentProfile = String_alloc(PROFILE_NAME_MAX_LENGTH);
+    char *sCurrentProfile = String_alloc(PROFILE_USERNAME_MAX_LENGTH);
 
     // Opens the text file with the list of profiles
     FILE *pProfiles = fopen(PROFILES_FILE_PATH, "r");
@@ -233,7 +314,7 @@ void Profile_delete(char *sName) {
         return; // TODO: error-handling
 
     // An array of the profiles
-    char aProfiles[PROFILES_MAX_NUM][PROFILE_NAME_MAX_LENGTH + 2] = {{}};
+    char aProfiles[PROFILES_MAX_NUM][PROFILE_USERNAME_MAX_LENGTH + 2] = {{}};
 
     // Gets the number of profiles that exist
     fscanf(pProfiles, "%d ", &nProfiles);

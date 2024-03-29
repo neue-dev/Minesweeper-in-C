@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 18:27:27
+ * @ Modified time: 2024-03-29 19:30:05
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -132,7 +132,7 @@ void PageHandler_login(p_obj pArgs_Page) {
               
             // If successful
             } else {
-              Profile_create(pProfile, sUsernameField);
+              Profile_create(pProfile, sUsernameField, sPasswordField);
 
               Page_idle(this);
               Page_setNext(this, "menu");

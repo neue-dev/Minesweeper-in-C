@@ -37,7 +37,7 @@ void Stats_saveGame(Game *pGame) {
     int i, j;
     int nClassicEasy, nClassicDifficult, nCustom;   // game wins
     int dFieldSize; // number of characters in a game's field
-    char *sCurrentProfile = String_alloc(PROFILE_NAME_MAX_LENGTH);
+    char *sCurrentProfile = String_alloc(PROFILE_USERNAME_MAX_LENGTH);
     char *sProfileFilePath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);
 
     // Stores the game data of the last two recent games
