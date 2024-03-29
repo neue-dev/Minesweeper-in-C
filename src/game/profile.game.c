@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 21:54:46
+ * @ Modified time: 2024-03-29 22:05:47
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -396,6 +396,16 @@ char *Profile_getErrorMessage(Profile *this) {
 */
 ProfileError Profile_getErrorId(Profile *this) {
 	return this->eError;
+}
+
+/**
+ * Sets the error stored by the profile object.
+ * 
+ * @param		{ Profile * }			this		The profile object.
+ * @return	{ ProfileError }	eError	What error to set.	
+*/
+void Profile_setErrorId(Profile *this, ProfileError eError) {
+	this->eError = eError;
 }
 
 #endif

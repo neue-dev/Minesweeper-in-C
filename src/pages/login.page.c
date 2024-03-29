@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 21:56:08
+ * @ Modified time: 2024-03-29 22:13:10
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -106,18 +106,36 @@ void PageHandler_login(p_obj pArgs_Page) {
         } else if(cKeyPressed == '\n' || cKeyPressed == '\r') {
           Page_disableComponentPopup(this, sPopupComponent);
 
-          // Creating a new account
-          if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND) {
+          // Yes was selected
+          if(Page_readComponentPopup(this, sPopupComponent) == 0) {
+            
+            // Creating a new account
+            if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND) {
 
-            // Check if success
-            if(Profile_register(pProfile, sUsernameField, sPasswordField)) {
-              EventStore_clearString(this->pSharedEventStore, "username-input");
-              EventStore_clearString(this->pSharedEventStore, "password-input");
-              Page_setComponentText(this, sErrorPromptComponent, "Success: profile created.");
+              // Check if success
+              if(Profile_register(pProfile, sUsernameField, sPasswordField)) {
+                EventStore_clearString(this->pSharedEventStore, "username-input");
+                EventStore_clearString(this->pSharedEventStore, "password-input");
+                Page_setComponentText(this, sErrorPromptComponent, "Success: profile created.");
 
-            // Otherwise, display new error
+              // Otherwise, display new error
+              } else {
+                Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+              }
+            
+            // Deleting an account
             } else {
-              Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+              
+              // If successful
+              if(Profile_delete(pProfile, sUsernameField)) {
+                EventStore_clearString(this->pSharedEventStore, "username-input");
+                EventStore_clearString(this->pSharedEventStore, "password-input");
+                Page_setComponentText(this, sErrorPromptComponent, "Success: profile deleted.");
+
+              // Not successful
+              } else {
+                Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+              }
             }
           }
         }
@@ -155,17 +173,12 @@ void PageHandler_login(p_obj pArgs_Page) {
                 
                 // Deleting account tho
                 if(cKeyPressed == 27) {
+                  Page_enableComponentPopup(this, sPopupComponent);
+                  Page_setComponentPopupText(this, sPopupComponent, "Are.you.sure.you.want.to.delete.the.profile?\nThis.action.cannot.be.undone.");
+                  Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
                   
-                  // If successful
-                  if(Profile_delete(pProfile, sUsernameField)) {
-                    EventStore_clearString(this->pSharedEventStore, "username-input");
-                    EventStore_clearString(this->pSharedEventStore, "password-input");
-                    Page_setComponentText(this, sErrorPromptComponent, "Success: profile deleted.");
-
-                  // Not successful
-                  } else {
-                    Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
-                  }
+                  // Clear error
+                  Profile_setErrorId(pProfile, PROFILE_ERROR_NONE);
 
                 // Logging in
                 } else {
@@ -178,7 +191,7 @@ void PageHandler_login(p_obj pArgs_Page) {
                 Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
 
                 // Create a new account perhaps?
-                if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND) {
+                if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND && cKeyPressed != 27) {
                   Page_enableComponentPopup(this, sPopupComponent);
                   Page_setComponentPopupText(this, sPopupComponent, "This.account.does.not.yet.exist.\nWould.you.like.to.register.it?");
                   Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");

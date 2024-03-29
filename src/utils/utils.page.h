@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-29 17:29:34
+ * @ Modified time: 2024-03-29 22:11:15
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -421,8 +421,8 @@ void Page_addComponentPopup(Page *this, char *sKey, int x, int y, int w, int h, 
   ComponentManager_setHidden(&this->componentManager, sPopupComponent, 1);
 
   // Create the states of the component
-  Page_setUserState(this, sPopupButtonCurrentKey, 0);
-  Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);
+  if(Page_getUserState(this, sPopupButtonCurrentKey) == -1) Page_setUserState(this, sPopupButtonCurrentKey, 0);
+  if(Page_getUserState(this, sPopupButtonCountKey) == -1) Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);
   Page_setUserState(this, "is-popup", 0);
 }
 
@@ -555,8 +555,8 @@ void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char 
   else Page_setComponentPos(this, sPopupOption1Component, -2, 0);
 
   // Create the states of the component
-  Page_setUserState(this, sPopupButtonCurrentKey, 0);
   Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);
+  if(!strlen(sOption2)) Page_setUserState(this, sPopupButtonCurrentKey, 0);
 }
 
 /**
