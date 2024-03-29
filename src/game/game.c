@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 14:21:57
+ * @ Modified time: 2024-03-29 14:27:01
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -11,7 +11,8 @@
 #define GAME_
 
 #include "./field.obj.h"
-#include "./stats.game.c"
+// #include "./profile.game.c"
+// #include "./stats.game.c"
 
 #include "../utils/utils.grid.h"
 #include "../utils/utils.types.h"
@@ -148,7 +149,7 @@ void Game_init(Game *this) {
 */
 void Game_end(Game *this, GameOutcome eOutcome) {
   // Saves the game data
-  Stats_saveGame(this);
+  // Stats_saveGame(this);
 
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
