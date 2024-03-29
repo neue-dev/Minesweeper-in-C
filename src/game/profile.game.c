@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 17:56:33
+ * @ Modified time: 2024-03-29 18:33:21
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -12,176 +12,130 @@
 
 #include "game.c"
 
+#include "../utils/utils.file.h"
 #include "../utils/utils.string.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#define PROFILES_MAX_NUM 10
 
-#define PROFILES_FILE_PATH "../data/profiles.data.txt"
-#define GAME_FILE_PATH  "../data/game.data.txt"
-#define PROFILE_FOLDER_PATH "../data/profiles/"
+#define PROFILES_FILE_PATH "./src/data/profiles.data.txt"
+#define GAME_FILE_PATH  "./src/data/game.data.txt"
+#define PROFILE_FOLDER_PATH "./src/data/profiles/"
 #define PROFILE_FOLDER_PATH_LENGTH strlen(PROFILE_FOLDER_PATH)
 
 // +4 includes ".txt"
 #define PROFILE_FILE_PATH_MAX_LENGTH (PROFILE_FOLDER_PATH_LENGTH + PROFILE_NAME_MAX_LENGTH + 4)
 #define PROFILE_FILE_PATH_MAX_SIZE sizeof(char)*(PROFILE_FILE_PATH_MAX_LENGTH + 1)
 
+#define PROFILES_MAX_NUM 10
 #define PROFILE_NAME_MAX_LENGTH 20
 #define PROFILE_NAME_MIN_LENGTH 3
 
 #define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 1) 
 #define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 1)
 
+typedef enum ProfileError ProfileError;
 typedef struct Profile Profile;
+
+enum ProfileError {
+	PROFILE_ERROR_NONE,
+	PROFILE_ERROR_NO_FILE,
+	PROFILE_ERROR_ALREADY_EXISTS,
+	PROFILE_ERROR_INVALID_LENGTH,
+	PROFILE_ERROR_INVALID_CHARS
+};
 
 /**
  * We pass this object to the engine.
 */
 struct Profile {
-    char *sCurrentProfile;
+  char sCurrentProfile[PROFILE_NAME_MAX_LENGTH + 1];
+	ProfileError eError;
 };
 
 /**
- * Creates a new profile.
- * 
- * @param   { char * }  sName   Name of the to-be-created profile.
+ * Initializes the profile object.
 */
-void Profile_create(char *sName) {
-    int i;
-    int nProfiles = 0;
-    int bNameAdded = 0;
-    char *sCurrentProfile = String_alloc(PROFILE_NAME_MAX_LENGTH);
+void Profile_init(Profile *this) {
+  strcpy(this->sCurrentProfile, "");
+	this->eError = PROFILE_ERROR_NONE;
+}
 
-    // Opens the text file with the list of profiles
-    FILE *pProfiles = fopen(PROFILES_FILE_PATH, "r");
+/**
+ * Sets the active profile to the one indicated.
+ * 
+ * @param		{ Profile * }		this		The profile object to modify.
+ * @param   { char * }  		sName   Name of the to-be-created profile.
+ * @return	{ int }									Returns whether or not the operation was successful.
+*/
+//! remove
+#include "../utils/utils.debug.h"
+int Profile_create(Profile *this, char *sName) {
+	int i;
+	File *pProfilesFile;
+	
+	int nProfileCount = 0;
+	char *sCurrentProfile[1];
+	char *sProfilesArray[PROFILES_MAX_NUM];
 
-    if(pProfiles == NULL)
-        return; // TODO: error-handling
+	// Name was of invalid size
+	if(strlen(sName) < PROFILE_NAME_MIN_SIZE || strlen(sName) > PROFILE_NAME_MAX_LENGTH) {
+		this->eError = PROFILE_ERROR_INVALID_LENGTH;
+		return 0;
+	}
 
-    // An array of the profile names
-    char aProfiles[PROFILES_MAX_NUM][PROFILE_NAME_MAX_LENGTH + 2] = {{}};
+	// Checks if the name's characters are only capital letters
+	i = 0;
+	do {
+		if(sName[i] < 'A' || sName[i] > 'Z') {
+			this->eError = PROFILE_ERROR_INVALID_CHARS;
+			return 0;
+		}
+	} while(sName[++i]);
 
-    // Checks if the name has the right number of characters (3 to 20)
-    if(strlen(sName) < 3 || strlen(sName) > 20) {
-        fclose(pProfiles);
+	// Set the current profile to the given name
+	sCurrentProfile[0] = String_create(sName);
 
-        // Deallocates the memory of the currently-selected profile name
-        String_kill(sCurrentProfile);
-        
-        // ! todo
-        // Profile_invalidName();
-        return; // Exits the function
-    }
+	Debug_logStr("Hello worlddds");
 
-    // Gets the name of the currently-selected profile
-    fscanf(pProfiles, "%s ", sCurrentProfile);
+	// Creates the text file with the list of profiles
+	// Returns 0 if unsuccessful
+	if(!File_exists(PROFILES_FILE_PATH)) {
+		if(!File_newFile(PROFILES_FILE_PATH)) {
+			this->eError = PROFILE_ERROR_NO_FILE;
+			return 0;
+		}
+	}
 
-    // Gets the number of profiles that exist
-    fscanf(pProfiles, "%d ", &nProfiles);
+	// Open the file
+	pProfilesFile = File_create(PROFILES_FILE_PATH);
 
-    // Checks if the number of profiles exceed the max
-    if(nProfiles == PROFILES_MAX_NUM) {
-        fclose(pProfiles);
+	// Read the text onto the output buffer
+	File_readText(pProfilesFile, PROFILES_MAX_NUM, &nProfileCount, sProfilesArray);
 
-        // Deallocates the memory of the currently-selected profile name
-        String_kill(sCurrentProfile);
-        
-        // ! todo
-        // Profile_maxNumReached();
-        return; // Exits the function
-    }
+	// The profile already exists
+	for(i = 0; i < nProfileCount; i++) {
+		if(!strcmp(sProfilesArray[i], sName)) {
+			File_kill(pProfilesFile);
 
-    // Checks if the name's characters are only capital letters
-    i = 0;
-    while(*(sName + i) != '\0') {
-        if(*(sName + i) < 'A' || *(sName + i) > 'Z') {
-            fclose(pProfiles);
+			//! remove
+			Debug_logStr(sProfilesArray[i]);
 
-            // Deallocates the memory of the currently-selected profile name
-            String_kill(sCurrentProfile);
+			this->eError = PROFILE_ERROR_ALREADY_EXISTS;
+			return 0;
+		}
+	}
 
-            // ! todo
-            // Profile_invalidName();
-            return; // Exits the function
-        }
-        i++;
-    }
+	// Otherwise, append the profile to the file
+	File_writeText(pProfilesFile, 1, sCurrentProfile);
 
-    // Adds the name to the array if no profiles exist yet
-    if(nProfiles == 0)
-        strcpy(aProfiles[0], sName);
-    
-    i = 0;
-    while(!feof(pProfiles) && nProfiles) {
+	// Garbage collection
+	File_kill(pProfilesFile);
+	String_kill(sCurrentProfile[0]);
 
-        // Stores the list of profiles to an array
-        fscanf(pProfiles, "%s ", aProfiles[i]);
-
-        // Checks if the name of the to-be-created profile already exists
-        if(!bNameAdded && strcmp(sName, aProfiles[i]) == 0) {
-            fclose(pProfiles);
-
-            // Deallocates the memory of the currently-selected profile name
-            String_kill(sCurrentProfile);
-
-            // ! todo
-            // Profile_exists();
-            return; // Exits the function
-        }
-
-        // Adds the name to the array if it has not yet been added and
-        // the end of profile list has been reached
-        if(!bNameAdded && (i == nProfiles - 1 || nProfiles == 0)) {
-            strcpy(aProfiles[i+1], sName);
-            bNameAdded = 1;
-        }
-
-        // Adds the name to the array if it has not yet been added and
-        // its ASCII value is lesser than the currently added profile name
-        // Ensures that the name is added in accordance with the alphabetical order
-        if(!bNameAdded && strcmp(sName, aProfiles[i]) < 0) {
-
-            // Moves the currently added profile name to the next address of the array
-            strcpy(aProfiles[i+1], aProfiles[i]);
-
-            // Adds the name to the current array address
-            strcpy(aProfiles[i], sName);
-
-            // Increments i since we've already dealt with the next array address
-            i++;
-
-            bNameAdded = 1;
-        }
-        
-        i++;
-    }
-
-    fclose(pProfiles);
-
-    // We will now write the new data to the text file of profiles
-    pProfiles = fopen(PROFILES_FILE_PATH, "w");
-
-    if(pProfiles == NULL)
-        return; // TODO: error-handling
-
-    // Prints out the currently-selected profile
-    fprintf(pProfiles, "%s\n", sCurrentProfile);
-
-    // Updates the number of profiles that exist
-    nProfiles++;
-    fprintf(pProfiles, "%d\n", nProfiles);
-
-    // Prints each of the names in the array to the file
-    for(i = 0; i < nProfiles; i++) {
-        fprintf(pProfiles, "%s\n", aProfiles[i]);
-    }
-
-    // Deallocates the memory of the currently-selected profile name
-    String_kill(sCurrentProfile);
-
-    fclose(pProfiles);
+	// Successful
+	return 1;
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-29 17:50:40
+ * @ Modified time: 2024-03-29 18:26:55
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -15,6 +15,7 @@
 
 // Game-related constructs
 #include "./game/game.c"
+#include "./game/profile.game.c"
 
 // Our utils
 #include "./utils/utils.page.h"
@@ -84,6 +85,9 @@ struct Engine {
   // The actual game object
   Game standardGame;                  // Holds the state of a standard game
   Game editorGame;                    // The level editor
+
+  // The actual profile object
+  Profile profile;                    // Info about the current active profile
 
   int bState;                         // The state of the engine
 
@@ -165,6 +169,10 @@ void Engine_init(Engine *this) {
   PageManager_givePage(&this->pageManager, "play-i", &this->standardGame);
   PageManager_givePage(&this->pageManager, "editor", &this->editorGame);
   PageManager_givePage(&this->pageManager, "editor-i", &this->editorGame);
+
+  // Give the account and login pages the profile object
+  PageManager_givePage(&this->pageManager, "login", &this->profile);
+  PageManager_givePage(&this->pageManager, "account", &this->profile);
 
   /**
    * Creates event listeners and handlers, alongside their mutexes

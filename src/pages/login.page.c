@@ -1,14 +1,16 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 17:10:51
+ * @ Modified time: 2024-03-29 18:27:27
  * @ Description:
  * 
  * This file defines the page handler for the login.
  */
 
-#ifndef PAGE_INTRO_
-#define PAGE_INTRO_
+#ifndef PAGE_LOGIN_
+#define PAGE_LOGIN_
+
+#include "../game/profile.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -22,6 +24,7 @@
 void PageHandler_login(p_obj pArgs_Page) {
   
   Page *this = (Page *) pArgs_Page;
+  Profile *pProfile = (Profile *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
 
   // Header details
@@ -129,6 +132,8 @@ void PageHandler_login(p_obj pArgs_Page) {
               
             // If successful
             } else {
+              Profile_create(pProfile, sUsernameField);
+
               Page_idle(this);
               Page_setNext(this, "menu");
             }
