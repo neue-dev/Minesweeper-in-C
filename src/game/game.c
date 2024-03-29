@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 16:23:19
+ * @ Modified time: 2024-03-29 16:35:29
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -193,7 +193,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
         // The number to be shown
         dNumber = this->field.aNumbers[y][x];
         dNumber = dNumber < 0 ? 'X' : dNumber + 48;   // X for mines //! remove later on
-        dNumber = dNumber == 48 ? 32 : dNumber;       // Add a space for 0's
+        dNumber = dNumber == 48 ? '.' : dNumber;      // Add a dot for 0's
 
         // If the cell hasn't been inspected, turn it into a space
         if(!Grid_getBit(this->field.pInspectGrid, x, y))
