@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-28 21:46:51
+ * @ Modified time: 2024-03-29 13:34:25
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -20,6 +20,7 @@
 #include <string.h>
 
 #define PROFILES_FILE_PATH "../data/profiles.data.txt"
+#define GAME_FILE_PATH  "../data/game.data.txt"
 
 #define PROFILES_MAX_NUM 10
 
@@ -48,7 +49,7 @@ struct Profile {
     int nClassicDifficult;  // Classic: Difficult games won
     int nCustom;            // Custom games won
 
-    // GameData gameData[3];   // Stores the data of the 3 most recent games
+    Game *pGameData[3];     // Stores the data of the 3 most recent games
     
 };
 
@@ -191,17 +192,33 @@ void Profile_select(char *sKey) {
         // exist (first line of the text file).
         fgets(sName, PROFILE_NAME_MAX_SIZE, pProfiles);
 
-        // Terminates the function once the profile has been found
-        if(strcmp(sName, sKey) == 0)
+        // The profile has been found
+        if(strcmp(sName, sKey) == 0) {
+
+            // Opens the text file of the current game's data
+            FILE *pGame = fopen(GAME_FILE_PATH, "w");
+
+            // Saves the profile name in the text file
+            fprintf(pGame, "%s", sName);
+
+            // Deallocates the memory of the name's string
+            String_kill(sName);
+
+            fclose(pGame);
+
+            // Exits the function
             return;
+        }
 
         i++;
     }
 
-    fclose(pProfiles);
-
+    // Deallocates the memory of the name's string
     String_kill(sName);
 
+    fclose(pProfiles);
+
+    // Operates when the profile has not been found in the while loop
     Profile_doesNotExist();
 }
 
