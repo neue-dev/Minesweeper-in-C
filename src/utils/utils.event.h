@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-28 08:45:58
+ * @ Modified time: 2024-03-29 21:34:15
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -458,6 +458,20 @@ void EventStore_setString(EventStore *this, char *sValueKey, char *sStringKey) {
       sString[strlen(sString) - 1] = 0;
     }
   }
+}
+
+
+/**
+ * This function clears the string specified by the key.
+ * 
+ * @param   { EventStore * }  this        The event store instance to modify.
+ * @param   { char * }        sStringKey  The key of the string we want to modify.
+*/
+void EventStore_clearString(EventStore *this, char *sStringKey) {
+  char *sString = HashMap_get(this->pValueStrings, sStringKey);
+  
+  if(sString != NULL)
+    String_clear(sString);
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 20:51:21
+ * @ Modified time: 2024-03-29 21:54:46
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -58,6 +58,8 @@ struct Profile {
 
 /**
  * Initializes the profile object.
+ * 
+ * @param		{ Profile * }		this	The profile object.
 */
 void Profile_init(Profile *this) {
   strcpy(this->sCurrentProfile, "");
@@ -73,8 +75,7 @@ void Profile_init(Profile *this) {
  * @param		{ char * }			sPassword		The password provided.
  * @return	{ int }											Whether or not the operation wass successful.
 */
-//! REMOVE
-#include "../utils/utils.debug.h"
+#include "../utils/utils.debug.h" //!remove
 int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 	int i, j;
 	File *pProfilesFile;
@@ -95,7 +96,7 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 	pProfilesFile = File_create(PROFILES_FILE_PATH);
 
 	// Read the text onto the output buffer
-	File_readText(pProfilesFile, PROFILES_MAX_NUM, &nProfileCount, sProfilesArray);
+	File_readText(pProfilesFile, PROFILES_MAX_NUM + 1, &nProfileCount, sProfilesArray);
 
 	// The profile exists
 	for(i = 0; i < nProfileCount; i++) {
@@ -106,7 +107,7 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 		j = 0; 
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
 			sprintf(sProfileUsername, "%s%c", sProfileUsername, sProfilesArray[i][j++]);
-		
+
 		// Copy the password
 		j++;
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
@@ -132,7 +133,10 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 		this->eError = PROFILE_ERROR_NOT_FOUND;
 		return 0;
 	}
-	
+
+	// Set the current profile to the logged in username
+	strcpy(this->sCurrentProfile, sUsername);
+
 	// Garbage collection
 	File_kill(pProfilesFile);
 	
@@ -147,14 +151,14 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
  * @param   { char * }  		sName   Name of the to-be-created profile.
  * @return	{ int }									Returns whether or not the operation was successful.
 */
-int Profile_create(Profile *this, char *sUsername, char *sPassword) {
+int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 	int i, j;
 	File *pProfilesFile;
 	
 	int nProfileCount = 0;
 	char sProfileEntry[PROFILE_USERNAME_MAX_LENGTH + 1];
 	char *sNewProfile[1];
-	char *sProfilesArray[PROFILES_MAX_NUM];
+	char *sProfilesArray[PROFILES_MAX_NUM + 1];
 
 	// Name was of invalid size
 	if(strlen(sUsername) < PROFILE_USERNAME_MIN_LENGTH || strlen(sUsername) > PROFILE_USERNAME_MAX_LENGTH) {
@@ -162,8 +166,11 @@ int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 		return 0;
 	}
 
-	// Password was too long
-	if(strlen(sPassword) < PROFILE_PASSWORD_MIN_LENGTH || strlen(sPassword) > PROFILE_PASSWORD_MAX_LENGTH)
+	// Password was too long or too short
+	if(strlen(sPassword) < PROFILE_PASSWORD_MIN_LENGTH || strlen(sPassword) > PROFILE_PASSWORD_MAX_LENGTH) {
+		this->eError = PROFILE_ERROR_INVALID_LENGTH;
+		return 0;
+	}
 
 	// Checks if the name's characters are only capital letters
 	i = 0;
@@ -174,8 +181,17 @@ int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 		}
 	} while(sUsername[++i]);
 
+	// Checks if the password is also just all caps
+	i = 0;
+	do {
+		if(sPassword[i] < 'A' || sPassword[i] > 'Z') {
+			this->eError = PROFILE_ERROR_INVALID_CHARS;
+			return 0;
+		}
+	} while(sPassword[++i]);
+
 	// Set the current profile to the given name
-	sNewProfile[0] = String_alloc(strlen(sUsername) + strlen(sPassword) + 3);
+	sNewProfile[0] = String_alloc(strlen(sUsername) + strlen(sPassword) + 4);
 	strcpy(sNewProfile[0], sUsername);
 
 	// Creates the text file with the list of profiles
@@ -191,7 +207,15 @@ int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 	pProfilesFile = File_create(PROFILES_FILE_PATH);
 
 	// Read the text onto the output buffer
-	File_readText(pProfilesFile, PROFILES_MAX_NUM, &nProfileCount, sProfilesArray);
+	File_readText(pProfilesFile, PROFILES_MAX_NUM + 1, &nProfileCount, sProfilesArray);
+
+	// Too many profiles exist
+	if(nProfileCount + 1 > PROFILES_MAX_NUM) {
+		this->eError = PROFILE_ERROR_TOO_MANY_EXISTING;
+		String_kill(sNewProfile[0]);
+		
+		return 0;
+	}
 
 	// The profile already exists
 	for(i = 0; i < nProfileCount; i++) {
@@ -214,7 +238,7 @@ int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 	// Otherwise, append the profile to the file
 	strcat(sNewProfile[0], ";");
 	strcat(sNewProfile[0], sPassword);
-	strcat(sNewProfile[0], ";");
+	strcat(sNewProfile[0], ";\n");
 	File_writeText(pProfilesFile, 1, sNewProfile);
 
 	// Garbage collection
@@ -226,164 +250,64 @@ int Profile_create(Profile *this, char *sUsername, char *sPassword) {
 }
 
 /**
- * Selects a profile.
- * 
- * @param   { char * }  sKey   Name of the to-be-selected profile.
-*/
-void Profile_select(char *sKey) {
-    int i;
-    int nProfiles;
-    int bProfileFound = 0;
-    char *sCurrentProfile = String_alloc(PROFILE_USERNAME_MAX_LENGTH);
-
-    // Opens the text file with the list of profiles
-    FILE *pProfiles = fopen(PROFILES_FILE_PATH, "r");
-
-    if(pProfiles == NULL)
-        return; // TODO: error-handling
-
-    // An array of the profile names
-    char aProfiles[PROFILES_MAX_NUM][PROFILE_USERNAME_MAX_LENGTH + 1] = {{}};
-
-    // Gets the previously-selected profile name
-    fscanf(pProfiles, "%s ", sCurrentProfile);
-
-    // Gets the number of existing profiles
-    fscanf(pProfiles, "%d ", nProfiles);
-
-    i = 0;
-    while(!feof(pProfiles)) {
-
-        // Gets the profile name.
-        // Note that this initially gets the number of profiles that
-        // exist (first line of the text file).
-        fscanf(pProfiles, "%s ", aProfiles[i]);
-
-        // The profile has been found
-        if(strcmp(aProfiles[i], sKey) == 0) {
-            bProfileFound = 1;
-
-            // Updates the currently-selected profile
-            strcpy(sCurrentProfile, sKey);
-        }
-
-        i++;
-    }
-
-    fclose(pProfiles);
-
-    // We will now write the new data onto the file
-    pProfiles = fopen(PROFILES_FILE_PATH, "w");
-
-    // Prints out the currently-selected profile
-    fprintf(pProfiles, "%s\n", sCurrentProfile);
-
-    // Prints out the number of existing profiles
-    fprintf(pProfiles, "%d\n", nProfiles);
-
-    // Prints out the list of existing profile names
-    for(i = 0; i < nProfiles; i++) {
-        fprintf(pProfiles, "%s\n", aProfiles[i]);
-    }
-
-    // Deallocates the memory of the current profile name's string
-    String_kill(sCurrentProfile);
-
-    fclose(pProfiles);
-    
-    // ! todo
-    if(!bProfileFound) {}
-    // Profile_doesNotExist();
-}
-
-/**
  * Deletes a profile.
  * 
- * @param   { char * }  sName   Name of the to-be-selected profile.
+ * @param		{ Profile * }		this				The profile object.
+ * @param   { char * }  		sUsername		Name of the to-be-selected profile.
 */
-void Profile_delete(char *sName) {
-    int i;
-    int nProfiles;
-    int dProfileIndex = -1;
-    char *sCurrentProfile = String_alloc(PROFILE_USERNAME_MAX_LENGTH);
+int Profile_delete(Profile *this, char *sUsername) {
+	int i, j;
+	File *pProfilesFile;
 
-    // Opens the text file with the list of profiles
-    FILE *pProfiles = fopen(PROFILES_FILE_PATH, "r");
+	// Store the profiles read from the file
+	int nProfileCount = 0;
+	char sProfileUsername[PROFILE_USERNAME_MAX_LENGTH + 1];
+	char *sProfileEntry[1];
+	char *sProfilesArray[PROFILES_MAX_NUM];
 
-    if(pProfiles == NULL)
-        return; // TODO: error-handling
+	// No data to cross check login
+	if(!File_exists(PROFILES_FILE_PATH)) {
+		this->eError = PROFILE_ERROR_NO_FILE;
+		return 0;
+	}
 
-    // An array of the profiles
-    char aProfiles[PROFILES_MAX_NUM][PROFILE_USERNAME_MAX_LENGTH + 2] = {{}};
+	// Open the file
+	pProfilesFile = File_create(PROFILES_FILE_PATH);
 
-    // Gets the number of profiles that exist
-    fscanf(pProfiles, "%d ", &nProfiles);
+	// Read the text onto the output buffer
+	File_readText(pProfilesFile, PROFILES_MAX_NUM, &nProfileCount, sProfilesArray);
 
-    // Gets the currently-selected profile name
-    fscanf(pProfiles, "%s ", sCurrentProfile);
+	// Clear the file
+	File_clear(pProfilesFile);
 
-    // If no profile can be deleted
-    if(nProfiles == 0) {
-        fclose(pProfiles);
+	// The profile exists
+	for(i = 0; i < nProfileCount; i++) {
+		sprintf(sProfileUsername, "");
+		sProfileEntry[0] = String_create(sProfilesArray[i]);
+		
+		// Copy the name first without the newline
+		j = 0; 
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
+			sprintf(sProfileUsername, "%s%c", sProfileUsername, sProfilesArray[i][j++]);
 
-        // Deallocates the memory of the currently-selected profile name
-        String_kill(sCurrentProfile);
-        
-        // ! todo
-        // Profile_doesNotExist();
-        return; // Exits the function
-    }
-        
-    i = 0;
-    while(!feof(pProfiles)) {
+		// Copy to file only if not the selected profile
+		if(strcmp(sProfileUsername, sUsername))
+			File_writeText(pProfilesFile, 1, sProfileEntry);
 
-        // Stores the list of profiles to an array
-        fscanf(pProfiles, "%s ", aProfiles[i]);
+		// Kill the allocated string
+		String_kill(sProfileEntry[0]);
+	}
 
-        // Specifies the index of the found profile
-        if(strcmp(aProfiles[i], sName) == 0)
-            dProfileIndex = i;
+	// ! TODO DESTROY THE PROFILE FILE ASSOCIATED WITH THE USER
 
-        i++;
-    }
+	// Set the current profile to an empty string
+	strcpy(this->sCurrentProfile, "");
 
-    // Checks if the profile has been found
-    if(dProfileIndex == -1) {
-        fclose(pProfiles);
-
-        // Deallocates the memory of the currently-selected profile name
-        String_kill(sCurrentProfile);
-        
-        // ! todo
-        // Profile_doesNotExist();
-        return; // Exits the function
-    }
-
-    fclose(pProfiles);
-
-    // We will now write the new data to the text file of profiles
-    pProfiles = fopen(PROFILES_FILE_PATH, "w");
-
-    if(pProfiles == NULL)
-        return; // TODO: error-handling
-
-    // Updates the number of profiles that exist
-    nProfiles--;
-    fprintf(pProfiles, "%d\n", nProfiles);
-
-    // Prints out the currently-selected profile
-    fprintf(pProfiles, "%s\n", sCurrentProfile);
-
-    // Prints out the undeleted profile names
-    for(i = 0; i <= nProfiles; i++) {
-        if(i != dProfileIndex)
-            fprintf(pProfiles, "%s\n", aProfiles[i]);
-    }
-
-    // Deallocates the memory of the current profile name's string
-    String_kill(sCurrentProfile);
-
-    fclose(pProfiles);
+	// Garbage collection
+	File_kill(pProfilesFile);
+	
+	// Successful
+	return 1;
 }
 
 /**

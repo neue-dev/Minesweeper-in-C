@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 21:01:05
+ * @ Modified time: 2024-03-29 21:55:53
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -79,7 +79,7 @@ void PageHandler_editor(p_obj pArgs_Page) {
       Page_addComponentText(this, sHeightPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of rows (5-10):");
       Page_addComponentText(this, sHeightComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to go back");
       
       // Define initial user states
       if(Page_getUserState(this, "editor-current-field") == -1) Page_setUserState(this, "editor-current-field", cEditorCurrentField);

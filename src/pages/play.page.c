@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 12:26:54
+ * @ Modified time: 2024-03-29 21:57:01
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -74,7 +74,7 @@ void PageHandler_play(p_obj pArgs_Page) {
       Page_addComponentText(this, sFileordiffPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter difficulty - if classic:\n      filename   - if custom:");
       Page_addComponentText(this, sFileordiffComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 1, "secondary", "accent", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]   to go back");
       
       // Define initial user states
       if(Page_getUserState(this, "play-current-field") == -1) Page_setUserState(this, "play-current-field", cPlayCurrentField);

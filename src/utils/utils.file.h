@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-29 13:55:50
+ * @ Modified time: 2024-03-29 21:44:19
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -180,10 +180,8 @@ void File_writeText(File *this, int n, char *sContentBuffer[]) {
     return;
 
   // Write the content to the file
-  for(i = 0; i < n; i++) {
+  for(i = 0; i < n; i++)
     fputs(sContentBuffer[i], this->pFile);
-    fputs("\n", this->pFile);
-  }
 
   fclose(this->pFile);
 }
@@ -225,6 +223,21 @@ int File_writeBin(File *this, int n, p_obj pObject) {
 
   // Return the starting point of the data
   return fpos;
+}
+
+/**
+ * Clears the contents of a file.
+ * Literally just opens it in write mode.
+ * 
+ * @param   { File * }  this  The file to clear.
+*/
+void File_clear(File *this) {
+  FILE *pFile = fopen(this->sPath, "w");
+
+  if(pFile == NULL)
+    return;
+
+  fclose(pFile);
 }
 
 /**

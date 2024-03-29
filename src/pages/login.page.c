@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 20:49:58
+ * @ Modified time: 2024-03-29 21:56:08
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -76,8 +76,8 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter password:");
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");      
-      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 40, 16, "secondary", "accent", "hmm", "yes", "nop");
+      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to delete a profile");      
+      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
 
       // Define initial user states
       if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", cLoginCurrentField);
@@ -99,12 +99,28 @@ void PageHandler_login(p_obj pArgs_Page) {
       if(Page_getUserState(this, "is-popup")) {
 
         // Switch between options
-        if(cKeyPressed == '\t')
+        if(cKeyPressed == '\t') {
           Page_toggleComponentPopup(this, sPopupComponent, "secondary", "accent");
 
         // Submit popup
-        else if(cKeyPressed == '\n' || cKeyPressed == '\r')
+        } else if(cKeyPressed == '\n' || cKeyPressed == '\r') {
           Page_disableComponentPopup(this, sPopupComponent);
+
+          // Creating a new account
+          if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND) {
+
+            // Check if success
+            if(Profile_register(pProfile, sUsernameField, sPasswordField)) {
+              EventStore_clearString(this->pSharedEventStore, "username-input");
+              EventStore_clearString(this->pSharedEventStore, "password-input");
+              Page_setComponentText(this, sErrorPromptComponent, "Success: profile created.");
+
+            // Otherwise, display new error
+            } else {
+              Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+            }
+          }
+        }
 
       // Proceed with other input handling
       } else {
@@ -112,18 +128,19 @@ void PageHandler_login(p_obj pArgs_Page) {
         // Switch based on what key was last pressed
         switch(cKeyPressed) {
 
-          // Exits the actual program
-          case 27:
-            EventStore_set(this->pSharedEventStore, "terminate", 'y');
-          break;
-
           // Switch fields
           case '\t':
             Page_setUserState(this, "login-current-field", ((int) cLoginCurrentField + 1) % (int) cLoginFieldCount);
           break;
 
           // Do input checking, then go to menu if successful
-          case '\n': case '\r':
+          case '\n': case '\r': case 27:
+            
+            // Exits the program when inputting quit or exit
+            if(!strcmp(sUsernameField, "QUIT") || !strcmp(sUsernameField, "quit") ||
+              !strcmp(sUsernameField, "EXIT") || !strcmp(sUsernameField, "exit")) {
+              EventStore_set(this->pSharedEventStore, "terminate", 'y');
+            }
             
             // Some fields are empty
             if(!strlen(sUsernameField) ||
@@ -135,8 +152,26 @@ void PageHandler_login(p_obj pArgs_Page) {
               
               // Login was successful
               if(Profile_login(pProfile, sUsernameField, sPasswordField)) {
-                Page_idle(this);
-                Page_setNext(this, "menu");
+                
+                // Deleting account tho
+                if(cKeyPressed == 27) {
+                  
+                  // If successful
+                  if(Profile_delete(pProfile, sUsernameField)) {
+                    EventStore_clearString(this->pSharedEventStore, "username-input");
+                    EventStore_clearString(this->pSharedEventStore, "password-input");
+                    Page_setComponentText(this, sErrorPromptComponent, "Success: profile deleted.");
+
+                  // Not successful
+                  } else {
+                    Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+                  }
+
+                // Logging in
+                } else {
+                  Page_idle(this);
+                  Page_setNext(this, "menu");
+                }
               
               // Login was NOT successful
               } else {
@@ -145,7 +180,7 @@ void PageHandler_login(p_obj pArgs_Page) {
                 // Create a new account perhaps?
                 if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND) {
                   Page_enableComponentPopup(this, sPopupComponent);
-                  Page_setComponentPopupText(this, sPopupComponent, "This.account.does.not.exist.\nWould.you.like.to.register.it?");
+                  Page_setComponentPopupText(this, sPopupComponent, "This.account.does.not.yet.exist.\nWould.you.like.to.register.it?");
                   Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
                 }
               }

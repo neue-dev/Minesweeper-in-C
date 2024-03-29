@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-28 08:38:19
+ * @ Modified time: 2024-03-29 21:33:45
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -50,6 +50,15 @@ char *String_alloc(int dLength) {
 
   // Account for the null byte if ever
   return calloc(dLength + 1, sizeof(char));
+}
+
+/**
+ * Clears a string (sets everything to 0).
+ * 
+ * @param  { char * }  A pointer to the allocated string.
+*/
+void String_clear(char *string) {
+  memset(string, 0, strlen(string));
 }
 
 /**
