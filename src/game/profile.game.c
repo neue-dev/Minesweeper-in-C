@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 17:26:35
+ * @ Modified time: 2024-03-29 17:56:33
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -34,6 +34,14 @@
 #define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 1) 
 #define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 1)
 
+typedef struct Profile Profile;
+
+/**
+ * We pass this object to the engine.
+*/
+struct Profile {
+    char *sCurrentProfile;
+};
 
 /**
  * Creates a new profile.
