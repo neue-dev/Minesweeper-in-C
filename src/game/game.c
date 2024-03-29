@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
- * @ Modified time: 2024-03-29 01:53:44
+ * @ Modified time: 2024-03-29 12:25:30
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -72,6 +72,7 @@ struct Game {
   GameType eType;
   GameDifficulty eDifficulty;   
   GameOutcome eOutcome;                       // Some data about the game
+  char *sFilename;                            // Where the custom game might come from
 };
 
 /**
@@ -79,12 +80,13 @@ struct Game {
  * 
  * @param   { Game * }  this  The game object.
 */
-void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) {
+void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty, char *sFilename) {
 
   // Set the game params
   this->eOutcome = GAME_OUTCOME_PENDING;
   this->eType = eGameType;
   this->eDifficulty = eGameDifficulty;
+  strcpy(this->sFilename, sFilename);
 
   // The game's cursor
   this->dCursorX = 0;

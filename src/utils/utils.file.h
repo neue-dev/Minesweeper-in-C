@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-26 21:42:45
+ * @ Modified time: 2024-03-29 13:46:50
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -17,6 +17,7 @@
 #include "./utils.types.h"
 
 #include <stdio.h>
+
 
 #define FILE_MAX_LINE_LEN (1 << 12)
 #define FILE_MAX_LINES (1 << 12)
@@ -224,6 +225,44 @@ int File_writeBin(File *this, int n, p_obj pObject) {
 
   // Return the starting point of the data
   return fpos;
+}
+
+/**
+ * Checks if a file exists or not.
+ * 
+ * @param   { char * }    sFilename     The list of filenames in the directory.
+ * @return  { int }                     Whether or not the file exists.
+*/
+int File_exists(char *sFilename) {
+  FILE *pFile = fopen(sFilename, "r");
+
+  // File does not exist LMAO
+  if(pFile == NULL)
+    return 0;
+
+  // If file does exist, return 1
+  fclose(pFile);
+  return 1;
+}
+
+/**
+ * Creates a new file with the specified name.
+ * If the file already exists, it leaves it untouched.
+ * Returns 1 on success, 0 on failure.
+ * 
+ * @param   { char * }    sFilename     The list of filenames in the directory.
+ * @return  { int }                     Whether or not the operation was successful.
+*/
+int File_create(char *sFilename) {
+  FILE *pFile = fopen(sFilename, "a+");
+
+  // Something went wrong
+  if(pFile == NULL)
+    return 0;
+
+  // Success
+  fclose(pFile);
+  return 1;
 }
 
 
