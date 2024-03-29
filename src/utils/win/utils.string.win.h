@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-03-30 02:27:36
+ * @ Modified time: 2024-03-30 03:43:54
  * @ Description:
  * 
  * A utility library for implementing some string related functionality
@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 /**
  * Prints a string.
@@ -34,7 +35,22 @@ void String_print(char *string) {
  * @return  { char * }          The uppercased string.
 */
 char *String_toUpper(char *string) {
-  return strupr(string);
+  // Originally just this, but i dont trust it
+  // return strupr(string);
+
+  // Now this sht leaks memory D:
+  char *newString = calloc(1, strlen(string));
+  
+  // Return empty string if empty to begin with
+  if(!strlen(string))
+    return "";
+
+  // Convert to uppercase
+  do {
+    newString[strlen(newString)] = toupper(*string);
+  } while(*(++string));
+
+  return newString;
 }
 
 #endif

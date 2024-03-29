@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-05 11:18:06
- * @ Modified time: 2024-03-30 02:30:13
+ * @ Modified time: 2024-03-30 03:43:47
  * @ Description:
  * 
  * A utility library for implementing some string related functionality
@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 /**
  * Prints a string.

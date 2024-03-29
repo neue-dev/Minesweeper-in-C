@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 02:57:42
+ * @ Modified time: 2024-03-30 04:13:54
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -46,7 +46,8 @@ typedef struct Game Game;
 // Game types chosen by the user
 enum GameType {
   GAME_TYPE_CLASSIC,            // Classic game type
-  GAME_TYPE_CUSTOM              // Custom game type
+  GAME_TYPE_CUSTOM,             // Custom game type
+  GAME_TYPE_EDITOR,
 };
 
 enum GameDifficulty {
@@ -124,8 +125,7 @@ void Game_init(Game *this) {
         
       // Sets up the field's width and height and populate with mines
       Field_init(&this->field, GAME_EASY_COLUMNS, GAME_EASY_ROWS);
-      Field_populateRandom(&this->field, GAME_EASY_MINES * 0 + 2);
-      //! remove * 0 + 2 above
+      Field_populateRandom(&this->field, GAME_EASY_MINES);
     
     // For difficult mode
     } else {
@@ -142,6 +142,28 @@ void Game_init(Game *this) {
   }
 
   // Compute the numbers for the field
+  Field_setNumbers(&this->field);
+}
+
+/**
+ * Sets the size of the game field.
+ * 
+ * @param   { Game * }  this      The game object.
+ * @param   { int }     dWidth    The width of the field.
+ * @param   { int }     dHeight   The height of the field.
+*/
+void Game_initEditor(Game *this, int dWidth, int dHeight) {
+  int x, y;
+
+  // Init the field
+  Field_init(&this->field, dWidth, dHeight);
+
+  // Mark all bits as inspectd
+  for(x = 0; x < dWidth; x++)
+    for(y = 0; y < dHeight; y++)
+      Field_inspect(&this->field, x, y);
+
+  // Compute the numbers
   Field_setNumbers(&this->field);
 }
 
@@ -164,6 +186,53 @@ void Game_end(Game *this, GameOutcome eOutcome) {
 
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
+}
+
+/**
+ * Checks whether or not the game has been finished. 
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { int }           Whether or not the player has finished the game.
+*/
+int Game_hasWon(Game *this) {
+  int x, y;
+
+  // Check if all non-mine cells have been inspected
+  for(x = 0; x < this->field.dWidth; x++) {
+    for(y = 0; y < this->field.dHeight; y++) {
+      
+      // If it hasn't been inspected, and it doesn't have a mine
+      if(!Grid_getBit(this->field.pInspectGrid, x, y) &&
+        !Grid_getBit(this->field.pMineGrid, x, y)) {
+        
+        // User hasn't won
+        return 0;
+      }
+    } 
+  }
+
+  // The user has already won, so place flags on all mines
+  for(x = 0; x < this->field.dWidth; x++) {
+    for(y = 0; y < this->field.dHeight; y++) {
+      
+      // Place a flag if it has a mine
+      if(Grid_getBit(this->field.pMineGrid, x, y))
+        Grid_setBit(this->field.pFlagGrid, x, y, 1);
+    } 
+  }
+
+  // All checks were passed
+  return 1;
+}
+
+/**
+ * Checks just the enum.
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { int }           Whether or not the game was won.
+*/
+int Game_isWon(Game *this) {
+  return this->eOutcome == GAME_OUTCOME_WIN;
 }
 
 /**
@@ -342,7 +411,6 @@ void Game_inspect(Game *this, int x, int y) {
 
 /**
  * Adds a flag on a tile only if it hasn't been inspected.
- * Also marks it as inspected.
  * 
  * @param   { Game * }     this     The game object to be modified.
 */
@@ -353,13 +421,38 @@ void Game_addFlag (Game *this) {
 
 /**
  * Removes a flag from a tile only if it currently has a flag.
- * Also marks it as uninspected.
  * 
  * @param   { Game * }      this      The game object to be modified.
 */
-void Game_removeFlag (Game *this) {
+void Game_removeFlag(Game *this) {
   if(Grid_getBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY))
     Grid_setBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY, 0);
+}
+
+/**
+ * Adds a mine on a tile and recomputes numbers.
+ * 
+ * @param   { Game * }     this     The game object to be modified.
+*/
+void Game_addMine(Game *this) {
+  if(!Grid_getBit(this->field.pMineGrid, this->dCursorX, this->dCursorY))
+    Grid_setBit(this->field.pMineGrid, this->dCursorX, this->dCursorY, 1);
+
+  // Recompute numbers
+  Field_setNumbers(&this->field);
+}
+
+/**
+ * Removes a mine from a tile and recomputes numbers.
+ * 
+ * @param   { Game * }      this      The game object to be modified.
+*/
+void Game_removeMine(Game *this) {
+  if(Grid_getBit(this->field.pMineGrid, this->dCursorX, this->dCursorY))
+    Grid_setBit(this->field.pMineGrid, this->dCursorX, this->dCursorY, 0);
+
+  // Recompute numbers
+  Field_setNumbers(&this->field);
 }
 
 /**
@@ -480,53 +573,6 @@ int Game_getCharWidth(Game *this) {
 */
 int Game_getCharHeight(Game *this) {
   return this->field.dHeight * GAME_CELL_HEIGHT + 1;
-}
-
-/**
- * Checks whether or not the game has been finished. 
- * 
- * @param   { Game * }  this  The game object.
- * @return  { int }           Whether or not the player has finished the game.
-*/
-int Game_hasWon(Game *this) {
-  int x, y;
-
-  // Check if all non-mine cells have been inspected
-  for(x = 0; x < this->field.dWidth; x++) {
-    for(y = 0; y < this->field.dHeight; y++) {
-      
-      // If it hasn't been inspected, and it doesn't have a mine
-      if(!Grid_getBit(this->field.pInspectGrid, x, y) &&
-        !Grid_getBit(this->field.pMineGrid, x, y)) {
-        
-        // User hasn't won
-        return 0;
-      }
-    } 
-  }
-
-  // The user has already won, so place flags on all mines
-  for(x = 0; x < this->field.dWidth; x++) {
-    for(y = 0; y < this->field.dHeight; y++) {
-      
-      // Place a flag if it has a mine
-      if(Grid_getBit(this->field.pMineGrid, x, y))
-        Grid_setBit(this->field.pFlagGrid, x, y, 1);
-    } 
-  }
-
-  // All checks were passed
-  return 1;
-}
-
-/**
- * Checks just the enum.
- * 
- * @param   { Game * }  this  The game object.
- * @return  { int }           Whether or not the game was won.
-*/
-int Game_isWon(Game *this) {
-  return this->eOutcome == GAME_OUTCOME_WIN;
 }
 
 /**
