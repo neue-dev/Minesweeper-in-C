@@ -2,11 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-28 22:57:40
-<<<<<<< HEAD
- * @ Modified time: 2024-03-29 13:47:56
-=======
- * @ Modified time: 2024-03-29 12:25:30
->>>>>>> 5202c608440fbfb5c3495219e218183f887c6c88
+ * @ Modified time: 2024-03-29 14:01:43
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -290,9 +286,15 @@ void Game_inspect(Game *this, int x, int y) {
   // Considers the specific tile inspected
   Field_inspect(pField, x, y);
 
-  // Ends the game if a mine has been inspected
+  // Checks if a mine has been inspected
   if(Grid_getBit(pField->pMineGrid, x, y)) {
+
+    // Specifies the location where the mine exploded
+    this->gameField.aNumbers[y][x] = -2;
+
+    // Ends the game
     Game_end(this, GAME_OUTCOME_LOSS);
+
     return;
   }
 
