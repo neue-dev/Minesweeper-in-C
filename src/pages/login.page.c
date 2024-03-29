@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-28 13:42:31
+ * @ Modified time: 2024-03-29 14:44:24
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -74,7 +74,7 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
       Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab] to switch fields; [enter] to submit");      
-      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 32, 12, "secondary", "accent", "hmm", "yes", "nop");
+      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 40, 16, "secondary", "accent", "hmm", "yes", "nop");
 
       // Define initial user states
       if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", cLoginCurrentField);
