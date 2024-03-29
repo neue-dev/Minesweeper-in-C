@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 14:27:01
+ * @ Modified time: 2024-03-29 14:30:36
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -64,13 +64,12 @@ enum GameOutcome {
 
 
 struct Game {
-  Field field;                            // Game field
+  Field field;                                // Game field
   
   int dCursorX, dCursorY;                     // The cursor of the player
+  int dFrameCount, dLastFPS;
   time_t startTime, endTime;                  // Used for computing the time
   time_t frameStart, frameEnd;                // Used for computing fps 
-  int dFrameCount, dLastFPS;
-  int dPauseOffset;                           // Time spent paused
 
   GameType eType;
   GameDifficulty eDifficulty;   
