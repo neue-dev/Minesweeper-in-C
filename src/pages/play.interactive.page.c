@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 16:35:18
+ * @ Modified time: 2024-03-29 17:26:25
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -76,7 +76,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
       Page_addComponentText(this, sGameInfoComponent, sHeaderComponent, 0, 0, "", "", "");
       Page_addComponentText(this, sGamePromptComponent, sFooterComponent, 0, 0, "", "", "");
-      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 40, 16, "secondary", "accent", "Exit.to.main.menu??\nGame.wont.be.saved.\0", "yes", "nop");
+      Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 40, 16, "secondary", "accent", "", "yes", "nop");
 
       // This is stupid but LMAO
       for(x = 0; x < pGame->field.dWidth; x++) {
@@ -140,7 +140,14 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
             // Go to menu next
             Page_idle(this);
-            Page_setNext(this, "menu");
+
+            // If game over
+            if(Game_isDone(pGame)) 
+              Page_setNext(this, "play");
+
+            // If not game over
+            else
+              Page_setNext(this, "menu");
 
             // Make sure the function doesn't try to access the borked component tree down there.
             return;
@@ -155,6 +162,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
           // Escape character to go back
           case 27:
             Page_enableComponentPopup(this, sPopupComponent);
+            Page_setComponentPopupText(this, sPopupComponent, "Exit.to.main.menu??\nGame.wont.be.saved.\0");
+            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
             Game_pause(pGame);
           break;
 
@@ -172,6 +181,15 @@ void PageHandler_playI(p_obj pArgs_Page) {
           break;
 
           default:
+
+            // The game ended
+            if(Game_isDone(pGame)) {
+              Page_enableComponentPopup(this, sPopupComponent);
+              Page_setComponentPopupText(this, sPopupComponent, Game_endMessage(pGame));
+              Page_setComponentPopupOptions(this, sPopupComponent, "okay", "");
+
+              return;
+            }
 
             // WASD movement
             if(cKeyPressed == tolower(Settings_getGameMoveUp(this->pSharedEventStore)) ||

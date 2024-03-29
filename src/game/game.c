@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 16:35:29
+ * @ Modified time: 2024-03-29 17:15:21
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -292,9 +292,6 @@ void Game_inspect(Game *this, int x, int y) {
   if(Grid_getBit(pField->pFlagGrid, x, y))
     return;
 
-  // Considers the specific tile inspected
-  Field_inspect(pField, x, y);
-
   // Checks if a mine has been inspected
   if(Grid_getBit(pField->pMineGrid, x, y)) {
 
@@ -306,6 +303,9 @@ void Game_inspect(Game *this, int x, int y) {
 
     return;
   }
+  
+  // Considers the specific tile inspected
+  Field_inspect(pField, x, y);
 
   // Cascades the inspection if the number on the tile is 0
   if(pField->aNumbers[y][x] == 0) {
@@ -547,6 +547,43 @@ char *Game_getFPS(Game *this) {
   sprintf(sFPSString, "%d fps", this->dLastFPS);
   
   return sFPSString;
+}
+
+/**
+ * Returns whether or not the game has ended.
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { int }           Whether or not the game has ended.
+*/
+int Game_isDone(Game *this) {
+  return this->eOutcome != GAME_OUTCOME_PENDING;
+}
+
+/**
+ * Returns a description of how the game ended.
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { char * }        Describes how the game ended.
+*/
+char *Game_endMessage(Game *this) {
+  
+  // Switch through different endings
+  switch(this->eOutcome) {
+    case GAME_OUTCOME_LOSS:
+      return "You.stepped.on.a.mine!";
+
+    case GAME_OUTCOME_WIN:
+      return "You.cleared.all.the.mines!";
+
+    case GAME_OUTCOME_QUIT:
+      return "You.quit.the.game!";
+
+    case GAME_OUTCOME_PENDING:
+      return "The.game.hasn't.ended...";
+
+    default:
+      return "Hmmm,something.went.wrong.";
+  } 
 }
 
 #endif

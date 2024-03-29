@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-29 14:00:43
+ * @ Modified time: 2024-03-29 17:29:34
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -358,7 +358,17 @@ void Page_addComponentContext(Page *this, char *sKey, char *sParentKey, int x, i
  * Appends the component to the root element by default.
  * The component is also screen centered by default.
  * 
- * //!jsdoc
+ * @param   { Page * }                this          The page to modify.
+ * @param   { char * }                sKey          An identifier for the component.
+ * @param   { int }                   x             The x-coordinate of the component.
+ * @param   { int }                   y             The y-coordinate of the component.
+ * @param   { int }                   w             The width of the component.
+ * @param   { int }                   h             The height of the component.
+ * @param   { char * }                sColorFGKey   A color key for the foreground from the theme manager.
+ * @param   { char * }                sColorBGKey   A color key for the background from the theme manager.
+ * @param   { char * }                sBodyText     The message of the popup.
+ * @param   { char * }                sOption1      The first option; required.
+ * @param   { char * }                sOption2      The second option; may be empty.
 */
 void Page_addComponentPopup(Page *this, char *sKey, int x, int y, int w, int h, char *sColorFGKey, char *sColorBGKey, char *sBodyText, char *sOption1, char *sOption2) {
   int i;
@@ -510,6 +520,43 @@ void Page_setComponentPopupText(Page *this, char *sKey, char *sText) {
   sprintf(sPopupTextComponent, "popup-text-%s.acenter-x.atop-y", sKey);
 
   Page_setComponentText(this, sPopupTextComponent, sText);
+}
+
+/**
+ * Changes the text stored by a popup.
+ * 
+ * @param   { Page * }  this          The page we want to modify.
+ * @param   { char * }  sKey          An identifier for the component we want to modify.
+ * @param   { char * }  sText         The text for the popup.
+*/
+void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char *sOption2) {
+
+  // Holds the component keys
+  char sPopupOption1Component[STRING_KEY_MAX_LENGTH];
+  char sPopupOption2Component[STRING_KEY_MAX_LENGTH];
+  char sPopupButtonCurrentKey[STRING_KEY_MAX_LENGTH]; 
+  char sPopupButtonCountKey[STRING_KEY_MAX_LENGTH];
+
+  // Define the component keys
+  sprintf(sPopupOption1Component, "popup-option1-%s.aright-x.abottom-y", sKey);
+  sprintf(sPopupOption2Component, "popup-option2-%s.aleft-x.abottom-y", sKey);
+
+  // For handling the component
+  sprintf(sPopupButtonCurrentKey, "popup-button-current-%s", sKey);
+  sprintf(sPopupButtonCountKey, "popup-button-count-%s", sKey);
+  Page_setComponentText(this, sPopupOption1Component, sOption1);
+  Page_setComponentText(this, sPopupOption2Component, sOption2);
+  
+  // Move the first option to the center if Option2 doesn't exist
+  if(!strlen(sOption2)) 
+    Page_setComponentPos(this, sPopupOption1Component, strlen(sOption1) / 2, 0);
+  
+  // Otherwise, offset it again
+  else Page_setComponentPos(this, sPopupOption1Component, -2, 0);
+
+  // Create the states of the component
+  Page_setUserState(this, sPopupButtonCurrentKey, 0);
+  Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);
 }
 
 /**

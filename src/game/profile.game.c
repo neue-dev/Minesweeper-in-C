@@ -1,10 +1,10 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 16:52:50
+ * @ Modified time: 2024-03-29 17:26:35
  * @ Description:
  * 
- * Executes tasks involved in-game.
+ * Handles the current profile managed by the game.
  */
 
 #ifndef PROFILE_
@@ -17,11 +17,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PROFILES_FILE_PATH "../data/profiles.data.txt"
-#define GAME_FILE_PATH  "../data/game.data.txt"
-
 #define PROFILES_MAX_NUM 10
 
+#define PROFILES_FILE_PATH "../data/profiles.data.txt"
+#define GAME_FILE_PATH  "../data/game.data.txt"
 #define PROFILE_FOLDER_PATH "../data/profiles/"
 #define PROFILE_FOLDER_PATH_LENGTH strlen(PROFILE_FOLDER_PATH)
 
@@ -34,6 +33,7 @@
 
 #define PROFILE_NAME_MAX_SIZE sizeof(char)*(PROFILE_NAME_MAX_LENGTH + 1) 
 #define PROFILE_NAME_MIN_SIZE sizeof(char)*(PROFILE_NAME_MIN_LENGTH + 1)
+
 
 /**
  * Creates a new profile.
