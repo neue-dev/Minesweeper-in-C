@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-29 13:46:50
+ * @ Modified time: 2024-03-29 13:55:50
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -253,7 +253,7 @@ int File_exists(char *sFilename) {
  * @param   { char * }    sFilename     The list of filenames in the directory.
  * @return  { int }                     Whether or not the operation was successful.
 */
-int File_create(char *sFilename) {
+int File_newFile(char *sFilename) {
   FILE *pFile = fopen(sFilename, "a+");
 
   // Something went wrong
