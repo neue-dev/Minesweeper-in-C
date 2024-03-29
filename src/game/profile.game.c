@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 00:51:24
+ * @ Modified time: 2024-03-30 01:05:23
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -29,6 +29,7 @@
 #define PROFILE_FILE_PATH_MAX_SIZE sizeof(char)*(PROFILE_FILE_PATH_MAX_LENGTH + 1)
 
 #define PROFILES_MAX_NUM 10
+#define PROFILES_MAX_GAMES (1 << 12)
 #define PROFILE_PASSWORD_MAX_LENGTH 32
 #define PROFILE_USERNAME_MAX_LENGTH 20
 #define PROFILE_PASSWORD_MIN_LENGTH 3
@@ -53,6 +54,8 @@ enum ProfileError {
 */
 struct Profile {
   char sCurrentProfile[PROFILE_USERNAME_MAX_LENGTH + 1];
+	// int sCurrentGames[]
+
 	ProfileError eError;
 };
 
