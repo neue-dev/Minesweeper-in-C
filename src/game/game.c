@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 14:41:06
+ * @ Modified time: 2024-03-29 16:09:38
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -64,17 +64,17 @@ enum GameOutcome {
 
 
 struct Game {
-  Field field;                                // Game field
+  Field field;                                  // Game field
   
-  int dCursorX, dCursorY;                     // The cursor of the player
+  int dCursorX, dCursorY;                       // The cursor of the player
   int dFrameCount, dLastFPS;
-  time_t startTime, endTime;                  // Used for computing the time
-  time_t frameStart, frameEnd;                // Used for computing fps 
+  time_t startTime, endTime;                    // Used for computing the time
+  time_t frameStart, frameEnd;                  // Used for computing fps 
 
   GameType eType;
   GameDifficulty eDifficulty;   
-  GameOutcome eOutcome;                       // Some data about the game
-  char *sFilename;                            // Where the custom game might come from
+  GameOutcome eOutcome;                         // Some data about the game
+  char sFilename[STRING_FILENAME_MAX_LENGTH];   // Where the custom game might come from
 };
 
 /**
