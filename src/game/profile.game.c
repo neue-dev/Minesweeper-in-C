@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 18:33:21
+ * @ Modified time: 2024-03-29 19:11:55
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -69,14 +69,13 @@ void Profile_init(Profile *this) {
  * @param   { char * }  		sName   Name of the to-be-created profile.
  * @return	{ int }									Returns whether or not the operation was successful.
 */
-//! remove
-#include "../utils/utils.debug.h"
 int Profile_create(Profile *this, char *sName) {
-	int i;
+	int i, j;
 	File *pProfilesFile;
 	
 	int nProfileCount = 0;
-	char *sCurrentProfile[1];
+	char sProfileName[PROFILE_NAME_MAX_LENGTH + 2];		// Plus 2 because we need a period and a nullbyte
+	char *sNewProfile[1];
 	char *sProfilesArray[PROFILES_MAX_NUM];
 
 	// Name was of invalid size
@@ -95,9 +94,8 @@ int Profile_create(Profile *this, char *sName) {
 	} while(sName[++i]);
 
 	// Set the current profile to the given name
-	sCurrentProfile[0] = String_create(sName);
-
-	Debug_logStr("Hello worlddds");
+	sNewProfile[0] = String_alloc(strlen(sName) + 1);
+	strcpy(sNewProfile[0], sName);
 
 	// Creates the text file with the list of profiles
 	// Returns 0 if unsuccessful
@@ -116,11 +114,18 @@ int Profile_create(Profile *this, char *sName) {
 
 	// The profile already exists
 	for(i = 0; i < nProfileCount; i++) {
-		if(!strcmp(sProfilesArray[i], sName)) {
-			File_kill(pProfilesFile);
+		j = 0; 
+		sprintf(sProfileName, "");
+		
+		// Copy the name first without the newline
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
+			sProfileName[j] = sProfilesArray[i][j]; j++;
+		}	
+		sProfileName[j] = 0;
 
-			//! remove
-			Debug_logStr(sProfilesArray[i]);
+		// Compare the name
+		if(!strcmp(sProfileName, sName)) {
+			File_kill(pProfilesFile);
 
 			this->eError = PROFILE_ERROR_ALREADY_EXISTS;
 			return 0;
@@ -128,11 +133,12 @@ int Profile_create(Profile *this, char *sName) {
 	}
 
 	// Otherwise, append the profile to the file
-	File_writeText(pProfilesFile, 1, sCurrentProfile);
+	strcat(sNewProfile[0], ";");
+	File_writeText(pProfilesFile, 1, sNewProfile);
 
 	// Garbage collection
 	File_kill(pProfilesFile);
-	String_kill(sCurrentProfile[0]);
+	String_kill(sNewProfile[0]);
 
 	// Successful
 	return 1;
