@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 17:26:25
+ * @ Modified time: 2024-03-29 17:38:12
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -133,24 +133,38 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Page_disableComponentPopup(this, sPopupComponent);
           Game_unpause(pGame);
 
+          // First option
           if(Page_readComponentPopup(this, sPopupComponent) == 0) {
 
             // Reset component tree since the game UI needs that
             Page_resetComponents(this);
-
-            // Go to menu next
             Page_idle(this);
 
-            // If game over
-            if(Game_isDone(pGame)) 
+            // If game over (retry button)
+            if(Game_isDone(pGame)) {
               Page_setNext(this, "play");
 
-            // If not game over
-            else
+            // If not game over (exit button)
+            } else {
               Page_setNext(this, "menu");
+            }
 
             // Make sure the function doesn't try to access the borked component tree down there.
             return;
+          
+          // Second option
+          } else {
+
+            // If game over
+            if(Game_isDone(pGame)) {
+              
+              // Reset component tree since the game UI needs that
+              Page_resetComponents(this);
+
+              // Go to menu next
+              Page_idle(this);
+              Page_setNext(this, "menu");
+            }
           }
         }
 
@@ -186,7 +200,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
             if(Game_isDone(pGame)) {
               Page_enableComponentPopup(this, sPopupComponent);
               Page_setComponentPopupText(this, sPopupComponent, Game_endMessage(pGame));
-              Page_setComponentPopupOptions(this, sPopupComponent, "okay", "");
+              Page_setComponentPopupOptions(this, sPopupComponent, "retry", "exit.");
 
               return;
             }
