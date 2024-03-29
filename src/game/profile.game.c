@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 15:51:03
+ * @ Modified time: 2024-03-29 15:56:19
  * @ Description:
  * 
  * Executes tasks involved in-game.
@@ -72,6 +72,11 @@ void Profile_create(char *sName) {
 
     // Checks if the name has the right number of characters (3 to 20)
     if(strlen(sName) < 3 || strlen(sName) > 20) {
+        fclose(pProfiles);
+
+        // Deallocates the memory of the currently-selected profile name
+        String_kill(sCurrentProfile);
+        
         // ! todo
         // Profile_invalidName();
         return; // Exits the function
@@ -85,6 +90,11 @@ void Profile_create(char *sName) {
 
     // Checks if the number of profiles exceed the max
     if(nProfiles == PROFILES_MAX_NUM) {
+        fclose(pProfiles);
+
+        // Deallocates the memory of the currently-selected profile name
+        String_kill(sCurrentProfile);
+        
         // ! todo
         // Profile_maxNumReached();
         return; // Exits the function
@@ -94,6 +104,11 @@ void Profile_create(char *sName) {
     i = 0;
     while(*(sName + i) != '\0') {
         if(*(sName + i) < 'A' || *(sName + i) > 'Z') {
+            fclose(pProfiles);
+
+            // Deallocates the memory of the currently-selected profile name
+            String_kill(sCurrentProfile);
+
             // ! todo
             // Profile_invalidName();
             return; // Exits the function
@@ -113,6 +128,11 @@ void Profile_create(char *sName) {
 
         // Checks if the name of the to-be-created profile already exists
         if(!bNameAdded && strcmp(sName, aProfiles[i]) == 0) {
+            fclose(pProfiles);
+
+            // Deallocates the memory of the currently-selected profile name
+            String_kill(sCurrentProfile);
+
             // ! todo
             // Profile_exists();
             return; // Exits the function
@@ -270,6 +290,11 @@ void Profile_delete(char *sName) {
 
     // If no profile can be deleted
     if(nProfiles == 0) {
+        fclose(pProfiles);
+
+        // Deallocates the memory of the currently-selected profile name
+        String_kill(sCurrentProfile);
+        
         // ! todo
         // Profile_doesNotExist();
         return; // Exits the function
@@ -290,6 +315,11 @@ void Profile_delete(char *sName) {
 
     // Checks if the profile has been found
     if(dProfileIndex == -1) {
+        fclose(pProfiles);
+
+        // Deallocates the memory of the currently-selected profile name
+        String_kill(sCurrentProfile);
+        
         // ! todo
         // Profile_doesNotExist();
         return; // Exits the function
