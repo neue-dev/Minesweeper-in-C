@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 22:15:30
+ * @ Modified time: 2024-03-29 22:20:53
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -92,8 +92,8 @@ void PageHandler_login(p_obj pArgs_Page) {
       cKeyPressed = EventStore_get(this->pSharedEventStore, "key-pressed");
 
       // Retrieve the user input 
-      sUsernameField = EventStore_getString(this->pSharedEventStore, "username-input");
-      sPasswordField = EventStore_getString(this->pSharedEventStore, "password-input");
+      sUsernameField = strupr(EventStore_getString(this->pSharedEventStore, "username-input"));
+      sPasswordField = strupr(EventStore_getString(this->pSharedEventStore, "password-input"));
 
       // There's a popup
       if(Page_getUserState(this, "is-popup")) {
@@ -231,8 +231,8 @@ void PageHandler_login(p_obj pArgs_Page) {
       }
 
       // Indicate the user input on screen
-      Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "<username>");
-      Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "<password>");
+      Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "<USERNAME>");
+      Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "<PASSWORD>");
 
     break;
 

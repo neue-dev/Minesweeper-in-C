@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 21:57:01
+ * @ Modified time: 2024-03-29 22:19:35
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -89,8 +89,8 @@ void PageHandler_play(p_obj pArgs_Page) {
       cPlayFieldCount = Page_getUserState(this, "play-field-count");
 
       // Retrieve the user input 
-      sTypeField = EventStore_getString(this->pSharedEventStore, "type-input");
-      sFileordiffField = EventStore_getString(this->pSharedEventStore, "fileordiff-input");
+      sTypeField = strupr(EventStore_getString(this->pSharedEventStore, "type-input"));
+      sFileordiffField = strupr(EventStore_getString(this->pSharedEventStore, "fileordiff-input"));
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {
@@ -115,21 +115,21 @@ void PageHandler_play(p_obj pArgs_Page) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
 
           // If invalid mode
-          } else if(strcmp(sTypeField, "classic") && strcmp(sTypeField, "custom")) {
+          } else if(strcmp(sTypeField, "CLASSIC") && strcmp(sTypeField, "CUSTOM")) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: invalid game type; check whitespaces.");
 
           // If classic mode
-          } else if(!strcmp(sTypeField, "classic")) {
+          } else if(!strcmp(sTypeField, "CLASSIC")) {
             
             // It's not easy or difficult
-            if(strcmp(sFileordiffField, "easy") && 
-              strcmp(sFileordiffField, "difficult")) {
+            if(strcmp(sFileordiffField, "EASY") && 
+              strcmp(sFileordiffField, "DIFFICULT")) {
               Page_setComponentText(this, sErrorPromptComponent, "Error: classic has only [easy/difficult].");              
             
             // Proceed to a classic game
             } else {
-              if(!strcmp(sFileordiffField, "easy")) Game_setup(pGame, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY, "");
-              if(!strcmp(sFileordiffField, "difficult")) Game_setup(pGame, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT, "");
+              if(!strcmp(sFileordiffField, "EASY")) Game_setup(pGame, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY, "");
+              if(!strcmp(sFileordiffField, "DIFFICULT")) Game_setup(pGame, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT, "");
               Game_init(pGame);
 
               Page_idle(this);
@@ -137,7 +137,7 @@ void PageHandler_play(p_obj pArgs_Page) {
             }
           
           // If custom mode
-          } else if(!strcmp(sTypeField, "custom")) {
+          } else if(!strcmp(sTypeField, "CUSTOM")) {
             
             // Check for valid filename
             if(!String_isValidFilename(sFileordiffField)) {
@@ -186,8 +186,8 @@ void PageHandler_play(p_obj pArgs_Page) {
       }
 
       // Indicate the user input on screen
-      Page_setComponentText(this, sTypeComponent, strlen(sTypeField) ? sTypeField : "[classic/custom]");
-      Page_setComponentText(this, sFileordiffComponent, strlen(sFileordiffField) ? sFileordiffField : "[easy/difficult] OR <filename>");
+      Page_setComponentText(this, sTypeComponent, strlen(sTypeField) ? sTypeField : "[CLASSIC/CUSTOM]");
+      Page_setComponentText(this, sFileordiffComponent, strlen(sFileordiffField) ? sFileordiffField : "[EASY/DIFFICULT] OR <FILENAME>");
 
     break;
 
