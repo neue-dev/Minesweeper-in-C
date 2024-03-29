@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 20:26:35
+ * @ Modified time: 2024-03-29 20:49:58
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -140,7 +140,14 @@ void PageHandler_login(p_obj pArgs_Page) {
               
               // Login was NOT successful
               } else {
-                Page_setComponentText(this, sErrorPromptComponent, "Error: bad login attempt.");                
+                Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+
+                // Create a new account perhaps?
+                if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND) {
+                  Page_enableComponentPopup(this, sPopupComponent);
+                  Page_setComponentPopupText(this, sPopupComponent, "This.account.does.not.exist.\nWould.you.like.to.register.it?");
+                  Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+                }
               }
             }
 

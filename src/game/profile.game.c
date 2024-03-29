@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 20:46:22
+ * @ Modified time: 2024-03-29 20:51:21
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -459,49 +459,19 @@ char *Profile_getErrorMessage(Profile *this) {
 		case PROFILE_ERROR_TOO_MANY_EXISTING:
 			return "Error: too many existing profiles.";
 
-		case PROFILE_ERROR_NONE:
+		default:
 			return "Error: no error.";
 	}
 }
 
 /**
- * An error-handling function.
- * Operates when the number of existing profiles exceed the max (10).
+ * Returns the actual enum representing the latest error.
  * 
+ * @param		{ Profile * }			this	The profile object.
+ * @return	{ ProfileError }				What error was last encountered.	
 */
-void Profile_maxNumReached() {
-    // TODO: Code this function considering the GUI.
-    //       Display the error message.
-}
-
-/**
- * An error-handling function.
- * Operates when the user inputs an invalid profile name.
- * 
-*/
-void Profile_invalidName() {
-    // TODO: Code this function considering the GUI.
-    //       Display the error message.
-}
-
-/**
- * An error-handling function.
- * Operates when the name of the to-be-created profile already exists.
- * 
-*/
-void Profile_exists() {
-    // TODO: Code this function considering the GUI.
-    //       Display the error message.
-}
-
-/**
- * An error-handling function.
- * Operates when the name of the to-be-selected/deleted file does not exist.
- * 
-*/
-void Profile_doesNotExist() {
-    // TODO: Code this function considering the GUI.
-    //       Display the error message.
+ProfileError Profile_getErrorId(Profile *this) {
+	return this->eError;
 }
 
 #endif
