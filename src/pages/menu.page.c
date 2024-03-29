@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 23:45:02
+ * @ Modified time: 2024-03-30 00:04:50
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -34,7 +34,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
   char *sSelectorComponent = "selector.aleft-x";
   char *sCategoryTitleContainer = "cat-title.col.aleft-x.atop-y";
   char *sIndicatorContainerComponent = "indicator.col.aleft-x.atop-y";
-  char *sPromptComponent = "prompt.aright-x.atop-y";
+  char *sPromptComponent = "prompt.aleft-x.atop-y";
 
   // Variables for the title
   char *sTitle = "minez";
@@ -42,7 +42,6 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
   // Refers to assets and components
   char sTitleKey[STRING_KEY_MAX_LENGTH];
-  char sIndicatorKey[STRING_KEY_MAX_LENGTH];
   char sAssetKey[STRING_KEY_MAX_LENGTH];
 
   // User states and the selector assets
@@ -77,28 +76,26 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
       // Add the primary components to the tree
       Page_addComponentContext(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
-      Page_addComponentAsset(this, sTitleComponent, sMenuComponent, 64, 3, "secondary-lighten-0.1", "", sTitleKey);
-      Page_addComponentAsset(this, sGridComponent, sMenuComponent, 0, 13, "secondary-lighten-0.9", "", "grid");
-      Page_addComponentAsset(this, sBorderComponent, sMenuComponent, dWidth - 11, 13, "secondary-lighten-0.9", "", "border");
-      Page_addComponentAsset(this, sLogoComponent, sMenuComponent, 44, 16, "secondary-lighten-0.75", "", "logo");
+      Page_addComponentAsset(this, sTitleComponent, sMenuComponent, 67, 4, "secondary-lighten-0.1", "", sTitleKey);
+      Page_addComponentAsset(this, sGridComponent, sMenuComponent, 0, 15, "secondary-lighten-0.9", "", "grid");
+      Page_addComponentAsset(this, sBorderComponent, sMenuComponent, dWidth - 11, 15, "secondary-lighten-0.9", "", "border");
+      Page_addComponentAsset(this, sLogoComponent, sMenuComponent, 47, 18, "secondary-lighten-0.75", "", "logo");
 
       // Selection area
-      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 75, 11);
+      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 75, 5);
       Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, 2, 0);
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, 0, 0);
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, -2, "accent", "accent", "selector");
-      Page_addComponentText(this, sPromptComponent, sMenuComponent, 63, 34, 
+      Page_addComponentText(this, sPromptComponent, sMenuComponent, 78, 32, 
         "secondary-lighten-0.5", "", "[tab] to browse, [enter] to select");
 
       // Add the indicators and headers
       for(i = 0; i < dMenuSelectorLength; i++) {
 
         // Create the keys first
-        String_keyAndId(sIndicatorKey, "indicator", i);
         String_keyAndStr(sAssetKey, sMenuSelectorFont, sMenuSelectors[i][0]);
 
         // Add the component
-        Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 0, 3, "secondary-lighten-0.5", "", "indicator");
         Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 1, 2, "secondary-lighten-0.83", "", sAssetKey);
       }
 
