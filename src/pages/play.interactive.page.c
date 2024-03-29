@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 03:06:20
+ * @ Modified time: 2024-03-30 03:18:15
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -36,14 +36,14 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
-  char *sHeaderComponent = "header.fixed.aleft-x.atop-y";
+  char *sHeaderComponent = "header.fixed.aleft-x.abottom-y";
   char *sLefterComponent = "lefter.fixed.aright-x.atop-y";
   char *sFooterComponent = "footer.fixed.aleft-x.atop-y";
   char *sFieldContainerComponent = "field-container.fixed";
   char *sFieldComponent = "field.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
-  char *sGamePromptComponent = "game-prompt.fixed.aleft-x.abottom-y";
-  char *sGameInfoComponent = "game-info.fixed.aleft-x.atop-y";
+  char *sGamePromptComponent = "game-prompt.fixed.aleft-x.atop-y";
+  char *sGameInfoComponent = "game-info.fixed.aleft-x.abottom-y";
   char *sProfileInfoComponent = "profile-info.fixed.aleft-x.atop-y";
   char *sPopupComponent = "popup.fixed";
 
@@ -74,9 +74,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
       
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dMargin);
+      Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dHeight / 2 - Game_getCharHeight(pGame) / 2 - dMargin / 2);
       Page_addComponentContainer(this, sLefterComponent, sPlayIComponent, dWidth / 2 + Game_getCharWidth(pGame) / 2 + dMargin * 2, dHeight / 2 - Game_getCharHeight(pGame) / 2 - 1);
-      Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dHeight - dMargin);
+      Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dHeight / 2 + Game_getCharHeight(pGame) / 2 + dMargin / 2);
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
@@ -191,6 +191,13 @@ void PageHandler_playI(p_obj pArgs_Page) {
           // Check the field if valid then save file after
           case '\n': case '\r':
 
+            // Success!
+            if(Game_isWon(pGame)) {
+              Page_enableComponentPopup(this, sPopupComponent);
+              Page_setComponentPopupText(this, sPopupComponent, "Congratulations!\nWanna.try.again?.\0");
+              Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+            }
+
             // Do the inspection algorithm
             Game_inspect(pGame, pGame->dCursorX, pGame->dCursorY);
 
@@ -205,8 +212,19 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
             // The user won
             if(Game_isWon(pGame)) {
+
+              // Change the display
+              Page_setComponentColor(this, sFieldComponent, "accent", "");
+              sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)\n\n%s (current)",
+                Profile_getCurrent(pProfile),
+                "classic", "difficult",     // ! change this
+                "0:59",                     // ! and this
+                Game_getTime(pGame));                    
+              Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
+              Page_setComponentText(this, sGamePromptComponent, "[enter]  to proceed");
+              Page_setComponentText(this, sGameInfoComponent, "Congratulations! You won.\n\n");
               
-              // Turn the grid yellow
+              // Turn the grid yellow and fill with flags
               for(x = 0; x < pGame->field.dWidth; x++) {
                 for(y = 0; y < pGame->field.dHeight; y++) {
 
