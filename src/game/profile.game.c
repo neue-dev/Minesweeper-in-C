@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 20:38:49
+ * @ Modified time: 2024-03-29 20:46:22
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -38,13 +38,14 @@ typedef enum ProfileError ProfileError;
 typedef struct Profile Profile;
 
 enum ProfileError {
-	PROFILE_ERROR_NONE,
-	PROFILE_ERROR_NO_FILE,
-	PROFILE_ERROR_NOT_FOUND,
-	PROFILE_ERROR_ALREADY_EXISTS,
-	PROFILE_ERROR_INVALID_LENGTH,
-	PROFILE_ERROR_INVALID_CHARS,
-	PROFILE_ERROR_INVALID_LOGIN,
+	PROFILE_ERROR_NONE,									// No error
+	PROFILE_ERROR_NO_FILE,							// Profiles file does not exist
+	PROFILE_ERROR_NOT_FOUND,						// Logging in into a non-existent profile
+	PROFILE_ERROR_ALREADY_EXISTS,				// Attempting to create an existing profile
+	PROFILE_ERROR_INVALID_LENGTH,				// Password or username had invalid length
+	PROFILE_ERROR_INVALID_CHARS,				// Password or username has invalid chars
+	PROFILE_ERROR_INVALID_LOGIN,				// Incorrect password for existing profile
+	PROFILE_ERROR_TOO_MANY_EXISTING,		// Too many profiles exist already
 };
 
 /**
@@ -424,6 +425,43 @@ void Profile_save(char *sName) {
     String_kill(sPath);
 
     fclose(pProfile);
+}
+
+/**
+ * Returns a description of the last error encountered by the profile object.
+ * 
+ * @param		{ Profile * }		this	The profile object.
+ * @return  { char * }						A string that describes the current error of the profile object.
+*/
+char *Profile_getErrorMessage(Profile *this) {
+	
+	// Switch between the different possible errors
+	switch(this->eError) {
+
+		case PROFILE_ERROR_NO_FILE:
+			return "Error: profiles.data.txt does not exist.";
+
+		case PROFILE_ERROR_NOT_FOUND:
+			return "Error: the account does not exist.";
+
+		case PROFILE_ERROR_INVALID_LOGIN:
+			return "Error: incorrect password.";
+
+		case PROFILE_ERROR_INVALID_LENGTH:
+			return "Error: username/password is too long or too short.";
+
+		case PROFILE_ERROR_INVALID_CHARS:
+			return "Error: username/password can only be all caps.";
+
+		case PROFILE_ERROR_ALREADY_EXISTS:
+			return "Error: the profile already exists.";
+
+		case PROFILE_ERROR_TOO_MANY_EXISTING:
+			return "Error: too many existing profiles.";
+
+		case PROFILE_ERROR_NONE:
+			return "Error: no error.";
+	}
 }
 
 /**

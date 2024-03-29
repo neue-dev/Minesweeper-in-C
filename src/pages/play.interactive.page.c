@@ -199,7 +199,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
             // The game ended
             if(Game_isDone(pGame)) {
               Page_enableComponentPopup(this, sPopupComponent);
-              Page_setComponentPopupText(this, sPopupComponent, Game_endMessage(pGame));
+              Page_setComponentPopupText(this, sPopupComponent, Game_getEndMessage(pGame));
               Page_setComponentPopupOptions(this, sPopupComponent, "retry", "exit.");
 
               return;

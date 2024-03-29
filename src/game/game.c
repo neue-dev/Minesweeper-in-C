@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-29 14:21:57
- * @ Modified time: 2024-03-29 19:09:45
+ * @ Modified time: 2024-03-29 20:40:22
+ * @ Modified time: 2024-03-29 20:40:22
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -565,7 +565,7 @@ int Game_isDone(Game *this) {
  * @param   { Game * }  this  The game object.
  * @return  { char * }        Describes how the game ended.
 */
-char *Game_endMessage(Game *this) {
+char *Game_getEndMessage(Game *this) {
   
   // Switch through different endings
   switch(this->eOutcome) {
