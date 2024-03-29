@@ -1,17 +1,11 @@
 RESET THE GAME OBJECT AFTER GAME OVER OR WHEN QUITTING??
 to save or not to save progress when quitting.
 
-REPRESENT ACCOUNT DATA IN binary
-THEME DATA DONT PUT IN BINARY SO WE CAN CHANGE IT
+add an HIGHLIGHT feature where u can check what tiles haven't been clicked
 
-Create a FAR_RIGHT, FAR_LEFT, FAR_UP, FAR_DOWN variables for flying stuff out of the screen
-There seems to be something wrong with one of the _exit() functions; IO_exit() is never called because of crash?
-PLEASE DEBUG^^
+REPRESENT ACCOUNT DATA IN binary
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
-
-LOOK FOR ALL PLACES WHERE WE INCREMENT someCount++ AFTER ADDING TO A HASHMAP OR SMTH, AND MAKE HashMap_add() return a boolean
-this way, if HashMap_add fails, we dont increment someCount++
 
 Deal with the goddamn segfault at the end
 
