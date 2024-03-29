@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 23:37:46
+ * @ Modified time: 2024-03-29 23:45:02
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -77,17 +77,17 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
       // Add the primary components to the tree
       Page_addComponentContext(this, sMenuComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
-      Page_addComponentAsset(this, sTitleComponent, sMenuComponent, 60, 3, "secondary-lighten-0.5", "", sTitleKey);
-      Page_addComponentAsset(this, sGridComponent, sMenuComponent, 0, 12, "secondary-lighten-0.8", "", "grid");
-      Page_addComponentAsset(this, sBorderComponent, sMenuComponent, dWidth - 11, 12, "secondary-lighten-0.8", "", "border");
-      Page_addComponentAsset(this, sLogoComponent, sMenuComponent, 40, 15, "secondary-lighten-0.2", "", "logo");
+      Page_addComponentAsset(this, sTitleComponent, sMenuComponent, 64, 3, "secondary-lighten-0.1", "", sTitleKey);
+      Page_addComponentAsset(this, sGridComponent, sMenuComponent, 0, 13, "secondary-lighten-0.9", "", "grid");
+      Page_addComponentAsset(this, sBorderComponent, sMenuComponent, dWidth - 11, 13, "secondary-lighten-0.9", "", "border");
+      Page_addComponentAsset(this, sLogoComponent, sMenuComponent, 44, 16, "secondary-lighten-0.75", "", "logo");
 
       // Selection area
-      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 68, 10);
+      Page_addComponentContainer(this, sSelectionComponent, sMenuComponent, 75, 11);
       Page_addComponentContainer(this, sCategoryTitleContainer, sSelectionComponent, 2, 0);
       Page_addComponentContainer(this, sIndicatorContainerComponent, sSelectionComponent, 0, 0);
       Page_addComponentAsset(this, sSelectorComponent, sIndicatorContainerComponent, 0, -2, "accent", "accent", "selector");
-      Page_addComponentText(this, sPromptComponent, sMenuComponent, 59, 33, 
+      Page_addComponentText(this, sPromptComponent, sMenuComponent, 63, 34, 
         "secondary-lighten-0.5", "", "[tab] to browse, [enter] to select");
 
       // Add the indicators and headers
@@ -99,7 +99,7 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
         // Add the component
         Page_addComponentAsset(this, sIndicatorKey, sIndicatorContainerComponent, 0, 3, "secondary-lighten-0.5", "", "indicator");
-        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 1, 2, "secondary-lighten-0.75", "", sAssetKey);
+        Page_addComponentAsset(this, sMenuSelectors[i][1], sCategoryTitleContainer, 1, 2, "secondary-lighten-0.83", "", sAssetKey);
       }
 
       // Define initial user states

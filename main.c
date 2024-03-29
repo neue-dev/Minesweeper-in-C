@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-03-29 16:10:32
+ * @ Modified time: 2024-03-29 23:39:44
  * 
  *    ▀████▄     ▄███▀▀████▀▀███▄   ▀███▀▀███▀▀▀███ ███▀▀▀███         █      
  *      ████    ████    ██    ███▄    █    ██    ▀█ █▀   ███      ▀▄█████▄▀  
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
     
     // We have no choice but to launch a new window if we wanna resize
     // Also, this doesn't work on KDE so GG (idk how to do smth similar there)
-    system("gnome-terminal --geometry=144x36 -- ./build/minesweeper.unix.o");
+    system("gnome-terminal --geometry=132x40 -- ./build/minesweeper.unix.o");
     system("./build/minesweeper.unix.o");
 
     // Reset colors and cursor in case of crash
