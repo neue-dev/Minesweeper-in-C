@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-29 22:01:12
+ * @ Modified time: 2024-03-30 00:38:35
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -11,6 +11,7 @@
 #define PAGE_PLAY_INTERACTIVE_
 
 #include "../game/game.c"
+#include "../game/profile.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -30,17 +31,20 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
   Game *pGame = (Game *) this->pSharedObject;
+  Profile *pProfile = (Profile *) pGame->pProfile;
   int dWidth, dHeight, dMargin, x, y;
 
   // Component names
   char *sPlayIComponent = "play-i.fixed";
   char *sHeaderComponent = "header.fixed.aleft-x.atop-y";
+  char *sLefterComponent = "lefter.fixed.aright-x.atop-y";
   char *sFooterComponent = "footer.fixed.aleft-x.atop-y";
   char *sFieldContainerComponent = "field-container.fixed";
   char *sFieldComponent = "field.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
   char *sGamePromptComponent = "game-prompt.fixed.aleft-x.abottom-y";
   char *sGameInfoComponent = "game-info.fixed.aleft-x.atop-y";
+  char *sProfileInfoComponent = "profile-info.fixed.aleft-x.atop-y";
   char *sPopupComponent = "popup.fixed";
 
   // For inspect components
@@ -48,6 +52,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
   char sFlagKey[STRING_KEY_MAX_LENGTH];
 
   // Some of the component contents
+  char sProfileInfoText[STRING_KEY_MAX_LENGTH];
   char sGamePromptText[STRING_KEY_MAX_LENGTH];
   char sGameInfoText[STRING_KEY_MAX_LENGTH];
 
@@ -70,11 +75,13 @@ void PageHandler_playI(p_obj pArgs_Page) {
       // Create component tree
       Page_addComponentContext(this, sPlayIComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
       Page_addComponentContainer(this, sHeaderComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dMargin);
+      Page_addComponentContainer(this, sLefterComponent, sPlayIComponent, dWidth / 2 + Game_getCharWidth(pGame) / 2 + dMargin * 2, dHeight / 2 - Game_getCharHeight(pGame) / 2 - 1);
       Page_addComponentContainer(this, sFooterComponent, sPlayIComponent, dWidth / 2 - Game_getCharWidth(pGame) / 2, dHeight - dMargin);
       Page_addComponentContainer(this, sFieldContainerComponent, sPlayIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
       Page_addComponentText(this, sGameInfoComponent, sHeaderComponent, 0, 0, "", "", "");
+      Page_addComponentText(this, sProfileInfoComponent, sLefterComponent, 0, 0, "", "", "");
       Page_addComponentText(this, sGamePromptComponent, sFooterComponent, 0, 0, "", "", "");
       Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
 
@@ -301,6 +308,13 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Game_getTime(pGame),
           Game_getMinesLeft(pGame));
         Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
+
+        // Player information text
+        sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)",
+          Profile_getCurrent(pProfile),
+          "classic", "difficult",     // ! change this
+          "0:59");                    // ! and this
+        Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
 
         // Prompt text
         sprintf(sGamePromptText, "[%s%s%s%s]   to move\n[enter]  to inspect a tile\n[%s]      to place a flag\n[esc]    to go back to menu",

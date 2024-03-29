@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
- * @ Modified time: 2024-03-29 20:40:22
- * @ Modified time: 2024-03-29 20:40:22
+ * @ Modified time: 2024-03-30 00:30:21
+ * @ Modified time: 2024-03-30 00:30:31
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -11,7 +11,7 @@
 #define GAME_
 
 #include "./field.obj.h"
-// #include "./profile.game.c"
+#include "./profile.game.c"
 // #include "./stats.game.c"
 
 #include "../utils/utils.grid.h"
@@ -62,8 +62,8 @@ enum GameOutcome {
   GAME_OUTCOME_WIN              // The game ends by the player winning
 };
 
-
 struct Game {
+  Profile *pProfile;                            // Holds information about who's currently playing
   Field field;                                  // Game field
   
   int dPauseOffset;                             // How many seconds paused in total
@@ -72,7 +72,7 @@ struct Game {
   
   time_t startTime, endTime;                    // Used for computing the time
   time_t pauseStartTime, pauseEndTime;          // Used for accounting for pauses
-  time_t frameStart, frameEnd;                  // Used for computing fps 
+  time_t frameStart, frameEnd;                  // Used for computing FPS
 
   GameType eType;
   GameDifficulty eDifficulty;   

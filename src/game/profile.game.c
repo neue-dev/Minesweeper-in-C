@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-29 22:05:47
+ * @ Modified time: 2024-03-30 00:35:22
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -75,7 +75,6 @@ void Profile_init(Profile *this) {
  * @param		{ char * }			sPassword		The password provided.
  * @return	{ int }											Whether or not the operation wass successful.
 */
-#include "../utils/utils.debug.h" //!remove
 int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 	int i, j;
 	File *pProfilesFile;
@@ -313,6 +312,8 @@ int Profile_delete(Profile *this, char *sUsername) {
 /**
  * Saves the data newly-created profile in its corresponding text file.
  * 
+ * //!! FIX THISS
+ * 
  * @param   { char * }      sName       Name of the profile.
 */
 void Profile_save(char *sName) {
@@ -406,6 +407,16 @@ ProfileError Profile_getErrorId(Profile *this) {
 */
 void Profile_setErrorId(Profile *this, ProfileError eError) {
 	this->eError = eError;
+}
+
+/**
+ * Returns the name of the currently active profile.
+ * 
+ * @param		{ Profile * }		this	The profile object.
+ * @return	{ char * }						The name of the active user.
+*/
+char *Profile_getCurrent(Profile *this) {
+	return this->sCurrentProfile;
 }
 
 #endif

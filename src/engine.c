@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-29 22:30:12
+ * @ Modified time: 2024-03-30 00:30:10
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -174,6 +174,11 @@ void Engine_init(Engine *this) {
   PageManager_givePage(&this->pageManager, "login", &this->profile);
   PageManager_givePage(&this->pageManager, "account", &this->profile);
 
+  // Bind the profile to the game object too
+  Profile_init(&this->profile);
+  this->standardGame.pProfile = &this->profile;
+  this->editorGame.pProfile = &this->profile;
+
   /**
    * Creates event listeners and handlers, alongside their mutexes
   */
@@ -223,7 +228,7 @@ void Engine_init(Engine *this) {
     0);                                           // A dummy value
 
   /**
-   * Finally, we configure the settings
+   * Finally, we configure the settings 
   */
   Settings_init(&this->eventStore, &this->themeManager);
 }
