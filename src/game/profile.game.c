@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 00:35:22
+ * @ Modified time: 2024-03-30 00:51:24
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -62,7 +62,7 @@ struct Profile {
  * @param		{ Profile * }		this	The profile object.
 */
 void Profile_init(Profile *this) {
-  strcpy(this->sCurrentProfile, "");
+  strcpy(this->sCurrentProfile, "DEV");
 	this->eError = PROFILE_ERROR_NONE;
 }
 
