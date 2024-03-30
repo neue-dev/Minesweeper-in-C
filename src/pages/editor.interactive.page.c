@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 04:16:30
+ * @ Modified time: 2024-03-30 12:08:33
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -11,6 +11,7 @@
 #define PAGE_EDITOR_INTERACTIVE_
 
 #include "../game/game.c"
+#include "../game/editor.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -197,10 +198,10 @@ void PageHandler_editorI(p_obj pArgs_Page) {
 
               // If does not have a flag
               if(!Grid_getBit(pGame->field.pMineGrid, pGame->dCursorX, pGame->dCursorY))
-                Game_addMine(pGame);
+                Editor_addMine(pGame);
               
               // If already has a flag
-              else Game_removeMine(pGame);
+              else Editor_removeMine(pGame);
             }
             
             // For each cell, check if it's been inspected, and if so, change color

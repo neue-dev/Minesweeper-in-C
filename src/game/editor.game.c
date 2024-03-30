@@ -1,10 +1,11 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 12:01:02
+ * @ Modified time: 2024-03-30 12:11:35
  * @ Description:
  * 
  * Enables the player to create a custom level.
+ * These are functions the Game class doesn't have but that the editor needs.
  */
 
 #ifndef LEVEL_EDITOR_
@@ -27,6 +28,53 @@
 
 #define LEVEL_FILE_PATH_MAX_LENGTH  (LEVEL_NAME_MAX_LENGTH + LEVELS_FOLDER_PATH_LENGTH)
 #define LEVEL_FILE_PATH_MAX_SIZE    sizeof(char)*(LEVEL_FILE_PATH_MAX_LENGTH + 2)
+
+typedef enum EditorError EditorError;
+
+enum EditorError {
+  EDITOR_ERROR_LEVEL_EXISTS,
+  EDITOR_ERROR_COULD_NOT_CREATE_FILE,
+};
+
+/**
+ * Initializes the game object.
+ * 
+ * @param   { Game * }  this  The game object.
+*/
+void Editor_setup(Game *this, char *sFilename) {
+
+  // Set the game params
+  this->eOutcome = GAME_OUTCOME_PENDING;
+  this->eType = GAME_TYPE_EDITOR;
+  this->eDifficulty = GAME_DIFFICULTY_NONE;
+  strcpy(this->sFilename, sFilename);
+
+  // The game's cursor
+  this->dCursorX = 0;
+  this->dCursorY = 0;
+}
+
+/**
+ * Sets the size of the game field.
+ * 
+ * @param   { Game * }  this      The game object.
+ * @param   { int }     dWidth    The width of the field.
+ * @param   { int }     dHeight   The height of the field.
+*/
+void Editor_init(Game *this, int dWidth, int dHeight) {
+  int x, y;
+
+  // Init the field
+  Field_init(&this->field, dWidth, dHeight);
+
+  // Mark all bits as inspectd
+  for(x = 0; x < dWidth; x++)
+    for(y = 0; y < dHeight; y++)
+      Field_inspect(&this->field, x, y);
+
+  // Compute the numbers
+  Field_setNumbers(&this->field);
+}
 
 /**
  * Creates a new custom level.
@@ -52,7 +100,7 @@ void Editor_createLevel(char *sName) {
 
         // TODO: event-handling
         // TODO: input x and y coordinates
-        Editor_placeMine(pMines, x, y);
+        // Editor_placeMine(pMines, x, y);
     }
 
     // Checks if the level is valid
@@ -87,7 +135,7 @@ void Editor_levelExists(char *sKey) {
 
         // Checks if the name already exists in the list
         if(strcmp(sName, sKey) == 0) {
-            Editor_nameExists();
+            // Editor_nameExists();
             return; // Exits the function
         }
 
@@ -132,7 +180,7 @@ void Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
 			for(j = 0; j < dWidth; j++) {
 
 					// Prints 'X' for tiles with mines and '.' for tiles without mines
-					fprintf("%c", GridgetBit(pMines, i, j) ? 'X' : '.');
+					// fprintf("%c", GridgetBit(pMines, i, j) ? 'X' : '.');
 
 					// Prints space between tiles and a new line every after each row (except the last)
 					fprintf("%c", (i == dHeight - 1 && j != dWidth - 1) ? '\n' : ' ');

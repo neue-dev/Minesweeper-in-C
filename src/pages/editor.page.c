@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 03:55:42
+ * @ Modified time: 2024-03-30 12:07:53
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -11,6 +11,7 @@
 #define PAGE_EDITOR_
 
 #include "../game/game.c"
+#include "../game/editor.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -136,8 +137,8 @@ void PageHandler_editor(p_obj pArgs_Page) {
 
           // If all the information is valid
           } else {
-            Game_setup(pGame, GAME_TYPE_EDITOR, GAME_DIFFICULTY_NONE, sFilenameField);
-            Game_initEditor(pGame, atoi(sWidthField), atoi(sHeightField));
+            Editor_setup(pGame, sFilenameField);
+            Editor_init(pGame, atoi(sWidthField), atoi(sHeightField));
 
             Page_idle(this);
             Page_setNext(this, "editor-i"); 

@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 11:59:11
+ * @ Modified time: 2024-03-30 12:05:42
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -142,28 +142,6 @@ void Game_init(Game *this) {
   }
 
   // Compute the numbers for the field
-  Field_setNumbers(&this->field);
-}
-
-/**
- * Sets the size of the game field.
- * 
- * @param   { Game * }  this      The game object.
- * @param   { int }     dWidth    The width of the field.
- * @param   { int }     dHeight   The height of the field.
-*/
-void Game_initEditor(Game *this, int dWidth, int dHeight) {
-  int x, y;
-
-  // Init the field
-  Field_init(&this->field, dWidth, dHeight);
-
-  // Mark all bits as inspectd
-  for(x = 0; x < dWidth; x++)
-    for(y = 0; y < dHeight; y++)
-      Field_inspect(&this->field, x, y);
-
-  // Compute the numbers
   Field_setNumbers(&this->field);
 }
 
