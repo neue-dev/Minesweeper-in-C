@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 18:42:20
- * @ Modified time: 2024-03-30 23:12:19
+ * @ Modified time: 2024-03-31 02:32:55
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -35,6 +35,7 @@ void Editor_setup(Game *this) {
   // The game's cursor
   this->dCursorX = 0;
   this->dCursorY = 0;
+  this->dTimeTaken = 0;
 }
 
 /**

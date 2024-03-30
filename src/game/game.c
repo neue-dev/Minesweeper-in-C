@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 02:10:45
+ * @ Modified time: 2024-03-31 02:28:04
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -93,6 +93,7 @@ struct Game {
   int dCursorX, dCursorY;                       // The cursor of the player
   int dLastX, dLastY;                           // Indicator for exploded mine
   int dFrameCount, dLastFPS;                    // FPS counter
+  int dTimeTaken;
   
   time_t startTime, endTime;                    // Used for computing the time
   time_t pauseStartTime, pauseEndTime;          // Used for accounting for pauses
@@ -132,6 +133,7 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   this->dFrameCount = 0;
   this->dLastFPS = 0;
   this->dPauseOffset = 0;
+  this->dTimeTaken = 0;
 
   // CLear the save name first
   String_clear(this->sSaveName);
@@ -579,19 +581,18 @@ int Game_isDone(Game *this) {
 */
 char *Game_getTime(Game *this) {
   char *sTimeString = String_alloc(16);
-  int dSeconds;
 
   // Update the timer ONLY if not done
   if(!Game_isDone(this))
     time(&this->endTime);
 
   // Get the difference between the times
-  dSeconds = round(difftime(this->endTime, this->startTime)) - this->dPauseOffset;
+  this->dTimeTaken = round(difftime(this->endTime, this->startTime)) - this->dPauseOffset;
 
   // Create the time string
-  sprintf(sTimeString, (dSeconds % 60) < 10 ? "%d:0%d" : "%d:%d", 
-    dSeconds / 60, 
-    dSeconds % 60);
+  sprintf(sTimeString, (this->dTimeTaken % 60) < 10 ? "%d:0%d" : "%d:%d%d", 
+    this->dTimeTaken / 60, 
+    this->dTimeTaken % 60);
 
   return sTimeString;
 }

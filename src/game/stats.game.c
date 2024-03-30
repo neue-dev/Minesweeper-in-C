@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-31 02:11:38
+ * @ Modified time: 2024-03-31 02:33:22
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -137,7 +137,7 @@ int Stats_update(Game *this) {
 	sprintf(sCustom, "-CUSTOM:%d,%d;\n", nCustomWins, nCustomLoss);
 
 	// Write the new stats of the game
-	sprintf(sGameData, ">%s,%s,%s,%d,%d;\n", 
+	sprintf(sGameData, ">%s,%s,%s,%d,%d,%d;\n", 
 		this->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
 		this->eType == GAME_TYPE_CLASSIC ? String_toUpper(this->sSaveName) : 
 			(this->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT"),
@@ -145,7 +145,8 @@ int Stats_update(Game *this) {
 			(this->eOutcome == GAME_OUTCOME_LOSS ? "LOSS" : "QUIT"),
 		
 		this->field.dWidth, 
-		this->field.dHeight);
+		this->field.dHeight,
+		this->dTimeTaken);
 
 	// Write the state of the board
 	switch(this->eOutcome) {
@@ -216,6 +217,8 @@ int Stats_update(Game *this) {
 	// Garbage collection
 	File_freeBuffer(nProfileDataLength, sProfileDataArray);
 	File_freeBuffer(nProfileNewDataLength, sProfileNewDataArray);
+
+	return 1;
 }
 
 #endif

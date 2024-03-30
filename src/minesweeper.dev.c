@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 02:08:06
+ * @ Modified time: 2024-03-31 02:32:25
  * @ Description:
  * 
  * The main game file.
@@ -54,14 +54,17 @@ int main() {
   // Profile_register(&profile, "MOD", "KLANG");
   strcpy(profile.sCurrentProfile, "MOD");
   
+  // Game_setup(&test,GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY);
   Editor_setup(&test);
   Editor_setSaveName(&test, "DEV");
   Editor_loadLevel(&test);
+
   Game_inspect(&test, 0, 0);
   Game_inspect(&test, 0, 8);
   Game_inspect(&test, 5, 2);
   Game_inspect(&test, 4, 9);
   Game_inspect(&test, 5, 9);
+  // char *bruh = Game_getTime(&test);
 
   Stats_update(&test);
 
