@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 02:43:32
- * @ Modified time: 2024-03-31 03:00:59
+ * @ Modified time: 2024-03-31 04:30:06
  * 
  * Displays the statistics of a profile.
  */
@@ -158,7 +158,7 @@ int Stats_update(Game *this) {
 					sGameGridData[i][j] = 
 						this->field.aNumbers[i][j] > -1 ? 
 							(this->field.aNumbers[i][j] > 0 ? 
-								this->field.aNumbers[i][j] + 48 : '.') : '*';		
+								this->field.aNumbers[i][j] + 48 : '.') : '^';		
 				sGameGridData[i][j] = '\n';
 			}
 		break;

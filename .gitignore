@@ -10,6 +10,7 @@ log.win.txt
 utils.debug.h
 minesweeper.win.exe
 minesweeper.unix.o
+valgrind.out
 
 # Ignore drafting files
 .draft.*
