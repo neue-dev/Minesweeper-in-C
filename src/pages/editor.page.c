@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 18:37:41
+ * @ Modified time: 2024-03-30 19:49:44
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -135,6 +135,14 @@ void PageHandler_editor(p_obj pArgs_Page) {
             atoi(sWidthField) > GAME_MAX_COLUMNS || atoi(sWidthField) < GAME_MIN_COLUMNS || 
             atoi(sHeightField) > GAME_MAX_ROWS || atoi(sHeightField) < GAME_MIN_ROWS) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: width or height is out of range.");
+
+          // Duplicate name
+          } else if(Editor_levelExists(pGame, sFilenameField)) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: level file already exists.");
+            
+          // Too many level files are registered
+          } else if(!Editor_levelAddable(pGame, sFilenameField)) {
+            Page_setComponentText(this, sErrorPromptComponent, "Error: too many level files exist already.");
 
           // If all the information is valid
           } else {

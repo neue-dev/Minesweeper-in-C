@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 18:42:20
- * @ Modified time: 2024-03-30 18:53:09
+ * @ Modified time: 2024-03-30 19:41:31
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -68,6 +68,16 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
 void Editor_setSaveName(Game *this, char *sName) {
   String_clear(this->sSaveName);
   strcpy(this->sSaveName, sName);
+}
+
+/**
+ * Gets the name of the game object.
+ * 
+ * @param   { Game * }  this    The game object.
+ * @return  { char * }  sName   The save name.
+*/
+char *Editor_getSaveName(Game *this) {
+  return this->sSaveName;
 }
 
 /**

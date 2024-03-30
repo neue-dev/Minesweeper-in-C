@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 19:30:25
+ * @ Modified time: 2024-03-30 19:41:59
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -37,6 +37,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
   char *sEditorPromptComponent = "editor-prompt.fixed.aleft-x.atop-y";
   char *sEditorInfoComponent = "editor-info.fixed.aleft-x.atop-y";
+  char *sSideInfoComponent = "side-info.fixed.aleft-x.atop-y";
   char *sPopupComponent = "popup.fixed";
 
   // For inspect components
@@ -45,6 +46,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
   // Some of the component contents
   char sEditorInfoText[STRING_KEY_MAX_LENGTH];
   char sEditorPromptText[STRING_KEY_MAX_LENGTH];
+  char sSideInfoText[STRING_KEY_MAX_LENGTH];
 
   // Buffer for minesweeper grid 
   char *sGridBuffer;
@@ -69,7 +71,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sFieldContainerComponent, sEditorIComponent, dWidth / 2, dHeight / 2);
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
-      // Page_addComponentText(this, sProfileInfoComponent, sLefterComponent, 0, 0, "", "", "");
+      Page_addComponentText(this, sSideInfoComponent, sLefterComponent, 0, 0, "", "", "");
       Page_addComponentText(this, sEditorPromptComponent, sFooterComponent, 0, 0, "", "", "");
       Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
 
@@ -252,19 +254,11 @@ void PageHandler_editorI(p_obj pArgs_Page) {
           pGame->dCursorX * GAME_CELL_WIDTH, 
           pGame->dCursorY * GAME_CELL_HEIGHT);
 
-        // Game information text
-        // sprintf(sGameInfoText, "frame rate:      %s\ntime elapsed:    %s\nmines left:      %s\n",
-        //   Game_getFPS(pGame),
-        //   Game_getTime(pGame),
-        //   Game_getMinesLeft(pGame));
-        // Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
-
-        // // Player information text
-        // sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)",
-        //   Profile_getCurrent(pProfile),
-        //   "classic", "difficult",     // ! change this
-        //   "0:59");                    // ! and this
-        // Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
+        // Player information text
+        sprintf(sSideInfoText, "%s.txt\n%d mines",
+          Editor_getSaveName(pGame),
+          Editor_countMines(pGame));                    // ! and this
+        Page_setComponentText(this, sSideInfoComponent, sSideInfoText);
 
         // Prompt text
         sprintf(sEditorPromptText, "[%s%s%s%s]   to move\n[%s]      to place a mine\n[enter]  to save file\n[esc]    to clear grid",
