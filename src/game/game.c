@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 12:30:41
+ * @ Modified time: 2024-03-30 12:47:32
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -65,14 +65,16 @@ enum GameOutcome {
 };
 
 enum EditorError {
-  EDITOR_ERROR_NONE,
-  EDITOR_ERROR_COULD_NOT_CREATE_FILE,
-  EDITOR_ERROR_INVALID_DIMENSIONS,
-  EDITOR_ERROR_INVALID_FILENAME,
-  EDITOR_ERROR_FILENAME_EXISTS,
-  EDITOR_ERROR_FILENAME_TOO_LONG,
-  EDITOR_ERROR_MINES_TOO_MANY,
-  EDITOR_ERROR_MINES_NONE,
+  EDITOR_ERROR_NONE,                    // No error
+  EDITOR_ERROR_NO_FILE,                 // Could not create file/does not exist
+  EDITOR_ERROR_INVALID_DIMENSIONS,      // Too big or too small grid
+  EDITOR_ERROR_FILENAME_INVALID,        // Invalid chars
+  EDITOR_ERROR_FILENAME_EXISTS,         // ALready exists
+  EDITOR_ERROR_FILENAME_TOO_SHORT,      // Filename too short (0 chars)
+  EDITOR_ERROR_FILENAME_TOO_LONG,       // Filename too long
+  EDITOR_ERROR_MINES_TOO_MANY,          // Full grid
+  EDITOR_ERROR_MINES_NONE,              // 0 mines
+  EDITOR_ERROR_LEVELS_TOO_MANY          // Max levels saved
 };
 
 struct Game {

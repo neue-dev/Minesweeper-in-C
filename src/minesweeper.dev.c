@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-29 12:26:07
+ * @ Modified time: 2024-03-30 12:49:47
  * @ Description:
  * 
  * The main game file.
@@ -9,6 +9,8 @@
 
 #include "./engine.c"
 #include "game/field.obj.h"
+#include "game/game.c"
+#include "game/editor.game.c"
 
 #include "utils/utils.asset.h"
 #include "utils/utils.file.h"
@@ -44,10 +46,11 @@ int main() {
   // IO_init(&io);
   // IO_exit(&io);
 
-  ThemeManager themeManager;
-  ThemeManager_init(&themeManager);
+  Game test;
+  Editor_setup(&test, "casabalanca");
+  Editor_init(&test, 10, 10);
 
-  ThemeManager_readThemeFile(&themeManager, "./src/data/themes.data.txt");
+  Editor_levelExists(&test, "casablanca");
 
   while(1);
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 12:35:13
+ * @ Modified time: 2024-03-30 12:50:01
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -13,13 +13,14 @@
 
 #include "./game.c"
 
+#include "../utils/utils.file.h"
 #include "../utils/utils.grid.h"
 
 #include <stdio.h>
 #include <string.h>
 
+#define LEVELS_MAX_COUNT (1 << 10)
 #define LEVELS_FILE_PATH "./build/levels/levels.data.txt"
-
 #define LEVELS_FOLDER_PATH "src/data/levels/"
 #define LEVELS_FOLDER_PATH_LENGTH   strlen(LEVELS_FOLDER_PATH)
 
@@ -109,40 +110,46 @@ int Editor_register(Game* this, char *sFilename) {
 /**
  * Checks if a certain level already exists.
  * 
- * @param   { char * }  sKey   Name of the level to search for.
+ * @param   { Game * }  this        The game object to read data from.
+ * @param   { char * }  sLevelKey   Name of the level to search for.
+ * @return  { int }                 Whether or not the operation was successful.
 */
-int Editor_levelExists(char *sKey) {
+int Editor_levelExists(Game *this, char *sLevelKey) {
+  int i;
 
-    // Opens the text file containing the list of levels
-    FILE *pLevels = fopen(LEVELS_FILE_PATH, "r");
+  // Stores the data of the levels file
+  File *pLevelsFile;
+  int nLevelsCount = 0;
+  char *sLevelsArray[LEVELS_MAX_COUNT + 1];
 
-    if(pLevels == NULL)
-        return; // TODO: error-handling
-    
-    // Concatinates the key's string with \n, considering that fgets does this.
-    // This is to prevent runtime errors with strcmp().
-    strcat(sKey, "\n");
-
-    // Name of the level to be checked
-    char *sName = String_alloc(LEVEL_NAME_MAX_LENGTH);
-
-    while(!feof(pLevels)) {
-        fgets(sName, LEVEL_NAME_MAX_SIZE, pLevels);
-
-        // Checks if the name already exists in the list
-        if(strcmp(sName, sKey) == 0) {
-            // Editor_nameExists();
-            return; // Exits the function
-        }
-
+  // Check if file exists first
+  if(!File_exists(LEVELS_FILE_PATH)) {
+    if(!File_newFile(LEVELS_FILE_PATH)) {
+      this->eError;
+      return 0;
     }
+  }
 
-    // Deallocates the memory of the name's string
-    String_kill(sName);
+  // Refers to the file we want
+  pLevelsFile = File_create(LEVELS_FILE_PATH);
 
-    fclose(pLevels);
+  // Read the text inside
+  File_readText(pLevelsFile, LEVELS_MAX_COUNT + 1, &nLevelsCount, sLevelsArray);
 
+  // Too many levels already
+  if(nLevelsCount + 1 > LEVELS_MAX_COUNT) {
+    this->eError = EDITOR_ERROR_LEVELS_TOO_MANY;
+    return 0;
+  }
 
+  printf("Hello world\n");
+
+  // Output all the contents
+  for(i = 0; i < nLevelsCount; i++) {
+    printf(sLevelsArray[i]);
+  }
+
+  return 1;
 }
 
 /**

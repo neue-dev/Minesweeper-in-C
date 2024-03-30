@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 01:05:23
+ * @ Modified time: 2024-03-30 12:54:45
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -20,13 +20,7 @@
 
 
 #define PROFILES_FILE_PATH "./src/data/profiles.data.txt"
-#define GAME_FILE_PATH  "./src/data/game.data.txt"
 #define PROFILE_FOLDER_PATH "./src/data/profiles/"
-#define PROFILE_FOLDER_PATH_LENGTH strlen(PROFILE_FOLDER_PATH)
-
-// +4 includes ".txt"
-#define PROFILE_FILE_PATH_MAX_LENGTH (PROFILE_FOLDER_PATH_LENGTH + PROFILE_USERNAME_MAX_LENGTH + 4)
-#define PROFILE_FILE_PATH_MAX_SIZE sizeof(char)*(PROFILE_FILE_PATH_MAX_LENGTH + 1)
 
 #define PROFILES_MAX_NUM 10
 #define PROFILES_MAX_GAMES (1 << 12)
@@ -320,39 +314,39 @@ int Profile_delete(Profile *this, char *sUsername) {
  * @param   { char * }      sName       Name of the profile.
 */
 void Profile_save(char *sName) {
-    int i;
+    // int i;
 
-    // Path of the profile's text file
-    char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
+    // // Path of the profile's text file
+    // char *sPath = String_alloc(PROFILE_FILE_PATH_MAX_LENGTH);    
 
-    // Completes the file path of the profile's text file
-    snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", PROFILE_FOLDER_PATH, sName);
+    // // Completes the file path of the profile's text file
+    // snprintf(sPath, PROFILE_FILE_PATH_MAX_SIZE, "%s%s.txt", PROFILE_FOLDER_PATH, sName);
 
-    // Creates and opens the profile's text file
-    FILE *pProfile = fopen(sPath, "w");
+    // // Creates and opens the profile's text file
+    // FILE *pProfile = fopen(sPath, "w");
 
-    // Prints the profile's name on the file
-    fprintf(pProfile, "%s\n", sName);
+    // // Prints the profile's name on the file
+    // fprintf(pProfile, "%s\n", sName);
 
-    // Prints the initial number of games won for each game type
-    // Respective game types: Classic - Easy, Classic - Difficult, Custom
-    fprintf(pProfile, "0 0 0\n");
+    // // Prints the initial number of games won for each game type
+    // // Respective game types: Classic - Easy, Classic - Difficult, Custom
+    // fprintf(pProfile, "0 0 0\n");
 
-    // Prints the initial game data of the three most recent games
-    for(i = 0; i < 3; i++) {
+    // // Prints the initial game data of the three most recent games
+    // for(i = 0; i < 3; i++) {
 
-        // Prints out the game's initial type, difficulty, outcome, and
-        //    the field's width and height
-        fprintf(pProfile, "-1 -1 -1 1 1\n");
+    //     // Prints out the game's initial type, difficulty, outcome, and
+    //     //    the field's width and height
+    //     fprintf(pProfile, "-1 -1 -1 1 1\n");
 
-        // Prints out the game's initial field
-        fprintf(pProfile, ".\n");
-    }
+    //     // Prints out the game's initial field
+    //     fprintf(pProfile, ".\n");
+    // }
 
-    // Deallocates the memory of the name's string
-    String_kill(sPath);
+    // // Deallocates the memory of the name's string
+    // String_kill(sPath);
 
-    fclose(pProfile);
+    // fclose(pProfile);
 }
 
 /**
