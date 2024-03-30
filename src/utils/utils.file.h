@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-29 21:44:19
+ * @ Modified time: 2024-03-30 20:22:56
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -263,7 +263,7 @@ int File_exists(char *sFilename) {
  * If the file already exists, it leaves it untouched.
  * Returns 1 on success, 0 on failure.
  * 
- * @param   { char * }    sFilename     The list of filenames in the directory.
+ * @param   { char * }    sFilename     The file we want to create.
  * @return  { int }                     Whether or not the operation was successful.
 */
 int File_newFile(char *sFilename) {
@@ -276,6 +276,17 @@ int File_newFile(char *sFilename) {
   // Success
   fclose(pFile);
   return 1;
+}
+
+/**
+ * Removes a new file with the specified name.
+ * Returns 1 on success, 0 on failure.
+ * 
+ * @param   { char * }    sFilename     The file we want to remove.
+ * @return  { int }                     Whether or not the operation was successful.
+*/
+int File_remove(char *sFilename) {
+  return !remove(sFilename);
 }
 
 

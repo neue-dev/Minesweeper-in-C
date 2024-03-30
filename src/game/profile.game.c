@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 15:42:17
+ * @ Modified time: 2024-03-30 20:23:38
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -33,14 +33,15 @@ typedef enum ProfileError ProfileError;
 typedef struct Profile Profile;
 
 enum ProfileError {
-	PROFILE_ERROR_NONE,									// No error
-	PROFILE_ERROR_NO_FILE,							// Profiles file does not exist
-	PROFILE_ERROR_NOT_FOUND,						// Logging in into a non-existent profile
-	PROFILE_ERROR_ALREADY_EXISTS,				// Attempting to create an existing profile
-	PROFILE_ERROR_INVALID_LENGTH,				// Password or username had invalid length
-	PROFILE_ERROR_INVALID_CHARS,				// Password or username has invalid chars
-	PROFILE_ERROR_INVALID_LOGIN,				// Incorrect password for existing profile
-	PROFILE_ERROR_TOO_MANY_EXISTING,		// Too many profiles exist already
+	PROFILE_ERROR_NONE,										// No error
+	PROFILE_ERROR_NO_FILE,								// Profiles file does not exist
+	PROFILE_ERROR_NOT_FOUND,							// Logging in into a non-existent profile
+	PROFILE_ERROR_ALREADY_EXISTS,					// Attempting to create an existing profile
+	PROFILE_ERROR_INVALID_LENGTH,					// Password or username had invalid length
+	PROFILE_ERROR_INVALID_CHARS,					// Password or username has invalid chars
+	PROFILE_ERROR_INVALID_LOGIN,					// Incorrect password for existing profile
+	PROFILE_ERROR_TOO_MANY_EXISTING,			// Too many profiles exist already
+	PROFILE_ERROR_COULD_NOT_CREATE_FILE,	// The new file could not be created for the profile
 };
 
 /**
@@ -151,10 +152,15 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 	int i, j;
 	File *pProfilesFile;
+	File *pProfileFile;
 	
+	// Stuff about the new profile
+	char *sNewProfile[1];
+	char *sNewProfilePath;
+
+	// Stuff about existing profiles
 	int nProfileCount = 0;
 	char sProfileEntry[PROFILE_USERNAME_MAX_LENGTH + 1];
-	char *sNewProfile[1];
 	char *sProfilesArray[PROFILES_MAX_NUM + 1];
 
 	// Name was of invalid size
@@ -231,6 +237,16 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 		}
 	}
 
+	// Create a new file for that user
+	sNewProfilePath = String_alloc(PROFILE_USERNAME_MAX_LENGTH + strlen(PROFILE_FOLDER_PATH) + 15);
+	sprintf(sNewProfilePath, "%s%s.txt", PROFILE_FOLDER_PATH, sUsername);
+	
+	// If file could not be made
+	if(!File_newFile(sNewProfilePath)) {
+		this->eError = PROFILE_ERROR_COULD_NOT_CREATE_FILE;
+		return 0;
+	}
+
 	// Otherwise, append the profile to the file
 	strcat(sNewProfile[0], ";");
 	strcat(sNewProfile[0], sPassword);
@@ -240,6 +256,7 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 	// Garbage collection
 	File_kill(pProfilesFile);
 	String_kill(sNewProfile[0]);
+	String_kill(sNewProfilePath);
 
 	// Successful
 	return 1;
@@ -255,9 +272,12 @@ int Profile_delete(Profile *this, char *sUsername) {
 	int i, j;
 	File *pProfilesFile;
 
+	// Stuff about the current username
+	char *sProfilePath;
+	char sProfileUsername[PROFILE_USERNAME_MAX_LENGTH + 1];
+	
 	// Store the profiles read from the file
 	int nProfileCount = 0;
-	char sProfileUsername[PROFILE_USERNAME_MAX_LENGTH + 1];
 	char *sProfileEntry[1];
 	char *sProfilesArray[PROFILES_MAX_NUM];
 
@@ -294,7 +314,15 @@ int Profile_delete(Profile *this, char *sUsername) {
 		String_kill(sProfileEntry[0]);
 	}
 
-	// ! TODO DESTROY THE PROFILE FILE ASSOCIATED WITH THE USER
+	// Delete the file for the user
+	sProfilePath = String_alloc(PROFILE_USERNAME_MAX_LENGTH + strlen(PROFILE_FOLDER_PATH) + 15);
+	sprintf(sProfilePath, "%s%s.txt", PROFILE_FOLDER_PATH, sUsername);
+	
+	// Try to delete file, throw error otherwise
+	if(!File_remove(sProfilePath)) {
+		this->eError = PROFILE_ERROR_NOT_FOUND;
+		return 0;
+	}
 
 	// Set the current profile to an empty string
 	strcpy(this->sCurrentProfile, "");
@@ -380,6 +408,9 @@ char *Profile_getErrorMessage(Profile *this) {
 
 		case PROFILE_ERROR_TOO_MANY_EXISTING:
 			return "Error: too many existing profiles.";
+
+		case PROFILE_ERROR_COULD_NOT_CREATE_FILE:
+			return "Error: could not create file for profile.";
 
 		default:
 			return "Error: no error?";
