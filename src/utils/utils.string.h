@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-29 21:33:45
+ * @ Modified time: 2024-03-30 20:02:38
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -360,6 +360,27 @@ int String_isValidChar(char c) {
         return 0;
       return 1;
   }
+}
+
+/**
+ * Leaves the original string untouched.
+ * Replaces every instance of a character with another character.
+ * 
+ * @param   { char * }  string  The string to modify.
+ * @param   { char }    cOld    The character to replace.
+ * @param   { char }    cNew    The new character to use.
+ * @return  { char * }          The modified string.
+*/
+char *String_replace(char *string, char cOld, char cNew) {
+  char *outString = String_alloc(strlen(string) + 1);
+  
+  // Replace chars
+  while(*string) {
+    sprintf(outString, "%s%c", outString, *string == cOld ? cNew : *string);
+    string++;
+  }
+
+  return outString;
 }
 
 // You are in Windows

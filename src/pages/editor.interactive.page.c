@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 19:41:59
+ * @ Modified time: 2024-03-30 19:57:22
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -138,7 +138,10 @@ void PageHandler_editorI(p_obj pArgs_Page) {
 
                 // Save the file first
                 if(!Editor_register(pGame)) {
-                  
+                  Page_enableComponentPopup(this, sPopupComponent);
+                  Page_setComponentPopupText(this, sPopupComponent, String_replace(Editor_getErrorMessage(pGame), ' ', '.'));
+                  Page_setComponentPopupOptions(this, sPopupComponent, "okay", "", "secondary", "accent");
+                  Page_setUserState(this, "popup-action", 2);
 
                 // Reset component tree since the game UI needs that
                 // Then exit to editor interface
@@ -167,6 +170,11 @@ void PageHandler_editorI(p_obj pArgs_Page) {
               // Yes option (no option does nothing)
               if(Page_readComponentPopup(this, sPopupComponent) == 0)
                 Editor_clearMines(pGame); 
+            break;
+
+            // Error with edited grid
+            case 2:
+
             break;
           }
         }
@@ -257,7 +265,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
         // Player information text
         sprintf(sSideInfoText, "%s.txt\n%d mines",
           Editor_getSaveName(pGame),
-          Editor_countMines(pGame));                    // ! and this
+          Editor_countMines(pGame));
         Page_setComponentText(this, sSideInfoComponent, sSideInfoText);
 
         // Prompt text
