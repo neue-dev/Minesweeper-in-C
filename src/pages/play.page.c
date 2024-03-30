@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 13:56:38
+ * @ Modified time: 2024-03-30 14:45:53
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -146,15 +146,16 @@ void PageHandler_play(p_obj pArgs_Page) {
               Page_setComponentText(this, sErrorPromptComponent, "Error: invalid filename for custom game.");              
             
             // Check if file exists
-            // ! todo
-            } else if(0) {
+            } else if(!Editor_levelExists(pGame, sFileordiffField)) {
               Page_setComponentText(this, sErrorPromptComponent, "Error: file not found for custom game.");              
 
             // Proceed to custom game
             } else {
-              // ! todo, configure game here
+              Game_setup(pGame, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE);
+              Editor_loadLevel(pGame, sFileordiffField);
+              
               Page_idle(this);
-              Page_setNext(this, "menu"); 
+              Page_setNext(this, "play-i"); 
             }
           }
         break;

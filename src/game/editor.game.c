@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 13:55:55
- * @ Modified time: 2024-03-30 14:39:05
+ * @ Modified time: 2024-03-30 14:55:31
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -241,11 +241,21 @@ int Editor_loadLevel(Game *this, char *sLevelName) {
   nRows = atoi(sRows);
   nColumns = atoi(sColumns);
 
+  // Init the field
+  Field_init(&this->field, nColumns, nRows);
+
   // Iterate through the content array
-  for(i = 0; i < nRows; i++)
-    for(j = 0; j < nColumns; j++)
-      if(sLevelArray[i][j] == 'X')
-        Grid_setBit(this->field.pMineGrid, j, i, 1);
+  for(i = 1; i <= nRows; i++) {
+    for(j = 0; j < nColumns; j++) {
+      if(sLevelArray[i][j] == 'X') {
+        Grid_setBit(this->field.pMineGrid, j, i - 1, 1);
+        this->field.dMines++;
+      }
+    }
+  }
+
+  // Init the game
+  Game_init(this);
 
   // Clean up then return
   File_kill(pLevelFile);
@@ -303,7 +313,7 @@ int Editor_saveLevel(Game *this, char *sLevelName) {
   }
 
 	// Write the data
-  File_writeText(pLevelFile, nRows, sLevelArray);
+  File_writeText(pLevelFile, nRows + 1, sLevelArray);
 
   // Garbage collection
   for(i = 0; i <= nRows; i++)

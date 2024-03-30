@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 14:02:24
+ * @ Modified time: 2024-03-30 14:44:28
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -151,11 +151,6 @@ void Game_init(Game *this) {
       Field_init(&this->field, GAME_DIFFICULT_COLUMNS, GAME_DIFFICULT_ROWS);
       Field_populateRandom(&this->field, GAME_DIFFICULT_MINES);
     }
-  
-  // Custom mode
-  } else {
-    // ! change this later,, read from file instead
-    Field_init(&this->field, 10, 10);
   }
 
   // Compute the numbers for the field
