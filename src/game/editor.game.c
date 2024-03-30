@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 18:42:20
- * @ Modified time: 2024-03-30 19:41:31
+ * @ Modified time: 2024-03-30 23:12:19
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -126,6 +126,7 @@ int Editor_levelExists(Game *this, char *sLevelName) {
     // The same name (the file exists)
     if(!strcmp(sLevelEntry, sLevelName)) {
       File_kill(pLevelsFile);
+      File_freeBuffer(nLevelsCount, sLevelsArray);
       this->eError = EDITOR_ERROR_FILENAME_EXISTS;
       return 1;
     }
@@ -133,6 +134,7 @@ int Editor_levelExists(Game *this, char *sLevelName) {
 
   // Clean up
   File_kill(pLevelsFile);
+  File_freeBuffer(nLevelsCount, sLevelsArray);
 
   // Filename does not yet exist
   return 0;
@@ -175,12 +177,14 @@ int Editor_levelAddable(Game *this, char *sLevelName) {
   // Too many levels already
   if(nLevelsCount + 1 > LEVELS_MAX_COUNT) {
     File_kill(pLevelsFile);
+    File_freeBuffer(nLevelsCount, sLevelsArray);
     this->eError = EDITOR_ERROR_LEVELS_TOO_MANY;
     return 0;
   }
   
   // Clean up
   File_kill(pLevelsFile);
+  File_freeBuffer(nLevelsCount, sLevelsArray);
 
   // File can be added
   return 1;
@@ -281,6 +285,7 @@ int Editor_loadLevel(Game *this) {
 
   // Clean up then return
   File_kill(pLevelFile);
+  File_freeBuffer(nRows, sLevelArray);
   return 1;
 }
 

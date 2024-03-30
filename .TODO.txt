@@ -1,3 +1,4 @@
+NOTIFY USERS HOW TO EXIT PROGRAM
 RESET THE GAME OBJECT AFTER GAME OVER OR WHEN QUITTING??
 to save or not to save progress when quitting.
 

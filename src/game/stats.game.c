@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-30 20:27:23
+ * @ Modified time: 2024-03-30 23:10:52
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -22,8 +22,105 @@
  * 
  * @param		{ Game * }	pGame		The game object.
 */
-void Stats_saveGame(Game *pGame) {
+void Stats_update(Game *pGame) {
+	int i, j;
+
+	// The profile file
+	char *sProfilePath;
 	File *pProfileFile;
+
+	// The general stats
+	int nClassicEasyWins = 0, nClassicDifficultWins = 0, nCustomWins = 0;
+	int nClassicEasyLoss = 0, nClassicDifficultLoss = 0, nCustomLoss = 0;
+	char sClassicEasy[32] = { 0 }, sClassicDifficult[32] = { 0 }, sCustom[32] = { 0 };
+
+	// The data in the profile file
+	int nProfileDataLength = 0;
+	int nProfileNewDataLength = 0;
+	char *sProfileDataArray[PROFILE_FILE_MAX_HEIGHT + 1];
+	char *sProfileNewDataArray[PROFILE_FILE_MAX_HEIGHT + 1];
+
+	// Path to the profile
+	sProfilePath = String_alloc(PROFILE_USERNAME_MAX_LENGTH + strlen(PROFILE_FOLDER_PATH) + 8);
+	sprintf(sProfilePath, "%s%s.txt", PROFILE_FOLDER_PATH, pGame->pProfile->sCurrentProfile);
+	
+	// If file doesn't exist, exit
+	if(!File_exists(sProfilePath))
+		return;
+
+	// New profile file
+	pProfileFile = File_create(sProfilePath);
+
+	// Read the file
+	File_readText(pProfileFile, PROFILE_FILE_MAX_HEIGHT + 1, &nProfileDataLength, sProfileDataArray);
+	nProfileNewDataLength = nProfileDataLength;
+
+	// Read the file header
+	for(i = 0; i < PROFILE_FILE_HEADER_HEIGHT; i++) {
+		j = 0;
+
+		// Skip the name
+		while(sProfileDataArray[i][++j] != ':');
+
+		// Read each win parameter
+		String_clear(sClassicEasy);
+		String_clear(sClassicDifficult);
+		String_clear(sCustom);
+		
+		while(sProfileDataArray[i][++j] != ',') {
+			switch(i) {
+				case 0: sprintf(sClassicEasy, "%s%c", sClassicEasy, sProfileDataArray[i][j]); break;
+				case 1: sprintf(sClassicDifficult, "%s%c", sClassicDifficult, sProfileDataArray[i][j]); break;
+				case 2: sprintf(sCustom, "%s%c", sCustom, sProfileDataArray[i][j]); break;
+				default: break;
+			}
+		}
+
+		switch(i) {
+			case 0: nClassicEasyWins = atoi(sClassicEasy); break;
+			case 1: nClassicDifficultWins = atoi(sClassicDifficult); break;
+			case 2: nCustomWins = atoi(sCustom); break;
+			default: break;
+		}
+
+		// Read each loss parameter
+		String_clear(sClassicEasy);
+		String_clear(sClassicDifficult);
+		String_clear(sCustom);
+		
+		while(sProfileDataArray[i][++j] != ';') {
+			switch(i) {
+				case 0: sprintf(sClassicEasy, "%s%c", sClassicEasy, sProfileDataArray[i][j]); break;
+				case 1: sprintf(sClassicDifficult, "%s%c", sClassicDifficult, sProfileDataArray[i][j]); break;
+				case 2: sprintf(sCustom, "%s%c", sCustom, sProfileDataArray[i][j]); break;
+				default: break;
+			}
+		}
+
+		switch(i) {
+			case 0: nClassicEasyLoss = atoi(sClassicEasy); break;
+			case 1: nClassicDifficultLoss = atoi(sClassicDifficult); break;
+			case 2: nCustomLoss = atoi(sCustom); break;
+			default: break;
+		}
+	}
+
+	// Update the player stats
+	sprintf(sClassicEasy, "-CLASSIC_EASY:%d,%d;\n", nClassicEasyWins + 1, nClassicEasyLoss);
+	sprintf(sClassicDifficult, "-CLASSIC_DIFFICULT:%d,%d;\n", nClassicDifficultWins + 1, nClassicDifficultLoss);
+	sprintf(sCustom, "-CUSTOM:%d,%d;\n", nCustomWins, nCustomLoss + 1);
+
+	sProfileNewDataArray[0] = String_create(sClassicEasy);
+	sProfileNewDataArray[1] = String_create(sClassicDifficult);
+	sProfileNewDataArray[2] = String_create(sCustom);
+
+	// Rewrite the file contents
+	File_clear(pProfileFile);
+	File_writeText(pProfileFile, nProfileNewDataLength, sProfileNewDataArray);
+
+	// Garbage collection
+	File_freeBuffer(nProfileDataLength, sProfileDataArray);
+	File_freeBuffer(nProfileNewDataLength, sProfileNewDataArray);
 }
 
 /**

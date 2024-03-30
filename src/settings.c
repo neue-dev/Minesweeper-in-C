@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-25 19:43:14
- * @ Modified time: 2024-03-30 20:34:12
+ * @ Modified time: 2024-03-30 21:57:02
  * @ Description:
  * 
  * Stores some important settings for keybinds and what not.

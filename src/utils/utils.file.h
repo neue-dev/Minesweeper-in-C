@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-30 20:22:56
+ * @ Modified time: 2024-03-30 23:10:15
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -289,5 +289,18 @@ int File_remove(char *sFilename) {
   return !remove(sFilename);
 }
 
+/**
+ * Frees a buffer that a file created.
+ * Must be called after File_readText().
+ * 
+ * @param   { int }     n           How many lines the buffer has.
+ * @param   { char * }  sBuffer[]   The buffer we want to clear.
+*/
+void File_freeBuffer(int n, char *sBuffer[]) {
+  int i;
+
+  for(i = 0; i < n; i++)
+    String_kill(sBuffer[i]);
+}
 
 #endif

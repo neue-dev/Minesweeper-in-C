@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-30 17:44:42
+ * @ Modified time: 2024-03-30 22:20:37
  * @ Description:
  * 
  * The main game file.
@@ -10,6 +10,7 @@
 #include "./engine.c"
 #include "game/field.obj.h"
 #include "game/game.c"
+#include "game/stats.game.c"
 #include "game/editor.game.c"
 
 #include "utils/utils.asset.h"
@@ -47,15 +48,18 @@ int main() {
   // IO_exit(&io);
 
   Game test;
+  Profile profile;
+  test.pProfile = &profile;
+
+  // Profile_register(&profile, "MOD", "KLANG");
+  strcpy(profile.sCurrentProfile, "MOD");
+  
   Editor_setup(&test);
   Editor_init(&test, 10, 10);
   Field_init(&test.field, 6, 6);
   Field_populateRandom(&test.field, 30);
-  // Editor_loadLevel(&test, "R");
-
-
-  Editor_setSaveName(&test, "BROSKIE");
-  Editor_register(&test);
+  
+  Stats_update(&test);
 
   while(1);
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 20:23:38
+ * @ Modified time: 2024-03-30 23:15:59
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -21,6 +21,9 @@
 
 #define PROFILES_FILE_PATH "./src/data/profiles.data.txt"
 #define PROFILE_FOLDER_PATH "./src/data/profiles/"
+
+#define PROFILE_FILE_HEADER_HEIGHT 3
+#define PROFILE_FILE_MAX_HEIGHT (1 << 10)
 
 #define PROFILES_MAX_NUM 10
 #define PROFILES_MAX_GAMES (1 << 12)
@@ -120,6 +123,7 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 			// Invalid login
 			} else {
 				File_kill(pProfilesFile);
+				File_freeBuffer(nProfileCount, sProfilesArray);
 				this->eError = PROFILE_ERROR_INVALID_LOGIN;
 				return 0;
 			}
@@ -128,6 +132,8 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 
 	// Profile waasn't found
 	if(i == nProfileCount) {
+		File_kill(pProfilesFile);
+		File_freeBuffer(nProfileCount, sProfilesArray);
 		this->eError = PROFILE_ERROR_NOT_FOUND;
 		return 0;
 	}
@@ -137,6 +143,7 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 
 	// Garbage collection
 	File_kill(pProfilesFile);
+	File_freeBuffer(nProfileCount, sProfilesArray);
 	
 	// Successful
 	return 1;
@@ -157,6 +164,11 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 	// Stuff about the new profile
 	char *sNewProfile[1];
 	char *sNewProfilePath;
+	char *sNewProfileData[PROFILE_FILE_HEADER_HEIGHT] = {
+		"-CLASSIC_EASY:0,0;\n",
+		"-CLASSIC_DIFFICULT:0,0;\n",
+		"-CUSTOM:0,0;\n",
+	};
 
 	// Stuff about existing profiles
 	int nProfileCount = 0;
@@ -215,7 +227,9 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 	// Too many profiles exist
 	if(nProfileCount + 1 > PROFILES_MAX_NUM) {
 		File_kill(pProfilesFile);
+		File_freeBuffer(nProfileCount, sProfilesArray);
 		String_kill(sNewProfile[0]);
+		
 		this->eError = PROFILE_ERROR_TOO_MANY_EXISTING;
 		return 0;
 	}
@@ -232,20 +246,32 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 		// Compare the name
 		if(!strcmp(sProfileEntry, sUsername)) {
 			File_kill(pProfilesFile);
+			File_freeBuffer(nProfileCount, sProfilesArray);
+			String_kill(sNewProfile[0]);
+			
 			this->eError = PROFILE_ERROR_ALREADY_EXISTS;
 			return 0;
 		}
 	}
 
 	// Create a new file for that user
-	sNewProfilePath = String_alloc(PROFILE_USERNAME_MAX_LENGTH + strlen(PROFILE_FOLDER_PATH) + 15);
+	sNewProfilePath = String_alloc(PROFILE_USERNAME_MAX_LENGTH + strlen(PROFILE_FOLDER_PATH) + 8);
 	sprintf(sNewProfilePath, "%s%s.txt", PROFILE_FOLDER_PATH, sUsername);
 	
 	// If file could not be made
 	if(!File_newFile(sNewProfilePath)) {
+		File_kill(pProfilesFile);
+		File_freeBuffer(nProfileCount, sProfilesArray);
+		String_kill(sNewProfile[0]);
+		String_kill(sNewProfilePath);
+		
 		this->eError = PROFILE_ERROR_COULD_NOT_CREATE_FILE;
 		return 0;
 	}
+
+	// Write the seed data unto the file
+	pProfileFile = File_create(sNewProfilePath);
+	File_writeText(pProfileFile, PROFILE_FILE_HEADER_HEIGHT, sNewProfileData);
 
 	// Otherwise, append the profile to the file
 	strcat(sNewProfile[0], ";");
@@ -255,6 +281,7 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 
 	// Garbage collection
 	File_kill(pProfilesFile);
+	File_freeBuffer(nProfileCount, sProfilesArray);
 	String_kill(sNewProfile[0]);
 	String_kill(sNewProfilePath);
 
@@ -320,6 +347,8 @@ int Profile_delete(Profile *this, char *sUsername) {
 	
 	// Try to delete file, throw error otherwise
 	if(!File_remove(sProfilePath)) {
+		File_kill(pProfilesFile);
+		File_freeBuffer(nProfileCount, sProfilesArray);
 		this->eError = PROFILE_ERROR_NOT_FOUND;
 		return 0;
 	}
@@ -329,6 +358,7 @@ int Profile_delete(Profile *this, char *sUsername) {
 
 	// Garbage collection
 	File_kill(pProfilesFile);
+	File_freeBuffer(nProfileCount, sProfilesArray);
 	
 	// Successful
 	return 1;
