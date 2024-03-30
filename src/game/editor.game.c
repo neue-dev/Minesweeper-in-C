@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 13:55:55
- * @ Modified time: 2024-03-30 17:41:22
+ * @ Modified time: 2024-03-30 18:42:20
+ * @ Modified time: 2024-03-30 18:53:09
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -58,7 +58,6 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
   // Compute the numbers
   Field_setNumbers(&this->field);
 }
-
 
 /**
  * Sets the name of the level for saving.
@@ -437,6 +436,15 @@ void Editor_removeMine(Game *this) {
 
   // Recompute numbers
   Field_setNumbers(&this->field);
+}
+
+/**
+ * Clears the mine grid.
+ * 
+ * @param   { Game * }  this  The game object.
+*/
+void Editor_clearMines(Game *this) {
+  Field_clearMines(&this->field);
 }
 
 /**

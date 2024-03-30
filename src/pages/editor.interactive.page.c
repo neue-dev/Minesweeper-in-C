@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 17:29:00
+ * @ Modified time: 2024-03-30 18:57:59
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -70,7 +70,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
       Page_addComponentText(this, sFieldComponent, sFieldContainerComponent, 0, 0, "primary-darken-0.75", "", "");
       Page_addComponentAsset(this, sFieldCursorComponent, sFieldComponent, 0, 0, "accent", "", "field-cursor");
       // Page_addComponentText(this, sProfileInfoComponent, sLefterComponent, 0, 0, "", "", "");
-      // Page_addComponentText(this, sGamePromptComponent, sFooterComponent, 0, 0, "", "", "");
+      Page_addComponentText(this, sEditorPromptComponent, sFooterComponent, 0, 0, "", "", "");
       Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
 
       // This is stupid but LMAO
@@ -126,28 +126,46 @@ void PageHandler_editorI(p_obj pArgs_Page) {
         else if(cKeyPressed == '\n' || cKeyPressed == '\r') {
           Page_disableComponentPopup(this, sPopupComponent);
 
-          // First option
-          if(Page_readComponentPopup(this, sPopupComponent) == 0) {
+          switch(Page_getUserState(this, "popup-action")) {
 
-            // Reset component tree since the game UI needs that
-            Page_resetComponents(this);
-            Page_idle(this);
-            Page_setNext(this, "menu");
+            // When asking for file save
+            case 0:
 
-            // ! save the game here
+              // Yes option
+              if(Page_readComponentPopup(this, sPopupComponent) == 0) {
 
-            // Make sure the function doesn't try to access the borked component tree down there.
-            return;
-          
-          // Second option
-          } else {
+                // Save the file first
+                if(!Editor_register(pGame)) {
+                  
 
-            // Reset component tree since the game UI needs that
-            Page_resetComponents(this);
+                // Reset component tree since the game UI needs that
+                // Then exit to editor interface
+                } else {
+                  Page_resetComponents(this);
+                  Page_idle(this);
+                  Page_setNext(this, "editor");
+                }
 
-            // Go to menu next
-            Page_idle(this);
-            Page_setNext(this, "menu");
+                // Make sure the function doesn't try to access the borked component tree down there.
+                return;
+              
+              // No option
+              } else {
+
+                // Reset component tree since the game UI needs that, then go to menu
+                Page_resetComponents(this);
+                Page_idle(this);
+                Page_setNext(this, "menu");
+              }
+            break;
+            
+            // Asking to clear mines
+            case 1:
+              
+              // Yes option (no option does nothing)
+              if(Page_readComponentPopup(this, sPopupComponent) == 0)
+                Editor_clearMines(pGame); 
+            break;
           }
         }
 
@@ -161,9 +179,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
             Page_enableComponentPopup(this, sPopupComponent);
             Page_setComponentPopupText(this, sPopupComponent, "Clear.the.grid?");
             Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
-
-            // CLear mines
-            // !
+            Page_setUserState(this, "popup-action", 1);
           break;
 
           // Save to file or discard
@@ -171,6 +187,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
             Page_enableComponentPopup(this, sPopupComponent);
             Page_setComponentPopupText(this, sPopupComponent, "Exit.and.save.the.file?");
             Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+            Page_setUserState(this, "popup-action", 0);
           break;
 
           default:
@@ -249,14 +266,14 @@ void PageHandler_editorI(p_obj pArgs_Page) {
         //   "0:59");                    // ! and this
         // Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
 
-        // // Prompt text
-        // sprintf(sGamePromptText, "[%s%s%s%s]   to move\n[enter]  to inspect a tile\n[%s]      to place a flag\n[esc]    to go back to menu",
-        //   String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
-        //   String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
-        //   String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
-        //   String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
-        //   String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
-        // Page_setComponentText(this, sGamePromptComponent, sGamePromptText);
+        // Prompt text
+        sprintf(sEditorPromptText, "[%s%s%s%s]   to move\n[%s]      to place a mine\n[enter]  to save file\n[esc]    to clear grid",
+          String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameMoveRight(this->pSharedEventStore)),
+          String_renderEscChar(Settings_getGameToggleFlag(this->pSharedEventStore)));
+        Page_setComponentText(this, sEditorPromptComponent, sEditorPromptText);
       }
 
     break;

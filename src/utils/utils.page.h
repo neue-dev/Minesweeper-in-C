@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-29 22:11:15
+ * @ Modified time: 2024-03-30 19:05:38
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -546,13 +546,17 @@ void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char 
   sprintf(sPopupButtonCountKey, "popup-button-count-%s", sKey);
   Page_setComponentText(this, sPopupOption1Component, sOption1);
   Page_setComponentText(this, sPopupOption2Component, sOption2);
+  Page_setComponentColor(this, sPopupOption1Component, "", "");
+  Page_setComponentColor(this, sPopupOption2Component, "", "");
   
   // Move the first option to the center if Option2 doesn't exist
-  if(!strlen(sOption2)) 
+  if(!strlen(sOption2)) {
     Page_setComponentPos(this, sPopupOption1Component, strlen(sOption1) / 2, 0);
-  
+
   // Otherwise, offset it again
-  else Page_setComponentPos(this, sPopupOption1Component, -2, 0);
+  } else {
+    Page_setComponentPos(this, sPopupOption1Component, -2, 0);
+  }
 
   // Create the states of the component
   Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);

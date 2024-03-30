@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 15:17:12
+ * @ Modified time: 2024-03-30 18:37:41
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -139,6 +139,7 @@ void PageHandler_editor(p_obj pArgs_Page) {
           // If all the information is valid
           } else {
             Editor_setup(pGame);
+            Editor_setSaveName(pGame, sFilenameField);
             Editor_init(pGame, atoi(sWidthField), atoi(sHeightField));
 
             Page_idle(this);

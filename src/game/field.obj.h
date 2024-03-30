@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-29 00:21:17
+ * @ Modified time: 2024-03-30 19:06:16
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -76,6 +76,7 @@ void Field_init(Field *this, int dWidth, int dHeight) {
 */
 void Field_clearMines(Field *this) {
   Grid_clear(this->pMineGrid, 0);
+  Field_setNumbers(this);
 }
 
 /**
