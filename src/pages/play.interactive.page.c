@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 03:00:15
+ * @ Modified time: 2024-03-31 04:33:15
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -244,8 +244,9 @@ void PageHandler_playI(p_obj pArgs_Page) {
               Page_setComponentColor(this, sFieldComponent, "accent", "");
               sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)\n\n%s (current)",
                 Profile_getCurrent(pProfile),
-                "classic", "difficult",     // ! change this
-                "0:59",                     // ! and this
+                pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
+                pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
+                "0:59",                     // ! and this SAASDHASHDASD SHOW THE BEST TIME
                 Game_getTime(pGame));                    
               Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
               Page_setComponentText(this, sGamePromptComponent, "[enter]  to proceed");

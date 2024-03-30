@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 23:26:25
+ * @ Modified time: 2024-03-31 04:35:02
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -19,7 +19,7 @@
 #include <string.h>
 
 
-#define PROFILES_FILE_PATH "./src/data/profiles.data.txt"
+#define PROFILES_FILE_PATH "./src/data/profiles/profiles.data.txt"
 #define PROFILE_FOLDER_PATH "./src/data/profiles/"
 
 #define PROFILE_FILE_HEADER_HEIGHT 3

@@ -1,6 +1,0 @@
-5 15
-XXXXXXX.XXXXXXX
-...............
-XXXXXXX.XXXXXXX
-...............
-XXXXXXX.XXXXXXX
