@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 12:11:35
+ * @ Modified time: 2024-03-30 12:22:47
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LEVELS_FILE_PATH "src/data/levels.data.txt"
+#define LEVELS_FILE_PATH "./build/levels/levels.data.txt"
 
 #define LEVELS_FOLDER_PATH "src/data/levels/"
 #define LEVELS_FOLDER_PATH_LENGTH   strlen(LEVELS_FOLDER_PATH)
@@ -78,36 +78,41 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
 
 /**
  * Creates a new custom level.
+ * If the level exists, the function terminates.
  * 
- * @param   { char * }  sName   Name of the to-be-created level.
+ * @param   { char * }  sFilename   Name of the to-be-created level.
+ * @return  { int }                 Whether or not the operation was successful.
 */
-void Editor_createLevel(char *sName) {
-    int dWidth, dHeight;    // Width and height of a field
-    int x, y;               // The x and y coordinates of the tile where a mine is placed
-    Grid *pMines;           // Locations where mines are placed
-    int bFinished;          // Determines whether the level can now be saved
+int Editor_createLevel(char *sFilename) {
+  int dWidth, dHeight;    // Width and height of a field
+  int x, y;               // The x and y coordinates of the tile where a mine is placed
+  Grid *pMines;           // Locations where mines are placed
+  int bFinished;          // Determines whether the level can now be saved
 
-    // Checks if the name of the to-be-created level already exists
-    Editor_levelExists(sName);
+  // Checks if the name of the to-be-created level already exists
+  Editor_levelExists(sFilename);
 
-    // TODO: input width and height of the field
+  // TODO: input width and height of the field
 
-    // TODO: input locations where mines are to be placed
-    while(!bFinished) {
+  // TODO: input locations where mines are to be placed
+  while(!bFinished) {
 
-        // Initializes the mine grid
-        Grid_clear(pMines, 0);
+      // Initializes the mine grid
+      Grid_clear(pMines, 0);
 
-        // TODO: event-handling
-        // TODO: input x and y coordinates
-        // Editor_placeMine(pMines, x, y);
-    }
+      // TODO: event-handling
+      // TODO: input x and y coordinates
+      // Editor_placeMine(pMines, x, y);
+  }
 
-    // Checks if the level is valid
-    Editor_countMines(pMines, dWidth, dHeight);
+  // Checks if the level is valid
+  if(!Editor_countMines(pMines, dWidth, dHeight))
+    return 0;
 
-    // Saves the level according to the inputted data
-    Editor_saveLevel(sName, dWidth, dHeight, pMines);
+  // Saves the level according to the inputted data
+  if(!Editor_saveLevel(sFilename, dWidth, dHeight, pMines))
+    return 0;
+  return 1;
 }
 
 /**
@@ -157,7 +162,7 @@ void Editor_levelExists(char *sKey) {
  * @param   { int }     dHeight   The field's height.
  * @param   { Grid * }  pMines    Grid where the mines are placed.
 */
-void Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
+int Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
 	int i, j;
 
 	// Path of the custom level's file
@@ -202,6 +207,9 @@ void Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
 	fprintf(pLevels, "%s\n", sName);
 
 	fclose(pLevels);
+
+  // !to remove
+  return 0;
 }
 
 /**

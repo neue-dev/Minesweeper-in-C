@@ -7,9 +7,8 @@ REPRESENT ACCOUNT DATA IN binary
 
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
 
-Deal with the goddamn segfault at the end
+!!!!!!Deal with the goddamn segfault at the end
 
-REFACTOR YOUR CODE (the demarcations: make them less frequent and remove them when not needed in a  file ?)
 
 1. Make sure to foward declare all your functions AND typedefs (THEY SHOULD BE RIGHT AFTER THE IMPORTS BEFORE ALL OTHER CODE)
 2. Make the main file cleaner sheesh
