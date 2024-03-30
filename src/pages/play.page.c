@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 15:08:32
+ * @ Modified time: 2024-03-30 17:41:08
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -153,7 +153,8 @@ void PageHandler_play(p_obj pArgs_Page) {
             // Proceed to custom game
             } else {
               Game_setup(pGame, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE);
-              Editor_loadLevel(pGame, sFileordiffField);
+              Editor_setSaveName(pGame, sFileordiffField);
+              Editor_loadLevel(pGame);
               
               Page_idle(this);
               Page_setNext(this, "play-i"); 

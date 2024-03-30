@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-30 15:01:08
+ * @ Modified time: 2024-03-30 17:42:09
  * @ Description:
  * 
  * The main game file.
@@ -54,7 +54,8 @@ int main() {
   // Editor_loadLevel(&test, "R");
 
 
-  Editor_register(&test, "RUSSIAN-ROULETTE");
+  Editor_setSaveName(&test, "BROSKIE");
+  Editor_register(&test);
 
   while(1);
 

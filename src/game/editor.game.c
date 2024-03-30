@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 13:55:55
- * @ Modified time: 2024-03-30 15:42:09
+ * @ Modified time: 2024-03-30 17:41:22
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -18,14 +18,6 @@
 
 #include <stdio.h>
 #include <string.h>
-
-#define LEVELS_MAX_COUNT (1 << 10)
-#define LEVELS_MAX_NAME_LENGTH (1 << 8)
-#define LEVELS_MAX_PATH_LENGTH (1 << 9)
-#define LEVELS_FILE_PATH "./build/levels/.levels.data.txt"
-#ifndef LEVELS_FOLDER_PATH
-#define LEVELS_FOLDER_PATH "./build/levels/"
-#endif
 
 /**
  * Initializes the game object.
@@ -65,6 +57,18 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
 
   // Compute the numbers
   Field_setNumbers(&this->field);
+}
+
+
+/**
+ * Sets the name of the level for saving.
+ * 
+ * @param   { Game * }  this    The game object.
+ * @param   { char * }  sName   The save name.
+*/
+void Editor_setSaveName(Game *this, char *sName) {
+  String_clear(this->sSaveName);
+  strcpy(this->sSaveName, sName);
 }
 
 /**
@@ -202,14 +206,23 @@ int Editor_countMines(Game *this) {
  * Loads a level unto the game object.
  * 
  * @param   { Game * }  this        The game object to write to.
- * @param   { char * }  sLevelName  The level to load into the object.
  * @return  { int }                 Whether or not the operation was successful.
 */
-int Editor_loadLevel(Game *this, char *sLevelName) {
+int Editor_loadLevel(Game *this) {
   int i, j;
   int nRows = 0, nColumns = 0;
   char sRows[4], sColumns[4];
+  char sLevelName[LEVELS_MAX_NAME_LENGTH + 1];
   char *sLevelArray[GAME_MAX_ROWS + 1];
+
+  // Get the level name
+  strcpy(sLevelName, this->sSaveName);
+
+  // Bad file name, possibly not initialized
+  if(!strlen(sLevelName)) {
+    this->eError = EDITOR_ERROR_FILENAME_TOO_SHORT;
+    return 0;
+  }
 
   // Details about the file path and what not
   char sPath[LEVELS_MAX_PATH_LENGTH] = { 0 };
@@ -267,13 +280,22 @@ int Editor_loadLevel(Game *this, char *sLevelName) {
  * If this is called independent of Level_register, it overwrites duplicate files.
  * 
  * @param   { Game * }  this        Where to read the mine data from.
- * @param   { char * }  sLevelName  Name of the level.
  * @return  { int }                 Whether or not the operation was successful.
 */
-int Editor_saveLevel(Game *this, char *sLevelName) {
+int Editor_saveLevel(Game *this) {
 	int i, j;
+  char sLevelName[LEVELS_MAX_NAME_LENGTH + 1];
   char sPath[LEVELS_MAX_PATH_LENGTH] = { 0 };
   File *pLevelFile;
+
+  // Get the name
+  strcpy(sLevelName, this->sSaveName);
+
+  // Bad file name, possibly not initialized
+  if(!strlen(sLevelName)) {
+    this->eError = EDITOR_ERROR_FILENAME_TOO_SHORT;
+    return 0;
+  }
   
   // Some stuff about the buffer we're going to write
   int nRows = this->field.dHeight;          // How many rows we actually have
@@ -331,10 +353,20 @@ int Editor_saveLevel(Game *this, char *sLevelName) {
  * @param   { char * }  sLevelName  Name of the to-be-created level.
  * @return  { int }                 Whether or not the operation was successful.
 */
-int Editor_register(Game* this, char *sLevelName) {
+int Editor_register(Game* this) {
   int x, y;
   int dWidth = this->field.dWidth;
   int dHeight = this->field.dHeight;
+  char sLevelName[LEVELS_MAX_NAME_LENGTH + 1];
+
+  // Get the name
+  strcpy(sLevelName, this->sSaveName);
+
+  // Bad file name, possibly not initialized
+  if(!strlen(sLevelName)) {
+    this->eError = EDITOR_ERROR_FILENAME_TOO_SHORT;
+    return 0;
+  }
 
   // The new entry to write
   char *sLevelEntry[1];
@@ -362,7 +394,7 @@ int Editor_register(Game* this, char *sLevelName) {
 
   // Saves the level according to the inputted data
   // This function already sets the error too
-  if(!Editor_saveLevel(this, sLevelName)) {
+  if(!Editor_saveLevel(this)) {
     return 0;
   }
 
@@ -422,7 +454,7 @@ char *Editor_getErrorMessage(Game *this) {
       return "Error: level roster file does not exist.";
 
     case EDITOR_ERROR_FILENAME_EXISTS:
-      return "Error: level with givn name already exists.";
+      return "Error: level with given name already exists.";
 
     case EDITOR_ERROR_FILENAME_INVALID:
       return "Error: level name has invalid characters.";

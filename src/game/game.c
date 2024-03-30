@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 14:44:28
+ * @ Modified time: 2024-03-30 17:39:04
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -20,12 +20,15 @@
 
 #include <math.h>
 
+
+#define LEVELS_MAX_COUNT (1 << 10)
+#define LEVELS_MAX_NAME_LENGTH (1 << 8)
+#define LEVELS_MAX_PATH_LENGTH (1 << 9)
+#define LEVELS_FILE_PATH "./build/levels/.levels.data.txt"
+#define LEVELS_FOLDER_PATH "./build/levels/"
+
 #define GAME_CELL_HEIGHT 2
 #define GAME_CELL_WIDTH 4
-
-#ifndef LEVELS_FOLDER_PATH
-#define LEVELS_FOLDER_PATH "./build/levels/"
-#endif
 
 #define GAME_EASY_ROWS     8
 #define GAME_EASY_COLUMNS  8
@@ -84,6 +87,7 @@ enum EditorError {
 struct Game {
   Profile *pProfile;                            // Holds information about who's currently playing
   Field field;                                  // Game field
+  char sSaveName[LEVELS_MAX_NAME_LENGTH + 1];   // Used when editing a grid
   
   int dPauseOffset;                             // How many seconds paused in total
   int dCursorX, dCursorY;                       // The cursor of the player
@@ -125,6 +129,9 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   this->dFrameCount = 0;
   this->dLastFPS = 0;
   this->dPauseOffset = 0;
+
+  // CLear the save name first
+  String_clear(this->sSaveName);
 }
 
 /**
@@ -252,7 +259,7 @@ void Game_displayGrid(Game *this, char *sOutputBuffer) {
 
         // The number to be shown
         dNumber = this->field.aNumbers[y][x];
-        dNumber = dNumber < 0 ? 'X' : dNumber + 48;   // X for mines //! remove later on
+        dNumber = dNumber < 0 ? 'X' : dNumber + 48;   // X for mines
         dNumber = dNumber == 48 ? '.' : dNumber;      // Add a dot for 0's
 
         // If the cell hasn't been inspected, turn it into a space
