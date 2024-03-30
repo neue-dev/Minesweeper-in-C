@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 02:46:41
+ * @ Modified time: 2024-03-31 03:01:32
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -588,7 +588,7 @@ char *Game_getTime(Game *this) {
   this->dTimeTaken = round(difftime(this->endTime, this->startTime)) - this->dPauseOffset;
 
   // Create the time string
-  sprintf(sTimeString, (this->dTimeTaken % 60) < 10 ? "%d:0%d" : "%d:%d%d", 
+  sprintf(sTimeString, (this->dTimeTaken % 60) < 10 ? "%d:0%d" : "%d:%d", 
     this->dTimeTaken / 60, 
     this->dTimeTaken % 60);
 
