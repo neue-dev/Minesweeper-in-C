@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 04:13:54
+ * @ Modified time: 2024-03-30 11:59:11
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -427,32 +427,6 @@ void Game_addFlag (Game *this) {
 void Game_removeFlag(Game *this) {
   if(Grid_getBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY))
     Grid_setBit(this->field.pFlagGrid, this->dCursorX, this->dCursorY, 0);
-}
-
-/**
- * Adds a mine on a tile and recomputes numbers.
- * 
- * @param   { Game * }     this     The game object to be modified.
-*/
-void Game_addMine(Game *this) {
-  if(!Grid_getBit(this->field.pMineGrid, this->dCursorX, this->dCursorY))
-    Grid_setBit(this->field.pMineGrid, this->dCursorX, this->dCursorY, 1);
-
-  // Recompute numbers
-  Field_setNumbers(&this->field);
-}
-
-/**
- * Removes a mine from a tile and recomputes numbers.
- * 
- * @param   { Game * }      this      The game object to be modified.
-*/
-void Game_removeMine(Game *this) {
-  if(Grid_getBit(this->field.pMineGrid, this->dCursorX, this->dCursorY))
-    Grid_setBit(this->field.pMineGrid, this->dCursorX, this->dCursorY, 0);
-
-  // Recompute numbers
-  Field_setNumbers(&this->field);
 }
 
 /**
