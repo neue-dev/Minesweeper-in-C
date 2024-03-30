@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 12:54:45
+ * @ Modified time: 2024-03-30 13:05:28
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -96,8 +96,8 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 
 	// The profile exists
 	for(i = 0; i < nProfileCount; i++) {
-		sprintf(sProfileUsername, "");
-		sprintf(sProfilePassword, "");
+		String_clear(sProfileUsername);
+		String_clear(sProfilePassword);
 		
 		// Copy the name first without the newline
 		j = 0; 
@@ -278,7 +278,7 @@ int Profile_delete(Profile *this, char *sUsername) {
 
 	// The profile exists
 	for(i = 0; i < nProfileCount; i++) {
-		sprintf(sProfileUsername, "");
+		String_clear(sProfileUsername);
 		sProfileEntry[0] = String_create(sProfilesArray[i]);
 		
 		// Copy the name first without the newline

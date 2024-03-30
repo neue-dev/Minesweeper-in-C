@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 12:50:01
+ * @ Modified time: 2024-03-30 13:08:09
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -20,15 +20,9 @@
 #include <string.h>
 
 #define LEVELS_MAX_COUNT (1 << 10)
+#define LEVELS_MAX_NAME_LENGTH (1 << 8)
 #define LEVELS_FILE_PATH "./build/levels/levels.data.txt"
 #define LEVELS_FOLDER_PATH "src/data/levels/"
-#define LEVELS_FOLDER_PATH_LENGTH   strlen(LEVELS_FOLDER_PATH)
-
-#define LEVEL_NAME_MAX_LENGTH   100
-#define LEVEL_NAME_MAX_SIZE     sizeof(char)*(LEVEL_NAME_MAX_LENGTH + 2)    // +2 includes \n and \0
-
-#define LEVEL_FILE_PATH_MAX_LENGTH  (LEVEL_NAME_MAX_LENGTH + LEVELS_FOLDER_PATH_LENGTH)
-#define LEVEL_FILE_PATH_MAX_SIZE    sizeof(char)*(LEVEL_FILE_PATH_MAX_LENGTH + 2)
 
 /**
  * Initializes the game object.
@@ -76,17 +70,18 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
  * If the level exists, the function terminates.
  * 
  * @param   { Game * }  this        The game object to read data from.
- * @param   { char * }  sFilename   Name of the to-be-created level.
+ * @param   { char * }  sLevelName  Name of the to-be-created level.
  * @return  { int }                 Whether or not the operation was successful.
 */
-int Editor_register(Game* this, char *sFilename) {
+int Editor_register(Game* this, char *sLevelName) {
   int dWidth = this->field.dWidth;
   int dHeight = this->field.dHeight;
   int x, y;
 
   // Checks if the name of the to-be-created level already exists
-  if(Editor_levelExists(sFilename)) {
-    this->eError = EDITOR_ERROR_FILENAME_EXISTS;
+  if(!Editor_canAddLevel(this, sLevelName)) {
+    
+    // The error is already set by the above function call
     return 0;
   }
 
@@ -102,30 +97,32 @@ int Editor_register(Game* this, char *sFilename) {
   }
 
   // Saves the level according to the inputted data
-  if(!Editor_saveLevel(this, sFilename, dWidth, dHeight))
+  // This function already sets the error too
+  if(!Editor_saveLevel(this, sLevelName, dWidth, dHeight))
     return 0;
   return 1;
 }
 
 /**
- * Checks if a certain level already exists.
+ * Checks if a certain level already exists or if there are too many levels files already.
  * 
  * @param   { Game * }  this        The game object to read data from.
- * @param   { char * }  sLevelKey   Name of the level to search for.
- * @return  { int }                 Whether or not the operation was successful.
+ * @param   { char * }  sLevelName  Name of the level to search for.
+ * @return  { int }                 Whether or not the level can be added.
 */
-int Editor_levelExists(Game *this, char *sLevelKey) {
-  int i;
+int Editor_canAddLevel(Game *this, char *sLevelName) {
+  int i, j;
 
   // Stores the data of the levels file
   File *pLevelsFile;
   int nLevelsCount = 0;
+  char sLevelEntry[LEVEL_NAME_MAX_LENGTH + 1];
   char *sLevelsArray[LEVELS_MAX_COUNT + 1];
 
   // Check if file exists first
   if(!File_exists(LEVELS_FILE_PATH)) {
     if(!File_newFile(LEVELS_FILE_PATH)) {
-      this->eError;
+      this->eError = EDITOR_ERROR_NO_FILE;
       return 0;
     }
   }
@@ -142,25 +139,33 @@ int Editor_levelExists(Game *this, char *sLevelKey) {
     return 0;
   }
 
-  printf("Hello world\n");
-
   // Output all the contents
   for(i = 0; i < nLevelsCount; i++) {
-    printf(sLevelsArray[i]);
+    String_clear(sLevelEntry);
+
+    // Copy the name
+    j = 0;
+    while(sLevelsArray[i][j] != ';')
+      sprintf(sLevelEntry, "%s%c", sLevelEntry, sLevelsArray[i][j++]);
+
+    // The same name
+    if(!strcmp(sLevelEntry, sLevelName)) {
+      this->eError = EDITOR_ERROR_FILENAME_EXISTS;
+      return 0;
+    }
   }
 
+  // Filename does not yet exist
   return 1;
 }
 
 /**
  * Sets the size of a field.
  * 
- * @param   { char * }  sName     Name of the level.
- * @param   { int }     dWidth    The field's width.
- * @param   { int }     dHeight   The field's height.
- * @param   { Grid * }  pMines    Grid where the mines are placed.
+ * @param   { Game * }  this        Where to read the mine data from.
+ * @param   { char * }  sLevelName  Name of the level.
 */
-int Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
+int Editor_saveLevel(Game *this, char *sLevelName) {
 	// int i, j;
 
 	// // Path of the custom level's file
