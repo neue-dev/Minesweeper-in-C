@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 14:18:42
+ * @ Modified time: 2024-03-30 15:17:12
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -15,6 +15,7 @@
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
+#include "../utils/utils.string.h"
 #include "../utils/utils.component.h"
 
 /**
@@ -94,9 +95,9 @@ void PageHandler_editor(p_obj pArgs_Page) {
       cEditorFieldCount = Page_getUserState(this, "editor-field-count");
 
       // Retrieve the user input 
-      sFilenameField = EventStore_getString(this->pSharedEventStore, "filename-input");
-      sWidthField = EventStore_getString(this->pSharedEventStore, "width-input");
-      sHeightField = EventStore_getString(this->pSharedEventStore, "height-input");
+      sFilenameField = String_toUpper(EventStore_getString(this->pSharedEventStore, "filename-input"));
+      sWidthField = String_toUpper(EventStore_getString(this->pSharedEventStore, "width-input"));
+      sHeightField = String_toUpper(EventStore_getString(this->pSharedEventStore, "height-input"));
 
       // Switch based on what key was last pressed
       switch(EventStore_get(this->pSharedEventStore, "key-pressed")) {

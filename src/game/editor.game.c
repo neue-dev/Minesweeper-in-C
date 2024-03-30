@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 13:55:55
- * @ Modified time: 2024-03-30 15:02:20
+ * @ Modified time: 2024-03-30 15:42:09
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -22,7 +22,7 @@
 #define LEVELS_MAX_COUNT (1 << 10)
 #define LEVELS_MAX_NAME_LENGTH (1 << 8)
 #define LEVELS_MAX_PATH_LENGTH (1 << 9)
-#define LEVELS_FILE_PATH "./build/levels/levels.data.txt"
+#define LEVELS_FILE_PATH "./build/levels/.levels.data.txt"
 #ifndef LEVELS_FOLDER_PATH
 #define LEVELS_FOLDER_PATH "./build/levels/"
 #endif
@@ -324,7 +324,7 @@ int Editor_saveLevel(Game *this, char *sLevelName) {
 }
 
 /**
- * Registers a new custom level into the levels.data.txt file and saves it's contents in the same directory.
+ * Registers a new custom level into the .levels.data.txt file and saves it's contents in the same directory.
  * If the level exists, the function terminates.
  * 
  * @param   { Game * }  this        The game object to read data from.
@@ -405,6 +405,53 @@ void Editor_removeMine(Game *this) {
 
   // Recompute numbers
   Field_setNumbers(&this->field);
+}
+
+/**
+ * Returns a description of the most recent error from the editor.
+ * 
+ * @param   { Game * }  this  The game object.
+ * @return  { char * }        Describes how the editor failed.
+*/
+char *Editor_getErrorMessage(Game *this) {
+  
+  // Switch through different endings
+  switch(this->eError) {
+    
+    case EDITOR_ERROR_NO_FILE:
+      return "Error: level roster file does not exist.";
+
+    case EDITOR_ERROR_FILENAME_EXISTS:
+      return "Error: level with givn name already exists.";
+
+    case EDITOR_ERROR_FILENAME_INVALID:
+      return "Error: level name has invalid characters.";
+
+    case EDITOR_ERROR_FILENAME_TOO_LONG:
+    case EDITOR_ERROR_FILENAME_TOO_SHORT:
+      return "Error: level name has is too long or too short.";
+      
+    case EDITOR_ERROR_INVALID_DIMENSIONS:
+      return "Error: the specified dimensions are invalid.";
+
+    case EDITOR_ERROR_LEVELS_TOO_MANY:
+      return "Error: there are too many existing level files.";
+
+    case EDITOR_ERROR_MINES_NONE:
+      return "Error: a level must have mines.";
+
+    case EDITOR_ERROR_MINES_TOO_MANY:
+      return "Error: a level must have empty tiles.";
+
+    case EDITOR_ERROR_NOT_FOUND:
+      return "Error: the specified level does not exist.";
+
+    case EDITOR_ERROR_COULD_NOT_CREATE_FILE:
+      return "Error: could not create a level file.";
+
+    default:
+      return "Error: no error?";
+  } 
 }
 
 #endif

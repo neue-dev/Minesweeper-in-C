@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 13:50:13
+ * @ Modified time: 2024-03-30 15:42:17
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -382,7 +382,7 @@ char *Profile_getErrorMessage(Profile *this) {
 			return "Error: too many existing profiles.";
 
 		default:
-			return "Error: no error.";
+			return "Error: no error?";
 	}
 }
 
