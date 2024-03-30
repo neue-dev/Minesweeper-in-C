@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 19:31:08
+ * @ Modified time: 2024-03-30 20:28:06
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -386,7 +386,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
         Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
 
         // Prompt text
-        sprintf(sGamePromptText, "[%s%s%s%s]   to move\n[enter]  to inspect a tile\n[%s]      to place a flag\n[esc]    to go back to menu",
+        sprintf(sGamePromptText, "[%s%s%s%s]   to move\n[enter]  to inspect a tile\n[%s]      to place a flag\n[esc]    to pause or exit",
           String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
           String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
           String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-30 20:07:13
+ * @ Modified time: 2024-03-30 20:27:23
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -10,7 +10,8 @@
 #ifndef STATS_
 #define STATS_
 
-#include "profile.game.c"
+#include "./game.c"
+#include "./profile.game.c"
 
 #include "../utils/utils.string.h"
 
@@ -22,9 +23,8 @@
  * @param		{ Game * }	pGame		The game object.
 */
 void Stats_saveGame(Game *pGame) {
-	
+	File *pProfileFile;
 }
-
 
 /**
  * Saves the data of a game that had recently ended.
