@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 13:53:53
- * @ Description:
+ * @ Modified time: 2024-03-30 13:55:55
+ * @ Modified time: 2024-03-30 14:39:05
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -32,14 +32,13 @@
  * 
  * @param   { Game * }  this  The game object.
 */
-void Editor_setup(Game *this, char *sFilename) {
+void Editor_setup(Game *this) {
 
   // Set the game params
   this->eOutcome = GAME_OUTCOME_PENDING;
   this->eType = GAME_TYPE_EDITOR;
   this->eDifficulty = GAME_DIFFICULTY_NONE;
   this->eError = EDITOR_ERROR_NONE;
-  strcpy(this->sFilename, sFilename);
 
   // The game's cursor
   this->dCursorX = 0;
@@ -75,7 +74,7 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
  * @param   { char * }  sLevelName  Name of the level to search for.
  * @return  { int }                 Whether or not the level can be added.
 */
-int Editor_canAddLevel(Game *this, char *sLevelName) {
+int Editor_levelExists(Game *this, char *sLevelName) {
   int i, j;
 
   // Stores the data of the levels file
@@ -89,6 +88,68 @@ int Editor_canAddLevel(Game *this, char *sLevelName) {
     if(!File_newFile(LEVELS_FILE_PATH)) {
       this->eError = EDITOR_ERROR_NO_FILE;
       return 0;
+
+    // The file was just created
+    } else {
+      return 0;
+    }
+  }
+
+  // Refers to the file we want
+  pLevelsFile = File_create(LEVELS_FILE_PATH);
+
+  // Read the text inside
+  File_readText(pLevelsFile, LEVELS_MAX_COUNT + 1, &nLevelsCount, sLevelsArray);
+
+  // Check all the contents
+  for(i = 0; i < nLevelsCount; i++) {
+    String_clear(sLevelEntry);
+
+    // Copy the name
+    j = 0;
+    while(sLevelsArray[i][j] != ';')
+      sprintf(sLevelEntry, "%s%c", sLevelEntry, sLevelsArray[i][j++]);
+
+    // The same name (the file exists)
+    if(!strcmp(sLevelEntry, sLevelName)) {
+      File_kill(pLevelsFile);
+      this->eError = EDITOR_ERROR_FILENAME_EXISTS;
+      return 1;
+    }
+  }
+
+  // Clean up
+  File_kill(pLevelsFile);
+
+  // Filename does not yet exist
+  return 0;
+}
+
+/**
+ * Returns whether or not we can still add another level (or too much).
+ * 
+ * @param   { Game * }  this        The game object to read data from.
+ * @param   { char * }  sLevelName  Name of the level to search for.
+ * @return  { int }                 Whether or not the level can be added.
+*/
+int Editor_levelAddable(Game *this, char *sLevelName) {
+  int i, j;
+
+  // Stores the data of the levels file
+  File *pLevelsFile;
+  int nLevelsCount = 0;
+  char sLevelEntry[LEVELS_MAX_NAME_LENGTH + 1];
+  char *sLevelsArray[LEVELS_MAX_COUNT + 1];
+
+  // Check if file exists first
+  if(!File_exists(LEVELS_FILE_PATH)) {
+    if(!File_newFile(LEVELS_FILE_PATH)) {
+      this->eError = EDITOR_ERROR_NO_FILE;
+      return 0;
+
+    // The file was just created, so no entries yet
+    } else {
+      return 1;
     }
   }
 
@@ -104,28 +165,11 @@ int Editor_canAddLevel(Game *this, char *sLevelName) {
     this->eError = EDITOR_ERROR_LEVELS_TOO_MANY;
     return 0;
   }
-
-  // Check all the contents
-  for(i = 0; i < nLevelsCount; i++) {
-    String_clear(sLevelEntry);
-
-    // Copy the name
-    j = 0;
-    while(sLevelsArray[i][j] != ';')
-      sprintf(sLevelEntry, "%s%c", sLevelEntry, sLevelsArray[i][j++]);
-
-    // The same name
-    if(!strcmp(sLevelEntry, sLevelName)) {
-      File_kill(pLevelsFile);
-      this->eError = EDITOR_ERROR_FILENAME_EXISTS;
-      return 0;
-    }
-  }
-
+  
   // Clean up
   File_kill(pLevelsFile);
 
-  // Filename does not yet exist
+  // File can be added
   return 1;
 }
 
@@ -156,10 +200,61 @@ int Editor_countMines(Game *this) {
 
 /**
  * Loads a level unto the game object.
+ * 
+ * @param   { Game * }  this        The game object to write to.
+ * @param   { char * }  sLevelName  The level to load into the object.
+ * @return  { int }                 Whether or not the operation was successful.
 */
+int Editor_loadLevel(Game *this, char *sLevelName) {
+  int i, j;
+  int nRows = 0, nColumns = 0;
+  char sRows[4], sColumns[4];
+  char *sLevelArray[GAME_MAX_ROWS + 1];
+
+  // Details about the file path and what not
+  char sPath[LEVELS_MAX_PATH_LENGTH] = { 0 };
+  File *pLevelFile;
+
+  // File does not exist
+  if(!Editor_levelExists(this, sLevelName)) {
+    this->eError = EDITOR_ERROR_NOT_FOUND;
+    return 0;
+  }
+
+  // Completes the path of the level's file
+	snprintf(sPath, LEVELS_MAX_PATH_LENGTH, "%s%s.txt", LEVELS_FOLDER_PATH, sLevelName);
+
+  // Grab the file
+  pLevelFile = File_create(sPath);
+
+  // Read the file
+  File_readText(pLevelFile, GAME_MAX_ROWS + 2, &nRows, sLevelArray);
+
+  // Get the rows and columns
+  String_clear(sRows);
+  String_clear(sColumns);
+  
+  i = 0; while(sLevelArray[0][i] >= '0' && sLevelArray[0][i] <= '9') sRows[strlen(sRows)] = sLevelArray[0][i++];
+  i++; while(sLevelArray[0][i] >= '0' && sLevelArray[0][i] <= '9') sColumns[strlen(sColumns)] = sLevelArray[0][i++];
+
+  // Convert to int
+  nRows = atoi(sRows);
+  nColumns = atoi(sColumns);
+
+  // Iterate through the content array
+  for(i = 0; i < nRows; i++)
+    for(j = 0; j < nColumns; j++)
+      if(sLevelArray[i][j] == 'X')
+        Grid_setBit(this->field.pMineGrid, j, i, 1);
+
+  // Clean up then return
+  File_kill(pLevelFile);
+  return 1;
+}
 
 /**
  * Saves a level into the levels folder.
+ * If this is called independent of Level_register, it overwrites duplicate files.
  * 
  * @param   { Game * }  this        Where to read the mine data from.
  * @param   { char * }  sLevelName  Name of the level.
@@ -235,12 +330,14 @@ int Editor_register(Game* this, char *sLevelName) {
   char *sLevelEntry[1];
   File *pLevelsFile;
 
-  // Checks if the name of the to-be-created level already exists
-  if(!Editor_canAddLevel(this, sLevelName)) {
-    
-    // The error is already set by the above function call
+  // Too many levels?
+  if(!Editor_levelAddable(this, sLevelName)) 
     return 0;
-  }
+
+  // Checks if the name of the to-be-created level already exists
+  // The error is already set by the below function call
+  if(Editor_levelExists(this, sLevelName))
+    return 0;
 
   // Checks if the level is valid
   if(!Editor_countMines(this)) {

@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 13:23:44
+ * @ Modified time: 2024-03-30 14:02:24
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -69,6 +69,7 @@ enum GameOutcome {
 enum EditorError {
   EDITOR_ERROR_NONE,                    // No error
   EDITOR_ERROR_NO_FILE,                 // Could not create file/does not exist
+  EDITOR_ERROR_NOT_FOUND,               // The specified file to load does not exist
   EDITOR_ERROR_INVALID_DIMENSIONS,      // Too big or too small grid
   EDITOR_ERROR_FILENAME_INVALID,        // Invalid chars
   EDITOR_ERROR_FILENAME_EXISTS,         // ALready exists
@@ -96,7 +97,6 @@ struct Game {
   GameType eType;
   GameDifficulty eDifficulty;   
   GameOutcome eOutcome;                         // Some data about the game
-  char sFilename[STRING_FILENAME_MAX_LENGTH];   // Where the custom game might come from
 };
 
 /**
@@ -104,13 +104,12 @@ struct Game {
  * 
  * @param   { Game * }  this  The game object.
 */
-void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty, char *sFilename) {
+void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) {
 
   // Set the game params
   this->eOutcome = GAME_OUTCOME_PENDING;
   this->eType = eGameType;
   this->eDifficulty = eGameDifficulty;
-  strcpy(this->sFilename, sFilename);
 
   // The game's cursor
   this->dCursorX = 0;

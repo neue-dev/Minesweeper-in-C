@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 12:07:53
+ * @ Modified time: 2024-03-30 14:18:42
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -130,14 +130,14 @@ void PageHandler_editor(p_obj pArgs_Page) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: invalid width or height.");
 
           // If the width or height is out of range
-          // ! DONT MAKE THIS HARDCODED, STORE THESE IN MACROS IN ONE OF THE GAME FILES
-          } else if(atoi(sWidthField) > 15 || atoi(sWidthField) < 5 || 
-            atoi(sHeightField) > 10 || atoi(sHeightField) < 5) {
+          } else if(
+            atoi(sWidthField) > GAME_MAX_COLUMNS || atoi(sWidthField) < GAME_MIN_COLUMNS || 
+            atoi(sHeightField) > GAME_MAX_ROWS || atoi(sHeightField) < GAME_MIN_ROWS) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: width or height is out of range.");
 
           // If all the information is valid
           } else {
-            Editor_setup(pGame, sFilenameField);
+            Editor_setup(pGame);
             Editor_init(pGame, atoi(sWidthField), atoi(sHeightField));
 
             Page_idle(this);
