@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-30 22:20:37
+ * @ Modified time: 2024-03-31 01:38:36
  * @ Description:
  * 
  * The main game file.
@@ -55,9 +55,8 @@ int main() {
   strcpy(profile.sCurrentProfile, "MOD");
   
   Editor_setup(&test);
-  Editor_init(&test, 10, 10);
-  Field_init(&test.field, 6, 6);
-  Field_populateRandom(&test.field, 30);
+  Editor_setSaveName(&test, "DEV");
+  Editor_loadLevel(&test);
   
   Stats_update(&test);
 

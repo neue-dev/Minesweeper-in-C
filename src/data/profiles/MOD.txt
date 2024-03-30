@@ -1,3 +1,13 @@
--CLASSIC_EASY:0,0;
--CLASSIC_DIFFICULT:0,0;
--CUSTOM:0,0;
+-CLASSIC_EASY:2,0;
+-CLASSIC_DIFFICULT:2,0;
+-CUSTOM:0,2;
+>CUSTOM,DIFFICULT,QUIT,10,10;
+..........
+....X.X.X.
+.........X
+.......X.X
+..........
+X......X..
+..........
+..........
+..XX.X....

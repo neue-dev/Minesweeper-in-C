@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 23:26:04
+ * @ Modified time: 2024-03-31 01:23:33
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -638,6 +638,16 @@ char *Game_getFPS(Game *this) {
   sprintf(sFPSString, "%d fps", this->dLastFPS);
   
   return sFPSString;
+}
+
+/**
+ * Quits the current game.
+ * This sets the outcome of the game to GAME_OUTCOME_QUIT.
+ * 
+ * @param   { Game * }  this  The game object.
+*/
+void Game_quit(Game *this) {
+  this->eOutcome = GAME_OUTCOME_QUIT;
 }
 
 /**

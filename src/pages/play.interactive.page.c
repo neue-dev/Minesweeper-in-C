@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 21:54:45
+ * @ Modified time: 2024-03-31 01:23:41
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -147,6 +147,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
             
               // Yes option
               if(Page_readComponentPopup(this, sPopupComponent) == 0) {
+                Game_quit(pGame);
 
                 // Reset component tree since the game UI needs that
                 Page_resetComponents(this);
@@ -155,20 +156,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
                 // Make sure the function doesn't try to access the borked component tree down there.
                 return;
-              
-              // Second option
-              } else {
-
-                // If game over
-                if(Game_isDone(pGame)) {
-                  
-                  // Reset component tree since the game UI needs that
-                  Page_resetComponents(this);
-
-                  // Go to menu next
-                  Page_idle(this);
-                  Page_setNext(this, "menu");
-                }
               }
             break;
 
