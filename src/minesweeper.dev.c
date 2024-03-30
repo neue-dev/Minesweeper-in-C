@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 01:38:36
+ * @ Modified time: 2024-03-31 01:57:13
  * @ Description:
  * 
  * The main game file.
@@ -57,7 +57,11 @@ int main() {
   Editor_setup(&test);
   Editor_setSaveName(&test, "DEV");
   Editor_loadLevel(&test);
-  
+  Game_inspect(&test, 0, 0);
+
+  test.dCursorX = 4; test.dCursorY = 2;
+  Game_addFlag(&test);
+
   Stats_update(&test);
 
   while(1);
