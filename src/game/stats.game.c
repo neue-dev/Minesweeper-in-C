@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-31 01:59:31
+ * @ Modified time: 2024-03-31 02:11:38
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -167,11 +167,15 @@ int Stats_update(Game *this) {
 			for(i = 0; i < this->field.dHeight; i++) {
 				for(j = 0; j < this->field.dWidth; j++)
 					sGameGridData[i][j] = 
-						this->field.aNumbers[i][j] > -1 ? 
-							(this->field.aNumbers[i][j] > 0 ? 
-								this->field.aNumbers[i][j] + 48 : '.') : '*';		
+						Grid_getBit(this->field.pFlagGrid, j, i) ?
+							(Grid_getBit(this->field.pMineGrid, j, i) ? '^' : 'X') :
+								(Grid_getBit(this->field.pMineGrid, j, i) ? '*' : 
+									(this->field.aNumbers[i][j] > 0 ? this->field.aNumbers[i][j] + 48 : '.'));	
 				sGameGridData[i][j] = '\n';
 			}
+
+			// Exploded mine
+			sGameGridData[this->dLastY][this->dLastX] = '@';
 		break;
 
 		// The player quit the game

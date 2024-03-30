@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 01:23:33
+ * @ Modified time: 2024-03-31 02:10:45
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -91,6 +91,7 @@ struct Game {
   
   int dPauseOffset;                             // How many seconds paused in total
   int dCursorX, dCursorY;                       // The cursor of the player
+  int dLastX, dLastY;                           // Indicator for exploded mine
   int dFrameCount, dLastFPS;                    // FPS counter
   
   time_t startTime, endTime;                    // Used for computing the time
@@ -118,6 +119,8 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   // The game's cursor
   this->dCursorX = 0;
   this->dCursorY = 0;
+  this->dLastX = 0;
+  this->dLastY = 0;
 
   // Start the timer
   time(&this->startTime);
@@ -369,8 +372,9 @@ void Game_inspect(Game *this, int x, int y) {
   // Checks if a mine has been inspected
   if(Grid_getBit(pField->pMineGrid, x, y)) {
 
-    // Specifies the location where the mine exploded
-    this->field.aNumbers[y][x] = -2;
+    // Save the location of the blown up mine
+    this->dLastX = x;
+    this->dLastY = y;
 
     // Ends the game
     Game_end(this, GAME_OUTCOME_LOSS);
