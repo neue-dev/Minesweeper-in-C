@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 12:47:32
+ * @ Modified time: 2024-03-30 13:23:44
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -23,19 +23,21 @@
 #define GAME_CELL_HEIGHT 2
 #define GAME_CELL_WIDTH 4
 
-#define LEVELS_FILE_PATH "../data/levels.data.txt"
-#define LEVELS_FOLDER_PATH ".../build/levels/"
-
-#define LEVEL_NAME_MAX_LENGTH (1 << 4)
-#define LEVEL_PATH_MAX_SIZE strlen(LEVELS_FOLDER_PATH) + strlen(LEVELS_FILE_PATH) + sizeof(char)*5
+#ifndef LEVELS_FOLDER_PATH
+#define LEVELS_FOLDER_PATH "./build/levels/"
+#endif
 
 #define GAME_EASY_ROWS     8
 #define GAME_EASY_COLUMNS  8
 #define GAME_EASY_MINES    10
-
 #define GAME_DIFFICULT_ROWS    10
 #define GAME_DIFFICULT_COLUMNS 15 
 #define GAME_DIFFICULT_MINES   35
+
+#define GAME_MIN_ROWS 5
+#define GAME_MAX_ROWS 10
+#define GAME_MIN_COLUMNS 5
+#define GAME_MAX_COLUMNS 15
 
 typedef enum GameType GameType;
 typedef enum GameDifficulty GameDifficulty;
@@ -74,7 +76,8 @@ enum EditorError {
   EDITOR_ERROR_FILENAME_TOO_LONG,       // Filename too long
   EDITOR_ERROR_MINES_TOO_MANY,          // Full grid
   EDITOR_ERROR_MINES_NONE,              // 0 mines
-  EDITOR_ERROR_LEVELS_TOO_MANY          // Max levels saved
+  EDITOR_ERROR_LEVELS_TOO_MANY,         // Max levels saved
+  EDITOR_ERROR_COULD_NOT_CREATE_FILE    // Could not create a new file for a level
 };
 
 struct Game {

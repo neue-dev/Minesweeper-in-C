@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-30 12:49:47
+ * @ Modified time: 2024-03-30 13:41:06
  * @ Description:
  * 
  * The main game file.
@@ -49,8 +49,9 @@ int main() {
   Game test;
   Editor_setup(&test, "casabalanca");
   Editor_init(&test, 10, 10);
+  Field_populateRandom(&test.field, 10);
 
-  Editor_levelExists(&test, "casablanca");
+  Editor_saveLevel(&test, "bruh");
 
   while(1);
 

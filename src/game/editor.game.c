@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 13:08:09
+ * @ Modified time: 2024-03-30 13:39:08
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -21,8 +21,11 @@
 
 #define LEVELS_MAX_COUNT (1 << 10)
 #define LEVELS_MAX_NAME_LENGTH (1 << 8)
+#define LEVELS_MAX_PATH_LENGTH (1 << 9)
 #define LEVELS_FILE_PATH "./build/levels/levels.data.txt"
-#define LEVELS_FOLDER_PATH "src/data/levels/"
+#ifndef LEVELS_FOLDER_PATH
+#define LEVELS_FOLDER_PATH "./build/levels/"
+#endif
 
 /**
  * Initializes the game object.
@@ -66,6 +69,146 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
 }
 
 /**
+ * Checks if a certain level already exists or if there are too many levels files already.
+ * 
+ * @param   { Game * }  this        The game object to read data from.
+ * @param   { char * }  sLevelName  Name of the level to search for.
+ * @return  { int }                 Whether or not the level can be added.
+*/
+int Editor_canAddLevel(Game *this, char *sLevelName) {
+  int i, j;
+
+  // Stores the data of the levels file
+  File *pLevelsFile;
+  int nLevelsCount = 0;
+  char sLevelEntry[LEVELS_MAX_NAME_LENGTH + 1];
+  char *sLevelsArray[LEVELS_MAX_COUNT + 1];
+
+  // Check if file exists first
+  if(!File_exists(LEVELS_FILE_PATH)) {
+    if(!File_newFile(LEVELS_FILE_PATH)) {
+      this->eError = EDITOR_ERROR_NO_FILE;
+      return 0;
+    }
+  }
+
+  // Refers to the file we want
+  pLevelsFile = File_create(LEVELS_FILE_PATH);
+
+  // Read the text inside
+  File_readText(pLevelsFile, LEVELS_MAX_COUNT + 1, &nLevelsCount, sLevelsArray);
+
+  // Too many levels already
+  if(nLevelsCount + 1 > LEVELS_MAX_COUNT) {
+    this->eError = EDITOR_ERROR_LEVELS_TOO_MANY;
+    return 0;
+  }
+
+  // Check all the contents
+  for(i = 0; i < nLevelsCount; i++) {
+    String_clear(sLevelEntry);
+
+    // Copy the name
+    j = 0;
+    while(sLevelsArray[i][j] != ';')
+      sprintf(sLevelEntry, "%s%c", sLevelEntry, sLevelsArray[i][j++]);
+
+    // The same name
+    if(!strcmp(sLevelEntry, sLevelName)) {
+      this->eError = EDITOR_ERROR_FILENAME_EXISTS;
+      return 0;
+    }
+  }
+
+  // Filename does not yet exist
+  return 1;
+}
+
+/**
+ * Returns the number of mines on the field.
+ * Returns 0 if no mines or if there are too many mines.
+ * Max number of mines is dWidth * dHeight - 1.
+ * 
+ * @param   { Grid * }      pMines      Grid where the mines are placed.
+ * @return  { int }         dMines      Number of mines on the grid.
+*/
+int Editor_countMines(Game *this) {
+	int x, y;
+	int dMines = 0;		// Number of mines on the grid
+
+	// Loops through each tile
+	for(x = 0; x < this->field.dWidth; x++) {
+		for(y = 0; y < this->field.dHeight; y++) {
+
+			// Increments dMines when a mine is found
+			if(Grid_getBit(this->field.pMineGrid, x, y))
+				dMines++;
+		}
+	}
+  
+	return dMines;
+}
+
+/**
+ * Saves a level into the levels folder.
+ * 
+ * @param   { Game * }  this        Where to read the mine data from.
+ * @param   { char * }  sLevelName  Name of the level.
+ * @return  { int }                 Whether or not the operation was successful.
+*/
+int Editor_saveLevel(Game *this, char *sLevelName) {
+	int i, j;
+  char sPath[LEVELS_MAX_PATH_LENGTH] = { 0 };
+  File *pLevelFile;
+  
+  // Some stuff about the buffer we're going to write
+  int nRows = this->field.dHeight;          // How many rows we actually have
+  int nColumns = this->field.dWidth;        // How many columns we have
+  char *sLevelArray[GAME_MAX_ROWS + 1];     // The buffer that stores what we want to write
+
+	// Completes the path of the level's file
+	snprintf(sPath, LEVELS_MAX_PATH_LENGTH, "%s%s.txt", LEVELS_FOLDER_PATH, sLevelName);
+
+	// If the file could not be created
+	if(!File_newFile(sPath)) {
+    this->eError = EDITOR_ERROR_COULD_NOT_CREATE_FILE;
+    return 0;
+  }
+
+  // Grab the level file
+  pLevelFile = File_create(sPath);
+
+  // Clear the file
+  File_clear(pLevelFile);
+
+  // Append the width and height first
+  sLevelArray[0] = String_alloc(nColumns + 1);
+  sprintf(sLevelArray[0], "%d %d\n", nRows, nColumns);
+
+  // Create the data
+  for(i = 1; i <= nRows; i++) {
+    sLevelArray[i] = String_alloc(nColumns + 1);
+    
+    // Add the 'X' and '.'
+    for(j = 0; j < nColumns; j++)
+      sprintf(sLevelArray[i], "%s%c", sLevelArray[i], 
+        Grid_getBit(this->field.pMineGrid, j, i) ? 'X' : '.');
+
+    // New line
+    sprintf(sLevelArray[i], "%s%c", sLevelArray[i], '\n');
+  }
+
+	// Write the data
+  File_writeText(pLevelFile, nRows, sLevelArray);
+
+  // Garbage collection
+  for(i = 0; i <= nRows; i++)
+    String_kill(sLevelArray[i]);
+
+  return 1;
+}
+
+/**
  * Registers a new custom level into the levels.data.txt file and saves it's contents in the same directory.
  * If the level exists, the function terminates.
  * 
@@ -98,146 +241,9 @@ int Editor_register(Game* this, char *sLevelName) {
 
   // Saves the level according to the inputted data
   // This function already sets the error too
-  if(!Editor_saveLevel(this, sLevelName, dWidth, dHeight))
+  if(!Editor_saveLevel(this, sLevelName))
     return 0;
   return 1;
-}
-
-/**
- * Checks if a certain level already exists or if there are too many levels files already.
- * 
- * @param   { Game * }  this        The game object to read data from.
- * @param   { char * }  sLevelName  Name of the level to search for.
- * @return  { int }                 Whether or not the level can be added.
-*/
-int Editor_canAddLevel(Game *this, char *sLevelName) {
-  int i, j;
-
-  // Stores the data of the levels file
-  File *pLevelsFile;
-  int nLevelsCount = 0;
-  char sLevelEntry[LEVEL_NAME_MAX_LENGTH + 1];
-  char *sLevelsArray[LEVELS_MAX_COUNT + 1];
-
-  // Check if file exists first
-  if(!File_exists(LEVELS_FILE_PATH)) {
-    if(!File_newFile(LEVELS_FILE_PATH)) {
-      this->eError = EDITOR_ERROR_NO_FILE;
-      return 0;
-    }
-  }
-
-  // Refers to the file we want
-  pLevelsFile = File_create(LEVELS_FILE_PATH);
-
-  // Read the text inside
-  File_readText(pLevelsFile, LEVELS_MAX_COUNT + 1, &nLevelsCount, sLevelsArray);
-
-  // Too many levels already
-  if(nLevelsCount + 1 > LEVELS_MAX_COUNT) {
-    this->eError = EDITOR_ERROR_LEVELS_TOO_MANY;
-    return 0;
-  }
-
-  // Output all the contents
-  for(i = 0; i < nLevelsCount; i++) {
-    String_clear(sLevelEntry);
-
-    // Copy the name
-    j = 0;
-    while(sLevelsArray[i][j] != ';')
-      sprintf(sLevelEntry, "%s%c", sLevelEntry, sLevelsArray[i][j++]);
-
-    // The same name
-    if(!strcmp(sLevelEntry, sLevelName)) {
-      this->eError = EDITOR_ERROR_FILENAME_EXISTS;
-      return 0;
-    }
-  }
-
-  // Filename does not yet exist
-  return 1;
-}
-
-/**
- * Sets the size of a field.
- * 
- * @param   { Game * }  this        Where to read the mine data from.
- * @param   { char * }  sLevelName  Name of the level.
-*/
-int Editor_saveLevel(Game *this, char *sLevelName) {
-	// int i, j;
-
-	// // Path of the custom level's file
-	// char *sPath = String_alloc(LEVEL_FILE_PATH_MAX_LENGTH);
-
-	// // Completes the path of the level's file
-	// snprintf(sPath, LEVEL_FILE_PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sName);
-
-	// // Creates and writes on the level's file
-	// FILE *pLevel = fopen(sPath, "r");
-
-	// if(pLevel == NULL)
-	// 		return; // TODO: error-handling
-
-	// // Prints the width and height of the field onto the file
-	// fprintf("%d %d\n", dHeight, dWidth);
-
-	// // Prints the mines onto the text file
-	// for(i = 0; i < dHeight; i++) {
-	// 		for(j = 0; j < dWidth; j++) {
-
-	// 				// Prints 'X' for tiles with mines and '.' for tiles without mines
-	// 				// fprintf("%c", GridgetBit(pMines, i, j) ? 'X' : '.');
-
-	// 				// Prints space between tiles and a new line every after each row (except the last)
-	// 				fprintf("%c", (i == dHeight - 1 && j != dWidth - 1) ? '\n' : ' ');
-	// 		}
-	// }
-
-	// // Deallocates the memory of the path's string
-	// String_kill(sPath);
-
-	// fclose(pLevel);
-
-	// // We will now append the level's name onto the level list
-	// FILE *pLevels = fopen(LEVELS_FOLDER_PATH, "a");
-
-	// if(pLevel == NULL)
-	// 		return; // TODO: error-handling
-
-	// // Prints the name of the new custom level onto the text file
-	// fprintf(pLevels, "%s\n", sName);
-
-	// fclose(pLevels);
-
-  // // !to remove
-  // return 0;
-}
-
-/**
- * Returns the number of mines on the field.
- * Returns 0 if no mines or if there are too many mines.
- * Max number of mines is dWidth * dHeight - 1.
- * 
- * @param   { Grid * }      pMines      Grid where the mines are placed.
- * @return  { int }         dMines      Number of mines on the grid.
-*/
-int Editor_countMines(Game *this) {
-	int x, y;
-	int dMines = 0;		// Number of mines on the grid
-
-	// Loops through each tile
-	for(x = 0; x < this->field.dWidth; x++) {
-		for(y = 0; y < this->field.dHeight; y++) {
-
-			// Increments dMines when a mine is found
-			if(Grid_getBit(this->field.pMineGrid, x, y))
-				dMines++;
-		}
-	}
-  
-	return dMines;
 }
 
 /**
