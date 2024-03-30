@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 18:51:45
+ * @ Modified time: 2024-03-30 20:44:56
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -195,6 +195,7 @@ int Game_hasWon(Game *this) {
   int x, y;
 
   // Check if all non-mine cells have been inspected
+  // OR if there are flags that aren't mines
   for(x = 0; x < this->field.dWidth; x++) {
     for(y = 0; y < this->field.dHeight; y++) {
       
@@ -385,6 +386,9 @@ void Game_inspect(Game *this, int x, int y) {
         // Loops through each column
         for(j = y - 1; j <= y + 1; j++) {
           if(j >= 0 && j <= pField->dHeight - 1) {
+            
+            // Remove flags obliterated by inspection
+            Grid_setBit(this->field.pFlagGrid, i, j, 0);
 
             // Recures the function if the number on the tile is 0
             // only when it hasn't been inspected
@@ -395,6 +399,7 @@ void Game_inspect(Game *this, int x, int y) {
             // Marks the tile as inspected
             if(pField->aNumbers[j][i] >= 0)
               Field_inspect(pField, i, j);
+
           }
         }
       }
