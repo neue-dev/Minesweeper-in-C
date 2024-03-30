@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 13:39:08
+ * @ Modified time: 2024-03-30 13:53:53
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -100,6 +100,7 @@ int Editor_canAddLevel(Game *this, char *sLevelName) {
 
   // Too many levels already
   if(nLevelsCount + 1 > LEVELS_MAX_COUNT) {
+    File_kill(pLevelsFile);
     this->eError = EDITOR_ERROR_LEVELS_TOO_MANY;
     return 0;
   }
@@ -115,10 +116,14 @@ int Editor_canAddLevel(Game *this, char *sLevelName) {
 
     // The same name
     if(!strcmp(sLevelEntry, sLevelName)) {
+      File_kill(pLevelsFile);
       this->eError = EDITOR_ERROR_FILENAME_EXISTS;
       return 0;
     }
   }
+
+  // Clean up
+  File_kill(pLevelsFile);
 
   // Filename does not yet exist
   return 1;
@@ -148,6 +153,10 @@ int Editor_countMines(Game *this) {
   
 	return dMines;
 }
+
+/**
+ * Loads a level unto the game object.
+*/
 
 /**
  * Saves a level into the levels folder.
@@ -204,6 +213,7 @@ int Editor_saveLevel(Game *this, char *sLevelName) {
   // Garbage collection
   for(i = 0; i <= nRows; i++)
     String_kill(sLevelArray[i]);
+  File_kill(pLevelFile);
 
   return 1;
 }
@@ -217,9 +227,13 @@ int Editor_saveLevel(Game *this, char *sLevelName) {
  * @return  { int }                 Whether or not the operation was successful.
 */
 int Editor_register(Game* this, char *sLevelName) {
+  int x, y;
   int dWidth = this->field.dWidth;
   int dHeight = this->field.dHeight;
-  int x, y;
+
+  // The new entry to write
+  char *sLevelEntry[1];
+  File *pLevelsFile;
 
   // Checks if the name of the to-be-created level already exists
   if(!Editor_canAddLevel(this, sLevelName)) {
@@ -241,8 +255,22 @@ int Editor_register(Game* this, char *sLevelName) {
 
   // Saves the level according to the inputted data
   // This function already sets the error too
-  if(!Editor_saveLevel(this, sLevelName))
+  if(!Editor_saveLevel(this, sLevelName)) {
     return 0;
+  }
+
+  // We know it should exist by now so this should be fine
+  pLevelsFile = File_create(LEVELS_FILE_PATH);
+
+  // Edit the original levels file to reflect registration
+  sLevelEntry[0] = String_alloc(LEVELS_MAX_NAME_LENGTH + 2);
+  sprintf(sLevelEntry[0], "%s;\n", sLevelName);
+  File_writeText(pLevelsFile, 1, sLevelEntry);
+
+  // Clean up
+  File_kill(pLevelsFile);
+
+  // Success
   return 1;
 }
 

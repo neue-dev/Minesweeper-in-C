@@ -1,4 +1,1 @@
-tesla;
-hello;
-mfcker;
-casablanca;
+DEV;

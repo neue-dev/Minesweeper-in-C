@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 13:05:28
+ * @ Modified time: 2024-03-30 13:50:13
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -118,6 +118,7 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 
 			// Invalid login
 			} else {
+				File_kill(pProfilesFile);
 				this->eError = PROFILE_ERROR_INVALID_LOGIN;
 				return 0;
 			}
@@ -207,9 +208,9 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 
 	// Too many profiles exist
 	if(nProfileCount + 1 > PROFILES_MAX_NUM) {
-		this->eError = PROFILE_ERROR_TOO_MANY_EXISTING;
+		File_kill(pProfilesFile);
 		String_kill(sNewProfile[0]);
-		
+		this->eError = PROFILE_ERROR_TOO_MANY_EXISTING;
 		return 0;
 	}
 
@@ -225,7 +226,6 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 		// Compare the name
 		if(!strcmp(sProfileEntry, sUsername)) {
 			File_kill(pProfilesFile);
-
 			this->eError = PROFILE_ERROR_ALREADY_EXISTS;
 			return 0;
 		}
