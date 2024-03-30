@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 13:55:55
- * @ Modified time: 2024-03-30 14:55:31
+ * @ Modified time: 2024-03-30 15:02:20
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -306,7 +306,7 @@ int Editor_saveLevel(Game *this, char *sLevelName) {
     // Add the 'X' and '.'
     for(j = 0; j < nColumns; j++)
       sprintf(sLevelArray[i], "%s%c", sLevelArray[i], 
-        Grid_getBit(this->field.pMineGrid, j, i) ? 'X' : '.');
+        Grid_getBit(this->field.pMineGrid, j, i - 1) ? 'X' : '.');
 
     // New line
     sprintf(sLevelArray[i], "%s%c", sLevelArray[i], '\n');

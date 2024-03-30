@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-30 14:20:32
+ * @ Modified time: 2024-03-30 15:01:08
  * @ Description:
  * 
  * The main game file.
@@ -49,10 +49,12 @@ int main() {
   Game test;
   Editor_setup(&test);
   Editor_init(&test, 10, 10);
-  Editor_loadLevel(&test, "DEV");
+  Field_init(&test.field, 6, 6);
+  Field_populateRandom(&test.field, 30);
+  // Editor_loadLevel(&test, "R");
 
 
-  Editor_register(&test, "DEVIN");
+  Editor_register(&test, "RUSSIAN-ROULETTE");
 
   while(1);
 
