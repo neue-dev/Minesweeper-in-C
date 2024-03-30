@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 01:23:41
+ * @ Modified time: 2024-03-31 03:00:15
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -12,6 +12,7 @@
 
 #include "../game/game.c"
 #include "../game/profile.game.c"
+#include "../game/stats.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -149,6 +150,10 @@ void PageHandler_playI(p_obj pArgs_Page) {
               if(Page_readComponentPopup(this, sPopupComponent) == 0) {
                 Game_quit(pGame);
 
+                // Save game
+                if(!Game_save(pGame))
+                  Stats_update(pGame);
+
                 // Reset component tree since the game UI needs that
                 Page_resetComponents(this);
                 Page_idle(this);
@@ -231,6 +236,10 @@ void PageHandler_playI(p_obj pArgs_Page) {
             // The user won
             if(Game_isWon(pGame)) {
 
+              // Save game
+              if(!Game_save(pGame))
+                Stats_update(pGame);
+
               // Change the display
               Page_setComponentColor(this, sFieldComponent, "accent", "");
               sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)\n\n%s (current)",
@@ -272,6 +281,10 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
             // The game ended
             if(Game_isDone(pGame)) {
+
+              // Save game
+              if(!Game_save(pGame))
+                Stats_update(pGame);
               
               // Update display
               Page_setComponentText(this, sProfileInfoComponent, "");

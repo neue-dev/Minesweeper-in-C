@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 02:28:04
+ * @ Modified time: 2024-03-31 02:46:41
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -12,14 +12,12 @@
 
 #include "./field.obj.h"
 #include "./profile.game.c"
-// #include "./stats.game.c"
 
 #include "../utils/utils.grid.h"
 #include "../utils/utils.types.h"
 #include "../utils/utils.string.h"
 
 #include <math.h>
-
 
 #define LEVELS_MAX_COUNT (1 << 10)
 #define LEVELS_MAX_NAME_LENGTH (1 << 8)
@@ -94,6 +92,7 @@ struct Game {
   int dLastX, dLastY;                           // Indicator for exploded mine
   int dFrameCount, dLastFPS;                    // FPS counter
   int dTimeTaken;
+  int bIsSaved;                                 // Has the game been saved (not for editing)
   
   time_t startTime, endTime;                    // Used for computing the time
   time_t pauseStartTime, pauseEndTime;          // Used for accounting for pauses
@@ -134,6 +133,7 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   this->dLastFPS = 0;
   this->dPauseOffset = 0;
   this->dTimeTaken = 0;
+  this->bIsSaved = 0;
 
   // CLear the save name first
   String_clear(this->sSaveName);
@@ -176,8 +176,6 @@ void Game_init(Game *this) {
  * @param   { GameOutcome }      eOutcome     How the game was ended.
 */
 void Game_end(Game *this, GameOutcome eOutcome) {
-  // Saves the game data
-  // Stats_saveGame(this);
 
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
@@ -653,6 +651,19 @@ char *Game_getFPS(Game *this) {
 */
 void Game_quit(Game *this) {
   this->eOutcome = GAME_OUTCOME_QUIT;
+}
+
+/**
+ * "Saves" the current game.
+ * Sets the save state to 1.
+ * 
+ * @param   { Game * }  this  The game object.
+*/
+int Game_save(Game *this) {
+  int dLastState = this->bIsSaved;
+  this->bIsSaved = 1;
+
+  return dLastState;
 }
 
 /**

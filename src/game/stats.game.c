@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-31 02:33:22
- * @ Description:
+ * @ Modified time: 2024-03-31 02:43:32
+ * @ Modified time: 2024-03-31 02:59:57
  * 
  * Displays the statistics of a profile.
  */
@@ -37,7 +37,7 @@ int Stats_update(Game *this) {
 
 	// The latest game data
 	char sGameData[256];
-	char sGameGridData[GAME_MAX_ROWS][GAME_MAX_COLUMNS + 1];
+	char sGameGridData[GAME_MAX_ROWS + 1][GAME_MAX_COLUMNS + 2] = {0};
 
 	// The data in the profile file
 	int nProfileDataLength = 0;
@@ -139,7 +139,7 @@ int Stats_update(Game *this) {
 	// Write the new stats of the game
 	sprintf(sGameData, ">%s,%s,%s,%d,%d,%d;\n", 
 		this->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
-		this->eType == GAME_TYPE_CLASSIC ? String_toUpper(this->sSaveName) : 
+		this->eType == GAME_TYPE_CUSTOM ? String_toUpper(this->sSaveName) : 
 			(this->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT"),
 		this->eOutcome == GAME_OUTCOME_WIN ? "WIN" : 
 			(this->eOutcome == GAME_OUTCOME_LOSS ? "LOSS" : "QUIT"),

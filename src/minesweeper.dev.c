@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 02:32:25
+ * @ Modified time: 2024-03-31 02:58:59
  * @ Description:
  * 
  * The main game file.
@@ -56,7 +56,7 @@ int main() {
   
   // Game_setup(&test,GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY);
   Editor_setup(&test);
-  Editor_setSaveName(&test, "DEV");
+  Editor_setSaveName(&test, "BIGDEV");
   Editor_loadLevel(&test);
 
   Game_inspect(&test, 0, 0);
