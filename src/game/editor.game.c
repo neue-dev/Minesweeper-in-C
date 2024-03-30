@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 12:22:47
+ * @ Modified time: 2024-03-30 12:26:33
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -77,40 +77,29 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
 }
 
 /**
- * Creates a new custom level.
+ * Registers a new custom level into the levels.data.txt file and saves it's contents in the same directory.
  * If the level exists, the function terminates.
  * 
+ * @param   { Game * }  this        The game object to read data from.
  * @param   { char * }  sFilename   Name of the to-be-created level.
  * @return  { int }                 Whether or not the operation was successful.
 */
-int Editor_createLevel(char *sFilename) {
-  int dWidth, dHeight;    // Width and height of a field
-  int x, y;               // The x and y coordinates of the tile where a mine is placed
-  Grid *pMines;           // Locations where mines are placed
-  int bFinished;          // Determines whether the level can now be saved
+int Editor_register(Game* this, char *sFilename) {
+  int dWidth = this->field.dWidth;
+  int dHeight = this->field.dHeight;
+  int x, y;
 
   // Checks if the name of the to-be-created level already exists
   Editor_levelExists(sFilename);
 
   // TODO: input width and height of the field
 
-  // TODO: input locations where mines are to be placed
-  while(!bFinished) {
-
-      // Initializes the mine grid
-      Grid_clear(pMines, 0);
-
-      // TODO: event-handling
-      // TODO: input x and y coordinates
-      // Editor_placeMine(pMines, x, y);
-  }
-
   // Checks if the level is valid
-  if(!Editor_countMines(pMines, dWidth, dHeight))
+  if(!Editor_countMines(this, dWidth, dHeight))
     return 0;
 
   // Saves the level according to the inputted data
-  if(!Editor_saveLevel(sFilename, dWidth, dHeight, pMines))
+  if(!Editor_saveLevel(this, sFilename, dWidth, dHeight))
     return 0;
   return 1;
 }
@@ -163,53 +152,53 @@ void Editor_levelExists(char *sKey) {
  * @param   { Grid * }  pMines    Grid where the mines are placed.
 */
 int Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
-	int i, j;
+	// int i, j;
 
-	// Path of the custom level's file
-	char *sPath = String_alloc(LEVEL_FILE_PATH_MAX_LENGTH);
+	// // Path of the custom level's file
+	// char *sPath = String_alloc(LEVEL_FILE_PATH_MAX_LENGTH);
 
-	// Completes the path of the level's file
-	snprintf(sPath, LEVEL_FILE_PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sName);
+	// // Completes the path of the level's file
+	// snprintf(sPath, LEVEL_FILE_PATH_MAX_SIZE, "%s%s.txt", LEVELS_FOLDER_PATH, sName);
 
-	// Creates and writes on the level's file
-	FILE *pLevel = fopen(sPath, "r");
+	// // Creates and writes on the level's file
+	// FILE *pLevel = fopen(sPath, "r");
 
-	if(pLevel == NULL)
-			return; // TODO: error-handling
+	// if(pLevel == NULL)
+	// 		return; // TODO: error-handling
 
-	// Prints the width and height of the field onto the file
-	fprintf("%d %d\n", dHeight, dWidth);
+	// // Prints the width and height of the field onto the file
+	// fprintf("%d %d\n", dHeight, dWidth);
 
-	// Prints the mines onto the text file
-	for(i = 0; i < dHeight; i++) {
-			for(j = 0; j < dWidth; j++) {
+	// // Prints the mines onto the text file
+	// for(i = 0; i < dHeight; i++) {
+	// 		for(j = 0; j < dWidth; j++) {
 
-					// Prints 'X' for tiles with mines and '.' for tiles without mines
-					// fprintf("%c", GridgetBit(pMines, i, j) ? 'X' : '.');
+	// 				// Prints 'X' for tiles with mines and '.' for tiles without mines
+	// 				// fprintf("%c", GridgetBit(pMines, i, j) ? 'X' : '.');
 
-					// Prints space between tiles and a new line every after each row (except the last)
-					fprintf("%c", (i == dHeight - 1 && j != dWidth - 1) ? '\n' : ' ');
-			}
-	}
+	// 				// Prints space between tiles and a new line every after each row (except the last)
+	// 				fprintf("%c", (i == dHeight - 1 && j != dWidth - 1) ? '\n' : ' ');
+	// 		}
+	// }
 
-	// Deallocates the memory of the path's string
-	String_kill(sPath);
+	// // Deallocates the memory of the path's string
+	// String_kill(sPath);
 
-	fclose(pLevel);
+	// fclose(pLevel);
 
-	// We will now append the level's name onto the level list
-	FILE *pLevels = fopen(LEVELS_FOLDER_PATH, "a");
+	// // We will now append the level's name onto the level list
+	// FILE *pLevels = fopen(LEVELS_FOLDER_PATH, "a");
 
-	if(pLevel == NULL)
-			return; // TODO: error-handling
+	// if(pLevel == NULL)
+	// 		return; // TODO: error-handling
 
-	// Prints the name of the new custom level onto the text file
-	fprintf(pLevels, "%s\n", sName);
+	// // Prints the name of the new custom level onto the text file
+	// fprintf(pLevels, "%s\n", sName);
 
-	fclose(pLevels);
+	// fclose(pLevels);
 
-  // !to remove
-  return 0;
+  // // !to remove
+  // return 0;
 }
 
 /**
