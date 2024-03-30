@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-30 19:05:38
+ * @ Modified time: 2024-03-30 19:34:31
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -528,8 +528,12 @@ void Page_setComponentPopupText(Page *this, char *sKey, char *sText) {
  * @param   { Page * }  this          The page we want to modify.
  * @param   { char * }  sKey          An identifier for the component we want to modify.
  * @param   { char * }  sText         The text for the popup.
+ * @param   { char * }  sOption1      The first option.
+ * @param   { char * }  sOption2      The second option.
+ * @param   { char * }  sColorFGKey   Which color to use for the FG.
+ * @param   { char * }  sColorBGKey   Which color to use for the BG.
 */
-void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char *sOption2) {
+void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char *sOption2, char *sColorFGKey, char *sColorBGKey) {
 
   // Holds the component keys
   char sPopupOption1Component[STRING_KEY_MAX_LENGTH];
@@ -546,8 +550,8 @@ void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char 
   sprintf(sPopupButtonCountKey, "popup-button-count-%s", sKey);
   Page_setComponentText(this, sPopupOption1Component, sOption1);
   Page_setComponentText(this, sPopupOption2Component, sOption2);
-  Page_setComponentColor(this, sPopupOption1Component, "", "");
-  Page_setComponentColor(this, sPopupOption2Component, "", "");
+  Page_setComponentColor(this, sPopupOption1Component, sColorBGKey, sColorFGKey);
+  Page_setComponentColor(this, sPopupOption2Component, sColorBGKey, sColorFGKey);
   
   // Move the first option to the center if Option2 doesn't exist
   if(!strlen(sOption2)) {
@@ -561,6 +565,13 @@ void Page_setComponentPopupOptions(Page *this, char *sKey, char *sOption1, char 
   // Create the states of the component
   Page_setUserState(this, sPopupButtonCountKey, strlen(sOption2) ? 2 : 1);
   if(!strlen(sOption2)) Page_setUserState(this, sPopupButtonCurrentKey, 0);
+  if(Page_getUserState(this, sPopupButtonCurrentKey) == -1) Page_setUserState(this, sPopupButtonCurrentKey, 0);
+
+  // Update UI to reflect this
+  if(Page_getUserState(this, sPopupButtonCurrentKey) == 0)
+    Page_setComponentColor(this, sPopupOption1Component, sColorFGKey, sColorBGKey);
+  else if(Page_getUserState(this, sPopupButtonCurrentKey) == 1)
+    Page_setComponentColor(this, sPopupOption2Component, sColorFGKey, sColorBGKey);
 }
 
 /**

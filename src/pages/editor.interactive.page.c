@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 18:57:59
+ * @ Modified time: 2024-03-30 19:30:25
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -178,7 +178,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
           case 27:
             Page_enableComponentPopup(this, sPopupComponent);
             Page_setComponentPopupText(this, sPopupComponent, "Clear.the.grid?");
-            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
             Page_setUserState(this, "popup-action", 1);
           break;
 
@@ -186,7 +186,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
           case '\n': case '\r':
             Page_enableComponentPopup(this, sPopupComponent);
             Page_setComponentPopupText(this, sPopupComponent, "Exit.and.save.the.file?");
-            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
             Page_setUserState(this, "popup-action", 0);
           break;
 

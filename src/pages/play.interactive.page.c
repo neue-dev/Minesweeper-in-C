@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 03:18:15
+ * @ Modified time: 2024-03-30 19:31:08
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -140,38 +140,55 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Page_disableComponentPopup(this, sPopupComponent);
           Game_unpause(pGame);
 
-          // First option
-          if(Page_readComponentPopup(this, sPopupComponent) == 0) {
+          switch(Page_getUserState(this, "popup-action")) {
+            
+            // Exit to main menu
+            case 0:
+            
+              // Yes option
+              if(Page_readComponentPopup(this, sPopupComponent) == 0) {
 
-            // Reset component tree since the game UI needs that
-            Page_resetComponents(this);
-            Page_idle(this);
+                // Reset component tree since the game UI needs that
+                Page_resetComponents(this);
+                Page_idle(this);
+                Page_setNext(this, "menu");
 
-            // If game over (retry button)
-            if(Game_isDone(pGame)) {
-              Page_setNext(this, "play");
-
-            // If not game over (exit button)
-            } else {
-              Page_setNext(this, "menu");
-            }
-
-            // Make sure the function doesn't try to access the borked component tree down there.
-            return;
-          
-          // Second option
-          } else {
-
-            // If game over
-            if(Game_isDone(pGame)) {
+                // Make sure the function doesn't try to access the borked component tree down there.
+                return;
               
-              // Reset component tree since the game UI needs that
-              Page_resetComponents(this);
+              // Second option
+              } else {
 
-              // Go to menu next
+                // If game over
+                if(Game_isDone(pGame)) {
+                  
+                  // Reset component tree since the game UI needs that
+                  Page_resetComponents(this);
+
+                  // Go to menu next
+                  Page_idle(this);
+                  Page_setNext(this, "menu");
+                }
+              }
+            break;
+
+            // After winning game or losing game
+            case 1:
+            case 2:
+
+              Page_resetComponents(this);
               Page_idle(this);
-              Page_setNext(this, "menu");
-            }
+
+              // Retry option
+              if(Page_readComponentPopup(this, sPopupComponent) == 0)
+                Page_setNext(this, "play");
+
+              // Exit option  
+              else Page_setNext(this, "menu");
+
+              // So the game doesn't break
+              return;
+            break;
           }
         }
 
@@ -184,7 +201,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
           case 27:
             Page_enableComponentPopup(this, sPopupComponent);
             Page_setComponentPopupText(this, sPopupComponent, "Exit.to.main.menu??\nGame.wont.be.saved.\0");
-            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+            Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
+            Page_setUserState(this, "popup-action", 0);
             Game_pause(pGame);
           break;
 
@@ -195,7 +213,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
             if(Game_isWon(pGame)) {
               Page_enableComponentPopup(this, sPopupComponent);
               Page_setComponentPopupText(this, sPopupComponent, "Congratulations!\nWanna.try.again?.\0");
-              Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.");
+              Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
+              Page_setUserState(this, "popup-action", 1);
             }
 
             // Do the inspection algorithm
@@ -256,7 +275,8 @@ void PageHandler_playI(p_obj pArgs_Page) {
             if(Game_isDone(pGame)) {
               Page_enableComponentPopup(this, sPopupComponent);
               Page_setComponentPopupText(this, sPopupComponent, Game_getEndMessage(pGame));
-              Page_setComponentPopupOptions(this, sPopupComponent, "retry", "exit.");
+              Page_setComponentPopupOptions(this, sPopupComponent, "retry", "exit.", "secondary", "accent");
+              Page_setUserState(this, "popup-action", 2);
 
               return;
             }
