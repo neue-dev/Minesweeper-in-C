@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-30 23:15:59
+ * @ Modified time: 2024-03-30 23:26:25
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -45,6 +45,7 @@ enum ProfileError {
 	PROFILE_ERROR_INVALID_LOGIN,					// Incorrect password for existing profile
 	PROFILE_ERROR_TOO_MANY_EXISTING,			// Too many profiles exist already
 	PROFILE_ERROR_COULD_NOT_CREATE_FILE,	// The new file could not be created for the profile
+	PROFILE_ERROR_FILE_ALREADY_DELETED,		// Trying to delete a nonexistent file
 };
 
 /**
@@ -306,7 +307,7 @@ int Profile_delete(Profile *this, char *sUsername) {
 	// Store the profiles read from the file
 	int nProfileCount = 0;
 	char *sProfileEntry[1];
-	char *sProfilesArray[PROFILES_MAX_NUM];
+	char *sProfilesArray[PROFILES_MAX_NUM + 1];
 
 	// No data to cross check login
 	if(!File_exists(PROFILES_FILE_PATH)) {
@@ -318,7 +319,7 @@ int Profile_delete(Profile *this, char *sUsername) {
 	pProfilesFile = File_create(PROFILES_FILE_PATH);
 
 	// Read the text onto the output buffer
-	File_readText(pProfilesFile, PROFILES_MAX_NUM, &nProfileCount, sProfilesArray);
+	File_readText(pProfilesFile, PROFILES_MAX_NUM + 1, &nProfileCount, sProfilesArray);
 
 	// Clear the file
 	File_clear(pProfilesFile);
@@ -349,7 +350,7 @@ int Profile_delete(Profile *this, char *sUsername) {
 	if(!File_remove(sProfilePath)) {
 		File_kill(pProfilesFile);
 		File_freeBuffer(nProfileCount, sProfilesArray);
-		this->eError = PROFILE_ERROR_NOT_FOUND;
+		this->eError = PROFILE_ERROR_FILE_ALREADY_DELETED;
 		return 0;
 	}
 
@@ -441,6 +442,9 @@ char *Profile_getErrorMessage(Profile *this) {
 
 		case PROFILE_ERROR_COULD_NOT_CREATE_FILE:
 			return "Error: could not create file for profile.";
+
+		case PROFILE_ERROR_FILE_ALREADY_DELETED:
+			return "Error: the profile file no longer exists.";
 
 		default:
 			return "Error: no error?";

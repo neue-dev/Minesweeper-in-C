@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 21:39:53
+ * @ Modified time: 2024-03-30 23:26:04
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -81,7 +81,7 @@ enum EditorError {
   EDITOR_ERROR_MINES_TOO_MANY,          // Full grid
   EDITOR_ERROR_MINES_NONE,              // 0 mines
   EDITOR_ERROR_LEVELS_TOO_MANY,         // Max levels saved
-  EDITOR_ERROR_COULD_NOT_CREATE_FILE    // Could not create a new file for a level
+  EDITOR_ERROR_COULD_NOT_CREATE_FILE,   // Could not create a new file for a level
 };
 
 struct Game {
