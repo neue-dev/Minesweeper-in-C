@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 12:05:42
+ * @ Modified time: 2024-03-30 12:30:41
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -40,6 +40,7 @@
 typedef enum GameType GameType;
 typedef enum GameDifficulty GameDifficulty;
 typedef enum GameOutcome GameOutcome;
+typedef enum EditorError EditorError;
 
 typedef struct Game Game;
 
@@ -63,6 +64,17 @@ enum GameOutcome {
   GAME_OUTCOME_WIN              // The game ends by the player winning
 };
 
+enum EditorError {
+  EDITOR_ERROR_NONE,
+  EDITOR_ERROR_COULD_NOT_CREATE_FILE,
+  EDITOR_ERROR_INVALID_DIMENSIONS,
+  EDITOR_ERROR_INVALID_FILENAME,
+  EDITOR_ERROR_FILENAME_EXISTS,
+  EDITOR_ERROR_FILENAME_TOO_LONG,
+  EDITOR_ERROR_MINES_TOO_MANY,
+  EDITOR_ERROR_MINES_NONE,
+};
+
 struct Game {
   Profile *pProfile;                            // Holds information about who's currently playing
   Field field;                                  // Game field
@@ -75,6 +87,7 @@ struct Game {
   time_t pauseStartTime, pauseEndTime;          // Used for accounting for pauses
   time_t frameStart, frameEnd;                  // Used for computing FPS
 
+  EditorError eError;                           // Used for editing the game
   GameType eType;
   GameDifficulty eDifficulty;   
   GameOutcome eOutcome;                         // Some data about the game

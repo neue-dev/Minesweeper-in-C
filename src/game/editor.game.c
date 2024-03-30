@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
- * @ Modified time: 2024-03-30 12:26:33
+ * @ Modified time: 2024-03-30 12:35:13
  * @ Description:
  * 
  * Enables the player to create a custom level.
@@ -29,13 +29,6 @@
 #define LEVEL_FILE_PATH_MAX_LENGTH  (LEVEL_NAME_MAX_LENGTH + LEVELS_FOLDER_PATH_LENGTH)
 #define LEVEL_FILE_PATH_MAX_SIZE    sizeof(char)*(LEVEL_FILE_PATH_MAX_LENGTH + 2)
 
-typedef enum EditorError EditorError;
-
-enum EditorError {
-  EDITOR_ERROR_LEVEL_EXISTS,
-  EDITOR_ERROR_COULD_NOT_CREATE_FILE,
-};
-
 /**
  * Initializes the game object.
  * 
@@ -47,6 +40,7 @@ void Editor_setup(Game *this, char *sFilename) {
   this->eOutcome = GAME_OUTCOME_PENDING;
   this->eType = GAME_TYPE_EDITOR;
   this->eDifficulty = GAME_DIFFICULTY_NONE;
+  this->eError = EDITOR_ERROR_NONE;
   strcpy(this->sFilename, sFilename);
 
   // The game's cursor
@@ -90,13 +84,21 @@ int Editor_register(Game* this, char *sFilename) {
   int x, y;
 
   // Checks if the name of the to-be-created level already exists
-  Editor_levelExists(sFilename);
-
-  // TODO: input width and height of the field
+  if(Editor_levelExists(sFilename)) {
+    this->eError = EDITOR_ERROR_FILENAME_EXISTS;
+    return 0;
+  }
 
   // Checks if the level is valid
-  if(!Editor_countMines(this, dWidth, dHeight))
+  if(!Editor_countMines(this)) {
+    this->eError = EDITOR_ERROR_MINES_NONE;
     return 0;
+
+  // Board is full of mines
+  } else if(Editor_countMines(this) == dWidth * dHeight) {
+    this->eError = EDITOR_ERROR_MINES_TOO_MANY;
+    return 0;
+  }
 
   // Saves the level according to the inputted data
   if(!Editor_saveLevel(this, sFilename, dWidth, dHeight))
@@ -109,7 +111,7 @@ int Editor_register(Game* this, char *sFilename) {
  * 
  * @param   { char * }  sKey   Name of the level to search for.
 */
-void Editor_levelExists(char *sKey) {
+int Editor_levelExists(char *sKey) {
 
     // Opens the text file containing the list of levels
     FILE *pLevels = fopen(LEVELS_FILE_PATH, "r");
@@ -207,27 +209,22 @@ int Editor_saveLevel(char *sName, int dWidth, int dHeight, Grid *pMines) {
  * Max number of mines is dWidth * dHeight - 1.
  * 
  * @param   { Grid * }      pMines      Grid where the mines are placed.
- * @param   { int }         dWidth      Width of the field.
- * @param   { int }         dHeight     Height of the field.
  * @return  { int }         dMines      Number of mines on the grid.
 */
-int Editor_countMines(Game *this, int dWidth, int dHeight) {
-	int i, j;
+int Editor_countMines(Game *this) {
+	int x, y;
 	int dMines = 0;		// Number of mines on the grid
 
 	// Loops through each tile
-	for(i = 0; i < dHeight; i++) {
-		for(j = 0; j < dWidth; j++) {
+	for(x = 0; x < this->field.dWidth; x++) {
+		for(y = 0; y < this->field.dHeight; y++) {
 
 			// Increments dMines when a mine is found
-			if(Grid_getBit(this->field.pMineGrid, i, j))
+			if(Grid_getBit(this->field.pMineGrid, x, y))
 				dMines++;
 		}
 	}
-
-	// Checks if there are no mines at all or if they completely fill up the field
-	if(!dMines || dMines == dWidth * dHeight)
-		return 0;
+  
 	return dMines;
 }
 
