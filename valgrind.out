@@ -1,0 +1,3042 @@
+==11994== Memcheck, a memory error detector
+==11994== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11994== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==11994== Command: ./build/minesweeper.unix.o
+==11994== Parent PID: 1906
+==11994== 
+--11994-- 
+--11994-- Valgrind options:
+--11994--    --leak-check=full
+--11994--    --show-leak-kinds=all
+--11994--    --track-origins=yes
+--11994--    --log-file=valgrind.out
+--11994--    --verbose
+--11994-- Contents of /proc/version:
+--11994--   Linux version 5.15.146.1-microsoft-standard-WSL2 (root@65c757a075e2) (gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #1 SMP Thu Jan 11 04:09:03 UTC 2024
+--11994-- 
+--11994-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--11994-- Page sizes: currently 4096, max supported 4096
+--11994-- Valgrind library directory: /usr/libexec/valgrind
+--11994-- Reading syms from /mnt/d/modavid/0. Work/0. Coding Projects/2. DLSU/Term-2/machine-project/build/minesweeper.unix.o
+--11994-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--11994--   Considering /usr/lib/debug/.build-id/15/921ea631d9f36502d20459c43e5c85b7d6ab76.debug ..
+--11994--   .. build-id is valid
+--11994-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--11994--    object doesn't have a symbol table
+--11994--    object doesn't have a dynamic symbol table
+--11994-- Scheduler: using generic scheduler lock implementation.
+--11994-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==11994== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-11994-by-root-on-???
+==11994== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-11994-by-root-on-???
+==11994== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-11994-by-root-on-???
+==11994== 
+==11994== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==11994== don't want to do, unless you know exactly what you're doing,
+==11994== or are doing some strange experiment):
+==11994==   /usr/bin/vgdb --pid=11994 ...command...
+==11994== 
+==11994== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==11994==   /path/to/gdb ./build/minesweeper.unix.o
+==11994== and then give GDB the following command
+==11994==   target remote | /usr/bin/vgdb --pid=11994
+==11994== --pid is optional if only one valgrind process is running
+==11994== 
+--11994-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
+--11994-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
+--11994-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--11994--    object doesn't have a symbol table
+--11994-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+--11994--    object doesn't have a symbol table
+==11994== WARNING: new redirection conflicts with existing -- ignoring it
+--11994--     old: 0x0402aa40 (strlen              ) R-> (0000.0) 0x580bcec2 ???
+--11994--     new: 0x0402aa40 (strlen              ) R-> (2007.0) 0x0484ee30 strlen
+--11994-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484fcd0 (strcmp)
+--11994-- REDIR: 0x402afa0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853840 (mempcpy)
+--11994-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
+--11994--   Considering /usr/lib/debug/.build-id/a8/8ef0199bd5e742ebd0c359edf5cb2be0ec08b5.debug ..
+--11994--   .. build-id is valid
+--11994-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--11994--   Considering /usr/lib/debug/.build-id/c2/89da5071a3399de893d2af81d6a30c62646e1e.debug ..
+--11994--   .. build-id is valid
+==11994== WARNING: new redirection conflicts with existing -- ignoring it
+--11994--     old: 0x049ecc60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--11994--     new: 0x049ecc60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==11994== WARNING: new redirection conflicts with existing -- ignoring it
+--11994--     old: 0x049ecc60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--11994--     new: 0x049ecc60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+==11994== WARNING: new redirection conflicts with existing -- ignoring it
+--11994--     old: 0x049ecc60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--11994--     new: 0x049ecc60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==11994== WARNING: new redirection conflicts with existing -- ignoring it
+--11994--     old: 0x049ecc60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--11994--     new: 0x049ecc60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+--11994-- REDIR: 0x49ef720 (libc.so.6:strnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef9e0 (libc.so.6:strpbrk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef2e0 (libc.so.6:strcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x4a0dcd0 (libc.so.6:wcsnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f06d0 (libc.so.6:memset) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x4a0c540 (libc.so.6:wcslen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0c10 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x4a0c370 (libc.so.6:wcschr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef260 (libc.so.6:index) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef960 (libc.so.6:rindex) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f05a0 (libc.so.6:memmove) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+==11994== Preferring higher priority redirection:
+--11994--     old: 0x04ae77c0 (__memcpy_avx_unalign) R-> (2018.0) 0x04850f90 __memcpy_avx_unaligned_erms
+--11994--     new: 0x04ae77c0 (__memcpy_avx_unalign) R-> (2018.1) 0x04852880 memmove
+--11994-- REDIR: 0x4a0c3f0 (libc.so.6:wcscmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f09e0 (libc.so.6:stpncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x4a0c9b0 (libc.so.6:wmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef830 (libc.so.6:strncmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0a70 (libc.so.6:strcasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef420 (libc.so.6:strcspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x4a0c470 (libc.so.6:wcscpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef1d0 (libc.so.6:strcat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0b60 (libc.so.6:strncasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0480 (libc.so.6:bcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f8570 (libc.so.6:memrchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f2010 (libc.so.6:strchrnul) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef390 (libc.so.6:strcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0b10 (libc.so.6:strcasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef6a0 (libc.so.6:strlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef8d0 (libc.so.6:strncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0950 (libc.so.6:stpcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f03f0 (libc.so.6:memchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49efb00 (libc.so.6:strspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f07d0 (libc.so.6:mempcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f0ac0 (libc.so.6:strncasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49f1f80 (libc.so.6:rawmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x49ef7a0 (libc.so.6:strncat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--11994-- REDIR: 0x4ae4610 (libc.so.6:__strrchr_avx2) redirected to 0x484e810 (rindex)
+--11994-- REDIR: 0x4ae4400 (libc.so.6:__strchrnul_avx2) redirected to 0x4853330 (strchrnul)
+--11994-- REDIR: 0x49ec0a0 (libc.so.6:malloc) redirected to 0x4848820 (malloc)
+--11994-- REDIR: 0x49ed520 (libc.so.6:calloc) redirected to 0x484d9d0 (calloc)
+--11994-- REDIR: 0x4ae5cb0 (libc.so.6:__strcpy_avx2) redirected to 0x484ee60 (strcpy)
+--11994-- REDIR: 0x4adf940 (libc.so.6:__strcmp_avx2) redirected to 0x484fbd0 (strcmp)
+--11994-- REDIR: 0x4ae47e0 (libc.so.6:__strlen_avx2) redirected to 0x484ed10 (strlen)
+--11994-- REDIR: 0x49effc0 (libc.so.6:__GI_strstr) redirected to 0x4853ae0 (__strstr_sse2)
+--11994-- REDIR: 0x4ae02c0 (libc.so.6:__memchr_avx2) redirected to 0x484fd50 (memchr)
+--11994-- REDIR: 0x4ae77c0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4852880 (memmove)
+--11994-- REDIR: 0x4ae7780 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4853440 (mempcpy)
+--11994-- REDIR: 0x49ec3e0 (libc.so.6:free) redirected to 0x484b210 (free)
+--11994-- REDIR: 0x4ae7f80 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4852770 (memset)
+--11994-- REDIR: 0x4ae4c30 (libc.so.6:__strcat_avx2) redirected to 0x484ea20 (strcat)
+==11994== Use of uninitialised value of size 8
+==11994==    at 0x484EE64: strcpy (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115E52: ThreadManager_exit (utils.thread.h:101)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994==  Uninitialised value was created by a stack allocation
+==11994==    at 0x115DD2: ThreadManager_exit (utils.thread.h:85)
+==11994== 
+==11994== Invalid read of size 1
+==11994==    at 0x484EE64: strcpy (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115E52: ThreadManager_exit (utils.thread.h:101)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994==  Address 0x6374000 is on thread 4's stack
+==11994==  In stack guard protected page, 8387976 bytes below stack pointer
+==11994== 
+==11994== 
+==11994== Process terminating with default action of signal 11 (SIGSEGV)
+==11994==  Bad permissions for mapped region at address 0x6374000
+==11994==    at 0x484EE64: strcpy (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115E52: ThreadManager_exit (utils.thread.h:101)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994== 
+==11994== HEAP SUMMARY:
+==11994==     in use at exit: 1,083,754 bytes in 1,421 blocks
+==11994==   total heap usage: 2,883 allocs, 1,462 frees, 5,981,020 bytes allocated
+==11994== 
+==11994== Searching for pointers to 1,421 not-freed blocks
+==11994== Checked 26,325,760 bytes
+==11994== 
+==11994== 0 bytes in 3 blocks are definitely lost in loss record 1 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10B95D: String_toUpper (utils.string.unix.h:39)
+==11994==    by 0x1168A1: PageHandler_login (login.page.c:97)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 0 bytes in 3 blocks are definitely lost in loss record 2 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10B95D: String_toUpper (utils.string.unix.h:39)
+==11994==    by 0x1168CD: PageHandler_login (login.page.c:98)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1 bytes in 1 blocks are still reachable in loss record 3 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11415F: Page_setUserState (utils.page.h:171)
+==11994==    by 0x114B72: Page_addComponentPopup (utils.page.h:431)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1 bytes in 1 blocks are still reachable in loss record 4 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11415F: Page_setUserState (utils.page.h:171)
+==11994==    by 0x114BC2: Page_addComponentPopup (utils.page.h:432)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1 bytes in 1 blocks are still reachable in loss record 5 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11415F: Page_setUserState (utils.page.h:171)
+==11994==    by 0x114BE0: Page_addComponentPopup (utils.page.h:433)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1 bytes in 1 blocks are still reachable in loss record 6 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11415F: Page_setUserState (utils.page.h:171)
+==11994==    by 0x1167D5: PageHandler_login (login.page.c:85)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1 bytes in 1 blocks are still reachable in loss record 7 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11415F: Page_setUserState (utils.page.h:171)
+==11994==    by 0x116816: PageHandler_login (login.page.c:86)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2 bytes in 1 blocks are still reachable in loss record 8 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10ED94: EventStore_set (utils.event.h:375)
+==11994==    by 0x11A282: Settings_init (settings.c:26)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2 bytes in 1 blocks are still reachable in loss record 9 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10ED94: EventStore_set (utils.event.h:375)
+==11994==    by 0x11A29D: Settings_init (settings.c:27)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2 bytes in 1 blocks are still reachable in loss record 10 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10ED94: EventStore_set (utils.event.h:375)
+==11994==    by 0x11A2B8: Settings_init (settings.c:28)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2 bytes in 1 blocks are still reachable in loss record 11 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10ED94: EventStore_set (utils.event.h:375)
+==11994==    by 0x11A2D3: Settings_init (settings.c:29)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2 bytes in 1 blocks are still reachable in loss record 12 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10ED94: EventStore_set (utils.event.h:375)
+==11994==    by 0x11A2EE: Settings_init (settings.c:32)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4 bytes in 1 blocks are still reachable in loss record 13 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FC34: Theme_addColor (utils.theme.h:99)
+==11994==    by 0x10FDC6: ThemeManager_init (utils.theme.h:199)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4 bytes in 1 blocks are still reachable in loss record 14 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FC34: Theme_addColor (utils.theme.h:99)
+==11994==    by 0x10FDE1: ThemeManager_init (utils.theme.h:200)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4 bytes in 1 blocks are still reachable in loss record 15 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FC34: Theme_addColor (utils.theme.h:99)
+==11994==    by 0x10FDFC: ThemeManager_init (utils.theme.h:201)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4 bytes in 1 blocks are still reachable in loss record 16 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FC34: Theme_addColor (utils.theme.h:99)
+==11994==    by 0x10FE17: ThemeManager_init (utils.theme.h:202)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4 bytes in 1 blocks are still reachable in loss record 17 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FC34: Theme_addColor (utils.theme.h:99)
+==11994==    by 0x10FE32: ThemeManager_init (utils.theme.h:203)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8 bytes in 1 blocks are still reachable in loss record 18 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10EA1F: EventListener_new (utils.event.h:80)
+==11994==    by 0x10EA64: EventListener_create (utils.event.h:104)
+==11994==    by 0x10F5FE: EventManager_createEventListener (utils.event.h:769)
+==11994==    by 0x11EBE7: Engine_init (engine.c:185)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8 bytes in 1 blocks are still reachable in loss record 19 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115BF7: Thread_init (utils.thread.unix.h:244)
+==11994==    by 0x115C86: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8 bytes in 1 blocks are still reachable in loss record 20 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115BF7: Thread_init (utils.thread.unix.h:244)
+==11994==    by 0x115C86: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8 bytes in 1 blocks are still reachable in loss record 21 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115BF7: Thread_init (utils.thread.unix.h:244)
+==11994==    by 0x115C86: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 22 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FB6D: Theme_new (utils.theme.h:48)
+==11994==    by 0x10FBBB: Theme_create (utils.theme.h:72)
+==11994==    by 0x10FDA7: ThemeManager_init (utils.theme.h:198)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 23 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 24 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 25 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 26 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 27 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 28 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 29 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 30 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 16 bytes in 1 blocks are still reachable in loss record 31 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10DC5F: Queue_new (utils.queue.h:115)
+==11994==    by 0x10DCA4: Queue_create (utils.queue.h:138)
+==11994==    by 0x112DD7: ComponentManager_init (utils.component.h:507)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 32 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x11370E: AssetManager_init (utils.asset.h:139)
+==11994==    by 0x11E827: Engine_init (engine.c:124)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 33 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10FD95: ThemeManager_init (utils.theme.h:195)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 34 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10FB91: Theme_init (utils.theme.h:60)
+==11994==    by 0x10FBC3: Theme_create (utils.theme.h:72)
+==11994==    by 0x10FDA7: ThemeManager_init (utils.theme.h:198)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 35 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115683: PageManager_init (utils.page.h:767)
+==11994==    by 0x11E85E: Engine_init (engine.c:126)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 36 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115D82: ThreadManager_init (utils.thread.h:69)
+==11994==    by 0x11E870: Engine_init (engine.c:131)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 37 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115D93: ThreadManager_init (utils.thread.h:70)
+==11994==    by 0x11E870: Engine_init (engine.c:131)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 38 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115DA5: ThreadManager_init (utils.thread.h:71)
+==11994==    by 0x11E870: Engine_init (engine.c:131)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 39 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10ECE6: EventStore_init (utils.event.h:346)
+==11994==    by 0x11E882: Engine_init (engine.c:132)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 40 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10ECF7: EventStore_init (utils.event.h:347)
+==11994==    by 0x11E882: Engine_init (engine.c:132)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 41 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10ED09: EventStore_init (utils.event.h:348)
+==11994==    by 0x11E882: Engine_init (engine.c:132)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 42 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 43 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 44 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 45 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 46 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 47 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 48 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 49 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 50 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 51 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 52 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 53 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 54 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 55 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 56 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 57 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 58 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24 bytes in 1 blocks are still reachable in loss record 59 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 32 bytes in 2 blocks are still reachable in loss record 60 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FB6D: Theme_new (utils.theme.h:48)
+==11994==    by 0x10FBBB: Theme_create (utils.theme.h:72)
+==11994==    by 0x110ACC: ThemeManager_readThemeFile (utils.theme.h:340)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 40 bytes in 1 blocks are still reachable in loss record 61 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115997: Mutex_init (utils.thread.unix.h:75)
+==11994==    by 0x1159EF: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116169: ThreadManager_createMutex (utils.thread.h:210)
+==11994==    by 0x11EC21: Engine_init (engine.c:188)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 40 bytes in 1 blocks are still reachable in loss record 62 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115997: Mutex_init (utils.thread.unix.h:75)
+==11994==    by 0x1159EF: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116169: ThreadManager_createMutex (utils.thread.h:210)
+==11994==    by 0x11EC3D: Engine_init (engine.c:189)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 40 bytes in 1 blocks are still reachable in loss record 63 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115997: Mutex_init (utils.thread.unix.h:75)
+==11994==    by 0x1159EF: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116090: ThreadManager_createThread (utils.thread.h:176)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 40 bytes in 1 blocks are still reachable in loss record 64 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115997: Mutex_init (utils.thread.unix.h:75)
+==11994==    by 0x1159EF: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116090: ThreadManager_createThread (utils.thread.h:176)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 40 bytes in 1 blocks are still reachable in loss record 65 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115997: Mutex_init (utils.thread.unix.h:75)
+==11994==    by 0x1159EF: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116090: ThreadManager_createThread (utils.thread.h:176)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 40 bytes in 10 blocks are still reachable in loss record 66 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10FC34: Theme_addColor (utils.theme.h:99)
+==11994==    by 0x110BA4: ThemeManager_readThemeFile (utils.theme.h:353)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 48 bytes in 2 blocks are still reachable in loss record 67 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E22B: HashMap_new (utils.hashmap.h:137)
+==11994==    by 0x10E2C1: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10FB91: Theme_init (utils.theme.h:60)
+==11994==    by 0x10FBC3: Theme_create (utils.theme.h:72)
+==11994==    by 0x110ACC: ThemeManager_readThemeFile (utils.theme.h:340)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 59 bytes in 2 blocks are still reachable in loss record 68 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AEC8: String_create (utils.string.h:36)
+==11994==    by 0x10E9D3: HashMap_getKeys (utils.hashmap.h:460)
+==11994==    by 0x115E27: ThreadManager_exit (utils.thread.h:97)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994== 
+==11994== 78 bytes in 3 blocks are still reachable in loss record 69 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AEC8: String_create (utils.string.h:36)
+==11994==    by 0x10E9D3: HashMap_getKeys (utils.hashmap.h:460)
+==11994==    by 0x115E0A: ThreadManager_exit (utils.thread.h:96)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 70 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 71 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 72 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 73 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 74 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 75 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 76 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 77 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 120 bytes in 1 blocks are still reachable in loss record 78 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x113FAA: Page_new (utils.page.h:83)
+==11994==    by 0x11408B: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 79 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10FD95: ThemeManager_init (utils.theme.h:195)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 80 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10FB91: Theme_init (utils.theme.h:60)
+==11994==    by 0x10FBC3: Theme_create (utils.theme.h:72)
+==11994==    by 0x10FDA7: ThemeManager_init (utils.theme.h:198)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 81 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115683: PageManager_init (utils.page.h:767)
+==11994==    by 0x11E85E: Engine_init (engine.c:126)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 82 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115D82: ThreadManager_init (utils.thread.h:69)
+==11994==    by 0x11E870: Engine_init (engine.c:131)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 83 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115D93: ThreadManager_init (utils.thread.h:70)
+==11994==    by 0x11E870: Engine_init (engine.c:131)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 84 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x115DA5: ThreadManager_init (utils.thread.h:71)
+==11994==    by 0x11E870: Engine_init (engine.c:131)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 85 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10ECE6: EventStore_init (utils.event.h:346)
+==11994==    by 0x11E882: Engine_init (engine.c:132)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 86 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10ECF7: EventStore_init (utils.event.h:347)
+==11994==    by 0x11E882: Engine_init (engine.c:132)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 87 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10ED09: EventStore_init (utils.event.h:348)
+==11994==    by 0x11E882: Engine_init (engine.c:132)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 88 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 89 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 90 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 91 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 92 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 93 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 94 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 95 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 96 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 97 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 98 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 99 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 100 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 101 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 102 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 103 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x112DE9: ComponentManager_init (utils.component.h:508)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 128 bytes in 1 blocks are still reachable in loss record 104 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x114040: Page_init (utils.page.h:116)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 195 bytes in 3 blocks are definitely lost in loss record 105 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10F790: Graphics_getCodeFGBG (utils.graphics.h:106)
+==11994==    by 0x11103D: Buffer_init (utils.buffer.h:88)
+==11994==    by 0x11112C: Buffer_create (utils.buffer.h:122)
+==11994==    by 0x113291: ComponentManager_render (utils.component.h:715)
+==11994==    by 0x114112: Page_render (utils.page.h:155)
+==11994==    by 0x1158BE: PageManager_update (utils.page.h:854)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 256 bytes in 2 blocks are still reachable in loss record 106 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E270: HashMap_init (utils.hashmap.h:154)
+==11994==    by 0x10E2C9: HashMap_create (utils.hashmap.h:169)
+==11994==    by 0x10FB91: Theme_init (utils.theme.h:60)
+==11994==    by 0x10FBC3: Theme_create (utils.theme.h:72)
+==11994==    by 0x110ACC: ThemeManager_readThemeFile (utils.theme.h:340)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 257 bytes in 1 blocks are still reachable in loss record 107 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10EDD6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A282: Settings_init (settings.c:26)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 257 bytes in 1 blocks are still reachable in loss record 108 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10EDD6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A29D: Settings_init (settings.c:27)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 257 bytes in 1 blocks are still reachable in loss record 109 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10EDD6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A2B8: Settings_init (settings.c:28)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 257 bytes in 1 blocks are still reachable in loss record 110 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10EDD6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A2D3: Settings_init (settings.c:29)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 257 bytes in 1 blocks are still reachable in loss record 111 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10EDD6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A2EE: Settings_init (settings.c:32)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 257 bytes in 1 blocks are still reachable in loss record 112 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10EFB9: EventStore_setString (utils.event.h:435)
+==11994==    by 0x116E81: PageHandler_login (login.page.c:221)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 264 bytes in 1 blocks are still reachable in loss record 113 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115957: Mutex_new (utils.thread.unix.h:62)
+==11994==    by 0x1159DD: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116169: ThreadManager_createMutex (utils.thread.h:210)
+==11994==    by 0x11EC21: Engine_init (engine.c:188)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 264 bytes in 1 blocks are still reachable in loss record 114 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115957: Mutex_new (utils.thread.unix.h:62)
+==11994==    by 0x1159DD: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116169: ThreadManager_createMutex (utils.thread.h:210)
+==11994==    by 0x11EC3D: Engine_init (engine.c:189)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 264 bytes in 1 blocks are still reachable in loss record 115 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115957: Mutex_new (utils.thread.unix.h:62)
+==11994==    by 0x1159DD: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116090: ThreadManager_createThread (utils.thread.h:176)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 264 bytes in 1 blocks are still reachable in loss record 116 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115957: Mutex_new (utils.thread.unix.h:62)
+==11994==    by 0x1159DD: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116090: ThreadManager_createThread (utils.thread.h:176)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 264 bytes in 1 blocks are still reachable in loss record 117 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115957: Mutex_new (utils.thread.unix.h:62)
+==11994==    by 0x1159DD: Mutex_create (utils.thread.unix.h:89)
+==11994==    by 0x116090: ThreadManager_createThread (utils.thread.h:176)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 118 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FC5B: Theme_addColor (utils.theme.h:103)
+==11994==    by 0x10FDC6: ThemeManager_init (utils.theme.h:199)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 119 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FC5B: Theme_addColor (utils.theme.h:103)
+==11994==    by 0x10FDE1: ThemeManager_init (utils.theme.h:200)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 120 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FC5B: Theme_addColor (utils.theme.h:103)
+==11994==    by 0x10FDFC: ThemeManager_init (utils.theme.h:201)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 121 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FC5B: Theme_addColor (utils.theme.h:103)
+==11994==    by 0x10FE17: ThemeManager_init (utils.theme.h:202)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 122 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FC5B: Theme_addColor (utils.theme.h:103)
+==11994==    by 0x10FE32: ThemeManager_init (utils.theme.h:203)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 123 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FE50: ThemeManager_init (utils.theme.h:206)
+==11994==    by 0x11E837: Engine_init (engine.c:125)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 124 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 125 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 126 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 127 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 128 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 129 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 130 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 131 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 132 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 133 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 134 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 135 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 136 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 137 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 138 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 139 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 140 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112E12: ComponentManager_init (utils.component.h:511)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 141 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x115773: PageManager_createPage (utils.page.h:810)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 142 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x116188: ThreadManager_createMutex (utils.thread.h:211)
+==11994==    by 0x11EC21: Engine_init (engine.c:188)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 143 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x116188: ThreadManager_createMutex (utils.thread.h:211)
+==11994==    by 0x11EC3D: Engine_init (engine.c:189)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 144 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1160E4: ThreadManager_createThread (utils.thread.h:183)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 145 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1160FF: ThreadManager_createThread (utils.thread.h:184)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 146 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1160E4: ThreadManager_createThread (utils.thread.h:183)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 147 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1160FF: ThreadManager_createThread (utils.thread.h:184)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 148 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x113A6C: AssetManager_createTextAsset (utils.asset.h:273)
+==11994==    by 0x116480: PageHandler_login (login.page.c:69)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 149 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x1145EE: Page_addComponentContext (utils.page.h:353)
+==11994==    by 0x1164CC: PageHandler_login (login.page.c:72)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 150 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x1164F8: PageHandler_login (login.page.c:73)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 151 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x1143D8: Page_addComponentAsset (utils.page.h:272)
+==11994==    by 0x116545: PageHandler_login (login.page.c:74)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 152 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x116590: PageHandler_login (login.page.c:75)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 153 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1165CF: PageHandler_login (login.page.c:76)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 154 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x116612: PageHandler_login (login.page.c:77)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 155 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x116655: PageHandler_login (login.page.c:78)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 156 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x116698: PageHandler_login (login.page.c:79)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 157 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1166DB: PageHandler_login (login.page.c:80)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 158 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x11671E: PageHandler_login (login.page.c:81)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 159 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x1147A3: Page_addComponentPopup (utils.page.h:399)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 160 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114A43: Page_addComponentPopup (utils.page.h:421)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 161 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x114A6F: Page_addComponentPopup (utils.page.h:422)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 162 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114AAD: Page_addComponentPopup (utils.page.h:423)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 163 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114AEF: Page_addComponentPopup (utils.page.h:424)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 164 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x11417E: Page_setUserState (utils.page.h:172)
+==11994==    by 0x114B72: Page_addComponentPopup (utils.page.h:431)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 165 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x11417E: Page_setUserState (utils.page.h:172)
+==11994==    by 0x114BC2: Page_addComponentPopup (utils.page.h:432)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 166 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x11417E: Page_setUserState (utils.page.h:172)
+==11994==    by 0x114BE0: Page_addComponentPopup (utils.page.h:433)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 167 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x11417E: Page_setUserState (utils.page.h:172)
+==11994==    by 0x1167D5: PageHandler_login (login.page.c:85)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 168 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x11417E: Page_setUserState (utils.page.h:172)
+==11994==    by 0x116816: PageHandler_login (login.page.c:86)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 169 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1160E4: ThreadManager_createThread (utils.thread.h:183)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 170 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1160FF: ThreadManager_createThread (utils.thread.h:184)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 171 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EDF6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A282: Settings_init (settings.c:26)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 172 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EF27: EventStore_set (utils.event.h:410)
+==11994==    by 0x11A282: Settings_init (settings.c:26)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 173 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EDF6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A29D: Settings_init (settings.c:27)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 174 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EF27: EventStore_set (utils.event.h:410)
+==11994==    by 0x11A29D: Settings_init (settings.c:27)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 175 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EDF6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A2B8: Settings_init (settings.c:28)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 176 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EF27: EventStore_set (utils.event.h:410)
+==11994==    by 0x11A2B8: Settings_init (settings.c:28)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 177 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EDF6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A2D3: Settings_init (settings.c:29)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 178 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EF27: EventStore_set (utils.event.h:410)
+==11994==    by 0x11A2D3: Settings_init (settings.c:29)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 179 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EDF6: EventStore_set (utils.event.h:383)
+==11994==    by 0x11A2EE: Settings_init (settings.c:32)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 180 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EF27: EventStore_set (utils.event.h:410)
+==11994==    by 0x11A2EE: Settings_init (settings.c:32)
+==11994==    by 0x11ED0D: Engine_init (engine.c:233)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are still reachable in loss record 181 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10EFD3: EventStore_setString (utils.event.h:435)
+==11994==    by 0x116E81: PageHandler_login (login.page.c:221)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 272 bytes in 1 blocks are possibly lost in loss record 182 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x40147D9: calloc (rtld-malloc.h:44)
+==11994==    by 0x40147D9: allocate_dtv (dl-tls.c:375)
+==11994==    by 0x40147D9: _dl_allocate_tls (dl-tls.c:634)
+==11994==    by 0x49DC7B4: allocate_stack (allocatestack.c:430)
+==11994==    by 0x49DC7B4: pthread_create@@GLIBC_2.34 (pthread_create.c:647)
+==11994==    by 0x115C2B: Thread_init (utils.thread.unix.h:245)
+==11994==    by 0x115C86: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are possibly lost in loss record 183 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x40147D9: calloc (rtld-malloc.h:44)
+==11994==    by 0x40147D9: allocate_dtv (dl-tls.c:375)
+==11994==    by 0x40147D9: _dl_allocate_tls (dl-tls.c:634)
+==11994==    by 0x49DC7B4: allocate_stack (allocatestack.c:430)
+==11994==    by 0x49DC7B4: pthread_create@@GLIBC_2.34 (pthread_create.c:647)
+==11994==    by 0x115C2B: Thread_init (utils.thread.unix.h:245)
+==11994==    by 0x115C86: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 272 bytes in 1 blocks are possibly lost in loss record 184 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x40147D9: calloc (rtld-malloc.h:44)
+==11994==    by 0x40147D9: allocate_dtv (dl-tls.c:375)
+==11994==    by 0x40147D9: _dl_allocate_tls (dl-tls.c:634)
+==11994==    by 0x49DC7B4: allocate_stack (allocatestack.c:430)
+==11994==    by 0x49DC7B4: pthread_create@@GLIBC_2.34 (pthread_create.c:647)
+==11994==    by 0x115C2B: Thread_init (utils.thread.unix.h:245)
+==11994==    by 0x115C86: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 304 bytes in 1 blocks are still reachable in loss record 185 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115B5E: Thread_new (utils.thread.unix.h:212)
+==11994==    by 0x115C5F: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11EC7B: Engine_init (engine.c:194)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 304 bytes in 1 blocks are still reachable in loss record 186 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115B5E: Thread_new (utils.thread.unix.h:212)
+==11994==    by 0x115C5F: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11ECB9: Engine_init (engine.c:207)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 304 bytes in 1 blocks are still reachable in loss record 187 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115B5E: Thread_new (utils.thread.unix.h:212)
+==11994==    by 0x115C5F: Thread_create (utils.thread.unix.h:263)
+==11994==    by 0x1160C6: ThreadManager_createThread (utils.thread.h:180)
+==11994==    by 0x11ECF0: Engine_init (engine.c:220)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 514 bytes in 2 blocks are still reachable in loss record 188 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x11360B: Asset_init (utils.asset.h:80)
+==11994==    by 0x11369C: Asset_create (utils.asset.h:97)
+==11994==    by 0x113A42: AssetManager_createTextAsset (utils.asset.h:272)
+==11994==    by 0x116480: PageHandler_login (login.page.c:69)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 544 bytes in 2 blocks are still reachable in loss record 189 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x110AF7: ThemeManager_readThemeFile (utils.theme.h:341)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 776 bytes in 1 blocks are still reachable in loss record 190 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11359A: Asset_new (utils.asset.h:56)
+==11994==    by 0x113686: Asset_create (utils.asset.h:97)
+==11994==    by 0x113A42: AssetManager_createTextAsset (utils.asset.h:272)
+==11994==    by 0x116480: PageHandler_login (login.page.c:69)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 816 bytes in 3 blocks are still reachable in loss record 191 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1137BC: AssetManager_createAsset (utils.asset.h:173)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8F9: Engine_init (engine.c:141)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 816 bytes in 3 blocks are still reachable in loss record 192 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1137BC: AssetManager_createAsset (utils.asset.h:173)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E916: Engine_init (engine.c:142)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 1,024 bytes in 1 blocks are still reachable in loss record 193 of 271
+==11994==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x49C5BA3: _IO_file_doallocate (filedoalloc.c:101)
+==11994==    by 0x49D4CDF: _IO_doallocbuf (genops.c:347)
+==11994==    by 0x49D3F5F: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:744)
+==11994==    by 0x49D26D4: _IO_new_file_xsputn (fileops.c:1243)
+==11994==    by 0x49D26D4: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1196)
+==11994==    by 0x49BC14C: outstring_func (vfprintf-internal.c:239)
+==11994==    by 0x49BC14C: __vfprintf_internal (vfprintf-internal.c:1263)
+==11994==    by 0x49A779E: printf (printf.c:33)
+==11994==    by 0x110EEE: IO_clear (utils.io.unix.h:129)
+==11994==    by 0x11EE4D: main (minesweeper.c:21)
+==11994== 
+==11994== 1,024 bytes in 1 blocks are still reachable in loss record 194 of 271
+==11994==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x49C5BA3: _IO_file_doallocate (filedoalloc.c:101)
+==11994==    by 0x49D4CDF: _IO_doallocbuf (genops.c:347)
+==11994==    by 0x49D3CDB: _IO_file_underflow@@GLIBC_2.2.5 (fileops.c:485)
+==11994==    by 0x49D4D95: _IO_default_uflow (genops.c:362)
+==11994==    by 0x49CEBCC: getchar (getchar.c:39)
+==11994==    by 0x110F18: IO_readChar (utils.io.unix.h:145)
+==11994==    by 0x11E7B3: EventListener_keyPressed (events.c:53)
+==11994==    by 0x10EAB0: EventListener_trigger (utils.event.h:124)
+==11994==    by 0x10F457: EventManager_triggerEvent (utils.event.h:683)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 195 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x1165CF: PageHandler_login (login.page.c:76)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 196 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x116655: PageHandler_login (login.page.c:78)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 197 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x1166DB: PageHandler_login (login.page.c:80)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 198 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x11671E: PageHandler_login (login.page.c:81)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 199 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x114A43: Page_addComponentPopup (utils.page.h:421)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 200 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x114AAD: Page_addComponentPopup (utils.page.h:423)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 201 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x114AEF: Page_addComponentPopup (utils.page.h:424)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 202 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114D4D: Page_setComponentText (utils.page.h:493)
+==11994==    by 0x11705B: PageHandler_login (login.page.c:247)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,025 bytes in 1 blocks are still reachable in loss record 203 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114D4D: Page_setComponentText (utils.page.h:493)
+==11994==    by 0x117092: PageHandler_login (login.page.c:248)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 1,285 bytes in 5 blocks are still reachable in loss record 204 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x11360B: Asset_init (utils.asset.h:80)
+==11994==    by 0x11369C: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8F9: Engine_init (engine.c:141)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 1,632 bytes in 6 blocks are still reachable in loss record 205 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1137BC: AssetManager_createAsset (utils.asset.h:173)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E933: Engine_init (engine.c:143)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 206 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E3EE: HashMap_resize (utils.hashmap.h:222)
+==11994==    by 0x10E726: HashMap_add (utils.hashmap.h:322)
+==11994==    by 0x1137BC: AssetManager_createAsset (utils.asset.h:173)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8DC: Engine_init (engine.c:140)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 207 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x1165CF: PageHandler_login (login.page.c:76)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 208 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x116655: PageHandler_login (login.page.c:78)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 209 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x1166DB: PageHandler_login (login.page.c:80)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 210 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x11671E: PageHandler_login (login.page.c:81)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 211 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E3EE: HashMap_resize (utils.hashmap.h:222)
+==11994==    by 0x10E726: HashMap_add (utils.hashmap.h:322)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1149D7: Page_addComponentPopup (utils.page.h:415)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 212 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x114A43: Page_addComponentPopup (utils.page.h:421)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 213 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x114AAD: Page_addComponentPopup (utils.page.h:423)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 214 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x114AEF: Page_addComponentPopup (utils.page.h:424)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 215 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114D2A: Page_setComponentText (utils.page.h:490)
+==11994==    by 0x11705B: PageHandler_login (login.page.c:247)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,048 bytes in 1 blocks are still reachable in loss record 216 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114D2A: Page_setComponentText (utils.page.h:490)
+==11994==    by 0x117092: PageHandler_login (login.page.c:248)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,050 bytes in 2 blocks are still reachable in loss record 217 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x1144C8: Page_addComponentText (utils.page.h:312)
+==11994==    by 0x11671E: PageHandler_login (login.page.c:81)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 2,328 bytes in 3 blocks are still reachable in loss record 218 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11359A: Asset_new (utils.asset.h:56)
+==11994==    by 0x113686: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8F9: Engine_init (engine.c:141)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2,328 bytes in 3 blocks are still reachable in loss record 219 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11359A: Asset_new (utils.asset.h:56)
+==11994==    by 0x113686: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E916: Engine_init (engine.c:142)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 2,720 bytes in 10 blocks are still reachable in loss record 220 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x10FC5B: Theme_addColor (utils.theme.h:103)
+==11994==    by 0x110BA4: ThemeManager_readThemeFile (utils.theme.h:353)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 3,264 bytes in 12 blocks are still reachable in loss record 221 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1149D7: Page_addComponentPopup (utils.page.h:415)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 3,808 bytes in 14 blocks are still reachable in loss record 222 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114852: Page_addComponentPopup (utils.page.h:404)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 3,808 bytes in 14 blocks are still reachable in loss record 223 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x112F4B: ComponentManager_add (utils.component.h:563)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114902: Page_addComponentPopup (utils.page.h:409)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994== 
+==11994== 4,097 bytes in 1 blocks are definitely lost in loss record 224 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10BA79: File_readText (utils.file.h:101)
+==11994==    by 0x113C13: AssetManager_readAssetFile (utils.asset.h:319)
+==11994==    by 0x11E8BF: Engine_init (engine.c:139)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4,097 bytes in 1 blocks are definitely lost in loss record 225 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10BA79: File_readText (utils.file.h:101)
+==11994==    by 0x113C13: AssetManager_readAssetFile (utils.asset.h:319)
+==11994==    by 0x11E8DC: Engine_init (engine.c:140)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4,097 bytes in 1 blocks are definitely lost in loss record 226 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10BA79: File_readText (utils.file.h:101)
+==11994==    by 0x113C13: AssetManager_readAssetFile (utils.asset.h:319)
+==11994==    by 0x11E8F9: Engine_init (engine.c:141)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4,097 bytes in 1 blocks are definitely lost in loss record 227 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10BA79: File_readText (utils.file.h:101)
+==11994==    by 0x113C13: AssetManager_readAssetFile (utils.asset.h:319)
+==11994==    by 0x11E916: Engine_init (engine.c:142)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4,097 bytes in 1 blocks are definitely lost in loss record 228 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10BA79: File_readText (utils.file.h:101)
+==11994==    by 0x113C13: AssetManager_readAssetFile (utils.asset.h:319)
+==11994==    by 0x11E933: Engine_init (engine.c:143)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4,097 bytes in 1 blocks are definitely lost in loss record 229 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x10BA79: File_readText (utils.file.h:101)
+==11994==    by 0x1109DE: ThemeManager_readThemeFile (utils.theme.h:318)
+==11994==    by 0x11E96A: Engine_init (engine.c:151)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 4,656 bytes in 6 blocks are still reachable in loss record 230 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11359A: Asset_new (utils.asset.h:56)
+==11994==    by 0x113686: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E933: Engine_init (engine.c:143)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 7,344 bytes in 27 blocks are still reachable in loss record 231 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1137BC: AssetManager_createAsset (utils.asset.h:173)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8DC: Engine_init (engine.c:140)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 232 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E98B: Engine_init (engine.c:156)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 233 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9AC: Engine_init (engine.c:157)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 234 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9CD: Engine_init (engine.c:158)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 235 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11E9EE: Engine_init (engine.c:159)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 236 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA0F: Engine_init (engine.c:160)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 237 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA30: Engine_init (engine.c:161)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 238 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA51: Engine_init (engine.c:162)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 239 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA72: Engine_init (engine.c:163)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 240 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112DC2: ComponentManager_init (utils.component.h:504)
+==11994==    by 0x113FFB: Page_init (utils.page.h:104)
+==11994==    by 0x1140A9: Page_create (utils.page.h:134)
+==11994==    by 0x11573A: PageManager_createPage (utils.page.h:804)
+==11994==    by 0x11EA93: Engine_init (engine.c:164)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 241 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x1145EE: Page_addComponentContext (utils.page.h:353)
+==11994==    by 0x1164CC: PageHandler_login (login.page.c:72)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 242 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x1164F8: PageHandler_login (login.page.c:73)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 243 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x1143D8: Page_addComponentAsset (utils.page.h:272)
+==11994==    by 0x116545: PageHandler_login (login.page.c:74)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 244 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x116590: PageHandler_login (login.page.c:75)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 245 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1165CF: PageHandler_login (login.page.c:76)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 246 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x116612: PageHandler_login (login.page.c:77)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 247 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x116655: PageHandler_login (login.page.c:78)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 248 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x116698: PageHandler_login (login.page.c:79)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 249 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1166DB: PageHandler_login (login.page.c:80)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 250 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x11671E: PageHandler_login (login.page.c:81)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 251 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x1147A3: Page_addComponentPopup (utils.page.h:399)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 252 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114A43: Page_addComponentPopup (utils.page.h:421)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 253 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x114593: Page_addComponentContainer (utils.page.h:334)
+==11994==    by 0x114A6F: Page_addComponentPopup (utils.page.h:422)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 254 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114AAD: Page_addComponentPopup (utils.page.h:423)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 8,576 bytes in 1 blocks are still reachable in loss record 255 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114AEF: Page_addComponentPopup (utils.page.h:424)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 9,509 bytes in 37 blocks are still reachable in loss record 256 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x11360B: Asset_init (utils.asset.h:80)
+==11994==    by 0x11369C: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E916: Engine_init (engine.c:142)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 10,794 bytes in 42 blocks are still reachable in loss record 257 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x11360B: Asset_init (utils.asset.h:80)
+==11994==    by 0x11369C: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E933: Engine_init (engine.c:143)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 12,300 bytes in 12 blocks are still reachable in loss record 258 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x1149D7: Page_addComponentPopup (utils.page.h:415)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 13,878 bytes in 54 blocks are still reachable in loss record 259 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x11360B: Asset_init (utils.asset.h:80)
+==11994==    by 0x11369C: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8DC: Engine_init (engine.c:140)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 14,350 bytes in 14 blocks are still reachable in loss record 260 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x114852: Page_addComponentPopup (utils.page.h:404)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 14,350 bytes in 14 blocks are still reachable in loss record 261 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x114455: Page_addComponentText (utils.page.h:298)
+==11994==    by 0x114902: Page_addComponentPopup (utils.page.h:409)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 17,408 bytes in 64 blocks are still reachable in loss record 262 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10E162: HashMapEntry_new (utils.hashmap.h:62)
+==11994==    by 0x10E1D9: HashMapEntry_create (utils.hashmap.h:96)
+==11994==    by 0x10E5F7: HashMap_add (utils.hashmap.h:283)
+==11994==    by 0x1137BC: AssetManager_createAsset (utils.asset.h:173)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8BF: Engine_init (engine.c:139)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 20,952 bytes in 27 blocks are still reachable in loss record 263 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11359A: Asset_new (utils.asset.h:56)
+==11994==    by 0x113686: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8DC: Engine_init (engine.c:140)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 24,576 bytes in 12 blocks are still reachable in loss record 264 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x1149D7: Page_addComponentPopup (utils.page.h:415)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 28,672 bytes in 14 blocks are still reachable in loss record 265 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x114852: Page_addComponentPopup (utils.page.h:404)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 28,672 bytes in 14 blocks are still reachable in loss record 266 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x114432: Page_addComponentText (utils.page.h:295)
+==11994==    by 0x114902: Page_addComponentPopup (utils.page.h:409)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994==    by 0x49DBAC2: start_thread (pthread_create.c:442)
+==11994==    by 0x4A6CA03: clone (clone.S:100)
+==11994== 
+==11994== 49,664 bytes in 64 blocks are still reachable in loss record 267 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x11359A: Asset_new (utils.asset.h:56)
+==11994==    by 0x113686: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8BF: Engine_init (engine.c:139)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== 102,912 bytes in 12 blocks are still reachable in loss record 268 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x1149D7: Page_addComponentPopup (utils.page.h:415)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 120,064 bytes in 14 blocks are still reachable in loss record 269 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114852: Page_addComponentPopup (utils.page.h:404)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 120,064 bytes in 14 blocks are still reachable in loss record 270 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x111F64: Component_new (utils.component.h:138)
+==11994==    by 0x1126BE: Component_create (utils.component.h:273)
+==11994==    by 0x112F05: ComponentManager_add (utils.component.h:556)
+==11994==    by 0x1142FC: Page_addComponent (utils.page.h:252)
+==11994==    by 0x11452B: Page_addComponentText (utils.page.h:318)
+==11994==    by 0x114902: Page_addComponentPopup (utils.page.h:409)
+==11994==    by 0x116794: PageHandler_login (login.page.c:82)
+==11994==    by 0x114225: Page_update (utils.page.h:211)
+==11994==    by 0x1158A2: PageManager_update (utils.page.h:853)
+==11994==    by 0x11ED80: Engine_main (engine.c:283)
+==11994==    by 0x115D23: ThreadHandler (utils.thread.unix.h:306)
+==11994== 
+==11994== 164,480 bytes in 640 blocks are still reachable in loss record 271 of 271
+==11994==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x10AF09: String_alloc (utils.string.h:52)
+==11994==    by 0x11360B: Asset_init (utils.asset.h:80)
+==11994==    by 0x11369C: Asset_create (utils.asset.h:97)
+==11994==    by 0x11379E: AssetManager_createAsset (utils.asset.h:172)
+==11994==    by 0x113D14: AssetManager_readAssetFile (utils.asset.h:348)
+==11994==    by 0x11E8BF: Engine_init (engine.c:139)
+==11994==    by 0x11EE5C: main (minesweeper.c:25)
+==11994== 
+==11994== LEAK SUMMARY:
+==11994==    definitely lost: 24,777 bytes in 15 blocks
+==11994==    indirectly lost: 0 bytes in 0 blocks
+==11994==      possibly lost: 816 bytes in 3 blocks
+==11994==    still reachable: 1,058,161 bytes in 1,403 blocks
+==11994==         suppressed: 0 bytes in 0 blocks
+==11994== 
+==11994== ERROR SUMMARY: 14 errors from 14 contexts (suppressed: 0 from 0)
+==11994== 
+==11994== 1 errors in context 1 of 14:
+==11994== Invalid read of size 1
+==11994==    at 0x484EE64: strcpy (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115E52: ThreadManager_exit (utils.thread.h:101)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994==  Address 0x6374000 is on thread 4's stack
+==11994==  In stack guard protected page, 8387976 bytes below stack pointer
+==11994== 
+==11994== 
+==11994== 1 errors in context 2 of 14:
+==11994== Use of uninitialised value of size 8
+==11994==    at 0x484EE64: strcpy (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==11994==    by 0x115E52: ThreadManager_exit (utils.thread.h:101)
+==11994==    by 0x11ED44: Engine_exit (engine.c:256)
+==11994==    by 0x11EE98: main (minesweeper.c:35)
+==11994==  Uninitialised value was created by a stack allocation
+==11994==    at 0x115DD2: ThreadManager_exit (utils.thread.h:85)
+==11994== 
+==11994== ERROR SUMMARY: 14 errors from 14 contexts (suppressed: 0 from 0)

@@ -1,7 +1,7 @@
 /**
  * @ Author: Mo David
  * @ Create Time: 2024-03-04 14:55:34
- * @ Modified time: 2024-03-30 03:05:51
+ * @ Modified time: 2024-03-31 04:16:02
  * @ Description:
  * 
  * This class defines a component which we append to the page class.
@@ -670,7 +670,13 @@ void ComponentManager_setColor(ComponentManager *this, char *sKey, color colorFG
  * @param   { char ** }               aAsset        The actual information stored by the asset.
 */
 void ComponentManager_setAsset(ComponentManager *this, char *sKey, int dAssetHeight, char **aAsset) {
+  int i;
   Component *pComponent = HashMap_get(this->pComponentMap, sKey);
+
+  // Garbage collection
+  for(i = 0; i < pComponent->dAssetHeight; i++)
+    if(pComponent->aAsset[i] != NULL)
+      free(pComponent->aAsset[i]);
 
   // Remove the original asset first
   free(pComponent->aAsset);

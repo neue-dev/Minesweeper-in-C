@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-20 02:22:07
- * @ Modified time: 2024-03-25 19:09:04
+ * @ Modified time: 2024-03-31 04:20:21
  * @ Description:
  *   
  * A buffer class that can help us create blocks of text before printing them.
@@ -128,6 +128,7 @@ Buffer *Buffer_create(int dWidth, int dHeight, int dDefaultFG, int dDefaultBG) {
  * @param   { Buffer * }  this  The instance to be freed from memory.
 */
 void Buffer_kill(Buffer *this) {
+  free(this->sDefaultContext);
   free(this);
 }
 

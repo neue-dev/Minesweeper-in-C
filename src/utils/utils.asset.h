@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 15:52:53
- * @ Modified time: 2024-03-13 15:22:03
+ * @ Modified time: 2024-03-31 03:53:02
  * @ Description:
  * 
  * Defines an asset class and manager that lets us store assets in a modular manner.
@@ -397,6 +397,7 @@ void AssetManager_readAssetFile(AssetManager *this, char *sDelimeter, char *sFil
   // Garbage collection
   if(pAssetFile != NULL)
     File_kill(pAssetFile);
+  File_freeBuffer(dAssetFileBufferLength, sAssetFileBuffer);
 }
 
 

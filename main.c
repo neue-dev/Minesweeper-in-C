@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 18:08:09
- * @ Modified time: 2024-03-30 01:05:44
+ * @ Modified time: 2024-03-31 03:50:13
  * 
  *    ▀████▄     ▄███▀▀████▀▀███▄   ▀███▀▀███▀▀▀███ ███▀▀▀███         █      
  *      ████    ████    ██    ███▄    █    ██    ▀█ █▀   ███      ▀▄█████▄▀  
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
       printf("\t\tNote that we need conhost because the program kinda breaks on Windows 11.\n\n");
     }
   #else
-    sprintf(command, "gcc -Wall ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.debug/log.unix.txt -lrt -lm", filename);
+    sprintf(command, "gcc -Wall -ggdb3 ./src/%s.c -o ./build/minesweeper.unix.o 2> ./build/.debug/log.unix.txt -lrt -lm", filename);
     system(command);
 
     // Just so the user doesn't get irritated

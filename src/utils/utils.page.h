@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 21:58:49
- * @ Modified time: 2024-03-30 19:36:17
+ * @ Modified time: 2024-03-31 04:13:13
  * @ Description:
  * 
  * The page class bundles together a buffer, shared assets, shared event stores, and an runner manager. 
@@ -382,6 +382,7 @@ void Page_addComponentPopup(Page *this, char *sKey, int x, int y, int w, int h, 
   char sPopupOption2Component[STRING_KEY_MAX_LENGTH];
   char sPopupButtonCurrentKey[STRING_KEY_MAX_LENGTH]; 
   char sPopupButtonCountKey[STRING_KEY_MAX_LENGTH];
+  char *sPopupBGText;
 
   // Define the component keys
   sprintf(sPopupComponent, "popup-%s.fixed.acenter-x.acenter-y", sKey);
@@ -398,15 +399,21 @@ void Page_addComponentPopup(Page *this, char *sKey, int x, int y, int w, int h, 
   Page_addComponentContainer(this, sPopupComponent, "root", x, y);
 
   for(i = 0; i < h; i++) {
+    sPopupBGText = String_repeat(" ", w + 2);
     sprintf(sPopupBackgroundComponent, "popup-%s-bg-clear-%d.acenter-x.atop-y", sKey, i);
-    Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorFGKey, sColorFGKey, String_repeat(" ", w + 2));
-    
+    Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorFGKey, sColorFGKey, sPopupBGText);
+    String_kill(sPopupBGText);
+
+    sPopupBGText = String_repeat(" ", w);
     sprintf(sPopupBackgroundComponent, "popup-%s-bg-border-%d.acenter-x.atop-y", sKey, i);
-    Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorBGKey, sColorBGKey, String_repeat(" ", w));
-    
+    Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorBGKey, sColorBGKey, sPopupBGText);
+    String_kill(sPopupBGText);
+
     if(i > 0 && i < h - 1) {
+      sPopupBGText = String_repeat(" ", w - 4);
       sprintf(sPopupBackgroundComponent, "popup-%s-bg-%d.acenter-x.atop-y", sKey, i);
-      Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorFGKey, sColorFGKey, String_repeat(" ", w - 4));
+      Page_addComponentText(this, sPopupBackgroundComponent, sPopupComponent, 0, i - h / 2, sColorFGKey, sColorFGKey, sPopupBGText);
+      String_kill(sPopupBGText);
     }
   }
   
