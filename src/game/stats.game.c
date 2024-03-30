@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-30 23:10:52
+ * @ Modified time: 2024-03-30 23:28:38
  * @ Description:
  * 
  * Displays the statistics of a profile.
@@ -33,6 +33,10 @@ void Stats_update(Game *pGame) {
 	int nClassicEasyWins = 0, nClassicDifficultWins = 0, nCustomWins = 0;
 	int nClassicEasyLoss = 0, nClassicDifficultLoss = 0, nCustomLoss = 0;
 	char sClassicEasy[32] = { 0 }, sClassicDifficult[32] = { 0 }, sCustom[32] = { 0 };
+
+	// The latest game data
+	char sGameData[256];
+	char sGameGridData[GAME_MAX_ROWS][GAME_MAX_COLUMNS];
 
 	// The data in the profile file
 	int nProfileDataLength = 0;
@@ -117,6 +121,9 @@ void Stats_update(Game *pGame) {
 	// Rewrite the file contents
 	File_clear(pProfileFile);
 	File_writeText(pProfileFile, nProfileNewDataLength, sProfileNewDataArray);
+
+	// Write the latest game onto the buffer
+	// Note that we store all the games...
 
 	// Garbage collection
 	File_freeBuffer(nProfileDataLength, sProfileDataArray);
