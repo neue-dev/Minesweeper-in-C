@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-30 20:44:56
+ * @ Modified time: 2024-03-30 21:39:53
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -177,12 +177,18 @@ void Game_end(Game *this, GameOutcome eOutcome) {
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
 
-  // Destroy game data
-  Field_clearMines(&this->field);
-  Field_clearFlags(&this->field);
-
   // Saves the outcome to the game data
   this->eOutcome = eOutcome;
+}
+
+/**
+ * Clears the mines and the flags.
+ * 
+ * @param   { Game * }  this  The game object.
+*/
+void Game_clear(Game *this) {
+  Field_clearFlags(&this->field);
+  Field_clearMines(&this->field);
 }
 
 /**
@@ -390,7 +396,7 @@ void Game_inspect(Game *this, int x, int y) {
             // Remove flags obliterated by inspection
             Grid_setBit(this->field.pFlagGrid, i, j, 0);
 
-            // Recures the function if the number on the tile is 0
+            // Recurses the function if the number on the tile is 0
             // only when it hasn't been inspected
             if(!pField->aNumbers[j][i] && 
               !Grid_getBit(pField->pInspectGrid, i, j))

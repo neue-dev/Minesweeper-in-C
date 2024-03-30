@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 20:28:06
+ * @ Modified time: 2024-03-30 21:54:45
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -215,6 +215,18 @@ void PageHandler_playI(p_obj pArgs_Page) {
               Page_setComponentPopupText(this, sPopupComponent, "Congratulations!\nWanna.try.again?.\0");
               Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
               Page_setUserState(this, "popup-action", 1);
+
+              return;
+            }
+
+            // User lost the game 
+            if(Game_isDone(pGame)) {
+              Page_enableComponentPopup(this, sPopupComponent);
+              Page_setComponentPopupText(this, sPopupComponent, "Try.again?");
+              Page_setComponentPopupOptions(this, sPopupComponent, "retry", "exit.", "secondary", "accent");
+              Page_setUserState(this, "popup-action", 2);
+
+              return;
             }
 
             // Do the inspection algorithm
@@ -273,10 +285,31 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
             // The game ended
             if(Game_isDone(pGame)) {
-              Page_enableComponentPopup(this, sPopupComponent);
-              Page_setComponentPopupText(this, sPopupComponent, Game_getEndMessage(pGame));
-              Page_setComponentPopupOptions(this, sPopupComponent, "retry", "exit.", "secondary", "accent");
-              Page_setUserState(this, "popup-action", 2);
+              
+              // Update display
+              Page_setComponentText(this, sProfileInfoComponent, "");
+              Page_setComponentText(this, sGamePromptComponent, "[enter]  to proceed");
+              Page_setComponentText(this, sGameInfoComponent, "Darn, you stepped on a mine!\n\n");
+
+              // Turn the grid red and indicate mines
+              for(x = 0; x < pGame->field.dWidth; x++) {
+                for(y = 0; y < pGame->field.dHeight; y++) {
+
+                  // The key
+                  sprintf(sFlagKey, "flag-%d-%d", x, y);
+                  
+                  // If there's a mine on it
+                  if(Grid_getBit(pGame->field.pMineGrid, x, y)) {
+                    Page_setComponentText(this, sFlagKey, "(#)");
+                  
+                  // False flags
+                  } else if(Grid_getBit(pGame->field.pFlagGrid, x, y)) {
+                    Page_setComponentColor(this, sFlagKey, "accent", "");
+                    sprintf(sFlagKey, "flag-darken-%d-%d", x, y);
+                    Page_setComponentColor(this, sFlagKey, "accent-darken-0.25", "");
+                  }
+                }
+              }
 
               return;
             }

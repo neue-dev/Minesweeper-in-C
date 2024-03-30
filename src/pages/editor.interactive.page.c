@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 20:33:06
+ * @ Modified time: 2024-03-30 21:30:34
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -240,7 +240,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
                 
                 // If there's a flag on it
                 if(Grid_getBit(pGame->field.pMineGrid, x, y))
-                  Page_setComponentText(this, sMineKey, "╶╳╴");
+                  Page_setComponentText(this, sMineKey, "(#)");
                 
                 // Remove flag if it exists
                 else
