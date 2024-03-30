@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 14:45:53
+ * @ Modified time: 2024-03-30 15:08:32
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -11,6 +11,7 @@
 #define PAGE_PLAY_
 
 #include "../game/game.c"
+#include "../game/editor.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
