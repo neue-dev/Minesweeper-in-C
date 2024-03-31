@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 03:37:47
+ * @ Modified time: 2024-04-01 04:03:01
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -94,7 +94,7 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter password:");
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.75", "secondary", "> type EXIT or QUIT to terminate the program");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.75", "secondary", "type ANY username to create a new profile\ntype EXIT to terminate the program");
       Page_addComponentText(this, sFieldPromptComponent, sLoginComponent, dWidth - dMargin - 1, dHeight - dMargin / 2, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to delete a profile");      
       Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
 
@@ -267,7 +267,7 @@ void PageHandler_login(p_obj pArgs_Page) {
 
             // Clear the error
             if(cKeyPressed) {
-              Page_setComponentText(this, sErrorPromptComponent, "type EXIT to terminate the program");
+              Page_setComponentText(this, sErrorPromptComponent, "type ANY username to create a new profile\ntype EXIT to terminate the program");
               Page_setComponentColor(this, sErrorPromptComponent, "primary-darken-0.75", "secondary");
             }
 

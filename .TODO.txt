@@ -1,22 +1,2 @@
-NOTIFY USERS HOW TO EXIT PROGRAM
-RESET THE GAME OBJECT AFTER GAME OVER OR WHEN QUITTING??
-to save or not to save progress when quitting.
-
 add an HIGHLIGHT feature where u can check what tiles haven't been clicked
-
-REPRESENT ACCOUNT DATA IN binary
-
 add a "screenshot" feature (basically it just outputs the current text on the screen on a text file, preferably with colors tho)
-
-!!!!!!Deal with the goddamn segfault at the end
-
-
-1. Make sure to foward declare all your functions AND typedefs (THEY SHOULD BE RIGHT AFTER THE IMPORTS BEFORE ALL OTHER CODE)
-2. Make the main file cleaner sheesh
-3. SET THE FONT SIZE + FONT FAMILY OF THE TERMINAL TO PREVENT HAVING A BIGGER BUFFER SIZE BECAUSE OF SMALL FONTS
-
-ehmm pretend we didnt see this LMAO
-[semaphores]                              https://www.reddit.com/r/compsci/comments/5e08s5/eli5_semaphores_and_the_producerconsumer_problem/
-[sempahores2]                             https://stackoverflow.com/questions/3993790/producer-consumer-model-binary-semaphore-or-mutex/4003740#4003740
-[Char Arrays vs Char Pointers]            https://www.reddit.com/r/C_Programming/comments/rxqp8u/when_to_use_char_array_vs_char_pointer/
-[Pragma Comment]                          https://learn.microsoft.com/en-us/cpp/preprocessor/comment-c-cpp?view=msvc-170
