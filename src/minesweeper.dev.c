@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-04-01 04:50:08
+ * @ Modified time: 2024-04-01 06:51:58
  * @ Description:
  * 
  * The main game file.
@@ -55,6 +55,7 @@ int main() {
   Profile_init(&profile);
   Profile_login(&profile, "MODEV", "MOGEN");
   Stats_readProfile(&profile);
+  Profile_delete(&profile, "TEST");
 
   // printf("\n%d %d %d", 
   // Stats_getWins(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
