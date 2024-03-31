@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-03-31 16:37:27
+ * @ Modified time: 2024-03-31 16:56:52
  * 
  * Displays the statistics of a profile.
  */
@@ -216,6 +216,10 @@ int Stats_readProfile(Profile *this) {
 		// Increment the height
 		this->nHistoryHeight++;
 	}
+
+	// Almost forgot!
+	File_kill(pProfileFile);
+	File_freeBuffer(nProfileDataLength, sProfileDataArray);
 }
 
 /**
