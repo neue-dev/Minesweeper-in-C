@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 04:14:25
+ * @ Modified time: 2024-04-01 06:22:23
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -40,6 +40,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sGridComponent = "grid.aleft-x.atop-y";
   char *sBoardIdPromptComponent = "board-id-prompt.aleft-x";
   char *sBoardIdFieldComponent = "board-id-field.aleft-x";
+  char *sAccountNameComponent = "account-name.aleft-x";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
   char *sLegendComponent = "legend-text.aleft-x.atop-y";
   char *sBoardInfoComponent = "board-info.aleft-x.atop-y";
@@ -90,6 +91,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sDataContainerComponent, sAccountContainerComponent, 0, 1);
       Page_addComponentText(this, sBoardIdPromptComponent, sDataContainerComponent, 0, 0, "", "", "Enter number:");
       Page_addComponentText(this, sBoardIdFieldComponent, sDataContainerComponent, 0, 1, "accent", "", "");
+      Page_addComponentText(this, sAccountNameComponent, sDataContainerComponent, 64, 3, "accent-darken-0.33", "", "");
       Page_addComponentText(this, sStatsComponent, sDataContainerComponent, 64, 5, "primary-darken-0.33", "", "");
       Page_addComponentText(this, sGridComponent, sDataContainerComponent, 0, 5, "primary-darken-0.33", "", "");
       Page_addComponentText(this, sBoardInfoComponent, sDataContainerComponent, 18, 9, "primary-darken-0.33", "", "");
@@ -192,7 +194,8 @@ void PageHandler_account(p_obj pArgs_Page) {
         "[ exploded mine='@' ][ flag='^' ][ unflagged mine='*' ][ wrong flag = 'X' ]",
         "If there are blank tiles or the grid is empty, the player quit");
 
-      // Add the stats and the grid and the legend to the page
+      // Add the stats and the grid and the legend and the profile name to the page
+      Page_setComponentText(this, sAccountNameComponent, pProfile->sCurrentProfile);
       Page_setComponentText(this, sStatsComponent, sStatsText);
       Page_setComponentText(this, sGridComponent, sGridText);
       Page_setComponentText(this, sBoardInfoComponent, sGridDescText);
