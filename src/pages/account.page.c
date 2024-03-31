@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 03:48:03
+ * @ Modified time: 2024-04-01 04:14:25
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -137,7 +137,8 @@ void PageHandler_account(p_obj pArgs_Page) {
         Stats_getWins(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY), 
         Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY) < 0 ? "none" :
           String_formatSecs(Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY)),
-        Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
+        Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY) + 
+          Stats_getQuits(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
         Stats_getTotalGames(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY));
 
       // Classic difficult stats
@@ -145,7 +146,8 @@ void PageHandler_account(p_obj pArgs_Page) {
         Stats_getWins(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT), 
         Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT) < 0 ? "none" :
           String_formatSecs(Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT)),
-        Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
+        Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT) +
+          Stats_getQuits(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
         Stats_getTotalGames(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT));
 
       // Custom stats
@@ -153,7 +155,8 @@ void PageHandler_account(p_obj pArgs_Page) {
         Stats_getWins(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE), 
         Stats_getBest(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE) < 0 ? "none" :
           String_formatSecs(Stats_getBest(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE)),
-        Stats_getLosses(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE),
+        Stats_getLosses(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE) + 
+          Stats_getQuits(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE),
         Stats_getTotalGames(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE));
 
       // Grid header
