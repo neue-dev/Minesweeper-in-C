@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 22:48:16
+ * @ Modified time: 2024-03-31 23:48:32
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -48,7 +48,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sDividerText;
   char *sStatsText;
   char *sGridText;
-  char *sGridBuffer[GAME_MAX_ROWS];
+  char *sGridBuffer[GAME_MAX_ROWS + 1];
   int nGridBufferHeight = 0;
 
   // Do stuff based on page status
@@ -80,6 +80,11 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentText(this, sPromptTextComponent, sAccountComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
 
+      // ! remove
+      Profile_init(pProfile);
+      Profile_login(pProfile, "MODEV", "MOGEN");
+      Stats_readProfile(pProfile);
+
       // Garbage collection
       String_kill(sDividerText);
     break;
@@ -103,6 +108,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       // Update the UI
       // Generate the text for the stats first
       sStatsText = String_alloc(1024);
+      sGridText = String_alloc(1024);
 
       // Account name
       sprintf(sStatsText, "PROFILE: %s\n", pProfile->sCurrentProfile);
@@ -125,19 +131,21 @@ void PageHandler_account(p_obj pArgs_Page) {
         Stats_getLosses(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE),
         Stats_getTotalGames(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE));
 
-      // Get the grid and turn it into string
-      Stats_getBoard(pProfile, 0, &nGridBufferHeight, sGridBuffer);
-      sGridText = String_alloc(1024);
+      // Get the grid
+      Stats_getBoard(pProfile, 1, &nGridBufferHeight, sGridBuffer);
+      
+      // Turn the grid into string
       for(i = 0; i < nGridBufferHeight; i++)
-        sprintf(sGridText, "%s%s", sGridText, sGridBuffer[i]);
+        strcat(sGridText, sGridBuffer[i]);
 
       // Add the stats and the grid to the page
       Page_setComponentText(this, sStatsComponent, sStatsText);
-      Page_setComponentText(this, sGridComponent, sGridBuffer);
-
-      // !KILL THE GRID BUFFER
+      Page_setComponentText(this, sGridComponent, sGridText);
 
       // Garbage collection
+      for(i = 0; i < nGridBufferHeight; i++)
+        String_kill(sGridBuffer[i]);
+
       String_kill(sStatsText);
       String_kill(sGridText);
 

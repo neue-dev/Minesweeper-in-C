@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-03-31 22:58:32
+ * @ Modified time: 2024-03-31 23:48:21
  * 
  * Displays the statistics of a profile.
  */
@@ -576,12 +576,13 @@ int Stats_getTotalGames(Profile *this, GameType eType, GameDifficulty eDifficult
  * Note that 0 represents the most recent board, 1 the second most recent, etc.
  * Returns a 0 when the end of the history was reached and the board wasn't found (n was too large).
  * 
- * @param		{ Profile * }		this 			The profile object.
- * @param		{ int }					n					The nth board (0th -> most recent).
- * @param		{ int * }				nHeight		The height of the board.
- * @return	{ int }										Whether or not the operation was successful.
+ * @param		{ Profile * }		this 						The profile object.
+ * @param		{ int }					n								The nth board (0th -> most recent).
+ * @param		{ int * }				nHeight					The height of the board.
+ * @param		{ char ** }			sOutputBuffer		The output buffer.
+ * @return	{ int }													Whether or not the operation was successful.
 */
-int Stats_getBoard(Profile *this, int n, int *nHeight, char *sOutputBuffer[]) {
+int Stats_getBoard(Profile *this, int n, int *nHeight, char **sOutputBuffer) {
 	int i = this->nHistoryHeight;
 
 	// No boards yet
@@ -607,7 +608,8 @@ int Stats_getBoard(Profile *this, int n, int *nHeight, char *sOutputBuffer[]) {
 		if(this->sHistory[i][0] == '>')
 			return 1;
 			
-		sOutputBuffer[(*nHeight)++] = String_create(this->sHistory[i]);
+		sOutputBuffer[*nHeight] = String_create(this->sHistory[i]);
+		(*nHeight)++;
 		i++;
 	}
 
