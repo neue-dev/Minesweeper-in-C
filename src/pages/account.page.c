@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 23:48:32
+ * @ Modified time: 2024-03-31 23:53:26
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -33,6 +33,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   // Components
   char *sAccountComponent = "account.fixed";
   char *sAccountContainerComponent = "account-container.col";
+  char *sDataContainerComponent = "data-container.fixed";
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
   char *sStatsComponent = "stats.aleft-x.atop-y";
@@ -75,16 +76,12 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sAccountContainerComponent, sAccountComponent, dMargin, dMargin / 2);
       Page_addComponentAsset(this, sTitleComponent, sAccountContainerComponent, -1, 1, "", "", sPageTitleKey);
       Page_addComponentText(this, sDividerComponent, sAccountContainerComponent, 0, 0, "accent", "", sDividerText);
-      Page_addComponentText(this, sStatsComponent, sAccountContainerComponent, 0, 0, "secondary", "", "");
-      Page_addComponentText(this, sGridComponent, sAccountContainerComponent, 32, 0, "secondary", "", "");
+      Page_addComponentContainer(this, sDataContainerComponent, sAccountContainerComponent, 0, 2);
+      Page_addComponentText(this, sStatsComponent, sDataContainerComponent, 0, 0, "secondary", "", "");
+      Page_addComponentText(this, sGridComponent, sDataContainerComponent, 64, 0, "secondary", "", "");
       Page_addComponentText(this, sPromptTextComponent, sAccountComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
-
-      // ! remove
-      Profile_init(pProfile);
-      Profile_login(pProfile, "MODEV", "MOGEN");
-      Stats_readProfile(pProfile);
-
+        
       // Garbage collection
       String_kill(sDividerText);
     break;
@@ -132,7 +129,7 @@ void PageHandler_account(p_obj pArgs_Page) {
         Stats_getTotalGames(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE));
 
       // Get the grid
-      Stats_getBoard(pProfile, 1, &nGridBufferHeight, sGridBuffer);
+      Stats_getBoard(pProfile, 5, &nGridBufferHeight, sGridBuffer);
       
       // Turn the grid into string
       for(i = 0; i < nGridBufferHeight; i++)
