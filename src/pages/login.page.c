@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 19:30:29
+ * @ Modified time: 2024-03-31 16:51:52
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -11,6 +11,7 @@
 #define PAGE_LOGIN_
 
 #include "../game/profile.game.c"
+#include "../game/stats.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -194,6 +195,10 @@ void PageHandler_login(p_obj pArgs_Page) {
 
                 // Logging in
                 } else {
+
+                  // Read the profile data
+                  Stats_readProfile(pProfile);
+
                   Page_idle(this);
                   Page_setNext(this, "menu");
                 }

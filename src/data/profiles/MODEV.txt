@@ -296,3 +296,21 @@
         
         
         
+>CLASSIC,EASY,QUIT,8,8,2,Sun Mar 31 16:50:21 2024;
+        
+        
+        
+        
+        
+        
+        
+        
+>CLASSIC,EASY,QUIT,8,8,1,Sun Mar 31 16:52:53 2024;
+        
+        
+        
+        
+        
+        
+        
+        

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-31 16:03:49
+ * @ Modified time: 2024-03-31 16:53:54
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -199,9 +199,9 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 	char *sNewProfile[1];
 	char *sNewProfilePath;
 	char *sNewProfileData[PROFILE_FILE_HEADER_HEIGHT] = {
-		"-CLASSIC_EASY:0,0;\n",
-		"-CLASSIC_DIFFICULT:0,0;\n",
-		"-CUSTOM:0,0;\n",
+		"-CLASSIC_EASY:0,0,-1;\n",
+		"-CLASSIC_DIFFICULT:0,0,-1;\n",
+		"-CUSTOM:0,0,-1;\n",
 	};
 
 	// Stuff about existing profiles

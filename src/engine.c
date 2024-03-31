@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-31 04:27:35
+ * @ Modified time: 2024-03-31 16:52:24
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -172,6 +172,7 @@ void Engine_init(Engine *this) {
 
   // Give the account and login pages the profile object
   PageManager_givePage(&this->pageManager, "login", &this->profile);
+  PageManager_givePage(&this->pageManager, "menu", &this->profile);
   PageManager_givePage(&this->pageManager, "account", &this->profile);
 
   // Bind the profile to the game object too

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 00:04:50
+ * @ Modified time: 2024-03-31 16:51:41
  * @ Description:
  * 
  * This file defines the page handler for the menu.
@@ -9,6 +9,8 @@
 
 #ifndef PAGE_MENU_
 #define PAGE_MENU_
+
+#include "../game/stats.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -22,6 +24,7 @@
 void PageHandler_menu(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
+  Profile *pProfile = (Profile *) this->pSharedObject;
   int dWidth, dHeight, i;
 
   // Component names
@@ -124,12 +127,15 @@ void PageHandler_menu(p_obj pArgs_Page) {
           Page_idle(this);
 
           // Bring the user to the login page when they logout
-          if(!strcmp(sMenuSelectors[(int) cMenuSelector][0], "logout"))
+          // Also, clear the profile stats in memory
+          if(!strcmp(sMenuSelectors[(int) cMenuSelector][0], "logout")) {
+            Stats_clearProfile(pProfile);
             Page_setNext(this, "login");
             
           // Otherwise, bring the user to the page they selected
-          else
+          } else {
             Page_setNext(this, sMenuSelectors[(int) cMenuSelector][0]);
+          }
         break;
 
         default:
