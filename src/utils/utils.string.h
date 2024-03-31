@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-31 20:10:09
+ * @ Modified time: 2024-03-31 23:54:36
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -348,7 +348,7 @@ int String_isValidFilename(char *sFilename) {
       (sFilename[i] >= 'a' && sFilename[i] <= 'z') ||
       (sFilename[i] >= '0' && sFilename[i] <= '9') ||
       sFilename[i] == '-' || sFilename[i] == '_' || 
-      sFilename[i] == '.')) {
+      sFilename[i] == '.' || sFilename[i] == ' ')) {
         
         return 0;
     }
