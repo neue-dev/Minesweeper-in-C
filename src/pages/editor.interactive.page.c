@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 21:30:34
+ * @ Modified time: 2024-04-01 04:26:37
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -269,7 +269,7 @@ void PageHandler_editorI(p_obj pArgs_Page) {
         Page_setComponentText(this, sSideInfoComponent, sSideInfoText);
 
         // Prompt text
-        sprintf(sEditorPromptText, "[%s%s%s%s]   to move\n[%s]      to place a mine\n[esc]    to exit and save file\n[enter]  to clear grid",
+        sprintf(sEditorPromptText, "[%s%s%s%s]   to move\n[%s]      to toggle a mine\n[esc]    to exit and save file\n[enter]  to clear grid",
           String_renderEscChar(Settings_getGameMoveUp(this->pSharedEventStore)),
           String_renderEscChar(Settings_getGameMoveLeft(this->pSharedEventStore)),
           String_renderEscChar(Settings_getGameMoveDown(this->pSharedEventStore)),
