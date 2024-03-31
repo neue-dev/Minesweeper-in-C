@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-04-01 01:35:04
+ * @ Modified time: 2024-04-01 02:24:02
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -162,7 +162,7 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "account");
+  PageManager_setActive(&this->pageManager, "login");
 
   // Give the interactive pages the game objects
   PageManager_givePage(&this->pageManager, "play", &this->standardGame);
