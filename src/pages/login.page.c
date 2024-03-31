@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 04:03:01
+ * @ Modified time: 2024-04-01 06:46:57
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -280,7 +280,7 @@ void PageHandler_login(p_obj pArgs_Page) {
 
       // Grab the profile list
       Profile_getList(&nProfileListLength, sProfileListArray);
-      strcat(sProfileListText, "Available profiles:\n\n");
+      strcat(sProfileListText, "Available profiles: \n\n");
 
       // None available
       if(!nProfileListLength)

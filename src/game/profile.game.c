@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-04-01 03:55:08
+ * @ Modified time: 2024-04-01 06:46:43
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -366,7 +366,8 @@ int Profile_delete(Profile *this, char *sUsername) {
 		
 		// Copy the name first without the newline
 		j = 0; 
-		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j] && 
+			sProfilesArray[i][j] != '\n' && sProfilesArray[i][j] != '\r') {
 			sProfileUsername[j] = sProfilesArray[i][j];
 			j++;
 		}
