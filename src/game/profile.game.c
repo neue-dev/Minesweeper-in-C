@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-04-01 03:34:02
+ * @ Modified time: 2024-04-01 03:55:08
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -410,6 +410,7 @@ int Profile_delete(Profile *this, char *sUsername) {
 */
 void Profile_getList(int *n, char **sOutputBuffer) {
 	int i, j;
+	char sTemp[PROFILE_USERNAME_MAX_LENGTH + 1];
 
 	// Stuff about the profiles file
 	File *pProfilesFile;
@@ -424,12 +425,25 @@ void Profile_getList(int *n, char **sOutputBuffer) {
 
 	// Copy them unto the output buffer
 	for(i = 0, *n = 0; i < nProfileCount; i++) {
-		sOutputBuffer[i] = String_alloc(strlen(sProfilesArray[i]));
+		sOutputBuffer[i] = String_alloc(PROFILE_USERNAME_MAX_LENGTH + 1);
 
 		j = 0;
 		while(sProfilesArray[i][j] != ';') {
 			sOutputBuffer[i][j] = sProfilesArray[i][j];
 			j++;
+		}
+	}
+
+	// Sort the array
+	for(i = 0; i < nProfileCount; i++) {
+		for(j = i + 1; j < nProfileCount; j++) {
+			
+			// Swap
+			if(strcmp(sOutputBuffer[i], sOutputBuffer[j]) > 0) {
+				strcpy(sTemp, sOutputBuffer[i]);
+				strcpy(sOutputBuffer[i], sOutputBuffer[j]);
+				strcpy(sOutputBuffer[j], sTemp);
+			}
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 03:20:51
+ * @ Modified time: 2024-04-01 03:48:03
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -185,8 +185,8 @@ void PageHandler_account(p_obj pArgs_Page) {
 
       // Create the legend
       sprintf(sLegendText, 
-        "LEGEND                                                         \n\n%s\n%s\n", 
-        "[ exploded mine='@' ][ flag='^' ][ unflagged mine='*' ]       ",
+        "LEGEND                                                                     \n\n%s\n%s\n", 
+        "[ exploded mine='@' ][ flag='^' ][ unflagged mine='*' ][ wrong flag = 'X' ]",
         "If there are blank tiles or the grid is empty, the player quit");
 
       // Add the stats and the grid and the legend to the page
