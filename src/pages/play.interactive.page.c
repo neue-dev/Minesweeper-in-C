@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 16:40:59
+ * @ Modified time: 2024-03-31 18:27:53
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -59,6 +59,10 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Buffer for minesweeper grid 
   char *sGridBuffer;
+
+  // Current highscore
+  int dHighscore = 0;
+  char sHighscore[32];
 
   // Pressed key
   char cKeyPressed = 0;
@@ -240,14 +244,17 @@ void PageHandler_playI(p_obj pArgs_Page) {
               if(!Game_save(pGame))
                 Stats_saveGame(pGame);
 
+              // Hold the highscore of the user for now
+              dHighscore = (pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? 
+                pProfile->dClassicEasyStats[2] : pProfile->dClassicDifficultStats[2]) : pProfile->dCustomStats[2]);
+
               // Change the display
               Page_setComponentColor(this, sFieldComponent, "accent", "");
-              sprintf(sProfileInfoText, "%s\n%s, %s\n%d (best)\n\n%s (current)",
+              sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)\n\n%s (current)",
                 Profile_getCurrent(pProfile),
                 pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
                 pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
-                pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? 
-                  pProfile->dClassicEasyStats[2] : pProfile->dClassicDifficultStats[2]) : pProfile->dCustomStats[2],
+                dHighscore < 0 ? "none" : itoa(dHighscore, sHighscore, 10),
                   
                 Game_getTime(pGame));                    
               Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
@@ -414,13 +421,16 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Game_getMinesLeft(pGame));
         Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
 
+        // Hold the highscore of the user for now
+        dHighscore = (pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? 
+          pProfile->dClassicEasyStats[2] : pProfile->dClassicDifficultStats[2]) : pProfile->dCustomStats[2]);
+
         // Player information text
-        sprintf(sProfileInfoText, "%s\n%s, %s\n%d (best)\n",
+        sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)\n",
           Profile_getCurrent(pProfile),
           pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
           pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
-          pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? 
-            pProfile->dClassicEasyStats[2] : pProfile->dClassicDifficultStats[2]) : pProfile->dCustomStats[2]);  
+          dHighscore < 0 ? "none" : itoa(dHighscore, sHighscore, 10));  
         Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
 
         // Prompt text
