@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-31 14:51:03
+ * @ Modified time: 2024-03-31 16:03:49
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -53,8 +53,22 @@ enum ProfileError {
 */
 struct Profile {
   char sCurrentProfile[PROFILE_USERNAME_MAX_LENGTH + 1];
-	// int sCurrentGames[]
 
+	// Profile stats
+	int dCustomStats[3];						// Wins, losses, best time (in seconds)
+	int dClassicEasyStats[3];
+	int dClassicDifficultStats[3];
+
+	// Game time histories
+	int dCustomTimes[PROFILES_MAX_GAMES], nCustom;
+	int dClassicEasyTimes[PROFILES_MAX_GAMES], nClassicEasy;
+	int dClassicDifficultTimes[PROFILES_MAX_GAMES], nClassicDifficult;
+
+	// Game board histories
+	int nHistoryHeight;
+	char *sHistory[PROFILE_FILE_MAX_HEIGHT];
+
+	// Last encountered error
 	ProfileError eError;
 };
 
@@ -66,6 +80,25 @@ struct Profile {
 void Profile_init(Profile *this) {
   strcpy(this->sCurrentProfile, "DEV");
 	this->eError = PROFILE_ERROR_NONE;
+
+	this->dCustomStats[0] = 0;
+	this->dClassicEasyStats[0] = 0;
+	this->dClassicDifficultStats[0] = 0;
+
+	this->dCustomStats[1] = 0;
+	this->dClassicEasyStats[1] = 0;
+	this->dClassicDifficultStats[1] = 0;
+
+	this->dCustomStats[2] = -1;
+	this->dClassicEasyStats[2] = -1;
+	this->dClassicDifficultStats[2] = -1;
+	
+	this->nCustom = 0;
+	this->nClassicEasy = 0;
+	this->nClassicDifficult = 0;
+
+	// Clear history
+	this->nHistoryHeight = 0;
 }
 
 /**

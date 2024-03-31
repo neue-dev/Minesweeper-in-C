@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 04:33:15
+ * @ Modified time: 2024-03-31 16:40:59
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -152,7 +152,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
                 // Save game
                 if(!Game_save(pGame))
-                  Stats_update(pGame);
+                  Stats_saveGame(pGame);
 
                 // Reset component tree since the game UI needs that
                 Page_resetComponents(this);
@@ -238,15 +238,17 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
               // Save game
               if(!Game_save(pGame))
-                Stats_update(pGame);
+                Stats_saveGame(pGame);
 
               // Change the display
               Page_setComponentColor(this, sFieldComponent, "accent", "");
-              sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)\n\n%s (current)",
+              sprintf(sProfileInfoText, "%s\n%s, %s\n%d (best)\n\n%s (current)",
                 Profile_getCurrent(pProfile),
                 pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
                 pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
-                "0:59",                     // ! and this SAASDHASHDASD SHOW THE BEST TIME
+                pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? 
+                  pProfile->dClassicEasyStats[2] : pProfile->dClassicDifficultStats[2]) : pProfile->dCustomStats[2],
+                  
                 Game_getTime(pGame));                    
               Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
               Page_setComponentText(this, sGamePromptComponent, "[enter]  to proceed");
@@ -285,7 +287,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
               // Save game
               if(!Game_save(pGame))
-                Stats_update(pGame);
+                Stats_saveGame(pGame);
               
               // Update display
               Page_setComponentText(this, sProfileInfoComponent, "");
@@ -413,10 +415,12 @@ void PageHandler_playI(p_obj pArgs_Page) {
         Page_setComponentText(this, sGameInfoComponent, sGameInfoText);
 
         // Player information text
-        sprintf(sProfileInfoText, "%s\n%s, %s\n%s (best)",
+        sprintf(sProfileInfoText, "%s\n%s, %s\n%d (best)\n",
           Profile_getCurrent(pProfile),
-          "classic", "difficult",     // ! change this
-          "0:59");                    // ! and this
+          pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
+          pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
+          pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? 
+            pProfile->dClassicEasyStats[2] : pProfile->dClassicDifficultStats[2]) : pProfile->dCustomStats[2]);  
         Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
 
         // Prompt text

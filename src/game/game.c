@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 03:01:32
+ * @ Modified time: 2024-03-31 15:29:54
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -86,6 +86,7 @@ struct Game {
   Profile *pProfile;                            // Holds information about who's currently playing
   Field field;                                  // Game field
   char sSaveName[LEVELS_MAX_NAME_LENGTH + 1];   // Used when editing a grid
+  char sTimestamp[32];                          // Timestamp of last finished game
   
   int dPauseOffset;                             // How many seconds paused in total
   int dCursorX, dCursorY;                       // The cursor of the player
@@ -137,6 +138,7 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
 
   // CLear the save name first
   String_clear(this->sSaveName);
+  String_clear(this->sTimestamp);
 }
 
 /**
@@ -656,13 +658,23 @@ void Game_quit(Game *this) {
 /**
  * "Saves" the current game.
  * Sets the save state to 1.
+ * Also updates the timestamp.
  * 
  * @param   { Game * }  this  The game object.
 */
 int Game_save(Game *this) {
   int dLastState = this->bIsSaved;
-  this->bIsSaved = 1;
+  time_t timestamp;
 
+  // Update timestamp
+  time(&timestamp);
+  sprintf(this->sTimestamp, "%s", ctime(&timestamp));
+
+  // Remove the auto newline
+  this->sTimestamp[strlen(this->sTimestamp) - 1] = 0;
+
+  // Saved
+  this->bIsSaved = 1;
   return dLastState;
 }
 

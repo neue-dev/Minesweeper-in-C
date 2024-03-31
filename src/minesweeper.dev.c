@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 15:05:52
+ * @ Modified time: 2024-03-31 16:37:24
  * @ Description:
  * 
  * The main game file.
@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <wchar.h>
+#include <time.h>
 
 int main() {
 
@@ -52,6 +53,7 @@ int main() {
   test.pProfile = &profile;
 
   // Profile_register(&profile, "MOD", "KLANG");
+  Profile_init(&profile);
   strcpy(profile.sCurrentProfile, "MODEV");
   
   Editor_setup(&test);
@@ -68,7 +70,9 @@ int main() {
   Game_inspect(&test, 4, 9);
   Game_inspect(&test, 5, 9);
 
-  Stats_update(&test);
+  Game_save(&test);
+  Stats_readProfile(&profile);
+  Stats_saveGame(&test);
 
   while(1);
 
