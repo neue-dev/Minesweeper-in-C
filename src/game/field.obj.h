@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-21 11:49:28
- * @ Modified time: 2024-03-30 19:09:13
+ * @ Modified time: 2024-04-01 05:04:30
  * @ Description:
  * 
  * The field stores a grid object and can help us perform operations like 
@@ -67,25 +67,6 @@ void Field_init(Field *this, int dWidth, int dHeight) {
   for(i = 0; i < dHeight; i++)
     for(j = 0; j < dWidth; j++)
       this->aNumbers[i][j] = 0;
-}
-
-/**
- * Clears the mines on the mine grid.
- * 
- * @param   { Field * }   this  The field object to modify.
-*/
-void Field_clearMines(Field *this) {
-  Grid_clear(this->pMineGrid, 0);
-  Field_setNumbers(this);
-}
-
-/**
- * Clears the flags on the flag grid.
- * 
- * @param   { Field * }   this  The field object to modify.
-*/
-void Field_clearFlags(Field *this) {
-  Grid_clear(this->pFlagGrid, 0);
 }
 
 /**
@@ -224,6 +205,25 @@ void Field_setNumbers(Field *this) {
       this->aNumbers[j][i] = dMines;
     }
   }
+}
+
+/**
+ * Clears the mines on the mine grid.
+ * 
+ * @param   { Field * }   this  The field object to modify.
+*/
+void Field_clearMines(Field *this) {
+  Grid_clear(this->pMineGrid, 0);
+  Field_setNumbers(this);
+}
+
+/**
+ * Clears the flags on the flag grid.
+ * 
+ * @param   { Field * }   this  The field object to modify.
+*/
+void Field_clearFlags(Field *this) {
+  Grid_clear(this->pFlagGrid, 0);
 }
 
 /**

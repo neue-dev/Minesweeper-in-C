@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 04:11:59
+ * @ Modified time: 2024-04-01 05:07:10
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -62,7 +62,6 @@ void PageHandler_playI(p_obj pArgs_Page) {
 
   // Current highscore
   int dHighscore = 0;
-  char sHighscore[32];
 
   // Pressed key
   char cKeyPressed = 0;

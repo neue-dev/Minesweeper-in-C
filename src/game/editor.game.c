@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 18:42:20
- * @ Modified time: 2024-04-01 04:24:29
+ * @ Modified time: 2024-04-01 05:06:31
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -148,12 +148,10 @@ int Editor_levelExists(Game *this, char *sLevelName) {
  * @return  { int }                 Whether or not the level can be added.
 */
 int Editor_levelAddable(Game *this, char *sLevelName) {
-  int i, j;
 
   // Stores the data of the levels file
   File *pLevelsFile;
   int nLevelsCount = 0;
-  char sLevelEntry[LEVELS_MAX_NAME_LENGTH + 1];
   char *sLevelsArray[LEVELS_MAX_COUNT + 1];
 
   // Check if file exists first
@@ -367,7 +365,6 @@ int Editor_saveLevel(Game *this) {
  * @return  { int }                 Whether or not the operation was successful.
 */
 int Editor_register(Game* this) {
-  int x, y;
   int dWidth = this->field.dWidth;
   int dHeight = this->field.dHeight;
   char sLevelName[LEVELS_MAX_NAME_LENGTH + 1];

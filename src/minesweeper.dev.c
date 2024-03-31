@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-04-01 04:22:28
+ * @ Modified time: 2024-04-01 04:50:08
  * @ Description:
  * 
  * The main game file.
@@ -86,10 +86,6 @@ int main() {
 
   // for(int i = 0; i < n; i++)
   //   printf("[%s]", sOutputBuffer[i]);
-
-  printf("what the fuck");
-  printf("\n%d------------", Editor_levelExists(&test, "DEV"));
-  printf("what the fuck");
 
   while(1);
 

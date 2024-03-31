@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 04:32:16
+ * @ Modified time: 2024-04-01 05:07:52
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually edit a minesweeper game
@@ -36,7 +36,6 @@ void PageHandler_editorI(p_obj pArgs_Page) {
   char *sFieldComponent = "field.acenter-x.acenter-y";
   char *sFieldCursorComponent = "field-cursor.aleft-x.atop-y";
   char *sEditorPromptComponent = "editor-prompt.fixed.aleft-x.atop-y";
-  char *sEditorInfoComponent = "editor-info.fixed.aleft-x.atop-y";
   char *sSideInfoComponent = "side-info.fixed.aleft-x.atop-y";
   char *sPopupComponent = "popup.fixed";
 
@@ -44,7 +43,6 @@ void PageHandler_editorI(p_obj pArgs_Page) {
   char sMineKey[STRING_KEY_MAX_LENGTH];
 
   // Some of the component contents
-  char sEditorInfoText[STRING_KEY_MAX_LENGTH];
   char sEditorPromptText[STRING_KEY_MAX_LENGTH];
   char sSideInfoText[STRING_KEY_MAX_LENGTH];
 

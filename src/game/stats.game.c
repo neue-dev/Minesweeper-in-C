@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-04-01 03:25:53
+ * @ Modified time: 2024-04-01 05:09:24
  * 
  * Displays the statistics of a profile.
  */
@@ -42,7 +42,8 @@ void Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClas
 		while(sProfileDataArray[i][++k] != ':');
 		
 		// For each parameter (wins, losses, best time)
-		for(j = 0, k; j < 3; j++) {
+		// Note that k = k is kept for readability
+		for(j = 0, k = k; j < 3; j++) {
 
 			// Read the parameter
 			String_clear(sClassicEasy);
@@ -237,7 +238,7 @@ int Stats_readProfile(Profile *this) {
  * @return 	{ int }										Whether or not the operation was successful.
 */
 int Stats_saveGame(Game *this) {
-	int i, j, k;
+	int i, j;
 	Profile *pProfile = this->pProfile;
 
 	// The profile file
@@ -432,8 +433,7 @@ int Stats_saveGame(Game *this) {
  * 
  * @param		{ Profile * }		this	The game object.
 */
-int Stats_clearProfile(Profile *this) {
-	int i;
+void Stats_clearProfile(Profile *this) {
 
 	if(this->nHistoryHeight)
 		while(--this->nHistoryHeight)
