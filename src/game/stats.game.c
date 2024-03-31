@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-03-31 18:46:43
+ * @ Modified time: 2024-03-31 19:57:59
  * 
  * Displays the statistics of a profile.
  */
@@ -388,8 +388,6 @@ int Stats_saveGame(Game *this) {
 		break;
 	}
 
-	// ! TODO UPDATE THE MEMORY WITH THE NEW GRID TOO
-
 	// Create the header of the file again
 	sProfileNewDataArray[0] = String_create(sClassicEasy);
 	sProfileNewDataArray[1] = String_create(sClassicDifficult);
@@ -401,10 +399,12 @@ int Stats_saveGame(Game *this) {
 		
 	// Add the data for that game
 	sProfileNewDataArray[i] = String_create(sGameData);
+	pProfile->sHistory[pProfile->nHistoryHeight++] = String_create(sGameData);
 
-	// Add in the new lines
+	// Add in the new lines to both the file and the memory
 	for(i++; i <= nProfileDataLength + this->field.dHeight + 1; i++) {
 		sProfileNewDataArray[i] = String_create(sGameGridData[i - nProfileDataLength - 1]);
+		pProfile->sHistory[pProfile->nHistoryHeight++] = String_create(sGameGridData[i - nProfileDataLength - 1]);
 		nProfileNewDataLength++;
 	}
 

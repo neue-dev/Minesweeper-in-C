@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 18:27:53
+ * @ Modified time: 2024-03-31 20:16:08
  * @ Description:
  * 
  * This file defines the page handler for the page where the user can actually play minesweeper
@@ -196,7 +196,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
           // Escape character to go back
           case 27:
             Page_enableComponentPopup(this, sPopupComponent);
-            Page_setComponentPopupText(this, sPopupComponent, "Exit.to.main.menu??\nGame.wont.be.saved.\0");
+            Page_setComponentPopupText(this, sPopupComponent, "Exit.to.the.main.menu?\nProgress.will.be.lost.\0");
             Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
             Page_setUserState(this, "popup-action", 0);
             Game_pause(pGame);
@@ -254,7 +254,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
                 Profile_getCurrent(pProfile),
                 pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
                 pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
-                dHighscore < 0 ? "none" : itoa(dHighscore, sHighscore, 10),
+                dHighscore < 0 ? "none" : String_formatSecs(dHighscore),
                   
                 Game_getTime(pGame));                    
               Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
@@ -430,7 +430,7 @@ void PageHandler_playI(p_obj pArgs_Page) {
           Profile_getCurrent(pProfile),
           pGame->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
           pGame->eType == GAME_TYPE_CLASSIC ? (pGame->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : pGame->sSaveName,
-          dHighscore < 0 ? "none" : itoa(dHighscore, sHighscore, 10));  
+          dHighscore < 0 ? "none" : String_formatSecs(dHighscore));  
         Page_setComponentText(this, sProfileInfoComponent, sProfileInfoText);
 
         // Prompt text

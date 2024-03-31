@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 15:29:54
+ * @ Modified time: 2024-03-31 20:10:45
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -580,7 +580,6 @@ int Game_isDone(Game *this) {
  * @return  { char * }          A string describing the time elapsed.
 */
 char *Game_getTime(Game *this) {
-  char *sTimeString = String_alloc(16);
 
   // Update the timer ONLY if not done
   if(!Game_isDone(this))
@@ -589,12 +588,8 @@ char *Game_getTime(Game *this) {
   // Get the difference between the times
   this->dTimeTaken = round(difftime(this->endTime, this->startTime)) - this->dPauseOffset;
 
-  // Create the time string
-  sprintf(sTimeString, (this->dTimeTaken % 60) < 10 ? "%d:0%d" : "%d:%d", 
-    this->dTimeTaken / 60, 
-    this->dTimeTaken % 60);
-
-  return sTimeString;
+  // Return the formatted string
+  return String_formatSecs(this->dTimeTaken);
 }
 
 /**

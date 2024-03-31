@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-30 20:02:38
+ * @ Modified time: 2024-03-31 20:10:09
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -308,6 +308,24 @@ char *String_renderEscChar(char c) {
       
       return sDefaultOut; 
   }
+}
+
+/**
+ * Returns a string that shows seconds in a more readable format.
+ * Format is mins:secs. If mins > 60, it is shown as is.
+ * 
+ * @param   { int }     dSeconds  The number of seconds.
+ * @return  { char * }            A string describing the time elapsed.
+*/
+char *String_formatSecs(int dSeconds) {
+  char *sTimeString = String_alloc(16);
+
+  // Create the time string
+  sprintf(sTimeString, (dSeconds % 60) < 10 ? "%d:0%d" : "%d:%d", 
+    dSeconds / 60, 
+    dSeconds % 60);
+
+  return sTimeString;
 }
 
 /**

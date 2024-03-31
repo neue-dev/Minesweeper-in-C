@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 18:42:20
- * @ Modified time: 2024-03-31 02:32:55
+ * @ Modified time: 2024-03-31 20:05:44
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -82,7 +82,7 @@ char *Editor_getSaveName(Game *this) {
 }
 
 /**
- * Checks if a certain level already exists or if there are too many levels files already.
+ * Checks if a certain level already exists.
  * 
  * @param   { Game * }  this        The game object to read data from.
  * @param   { char * }  sLevelName  Name of the level to search for.
@@ -99,14 +99,11 @@ int Editor_levelExists(Game *this, char *sLevelName) {
 
   // Check if file exists first
   if(!File_exists(LEVELS_FILE_PATH)) {
-    if(!File_newFile(LEVELS_FILE_PATH)) {
+    if(!File_newFile(LEVELS_FILE_PATH))
       this->eError = EDITOR_ERROR_NO_FILE;
-      return 0;
 
-    // The file was just created
-    } else {
-      return 0;
-    }
+    // The file was just created or the file could not be created
+    return 0;
   }
 
   // Refers to the file we want
