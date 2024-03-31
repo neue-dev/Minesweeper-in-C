@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-04-01 02:11:58
+ * @ Modified time: 2024-04-01 03:34:02
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -400,6 +400,40 @@ int Profile_delete(Profile *this, char *sUsername) {
 	
 	// Successful
 	return 1;
+}
+
+/**
+ * Returns the list of all profiles unto an output buffer.
+ *
+ * @param 	{ int }				n								How many profiles were outputted.
+ * @param		{ char ** }		sOutputBuffer		Where we store the profile names.
+*/
+void Profile_getList(int *n, char **sOutputBuffer) {
+	int i, j;
+
+	// Stuff about the profiles file
+	File *pProfilesFile;
+	int nProfileCount;
+	char *sProfilesArray[PROFILES_MAX_NUM];
+
+	// Open the file
+	pProfilesFile = File_create(PROFILES_FILE_PATH);
+
+	// Read the text onto the output buffer
+	File_readText(pProfilesFile, PROFILES_MAX_NUM + 1, &nProfileCount, sProfilesArray);
+
+	// Copy them unto the output buffer
+	for(i = 0, *n = 0; i < nProfileCount; i++) {
+		sOutputBuffer[i] = String_alloc(strlen(sProfilesArray[i]));
+
+		j = 0;
+		while(sProfilesArray[i][j] != ';') {
+			sOutputBuffer[i][j] = sProfilesArray[i][j];
+			j++;
+		}
+	}
+
+	*n = i;
 }
 
 /**

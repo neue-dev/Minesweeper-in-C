@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-04-01 02:58:35
+ * @ Modified time: 2024-04-01 03:25:53
  * 
  * Displays the statistics of a profile.
  */
@@ -105,8 +105,10 @@ int Stats_readProfile(Profile *this) {
 	sprintf(sProfilePath, "%s%s.txt", PROFILE_FOLDER_PATH, this->sCurrentProfile);
 
 	// If file doesn't exist, exit
-	if(!File_exists(sProfilePath))
+	if(!File_exists(sProfilePath)) {
+		String_kill(sProfilePath);
 		return 0;
+	}
 
 	// New profile file
 	pProfileFile = File_create(sProfilePath);
@@ -217,6 +219,9 @@ int Stats_readProfile(Profile *this) {
 		// Increment the height
 		this->nHistoryHeight++;
 	}
+
+	// Also almost forgot
+	String_kill(sProfilePath);
 
 	// Almost forgot!
 	File_kill(pProfileFile);

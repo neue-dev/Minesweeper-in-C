@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 21:17:33
+ * @ Modified time: 2024-04-01 03:37:47
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -25,6 +25,7 @@
  * @param   { p_obj }   pArgs_Page  The instance page we need to configure.
 */
 void PageHandler_login(p_obj pArgs_Page) {
+  int i;
   
   Page *this = (Page *) pArgs_Page;
   Profile *pProfile = (Profile *) this->pSharedObject;
@@ -43,6 +44,7 @@ void PageHandler_login(p_obj pArgs_Page) {
   char *sLoginFormComponent = "login-form.col";
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
+  char *sProfileListComponent = "profile-list.aleft-x.atop-y";
   char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
   char *sUsernamePromptComponent = "username-prompt.aleft-x";
   char *sPasswordPromptComponent = "password-prompt.aleft-x";
@@ -51,6 +53,11 @@ void PageHandler_login(p_obj pArgs_Page) {
   char *sFieldPromptComponent = "field-prompt.aright-x.abottom-y";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
   char *sPopupComponent = "popup.fixed";
+
+  // Profile list stuff
+  char *sProfileListText;
+  int nProfileListLength;
+  char *sProfileListArray[PROFILES_MAX_NUM + 1];
 
   // Input fields
   char *sUsernameField;
@@ -81,6 +88,7 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sLoginFormComponent, sLoginComponent, dMargin, dMargin / 2);
       Page_addComponentAsset(this, sTitleComponent, sLoginFormComponent, -1, 1, "", "", sTitleKey);
       Page_addComponentText(this, sDividerComponent, sLoginFormComponent, 0, 0, "accent", "", sDividerText);
+      Page_addComponentText(this, sProfileListComponent, sLoginComponent, 87, dMargin + 1, "primary-darken-0.5", "", "");
       Page_addComponentContainer(this, sFieldContainerComponent, sLoginFormComponent, -1, 2);
       Page_addComponentText(this, sUsernamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter username:");
       Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 1, 0, "", "", "");
@@ -266,10 +274,33 @@ void PageHandler_login(p_obj pArgs_Page) {
           break;
         }
       }
+      
+      // List all the profiles
+      sProfileListText = String_alloc(1024);
+
+      // Grab the profile list
+      Profile_getList(&nProfileListLength, sProfileListArray);
+      strcat(sProfileListText, "Available profiles:\n\n");
+
+      // None available
+      if(!nProfileListLength)
+        strcat(sProfileListText, "(none)");
+
+      // Iterate through the profiles
+      for(i = 0; i < nProfileListLength; i++) {
+        strcat(sProfileListText, sProfileListArray[i]);
+        strcat(sProfileListText, "\n");
+      }
+
+      // Update the UI text
+      Page_setComponentText(this, sProfileListComponent, sProfileListText);
 
       // Indicate the user input on screen
       Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "____________________");
       Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "____________________");
+
+      // Garbage collection
+      String_kill(sProfileListText);
 
     break;
 
