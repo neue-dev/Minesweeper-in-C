@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-03-31 23:54:36
+ * @ Modified time: 2024-04-01 01:34:49
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -58,7 +58,7 @@ char *String_alloc(int dLength) {
  * @param  { char * }  A pointer to the allocated string.
 */
 void String_clear(char *string) {
-  memset(string, 0, strlen(string));
+  memset(string, 0, sizeof(string));
 }
 
 /**
