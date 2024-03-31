@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 00:45:22
+ * @ Modified time: 2024-04-01 01:19:28
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -42,6 +42,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sBoardIdFieldComponent = "board-id-field.aleft-x";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
   char *sLegendComponent = "legend-text.aleft-x.atop-y";
+  char *sBoardInfoComponent = "board-info.aleft-x.atop-y";
   char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
   // Page title and asset
@@ -57,6 +58,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sDividerText;
   char *sStatsText;
   char *sGridText;
+  char *sGridDescText;
   char *sLegendText;
   char *sGridBuffer[GAME_MAX_ROWS + 1];
   int nGridBufferHeight = 0;
@@ -90,6 +92,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentText(this, sBoardIdFieldComponent, sDataContainerComponent, 0, 1, "accent", "", "");
       Page_addComponentText(this, sStatsComponent, sDataContainerComponent, 64, 5, "primary-darken-0.33", "", "");
       Page_addComponentText(this, sGridComponent, sDataContainerComponent, 0, 5, "primary-darken-0.33", "", "");
+      Page_addComponentText(this, sBoardInfoComponent, sDataContainerComponent, 18, 9, "primary-darken-0.33", "", "");
       Page_addComponentText(this, sErrorPromptComponent, sDataContainerComponent, 0, 3, "secondary", "accent", "");     
       Page_addComponentText(this, sLegendComponent, sDataContainerComponent, 0, 18, "primary-darken-0.67", "", "");
       Page_addComponentText(this, sPromptTextComponent, sAccountComponent, dWidth - dMargin, dHeight - dMargin / 2, 
@@ -126,6 +129,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       // Generate the text for the stats first
       sStatsText = String_alloc(1024);
       sGridText = String_alloc(1024);
+      sGridDescText = String_alloc(1024);
       sLegendText = String_alloc(1024);
 
       // Classic easy stats
@@ -150,6 +154,9 @@ void PageHandler_account(p_obj pArgs_Page) {
       dBoardFieldId = atoi(sBoardIdField);
       sprintf(sGridText, "Here is the snapshot of the %dth most recent game:\n\n", dBoardFieldId > 0 ? dBoardFieldId : 1);
 
+      // Grid description
+      sprintf(sGridDescText, "%s", "CLASSIC, DIFFICULT, WIN, BRO");
+
       // Get the grid
       Stats_getBoard(pProfile, dBoardFieldId > 0 ? dBoardFieldId - 1 : 0, &nGridBufferHeight, sGridBuffer);
 
@@ -173,6 +180,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       // Add the stats and the grid and the legend to the page
       Page_setComponentText(this, sStatsComponent, sStatsText);
       Page_setComponentText(this, sGridComponent, sGridText);
+      Page_setComponentText(this, sBoardInfoComponent, sGridDescText);
       Page_setComponentText(this, sLegendComponent, sLegendText);
 
       // Indicate the user input on screen
@@ -184,8 +192,8 @@ void PageHandler_account(p_obj pArgs_Page) {
 
       String_kill(sStatsText);
       String_kill(sGridText);
+      String_kill(sGridDescText);
       String_kill(sLegendText);
-
     break;
 
     default:

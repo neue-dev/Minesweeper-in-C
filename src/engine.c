@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-03-31 23:58:33
+ * @ Modified time: 2024-04-01 01:23:09
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -162,7 +162,7 @@ void Engine_init(Engine *this) {
   PageManager_createPage(&this->pageManager, "account", PageHandler_account);
   PageManager_createPage(&this->pageManager, "settings", PageHandler_settings);
   PageManager_createPage(&this->pageManager, "help", PageHandler_help);
-  PageManager_setActive(&this->pageManager, "login");
+  PageManager_setActive(&this->pageManager, "account");
 
   // Give the interactive pages the game objects
   PageManager_givePage(&this->pageManager, "play", &this->standardGame);
@@ -179,6 +179,10 @@ void Engine_init(Engine *this) {
   Profile_init(&this->profile);
   this->standardGame.pProfile = &this->profile;
   this->editorGame.pProfile = &this->profile;
+
+  // !remove
+  Profile_login(&this->profile, "MODEV", "MOGEN");
+  Stats_readProfile(&this->profile);
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
@@ -270,6 +274,7 @@ void Engine_exit(Engine *this) {
  * @param   { p_obj * }   pArgs_Engine  The engine object.
  * @param   { int }       tArg_NULL     A dummy value.
 */
+int d = 0; // !remve
 void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
 
   // Get the engine
@@ -283,7 +288,7 @@ void Engine_main(p_obj pArgs_Engine, int tArg_NULL) {
   PageManager_update(&this->pageManager);
 
   // Termination condition
-  if(EventStore_get(&this->eventStore, "terminate") == 'y')
+  if(EventStore_get(&this->eventStore, "terminate") == 'y' || d++ > 2)
     this->bState = 0;
 
   // Reset event store each time

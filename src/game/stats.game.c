@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-03-31 23:48:21
+ * @ Modified time: 2024-04-01 01:03:37
  * 
  * Displays the statistics of a profile.
  */
@@ -27,7 +27,7 @@
  * @param		{ int * }		nClassicEasy					Where to store the data for classic easy games.
  * @param		{ int * }		nClassicDifficult			Where to store the data for classic diff games.
 */
-int Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClassicEasy, int *nClassicDifficult) {
+void Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClassicEasy, int *nClassicDifficult) {
 	int i, j, k;
 
 	char sClassicEasy[32] = { 0 };
@@ -91,7 +91,7 @@ int Stats_readProfile(Profile *this) {
 	int nTime = 0;
 
 	// Entry data
-	char *sWordEntry[256];
+	char sWordEntry[256];
 	GameType eEntryType;
 	GameDifficulty eEntryDifficulty;
 	GameOutcome eEntryOutcome;
@@ -221,6 +221,8 @@ int Stats_readProfile(Profile *this) {
 	// Almost forgot!
 	File_kill(pProfileFile);
 	File_freeBuffer(nProfileDataLength, sProfileDataArray);
+
+	return 1;
 }
 
 /**
@@ -564,6 +566,9 @@ int Stats_getTotalGames(Profile *this, GameType eType, GameDifficulty eDifficult
 		} else if(eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
 			return this->nClassicDifficult;
 		}
+
+		// Yeppers
+		return 0;
 
 	// Custom mode
 	} else {

@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-02 16:49:20
- * @ Modified time: 2024-03-30 23:10:15
+ * @ Modified time: 2024-04-01 01:24:25
  * @ Description:
  * 
  * Sometimes, it's better to abstract the implementation of a service inside a class for the
@@ -131,6 +131,7 @@ void File_readText(File *this, int n, int *h, char **sOutputBuffer) {
   *h = i;
 
   // Close the file
+  String_kill(s);
   fclose(this->pFile);
 }
 
