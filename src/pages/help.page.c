@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-25 12:29:32
+ * @ Modified time: 2024-03-31 20:30:57
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -37,7 +37,8 @@ void PageHandler_help(p_obj pArgs_Page) {
   char *sPageTitle = "how to play";
   char sPageTitleKey[STRING_KEY_MAX_LENGTH];
 
-  // Component names
+  // Divider text
+  char *sDividerText;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -55,11 +56,14 @@ void PageHandler_help(p_obj pArgs_Page) {
       // Create keys
       String_keyAndStr(sPageTitleKey, sPageTitleFont, sPageTitle);
 
+      // Create texts
+      sDividerText = String_repeat("▄", dWidth - dMargin * 2);
+
       // Create component tree
       Page_addComponentContext(this, sHelpComponent, "root", 0, 0, dWidth, dHeight, "secondary", "primary");
       Page_addComponentContainer(this, sHelpContainerComponent, sHelpComponent, dMargin, dMargin / 2);
       Page_addComponentAsset(this, sTitleComponent, sHelpContainerComponent, -1, 1, "", "", sPageTitleKey);
-      Page_addComponentText(this, sDividerComponent, sHelpContainerComponent, 0, 0, "accent", "", String_repeat("▄", dWidth - dMargin * 2));
+      Page_addComponentText(this, sDividerComponent, sHelpContainerComponent, 0, 0, "accent", "", sDividerText);
       Page_addComponentText(this, sBodyTextComponent, sHelpContainerComponent, 0, 2, "", "",
         String_join("\n", "-", dWidth / 2 - dMargin,
           "MINEZ is a minesweeper spin-off implemented in C with some neat features.", "","",
@@ -70,6 +74,8 @@ void PageHandler_help(p_obj pArgs_Page) {
         ));
       Page_addComponentText(this, sPromptTextComponent, sHelpComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
+
+      String_kill(sDividerText);
       
     break;
 

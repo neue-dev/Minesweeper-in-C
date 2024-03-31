@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 16:51:52
+ * @ Modified time: 2024-03-31 20:38:01
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -30,21 +30,25 @@ void PageHandler_login(p_obj pArgs_Page) {
   Profile *pProfile = (Profile *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
 
-  // Header details
-  char *sHeader = "profile login";
-  char *sHeaderFont = "body-font";
-  char sHeaderKey[STRING_KEY_MAX_LENGTH];
+  // Title details
+  char *sTitle = "profile login";
+  char *sTitleFont = "body-font";
+  char sTitleKey[STRING_KEY_MAX_LENGTH];
+
+  // Divider text
+  char *sDividerText;
 
   // Component names
   char *sLoginComponent = "login.fixed";
   char *sLoginFormComponent = "login-form.col";
-  char *sHeaderComponent = "header.acenter-x.atop-y";
+  char *sTitleComponent = "title.aleft-x.abottom-y";
+  char *sDividerComponent = "divider.aleft-x.abottom-y";
   char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
   char *sUsernamePromptComponent = "username-prompt.aleft-x";
   char *sPasswordPromptComponent = "password-prompt.aleft-x";
   char *sUsernameComponent = "username.aleft-x";
   char *sPasswordComponent = "password.aleft-x";
-  char *sFieldPromptComponent = "field-prompt.aleft-x";
+  char *sFieldPromptComponent = "field-prompt.aright-x.abottom-y";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
   char *sPopupComponent = "popup.fixed";
 
@@ -63,24 +67,31 @@ void PageHandler_login(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 46;
+      dMargin = 10;
 
       // Create the header
-      String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
-      AssetManager_createTextAsset(this->pSharedAssetManager, sHeader, sHeaderFont);
+      String_keyAndStr(sTitleKey, sTitleFont, sTitle);
+      AssetManager_createTextAsset(this->pSharedAssetManager, sTitle, sTitleFont);
+
+      // Create divider
+      sDividerText = String_repeat("▄", dWidth - dMargin * 2);
 
       // Create component tree
       Page_addComponentContext(this, sLoginComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sLoginFormComponent, sLoginComponent, 0, 0);
-      Page_addComponentAsset(this, sHeaderComponent, sLoginFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
-      Page_addComponentContainer(this, sFieldContainerComponent, sLoginFormComponent, dWidth / 2 - dMargin / 2, 4);
+      Page_addComponentContainer(this, sLoginFormComponent, sLoginComponent, dMargin, dMargin / 2);
+      Page_addComponentAsset(this, sTitleComponent, sLoginFormComponent, -1, 1, "", "", sTitleKey);
+      Page_addComponentText(this, sDividerComponent, sLoginFormComponent, 0, 0, "accent", "", sDividerText);
+      Page_addComponentContainer(this, sFieldContainerComponent, sLoginFormComponent, -1, 2);
       Page_addComponentText(this, sUsernamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter username:");
       Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter password:");
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to delete a profile");      
+      Page_addComponentText(this, sFieldPromptComponent, sLoginComponent, dWidth - dMargin - 1, dHeight - dMargin / 2, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to delete a profile");      
       Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
+
+      // Garbage collection
+      String_kill(sDividerText);
 
       // Define initial user states
       if(Page_getUserState(this, "login-current-field") == -1) Page_setUserState(this, "login-current-field", cLoginCurrentField);
@@ -249,8 +260,8 @@ void PageHandler_login(p_obj pArgs_Page) {
       }
 
       // Indicate the user input on screen
-      Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "<USERNAME>");
-      Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "<PASSWORD>");
+      Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "________________");
+      Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "________________");
 
     break;
 
