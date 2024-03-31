@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-21 7:22:20
  * @ Modified time: 2024-03-30 18:42:20
- * @ Modified time: 2024-04-01 05:06:31
+ * @ Modified time: 2024-04-01 07:23:05
  * 
  * Enables the player to create a custom level.
  * These are functions the Game class doesn't have but that the editor needs.
@@ -67,7 +67,7 @@ void Editor_init(Game *this, int dWidth, int dHeight) {
  * @param   { char * }  sName   The save name.
 */
 void Editor_setSaveName(Game *this, char *sName) {
-  String_clear(this->sSaveName);
+  String_clear(LEVELS_MAX_NAME_LENGTH + 1, this->sSaveName);
   strcpy(this->sSaveName, sName);
 }
 
@@ -114,7 +114,7 @@ int Editor_levelExists(Game *this, char *sLevelName) {
 
   // Check all the contents
   for(i = 0; i < nLevelsCount; i++) {
-    String_clear(sLevelEntry);
+    String_clear(LEVELS_MAX_NAME_LENGTH + 1, sLevelEntry);
 
     // Copy the name
     j = 0;
@@ -255,8 +255,8 @@ int Editor_loadLevel(Game *this) {
   File_readText(pLevelFile, GAME_MAX_ROWS + 2, &nRows, sLevelArray);
 
   // Get the rows and columns
-  String_clear(sRows);
-  String_clear(sColumns);
+  String_clear(4, sRows);
+  String_clear(4, sColumns);
   
   i = 0; while(sLevelArray[0][i] >= '0' && sLevelArray[0][i] <= '9') sRows[strlen(sRows)] = sLevelArray[0][i++];
   i++; while(sLevelArray[0][i] >= '0' && sLevelArray[0][i] <= '9') sColumns[strlen(sColumns)] = sLevelArray[0][i++];

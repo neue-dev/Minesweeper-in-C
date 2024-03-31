@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 13:43:39
- * @ Modified time: 2024-03-29 21:34:15
+ * @ Modified time: 2024-04-01 07:24:56
  * @ Description:
  * 
  * An event object class. This object is instantiable and is created everytime
@@ -471,7 +471,7 @@ void EventStore_clearString(EventStore *this, char *sStringKey) {
   char *sString = HashMap_get(this->pValueStrings, sStringKey);
   
   if(sString != NULL)
-    String_clear(sString);
+    String_clear(strlen(sString), sString);
 }
 
 /**

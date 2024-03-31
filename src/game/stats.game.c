@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-04-01 05:09:24
+ * @ Modified time: 2024-04-01 07:24:31
  * 
  * Displays the statistics of a profile.
  */
@@ -46,9 +46,9 @@ void Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClas
 		for(j = 0, k = k; j < 3; j++) {
 
 			// Read the parameter
-			String_clear(sClassicEasy);
-			String_clear(sClassicDifficult);
-			String_clear(sCustom);
+			String_clear(32, sClassicEasy);
+			String_clear(32, sClassicDifficult);
+			String_clear(32, sCustom);
 
 			++k; l = 0;
 			while(sProfileDataArray[i][k] != ',' && 
@@ -143,7 +143,7 @@ int Stats_readProfile(Profile *this) {
 
 			// Parse the words in the entry
 			while(this->sHistory[this->nHistoryHeight][j] != ';') {
-				String_clear(sWordEntry);
+				String_clear(256, sWordEntry);
 
 				// Copy the next word
 				++j; l = 0;
@@ -646,7 +646,7 @@ int Stats_getBoard(Profile *this, int n, int *nHeight, char **sOutputBuffer) {
 	j = 0;
 	while(this->sHistory[i][0] == '>' && 
 		this->sHistory[i][j] != ';') {
-		String_clear(sWordEntry);
+		String_clear(256, sWordEntry);
 		
 		j++; k = 0;
 		while(this->sHistory[i][j] != ',' && 

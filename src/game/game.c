@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 22:17:51
+ * @ Modified time: 2024-04-01 07:23:19
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -137,8 +137,8 @@ void Game_setup(Game *this, GameType eGameType, GameDifficulty eGameDifficulty) 
   this->bIsSaved = 0;
 
   // CLear the save name first
-  String_clear(this->sSaveName);
-  String_clear(this->sTimestamp);
+  String_clear(LEVELS_MAX_NAME_LENGTH + 1, this->sSaveName);
+  String_clear(32, this->sTimestamp);
 }
 
 /**

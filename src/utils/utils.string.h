@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-04-01 07:12:55
+ * @ Modified time: 2024-04-01 07:21:47
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -55,13 +55,11 @@ char *String_alloc(int dLength) {
 /**
  * Clears a string (sets everything to 0).
  * 
- * @param  { char * }  A pointer to the allocated string.
+ * @param   { int }     n   The number of chars in the string.
+ * @param   { char * }      A pointer to the allocated string.
 */
-void String_clear(char *string) {
-  int i;
-
-  for(i = 0; i < sizeof(*string); i++)
-    string[i] = 0;
+void String_clear(int n, char *string) {
+  while(n) string[--n] = 0;
 }
 
 /**
