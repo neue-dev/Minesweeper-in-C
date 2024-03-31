@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-04-01 02:46:20
+ * @ Modified time: 2024-04-01 04:22:28
  * @ Description:
  * 
  * The main game file.
@@ -56,15 +56,15 @@ int main() {
   Profile_login(&profile, "MODEV", "MOGEN");
   Stats_readProfile(&profile);
 
-  printf("\n%d %d %d", 
-  Stats_getWins(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
-  Stats_getLosses(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
-  Stats_getQuits(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT));
+  // printf("\n%d %d %d", 
+  // Stats_getWins(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
+  // Stats_getLosses(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
+  // Stats_getQuits(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT));
   
-  printf("\n%d %d %d", 
-  Stats_getWins(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
-  Stats_getTotalGames(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
-  Stats_getTotalGames(&profile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_DIFFICULT));
+  // printf("\n%d %d %d", 
+  // Stats_getWins(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
+  // Stats_getTotalGames(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
+  // Stats_getTotalGames(&profile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_DIFFICULT));
 
   // // Profile_register(&profile, "MOD", "KLANG");
   // Profile_init(&profile);
@@ -79,13 +79,17 @@ int main() {
   // // SleepEx(2000, FALSE);
   // // char *bruh = Game_getTime(&test);
 
-  int n = 0;
-  char *sOutputBuffer[GAME_MAX_ROWS + 10];
-  Stats_getBoard(&profile, 4, &n, sOutputBuffer);
+  // int n = 0;
+  // char *sOutputBuffer[GAME_MAX_ROWS + 10];
+  // Stats_getBoard(&profile, 4, &n, sOutputBuffer);
 
 
-  for(int i = 0; i < n; i++)
-    printf("[%s]", sOutputBuffer[i]);
+  // for(int i = 0; i < n; i++)
+  //   printf("[%s]", sOutputBuffer[i]);
+
+  printf("what the fuck");
+  printf("\n%d------------", Editor_levelExists(&test, "DEV"));
+  printf("what the fuck");
 
   while(1);
 
