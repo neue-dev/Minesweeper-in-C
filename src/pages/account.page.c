@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 02:22:17
+ * @ Modified time: 2024-04-01 02:36:03
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -60,7 +60,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sGridText;
   char *sGridDescText;
   char *sLegendText;
-  char *sGridBuffer[GAME_MAX_ROWS + 1];
+  char *sGridBuffer[GAME_MAX_ROWS + 10];  // Store extra data too
   int nGridBufferHeight = 0;
 
   // Do stuff based on page status

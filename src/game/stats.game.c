@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-04-01 02:16:15
+ * @ Modified time: 2024-04-01 02:46:22
  * 
  * Displays the statistics of a profile.
  */
@@ -588,7 +588,8 @@ int Stats_getTotalGames(Profile *this, GameType eType, GameDifficulty eDifficult
  * @return	{ int }													Whether or not the operation was successful.
 */
 int Stats_getBoard(Profile *this, int n, int *nHeight, char **sOutputBuffer) {
-	int i = this->nHistoryHeight;
+	int i = this->nHistoryHeight, j, k;
+	char sWordEntry[256] = { 0 };
 
 	// No boards yet
 	if(!this->nHistoryHeight)
@@ -606,9 +607,24 @@ int Stats_getBoard(Profile *this, int n, int *nHeight, char **sOutputBuffer) {
 
 	// Init for the loop below
 	*nHeight = 0; 
-	i++;
+
+	// Parse the description of the board first
+	j = 0;
+	while(this->sHistory[i][0] == '>' && 
+		this->sHistory[i][j] != ';') {
+		String_clear(sWordEntry);
+		
+		j++; k = 0;
+		while(this->sHistory[i][j] != ',' && 
+			this->sHistory[i][j] != ';')
+			sWordEntry[k++] = this->sHistory[i][j++];
+
+		sOutputBuffer[*nHeight] = String_create(sWordEntry);
+		(*nHeight)++;
+	}
 	
 	// While we haven't hit the next board
+	i++;
 	while(i < this->nHistoryHeight) {
 		if(this->sHistory[i][0] == '>')
 			return 1;
