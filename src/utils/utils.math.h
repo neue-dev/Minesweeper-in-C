@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-28 11:21:07
- * @ Modified time: 2024-03-10 13:41:11
- * @ Description:
+ * @ Modified time: 2024-03-31 22:54:41
+ * @ Modified time: 2024-03-31 22:54:57
  * 
  * Some helper math functions.
  */
@@ -153,6 +153,16 @@ float Math_easeIn(float fValue, float fTarget, float fSpeed) {
 */
 float Math_dist1d(float a, float b) {
   return fabs(a - b);
+}
+
+/**
+ * Returns the minimum of two integers.
+ * 
+ * @param   { int }   a   The first int.
+ * @param   { int }   b   The second int. 
+*/
+int minInt(int a, int b) {
+  return a > b ? b : a;
 }
 
 #endif

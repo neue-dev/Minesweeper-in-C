@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-31 22:39:44
- * @ Modified time: 2024-03-31 22:39:44
+ * @ Modified time: 2024-03-31 15:30:50
+ * @ Modified time: 2024-03-31 22:58:32
  * 
  * Displays the statistics of a profile.
  */
@@ -13,6 +13,7 @@
 #include "./game.c"
 #include "./profile.game.c"
 
+#include "../utils/utils.math.h"
 #include "../utils/utils.string.h"
 
 #include <stdio.h>
@@ -297,17 +298,17 @@ int Stats_saveGame(Game *this) {
 	} else if(this->eOutcome == GAME_OUTCOME_WIN) {
 		if(this->eType == GAME_TYPE_CUSTOM) {
 			nCustom[0]++;
-			nCustom[2] = nCustom[2] > -1 ? min(nCustom[2], this->dTimeTaken) : this->dTimeTaken;
+			nCustom[2] = nCustom[2] > -1 ? minInt(nCustom[2], this->dTimeTaken) : this->dTimeTaken;
 			pProfile->dCustomStats[2] = nCustom[2];
 
 		} else if(this->eDifficulty == GAME_DIFFICULTY_EASY) {
 			nClassicEasy[0]++;
-			nClassicEasy[2] = nClassicEasy[2] > -1 ? min(nClassicEasy[2], this->dTimeTaken) : this->dTimeTaken;
+			nClassicEasy[2] = nClassicEasy[2] > -1 ? minInt(nClassicEasy[2], this->dTimeTaken) : this->dTimeTaken;
 			pProfile->dClassicEasyStats[2] = nClassicEasy[2];
 
 		} else if(this->eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
 			nClassicDifficult[0]++;
-			nClassicDifficult[2] = nClassicDifficult[2] > -1 ? min(nClassicDifficult[2], this->dTimeTaken) : this->dTimeTaken;
+			nClassicDifficult[2] = nClassicDifficult[2] > -1 ? minInt(nClassicDifficult[2], this->dTimeTaken) : this->dTimeTaken;
 			pProfile->dClassicDifficultStats[2] = nClassicDifficult[2];
 		};
 	}

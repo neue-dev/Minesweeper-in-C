@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 22:39:31
+ * @ Modified time: 2024-03-31 22:58:41
  * @ Description:
  * 
  * The main game file.
@@ -66,15 +66,12 @@ int main() {
   // char *bruh = Game_getTime(&test);
 
   int n = 0;
-  char *sOutputBuffer[GAME_MAX_ROWS];
-  Stats_getBoard(&profile, 5, &n, sOutputBuffer);
+  char *sOutputBuffer[GAME_MAX_ROWS + 1];
+  Stats_getBoard(&profile, 4, &n, sOutputBuffer);
+
 
   for(int i = 0; i < n; i++)
-    printf(sOutputBuffer[i]);
-  printf("%d %d %d", 
-    Stats_getTotalGames(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
-    Stats_getTotalGames(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
-    Stats_getTotalGames(&profile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_EASY));
+    printf("%s-", sOutputBuffer[i]);
 
   while(1);
 

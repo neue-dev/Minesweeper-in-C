@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 22:46:08
+ * @ Modified time: 2024-03-31 22:48:16
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -79,7 +79,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentText(this, sGridComponent, sAccountContainerComponent, 32, 0, "secondary", "", "");
       Page_addComponentText(this, sPromptTextComponent, sAccountComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
-      
+
       // Garbage collection
       String_kill(sDividerText);
     break;
@@ -127,7 +127,6 @@ void PageHandler_account(p_obj pArgs_Page) {
 
       // Get the grid and turn it into string
       Stats_getBoard(pProfile, 0, &nGridBufferHeight, sGridBuffer);
-      
       sGridText = String_alloc(1024);
       for(i = 0; i < nGridBufferHeight; i++)
         sprintf(sGridText, "%s%s", sGridText, sGridBuffer[i]);
