@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 02:36:03
+ * @ Modified time: 2024-04-01 03:02:43
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -133,32 +133,42 @@ void PageHandler_account(p_obj pArgs_Page) {
       sLegendText = String_alloc(1024);
 
       // Classic easy stats
-      sprintf(sStatsText, "%sCLASSIC, EASY         %d wins     \n                      %d losses\n                      %d games\n", sStatsText, 
+      sprintf(sStatsText, "%sCLASSIC, EASY         %d wins, %s (best)\n                      %d losses\n                      %d games\n", sStatsText, 
         Stats_getWins(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY), 
+        Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY) < 0 ? "none" :
+          String_formatSecs(Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY)),
         Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
         Stats_getTotalGames(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY));
 
       // Classic difficult stats
-      sprintf(sStatsText, "%s\nCLASSIC, DIFFICULT    %d wins     \n                      %d losses\n                      %d games\n", sStatsText,
+      sprintf(sStatsText, "%s\nCLASSIC, DIFFICULT    %d wins, %s (best)\n                      %d losses\n                      %d games\n", sStatsText,
         Stats_getWins(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT), 
+        Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT) < 0 ? "none" :
+          String_formatSecs(Stats_getBest(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT)),
         Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
         Stats_getTotalGames(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT));
 
       // Custom stats
-      sprintf(sStatsText, "%s\nCUSTOM                %d wins     \n                      %d losses\n                      %d games\n", sStatsText,
+      sprintf(sStatsText, "%s\nCUSTOM                %d wins, %s (best)\n                      %d losses\n                      %d games\n", sStatsText,
         Stats_getWins(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE), 
+        Stats_getBest(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE) < 0 ? "none" :
+          String_formatSecs(Stats_getBest(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE)),
         Stats_getLosses(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE),
         Stats_getTotalGames(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE));
 
       // Grid header
       dBoardFieldId = atoi(sBoardIdField);
       sprintf(sGridText, "Here is the snapshot of the %dth most recent game:\n\n", dBoardFieldId > 0 ? dBoardFieldId : 1);
-
-      // Grid description
-      sprintf(sGridDescText, "%s", "CLASSIC, DIFFICULT, WIN, BRO");
-
+      
       // Get the grid
       Stats_getBoard(pProfile, dBoardFieldId > 0 ? dBoardFieldId - 1 : 0, &nGridBufferHeight, sGridBuffer);
+
+      // Grid description
+      if(nGridBufferHeight) 
+        sprintf(sGridDescText, "%s, %s, %s\n%s%s", 
+          sGridBuffer[0], !strcmp(sGridBuffer[0], "CUSTOM") ? "NO DIFF." : sGridBuffer[1], sGridBuffer[2],
+          !strcmp(sGridBuffer[2], "WIN") ? "Time taken: " : "",
+          !strcmp(sGridBuffer[2], "WIN") ? String_formatSecs(atoi(sGridBuffer[5])) : "");
 
       // If the number if too large
       if(atoi(sBoardIdField) > 
@@ -168,7 +178,7 @@ void PageHandler_account(p_obj pArgs_Page) {
           Page_setComponentText(this, sErrorPromptComponent, "Error: number is larger than number of games played.");
       
       // Turn the grid into string
-      for(i = 0; i < nGridBufferHeight; i++)
+      for(i = 7; i < nGridBufferHeight; i++)
         strcat(sGridText, String_replace(sGridBuffer[i], '\r', '\0'));
 
       // Create the legend

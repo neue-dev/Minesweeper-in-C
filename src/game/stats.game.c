@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-04-01 02:46:22
+ * @ Modified time: 2024-04-01 02:58:35
  * 
  * Displays the statistics of a profile.
  */
@@ -573,6 +573,35 @@ int Stats_getTotalGames(Profile *this, GameType eType, GameDifficulty eDifficult
 	// Custom mode
 	} else {
 		return this->nCustom;
+	}
+}
+
+/**
+ * Gets the best time acquired by the player in that category.
+ * 
+ * @param		{ Profile * }				this					The profile object.
+ * @param		{ GameType }				eType					The type of game we're looking stats for.
+ * @param		{ GameDifficulty }	eDifficulty		The difficulty of the game, if applicable.
+ * @return	{ int }														The best time they had for that game.
+*/
+int Stats_getBest(Profile *this, GameType eType, GameDifficulty eDifficulty) {
+	if(eType == GAME_TYPE_CLASSIC) {
+		
+		// Classic easy
+		if(eDifficulty == GAME_DIFFICULTY_EASY) {
+			return this->dClassicEasyStats[2];
+
+		// Classic difficult
+		} else if(eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
+			return this->dClassicDifficultStats[2];
+		}
+
+		// Yeppers
+		return -1;
+
+	// Custom mode
+	} else {
+		return this->dCustomStats[2];
 	}
 }
 
