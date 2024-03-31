@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 01:19:28
+ * @ Modified time: 2024-04-01 02:21:54
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -169,7 +169,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       
       // Turn the grid into string
       for(i = 0; i < nGridBufferHeight; i++)
-        strcat(sGridText, sGridBuffer[i]);
+        strcat(sGridText, String_replace(sGridBuffer[i], '\r', '\0'));
 
       // Create the legend
       sprintf(sLegendText, 

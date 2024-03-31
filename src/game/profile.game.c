@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-27 2:13:51
- * @ Modified time: 2024-03-31 16:53:54
+ * @ Modified time: 2024-04-01 02:11:58
  * @ Description:
  * 
  * Handles the current profile managed by the game.
@@ -111,13 +111,13 @@ void Profile_init(Profile *this) {
  * @return	{ int }											Whether or not the operation wass successful.
 */
 int Profile_login(Profile *this, char *sUsername, char *sPassword) {
-	int i, j;
+	int i, j, k;
 	File *pProfilesFile;
 
 	// Store the profiles read from the file
 	int nProfileCount = 0;
-	char sProfileUsername[PROFILE_USERNAME_MAX_LENGTH + 1];
-	char sProfilePassword[PROFILE_PASSWORD_MAX_LENGTH + 1];
+	char sProfileUsername[PROFILE_USERNAME_MAX_LENGTH + 1] = { 0 };
+	char sProfilePassword[PROFILE_PASSWORD_MAX_LENGTH + 1] = { 0 };
 	char *sProfilesArray[PROFILES_MAX_NUM];
 
 	// No data to cross check login
@@ -138,14 +138,14 @@ int Profile_login(Profile *this, char *sUsername, char *sPassword) {
 		String_clear(sProfilePassword);
 		
 		// Copy the name first without the newline
-		j = 0; 
+		j = 0; k = 0;
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
-			sprintf(sProfileUsername, "%s%c", sProfileUsername, sProfilesArray[i][j++]);
+			sProfileUsername[k++] = sProfilesArray[i][j++];
 
 		// Copy the password
-		j++;
+		j++; k = 0;
 		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
-			sprintf(sProfilePassword, "%s%c", sProfilePassword, sProfilesArray[i][j++]);
+			sProfilePassword[k++] = sProfilesArray[i][j++];
 
 		// Compare the name
 		if(!strcmp(sProfileUsername, sUsername)) {
@@ -274,8 +274,10 @@ int Profile_register(Profile *this, char *sUsername, char *sPassword) {
 
 		// Copy the name first without the newline
 		j = 0;
-		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
-			sprintf(sProfileEntry, "%s%c", sProfileEntry, sProfilesArray[i][j++]);
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
+			sProfileEntry[j] = sProfilesArray[i][j];
+			j++;
+		}
 		
 		// Compare the name
 		if(!strcmp(sProfileEntry, sUsername)) {
@@ -364,8 +366,10 @@ int Profile_delete(Profile *this, char *sUsername) {
 		
 		// Copy the name first without the newline
 		j = 0; 
-		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j])
-			sprintf(sProfileUsername, "%s%c", sProfileUsername, sProfilesArray[i][j++]);
+		while(sProfilesArray[i][j] != ';' && sProfilesArray[i][j]) {
+			sProfileUsername[j] = sProfilesArray[i][j];
+			j++;
+		}
 
 		// Copy to file only if not the selected profile
 		if(strcmp(sProfileUsername, sUsername))

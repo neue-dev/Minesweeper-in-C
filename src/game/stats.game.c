@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-04-01 01:03:37
+ * @ Modified time: 2024-04-01 02:16:15
  * 
  * Displays the statistics of a profile.
  */
@@ -28,7 +28,7 @@
  * @param		{ int * }		nClassicDifficult			Where to store the data for classic diff games.
 */
 void Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClassicEasy, int *nClassicDifficult) {
-	int i, j, k;
+	int i, j, k, l;
 
 	char sClassicEasy[32] = { 0 };
 	char sClassicDifficult[32] = { 0 };
@@ -49,15 +49,15 @@ void Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClas
 			String_clear(sClassicDifficult);
 			String_clear(sCustom);
 
-			++k;
+			++k; l = 0;
 			while(sProfileDataArray[i][k] != ',' && 
 				sProfileDataArray[i][k] != ';') {
 				
 				// Easy, Diff, or Custom
 				switch(i) {
-					case 0: sprintf(sClassicEasy, "%s%c", sClassicEasy, sProfileDataArray[i][k]); break;
-					case 1: sprintf(sClassicDifficult, "%s%c", sClassicDifficult, sProfileDataArray[i][k]); break;
-					case 2: sprintf(sCustom, "%s%c", sCustom, sProfileDataArray[i][k]); break;
+					case 0: sClassicEasy[l++] = sProfileDataArray[i][k]; break;
+					case 1: sClassicDifficult[l++] = sProfileDataArray[i][k]; break;
+					case 2: sCustom[l++] = sProfileDataArray[i][k]; break;
 					default: break;
 				} ++k;
 			}
@@ -78,7 +78,7 @@ void Stats_readProfileHeader(char *sProfileDataArray[], int *nCustom, int *nClas
  * @param		{ Profile * }		this	The game object.
 */
 int Stats_readProfile(Profile *this) {
-	int i, j, k;
+	int i, j, k, l;
 
 	// The profile file
 	char *sProfilePath;
@@ -91,7 +91,7 @@ int Stats_readProfile(Profile *this) {
 	int nTime = 0;
 
 	// Entry data
-	char sWordEntry[256];
+	char sWordEntry[256] = { 0 };
 	GameType eEntryType;
 	GameDifficulty eEntryDifficulty;
 	GameOutcome eEntryOutcome;
@@ -143,11 +143,11 @@ int Stats_readProfile(Profile *this) {
 				String_clear(sWordEntry);
 
 				// Copy the next word
-				++j;
+				++j; l = 0;
 				while(this->sHistory[this->nHistoryHeight][j] != ',' && 
 					this->sHistory[this->nHistoryHeight][j] != ';')
-					sprintf(sWordEntry, "%s%c", sWordEntry, this->sHistory[this->nHistoryHeight][j++]);
-
+					sWordEntry[l++] = this->sHistory[this->nHistoryHeight][j++];
+				
 				// Which entry we're at
 				switch(k) {
 
@@ -178,8 +178,8 @@ int Stats_readProfile(Profile *this) {
 					default: break;
 				}
 				++k;
-
 			}
+
 		
 			// Update the profile stats
 			// Custom

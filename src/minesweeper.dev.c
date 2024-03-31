@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 23:48:05
+ * @ Modified time: 2024-04-01 02:16:22
  * @ Description:
  * 
  * The main game file.
@@ -79,13 +79,13 @@ int main() {
   // // SleepEx(2000, FALSE);
   // // char *bruh = Game_getTime(&test);
 
-  // int n = 0;
-  // char *sOutputBuffer[GAME_MAX_ROWS];
-  // Stats_getBoard(&profile, 4, &n, sOutputBuffer);
+  int n = 0;
+  char *sOutputBuffer[GAME_MAX_ROWS];
+  Stats_getBoard(&profile, 4, &n, sOutputBuffer);
 
 
-  // for(int i = 0; i < n; i++)
-  //   printf("%s-", sOutputBuffer[i]);
+  for(int i = 0; i < n; i++)
+    printf("%s-", sOutputBuffer[i]);
 
   while(1);
 
