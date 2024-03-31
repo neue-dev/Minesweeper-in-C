@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-01-29 17:00:34
- * @ Modified time: 2024-03-31 16:37:24
+ * @ Modified time: 2024-03-31 22:39:31
  * @ Description:
  * 
  * The main game file.
@@ -55,24 +55,26 @@ int main() {
   // Profile_register(&profile, "MOD", "KLANG");
   Profile_init(&profile);
   strcpy(profile.sCurrentProfile, "MODEV");
+  Stats_readProfile(&profile);
   
   Editor_setup(&test);
   Game_setup(&test,GAME_TYPE_CUSTOM, GAME_DIFFICULTY_EASY);
   Editor_setSaveName(&test, "DEV");
   Editor_loadLevel(&test);
 
-  SleepEx(2000, FALSE);
-  char *bruh = Game_getTime(&test);
+  // SleepEx(2000, FALSE);
+  // char *bruh = Game_getTime(&test);
 
-  Game_inspect(&test, 0, 0);
-  Game_inspect(&test, 0, 8);
-  Game_inspect(&test, 5, 2);
-  Game_inspect(&test, 4, 9);
-  Game_inspect(&test, 5, 9);
+  int n = 0;
+  char *sOutputBuffer[GAME_MAX_ROWS];
+  Stats_getBoard(&profile, 5, &n, sOutputBuffer);
 
-  Game_save(&test);
-  Stats_readProfile(&profile);
-  Stats_saveGame(&test);
+  for(int i = 0; i < n; i++)
+    printf(sOutputBuffer[i]);
+  printf("%d %d %d", 
+    Stats_getTotalGames(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
+    Stats_getTotalGames(&profile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
+    Stats_getTotalGames(&profile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_EASY));
 
   while(1);
 

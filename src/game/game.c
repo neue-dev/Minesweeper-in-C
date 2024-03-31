@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 10:55:29
  * @ Modified time: 2024-03-30 00:30:21
- * @ Modified time: 2024-03-31 20:10:45
+ * @ Modified time: 2024-03-31 22:17:51
  * 
  * Holds the game struct that stores all of the game state.
  */
@@ -465,7 +465,6 @@ void Game_unpause(Game *this) {
 
 /**
  * Increments the cursor along the x axis (to the right).
- * Skips tiles that have already been inspected.
  * 
  * @param   { Game * }  this  The game object to modify.
 */
@@ -485,7 +484,6 @@ void Game_incrementX(Game *this) {
 
 /**
  * Decrements the cursor along the x axis (to the left).
- * Skips tiles that have already been inspected.
  * 
  * @param   { Game * }  this  The game object to modify.
 */
@@ -505,7 +503,6 @@ void Game_decrementX(Game *this) {
 
 /**
  * Increments the cursor along the y axis (down).
- * Skips tiles that have already been inspected.
  * 
  * @param   { Game * }  this  The game object to modify.
 */
@@ -525,7 +522,6 @@ void Game_incrementY(Game *this) {
 
 /**
  * Decrements the cursor along the y axis (up).
- * Skips tiles that have already been inspected.
  * 
  * @param   { Game * }  this  The game object to modify.
 */

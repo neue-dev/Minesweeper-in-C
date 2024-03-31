@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-03-31 19:57:59
+ * @ Modified time: 2024-03-31 22:39:44
+ * @ Modified time: 2024-03-31 22:39:44
  * 
  * Displays the statistics of a profile.
  */
@@ -434,6 +434,183 @@ int Stats_clearProfile(Profile *this) {
 	this->nCustom = 0;
 	this->nClassicEasy = 0;
 	this->nClassicDifficult = 0;
+}
+
+/**
+ * Gets how many games the profile has won in the specified category.
+ * 
+ * @param		{ Profile * }				this					The profile object.
+ * @param		{ GameType }				eType					The type of game we're looking stats for.
+ * @param		{ GameDifficulty }	eDifficulty		The difficulty of the game, if applicable.
+ * @return	{ int }														How many games they won.
+*/
+int Stats_getWins(Profile *this, GameType eType, GameDifficulty eDifficulty) {
+	int i, count = 0;
+
+	if(eType == GAME_TYPE_CLASSIC) {
+		
+		// Classic easy
+		if(eDifficulty == GAME_DIFFICULTY_EASY) {
+			for(i = 0; i < this->nClassicEasy; i++)
+				if(this->dClassicEasyTimes[i] > -1)
+					count++;
+
+		// Classic difficult
+		} else if(eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
+			for(i = 0; i < this->nClassicDifficult; i++)
+				if(this->dClassicDifficultTimes[i] > -1)
+					count++;	
+		}
+
+	// Custom mode
+	} else {
+		for(i = 0; i < this->nCustom; i++)
+			if(this->dCustomTimes[i] > -1)
+				count++;
+	}
+
+	return count;
+}
+
+/**
+ * Gets how many games the profile has lost in the specified category.
+ * 
+ * @param		{ Profile * }				this					The profile object.
+ * @param		{ GameType }				eType					The type of game we're looking stats for.
+ * @param		{ GameDifficulty }	eDifficulty		The difficulty of the game, if applicable.
+ * @return	{ int }														How many games they lost.
+*/
+int Stats_getLosses(Profile *this, GameType eType, GameDifficulty eDifficulty) {
+	int i, count = 0;
+
+	if(eType == GAME_TYPE_CLASSIC) {
+		
+		// Classic easy
+		if(eDifficulty == GAME_DIFFICULTY_EASY) {
+			for(i = 0; i < this->nClassicEasy; i++)
+				if(this->dClassicEasyTimes[i] == -1)
+					count++;
+
+		// Classic difficult
+		} else if(eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
+			for(i = 0; i < this->nClassicDifficult; i++)
+				if(this->dClassicDifficultTimes[i] == -1)
+					count++;	
+		}
+
+	// Custom mode
+	} else {
+		for(i = 0; i < this->nCustom; i++)
+			if(this->dCustomTimes[i] == -1)
+				count++;
+	}
+
+	return count;
+}
+
+/**
+ * Gets how many games the profile has quit in the specified category.
+ * 
+ * @param		{ Profile * }				this					The profile object.
+ * @param		{ GameType }				eType					The type of game we're looking stats for.
+ * @param		{ GameDifficulty }	eDifficulty		The difficulty of the game, if applicable.
+ * @return	{ int }														How many games they quit.
+*/
+int Stats_getQuits(Profile *this, GameType eType, GameDifficulty eDifficulty) {
+	int i, count = 0;
+
+	if(eType == GAME_TYPE_CLASSIC) {
+		
+		// Classic easy
+		if(eDifficulty == GAME_DIFFICULTY_EASY) {
+			for(i = 0; i < this->nClassicEasy; i++)
+				if(this->dClassicEasyTimes[i] == -2)
+					count++;
+
+		// Classic difficult
+		} else if(eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
+			for(i = 0; i < this->nClassicDifficult; i++)
+				if(this->dClassicDifficultTimes[i] == -2)
+					count++;	
+		}
+
+	// Custom mode
+	} else {
+		for(i = 0; i < this->nCustom; i++)
+			if(this->dCustomTimes[i] == -2)
+				count++;
+	}
+
+	return count;
+}
+
+/**
+ * Gets how many games the profile has played in the specified category.
+ * 
+ * @param		{ Profile * }				this					The profile object.
+ * @param		{ GameType }				eType					The type of game we're looking stats for.
+ * @param		{ GameDifficulty }	eDifficulty		The difficulty of the game, if applicable.
+ * @return	{ int }														How many games they played.
+*/
+int Stats_getTotalGames(Profile *this, GameType eType, GameDifficulty eDifficulty) {
+	if(eType == GAME_TYPE_CLASSIC) {
+		
+		// Classic easy
+		if(eDifficulty == GAME_DIFFICULTY_EASY) {
+			return this->nClassicEasy;
+
+		// Classic difficult
+		} else if(eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
+			return this->nClassicDifficult;
+		}
+
+	// Custom mode
+	} else {
+		return this->nCustom;
+	}
+}
+
+/**
+ * Outputs the requested board to the text buffer.
+ * Note that 0 represents the most recent board, 1 the second most recent, etc.
+ * Returns a 0 when the end of the history was reached and the board wasn't found (n was too large).
+ * 
+ * @param		{ Profile * }		this 			The profile object.
+ * @param		{ int }					n					The nth board (0th -> most recent).
+ * @param		{ int * }				nHeight		The height of the board.
+ * @return	{ int }										Whether or not the operation was successful.
+*/
+int Stats_getBoard(Profile *this, int n, int *nHeight, char *sOutputBuffer[]) {
+	int i = this->nHistoryHeight;
+
+	// No boards yet
+	if(!this->nHistoryHeight)
+		return 0;
+
+	// Go through the entire history first and look for the start of the board
+	while(i > 0 && n >= 0) {
+		if(this->sHistory[--i][0] == '>')
+			n--;
+	}
+
+	// Make sure we didn't hit the last entry without having reached the nth
+	if(i <= 0 && ++n > 0)
+		return 0;
+
+	// Init for the loop below
+	*nHeight = 0; 
+	i++;
+	
+	// While we haven't hit the next board
+	while(i < this->nHistoryHeight) {
+		if(this->sHistory[i][0] == '>')
+			return 1;
+			
+		sOutputBuffer[(*nHeight)++] = String_create(this->sHistory[i]);
+		i++;
+	}
+
+	return 1;
 }
 
 #endif

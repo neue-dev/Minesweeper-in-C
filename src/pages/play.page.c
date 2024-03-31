@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 21:14:55
+ * @ Modified time: 2024-03-31 21:17:02
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -84,7 +84,7 @@ void PageHandler_play(p_obj pArgs_Page) {
       Page_addComponentText(this, sTypeComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sFileordiffPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter difficulty or filename:");
       Page_addComponentText(this, sFileordiffComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.75", "secondary", "> type CLASSIC or CUSTOM under game type           \n\n> type EASY or DIFFICULT under difficulty (CLASSIC)\n> type FILENAME          under filename   (CUSTOM)");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 3, "primary-darken-0.75", "secondary", "> type CLASSIC or CUSTOM under game type           \n\n> type EASY or DIFFICULT under difficulty (CLASSIC)\n> type FILENAME          under filename   (CUSTOM)");
       Page_addComponentText(this, sFieldPromptComponent, sPlayComponent, dWidth - dMargin - 1, dHeight - dMargin / 2, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]   to go back");
       
       // Garbage collection

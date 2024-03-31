@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 20:24:40
+ * @ Modified time: 2024-03-31 22:07:19
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -9,6 +9,10 @@
 
 #ifndef PAGE_ACCOUNT_
 #define PAGE_ACCOUNT_
+
+#include "../game/game.c"
+#include "../game/profile.game.c"
+#include "../game/stats.game.c"
 
 #include "../utils/utils.asset.h"
 #include "../utils/utils.page.h"
@@ -22,6 +26,7 @@
 void PageHandler_account(p_obj pArgs_Page) {
 
   Page *this = (Page *) pArgs_Page;
+  Profile *pProfile = (Profile *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
 
   // Components
@@ -29,6 +34,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sAccountContainerComponent = "account-container.col";
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
+  char *sStatsComponent = "stats.aleft-x.atop-y";
   char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
   // Page title and asset
@@ -38,6 +44,8 @@ void PageHandler_account(p_obj pArgs_Page) {
 
   // Some text stuff
   char *sDividerText;
+  char *sStatsText;
+  char sGridBuffer[GAME_MAX_ROWS][GAME_MAX_COLUMNS];
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -63,6 +71,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentContainer(this, sAccountContainerComponent, sAccountComponent, dMargin, dMargin / 2);
       Page_addComponentAsset(this, sTitleComponent, sAccountContainerComponent, -1, 1, "", "", sPageTitleKey);
       Page_addComponentText(this, sDividerComponent, sAccountContainerComponent, 0, 0, "accent", "", sDividerText);
+      Page_addComponentText(this, sStatsComponent, sAccountContainerComponent, 0, 0, "secondary", "", "");
       Page_addComponentText(this, sPromptTextComponent, sAccountComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
       
@@ -85,6 +94,37 @@ void PageHandler_account(p_obj pArgs_Page) {
 
         break;
       }
+
+      // Update the UI
+      // Generate the text for the stats first
+      sStatsText = String_alloc(1024);
+
+      // Account name
+      sprintf(sStatsText, "PROFILE: %s\n", pProfile->sCurrentProfile);
+      
+      // Classic easy stats
+      sprintf(sStatsText, "%s\nCLASSIC, EASY         %d wins  \n                      %d losses\n                      %d games\n", sStatsText, 
+        Stats_getWins(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY), 
+        Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY),
+        Stats_getTotalGames(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_EASY));
+
+      // Classic difficult stats
+      sprintf(sStatsText, "%s\nCLASSIC, DIFFICULT    %d wins  \n                      %d losses\n                      %d games\n", sStatsText,
+        Stats_getWins(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT), 
+        Stats_getLosses(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT),
+        Stats_getTotalGames(pProfile, GAME_TYPE_CLASSIC, GAME_DIFFICULTY_DIFFICULT));
+
+      // Custom stats
+      sprintf(sStatsText, "%s\nCUSTOM                %d wins  \n                      %d losses\n                      %d games\n", sStatsText,
+        Stats_getWins(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE), 
+        Stats_getLosses(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE),
+        Stats_getTotalGames(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE));
+
+      // Add it to the page
+      Page_setComponentText(this, sStatsComponent, sStatsText);
+
+      // Garbage collection
+      String_kill(sStatsText);
 
     break;
 
