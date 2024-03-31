@@ -2,7 +2,7 @@
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
  * @ Modified time: 2024-03-31 15:30:50
- * @ Modified time: 2024-03-31 16:56:52
+ * @ Modified time: 2024-03-31 18:46:43
  * 
  * Displays the statistics of a profile.
  */
@@ -427,8 +427,9 @@ int Stats_saveGame(Game *this) {
 int Stats_clearProfile(Profile *this) {
 	int i;
 
-	while(--this->nHistoryHeight)
-		String_kill(this->sHistory[this->nHistoryHeight]);
+	if(this->nHistoryHeight)
+		while(--this->nHistoryHeight)
+			String_kill(this->sHistory[this->nHistoryHeight]);
 
 	this->nCustom = 0;
 	this->nClassicEasy = 0;
