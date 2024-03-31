@@ -1,8 +1,8 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-03-28 17:01:04
- * @ Modified time: 2024-03-31 02:43:32
- * @ Modified time: 2024-03-31 04:30:06
+ * @ Modified time: 2024-03-31 14:52:40
+ * @ Modified time: 2024-03-31 15:10:37
  * 
  * Displays the statistics of a profile.
  */
@@ -17,6 +17,12 @@
 
 #include <stdio.h>
 
+typedef struct Stats Stats;
+
+struct Stats {
+	
+};
+
 /**
  * Saves the information held by the most recent game.
  * 
@@ -24,15 +30,16 @@
  * @return 	{ int }							Whether or not the operation was successful.
 */
 int Stats_update(Game *this) {
-	int i, j;
+	int i, j, k;
 
 	// The profile file
 	char *sProfilePath;
 	File *pProfileFile;
 
 	// The general stats
-	int nClassicEasyWins = 0, nClassicDifficultWins = 0, nCustomWins = 0;
-	int nClassicEasyLoss = 0, nClassicDifficultLoss = 0, nCustomLoss = 0;
+	int nClassicEasy[3] = { 0,  0, -1 };
+	int nClassicDifficult[3] = { 0, 0, -1 };
+	int nCustom[3] = { 0, 0, -1 };
 	char sClassicEasy[32] = { 0 }, sClassicDifficult[32] = { 0 }, sCustom[32] = { 0 };
 
 	// The latest game data
@@ -68,79 +75,75 @@ int Stats_update(Game *this) {
 		return 0;
 	}
 
+
 	// Read the file header
 	for(i = 0; i < PROFILE_FILE_HEADER_HEIGHT; i++) {
-		j = 0;
 
 		// Skip the name
-		while(sProfileDataArray[i][++j] != ':');
-
-		// Read each win parameter
-		String_clear(sClassicEasy);
-		String_clear(sClassicDifficult);
-		String_clear(sCustom);
+		k = 0;
+		while(sProfileDataArray[i][++k] != ':');
 		
-		while(sProfileDataArray[i][++j] != ',') {
+		// For each parameter (wins, losses, best time)
+		for(j = 0, k; j < 3; j++) {
+
+			// Read the parameter
+			String_clear(sClassicEasy);
+			String_clear(sClassicDifficult);
+			String_clear(sCustom);
+
+			++k;
+			while(sProfileDataArray[i][k] != ',' && 
+				sProfileDataArray[i][k] != ';') {
+				
+				// Easy, Diff, or Custom
+				switch(i) {
+					case 0: sprintf(sClassicEasy, "%s%c", sClassicEasy, sProfileDataArray[i][k]); break;
+					case 1: sprintf(sClassicDifficult, "%s%c", sClassicDifficult, sProfileDataArray[i][k]); break;
+					case 2: sprintf(sCustom, "%s%c", sCustom, sProfileDataArray[i][k]); break;
+					default: break;
+				} ++k;
+			}
+
+
 			switch(i) {
-				case 0: sprintf(sClassicEasy, "%s%c", sClassicEasy, sProfileDataArray[i][j]); break;
-				case 1: sprintf(sClassicDifficult, "%s%c", sClassicDifficult, sProfileDataArray[i][j]); break;
-				case 2: sprintf(sCustom, "%s%c", sCustom, sProfileDataArray[i][j]); break;
+				case 0: nClassicEasy[j] = atoi(sClassicEasy); break;
+				case 1: nClassicDifficult[j] = atoi(sClassicDifficult); break;
+				case 2: nCustom[j] = atoi(sCustom); break;
 				default: break;
 			}
-		}
-
-		switch(i) {
-			case 0: nClassicEasyWins = atoi(sClassicEasy); break;
-			case 1: nClassicDifficultWins = atoi(sClassicDifficult); break;
-			case 2: nCustomWins = atoi(sCustom); break;
-			default: break;
-		}
-
-		// Read each loss parameter
-		String_clear(sClassicEasy);
-		String_clear(sClassicDifficult);
-		String_clear(sCustom);
-		
-		while(sProfileDataArray[i][++j] != ';') {
-			switch(i) {
-				case 0: sprintf(sClassicEasy, "%s%c", sClassicEasy, sProfileDataArray[i][j]); break;
-				case 1: sprintf(sClassicDifficult, "%s%c", sClassicDifficult, sProfileDataArray[i][j]); break;
-				case 2: sprintf(sCustom, "%s%c", sCustom, sProfileDataArray[i][j]); break;
-				default: break;
-			}
-		}
-
-		switch(i) {
-			case 0: nClassicEasyLoss = atoi(sClassicEasy); break;
-			case 1: nClassicDifficultLoss = atoi(sClassicDifficult); break;
-			case 2: nCustomLoss = atoi(sCustom); break;
-			default: break;
 		}
 	}
 
 	// The player lost
 	if(this->eOutcome == GAME_OUTCOME_LOSS) {
-		if(this->eType == GAME_TYPE_CUSTOM) nCustomLoss++;
-		else if(this->eDifficulty == GAME_DIFFICULTY_EASY) nClassicEasyLoss++;
-		else if(this->eDifficulty == GAME_DIFFICULTY_DIFFICULT) nClassicDifficultLoss++;
+		if(this->eType == GAME_TYPE_CUSTOM) nCustom[1]++;
+		else if(this->eDifficulty == GAME_DIFFICULTY_EASY) nClassicEasy[1]++;
+		else if(this->eDifficulty == GAME_DIFFICULTY_DIFFICULT) nClassicDifficult[1]++;
 
 	// The player won
 	} else if(this->eOutcome == GAME_OUTCOME_WIN) {
-		if(this->eType == GAME_TYPE_CUSTOM) nCustomWins++;
-		else if(this->eDifficulty == GAME_DIFFICULTY_EASY) nClassicEasyWins++;
-		else if(this->eDifficulty == GAME_DIFFICULTY_DIFFICULT) nClassicDifficultWins++;
+		if(this->eType == GAME_TYPE_CUSTOM) {
+			nCustom[0]++;
+			nCustom[2] = nCustom[2] > -1 ? min(nCustom[2], this->dTimeTaken) : this->dTimeTaken;
+		} else if(this->eDifficulty == GAME_DIFFICULTY_EASY) {
+			nClassicEasy[0]++;
+			nClassicEasy[2] = nClassicEasy[2] > -1 ? min(nClassicEasy[2], this->dTimeTaken) : this->dTimeTaken;
+		} else if(this->eDifficulty == GAME_DIFFICULTY_DIFFICULT) {
+			nClassicDifficult[0]++;
+			nClassicDifficult[2] = nClassicDifficult[2] > -1 ? min(nClassicDifficult[2], this->dTimeTaken) : this->dTimeTaken;
+		};
 	}
 
 	// Update the player stats
-	sprintf(sClassicEasy, "-CLASSIC_EASY:%d,%d;\n", nClassicEasyWins, nClassicEasyLoss);
-	sprintf(sClassicDifficult, "-CLASSIC_DIFFICULT:%d,%d;\n", nClassicDifficultWins, nClassicDifficultLoss);
-	sprintf(sCustom, "-CUSTOM:%d,%d;\n", nCustomWins, nCustomLoss);
+	sprintf(sClassicEasy, "-CLASSIC_EASY:%d,%d,%d;\n", nClassicEasy[0], nClassicEasy[1], nClassicEasy[2]);
+	sprintf(sClassicDifficult, "-CLASSIC_DIFFICULT:%d,%d,%d;\n", nClassicDifficult[0], nClassicDifficult[1], nClassicDifficult[2]);
+	sprintf(sCustom, "-CUSTOM:%d,%d,%d;\n", nCustom[0], nCustom[1], nCustom[2]);
 
 	// Write the new stats of the game
 	sprintf(sGameData, ">%s,%s,%s,%d,%d,%d;\n", 
 		this->eType == GAME_TYPE_CLASSIC ? "CLASSIC" : "CUSTOM",
-		this->eType == GAME_TYPE_CUSTOM ? String_toUpper(this->sSaveName) : 
-			(this->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT"),
+		this->eType == GAME_TYPE_CLASSIC ? (this->eDifficulty == GAME_DIFFICULTY_EASY ? "EASY" : "DIFFICULT") : 
+			String_toUpper(this->sSaveName),
 		this->eOutcome == GAME_OUTCOME_WIN ? "WIN" : 
 			(this->eOutcome == GAME_OUTCOME_LOSS ? "LOSS" : "QUIT"),
 		
@@ -219,6 +222,15 @@ int Stats_update(Game *this) {
 	File_freeBuffer(nProfileNewDataLength, sProfileNewDataArray);
 
 	return 1;
+}
+
+/**
+ * Reads stats from the specified profile.
+ * 
+ * @param		{ Game * }	this	The game object.
+*/
+int Stats_read(Game *this) {
+	
 }
 
 #endif
