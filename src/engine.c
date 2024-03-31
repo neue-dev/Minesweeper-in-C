@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 14:26:01
- * @ Modified time: 2024-04-01 02:24:02
+ * @ Modified time: 2024-04-01 05:27:02
  * @ Description:
  * 
  * This combines the different utility function and manages the relationships between them.
@@ -140,7 +140,6 @@ void Engine_init(Engine *this) {
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/body-font.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/icon.asset.txt");
   AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/logo.asset.txt");
-  AssetManager_readAssetFile(&this->assetManager, "//", "./src/assets/menu.asset.txt");
 
   // I have no idea why but this makes the game launch faster ????
   AssetManager_createTextAsset(&this->assetManager, "a", "body-font");
@@ -179,10 +178,6 @@ void Engine_init(Engine *this) {
   Profile_init(&this->profile);
   this->standardGame.pProfile = &this->profile;
   this->editorGame.pProfile = &this->profile;
-
-  // !remove
-  Profile_login(&this->profile, "MODEV", "MOGEN");
-  Stats_readProfile(&this->profile);
 
   /**
    * Creates event listeners and handlers, alongside their mutexes
