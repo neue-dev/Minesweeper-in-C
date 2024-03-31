@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 22:07:19
+ * @ Modified time: 2024-03-31 22:46:08
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -24,7 +24,8 @@
  * @param   { p_obj }   pArgs_Page  The page instance we need to configure.
 */
 void PageHandler_account(p_obj pArgs_Page) {
-
+  
+  int i;
   Page *this = (Page *) pArgs_Page;
   Profile *pProfile = (Profile *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
@@ -35,6 +36,7 @@ void PageHandler_account(p_obj pArgs_Page) {
   char *sTitleComponent = "title.aleft-x.abottom-y";
   char *sDividerComponent = "divider.aleft-x.abottom-y";
   char *sStatsComponent = "stats.aleft-x.atop-y";
+  char *sGridComponent = "grid.aleft-x.atop-y";
   char *sPromptTextComponent = "prompt-text.aright-x.atop-y";
 
   // Page title and asset
@@ -45,7 +47,9 @@ void PageHandler_account(p_obj pArgs_Page) {
   // Some text stuff
   char *sDividerText;
   char *sStatsText;
-  char sGridBuffer[GAME_MAX_ROWS][GAME_MAX_COLUMNS];
+  char *sGridText;
+  char *sGridBuffer[GAME_MAX_ROWS];
+  int nGridBufferHeight = 0;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -72,6 +76,7 @@ void PageHandler_account(p_obj pArgs_Page) {
       Page_addComponentAsset(this, sTitleComponent, sAccountContainerComponent, -1, 1, "", "", sPageTitleKey);
       Page_addComponentText(this, sDividerComponent, sAccountContainerComponent, 0, 0, "accent", "", sDividerText);
       Page_addComponentText(this, sStatsComponent, sAccountContainerComponent, 0, 0, "secondary", "", "");
+      Page_addComponentText(this, sGridComponent, sAccountContainerComponent, 32, 0, "secondary", "", "");
       Page_addComponentText(this, sPromptTextComponent, sAccountComponent, dWidth - dMargin, dHeight - dMargin / 2, 
         "secondary-lighten-0.5", "", "[backspace] or [esc] to go back");
       
@@ -120,11 +125,22 @@ void PageHandler_account(p_obj pArgs_Page) {
         Stats_getLosses(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE),
         Stats_getTotalGames(pProfile, GAME_TYPE_CUSTOM, GAME_DIFFICULTY_NONE));
 
-      // Add it to the page
+      // Get the grid and turn it into string
+      Stats_getBoard(pProfile, 0, &nGridBufferHeight, sGridBuffer);
+      
+      sGridText = String_alloc(1024);
+      for(i = 0; i < nGridBufferHeight; i++)
+        sprintf(sGridText, "%s%s", sGridText, sGridBuffer[i]);
+
+      // Add the stats and the grid to the page
       Page_setComponentText(this, sStatsComponent, sStatsText);
+      Page_setComponentText(this, sGridComponent, sGridBuffer);
+
+      // !KILL THE GRID BUFFER
 
       // Garbage collection
       String_kill(sStatsText);
+      String_kill(sGridText);
 
     break;
 
