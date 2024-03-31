@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 17:41:08
+ * @ Modified time: 2024-03-31 21:14:55
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -30,21 +30,22 @@ void PageHandler_play(p_obj pArgs_Page) {
   Game *pGame = (Game *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
 
-  // Header details
-  char *sHeader = "play a game";
-  char *sHeaderFont = "body-font";
-  char sHeaderKey[STRING_KEY_MAX_LENGTH];
+  // Title details
+  char *sTitle = "play a game";
+  char *sTitleFont = "body-font";
+  char sTitleKey[STRING_KEY_MAX_LENGTH];
 
   // Component names
   char *sPlayComponent = "play.fixed";
   char *sPlayFormComponent = "play-form.col";
-  char *sHeaderComponent = "header.acenter-x.atop-y";
+  char *sTitleComponent = "title.aleft-x.abottom-y";
+  char *sDividerComponent = "divider.aleft-x.abottom-y";
   char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
   char *sFileordiffPromptComponent = "fileordiff-prompt.aleft-x";
   char *sTypePromptComponent = "type-prompt.aleft-x";
   char *sFileordiffComponent = "fileordiff.aleft-x";
   char *sTypeComponent = "type.aleft-x";
-  char *sFieldPromptComponent = "field-prompt.aleft-x";
+  char *sFieldPromptComponent = "field-prompt.aright-x.abottom-y";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
 
   // Input fields
@@ -52,6 +53,9 @@ void PageHandler_play(p_obj pArgs_Page) {
   char *sFileordiffField;
   char cPlayCurrentField = 0;
   char cPlayFieldCount = 2;
+
+  // Divider text
+  char *sDividerText;
 
   // Do stuff based on page status
   switch(this->ePageStatus) {
@@ -61,24 +65,31 @@ void PageHandler_play(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 42;
+      dMargin = 10;
 
       // Create the header
-      String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
-      AssetManager_createTextAsset(this->pSharedAssetManager, sHeader, sHeaderFont);
+      String_keyAndStr(sTitleKey, sTitleFont, sTitle);
+      AssetManager_createTextAsset(this->pSharedAssetManager, sTitle, sTitleFont);
+
+      // Create divider
+      sDividerText = String_repeat("▄", dWidth - dMargin * 2);
 
       // Create component tree
       Page_addComponentContext(this, sPlayComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sPlayFormComponent, sPlayComponent, 0, 0);
-      Page_addComponentAsset(this, sHeaderComponent, sPlayFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
-      Page_addComponentContainer(this, sFieldContainerComponent, sPlayFormComponent, dWidth / 2 - dMargin / 2, 4);
+      Page_addComponentContainer(this, sPlayFormComponent, sPlayComponent, dMargin, dMargin / 2);
+      Page_addComponentAsset(this, sTitleComponent, sPlayFormComponent, -1, 1, "", "", sTitleKey);
+      Page_addComponentText(this, sDividerComponent, sPlayFormComponent, 0, 0, "accent", "", sDividerText);
+      Page_addComponentContainer(this, sFieldContainerComponent, sPlayFormComponent, -1, 2);
       Page_addComponentText(this, sTypePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter game type:");
       Page_addComponentText(this, sTypeComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sFileordiffPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter difficulty - if classic:\n      filename   - if custom:");
+      Page_addComponentText(this, sFileordiffPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter difficulty or filename:");
       Page_addComponentText(this, sFileordiffComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 1, "secondary", "accent", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]   to go back");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.75", "secondary", "> type CLASSIC or CUSTOM under game type           \n\n> type EASY or DIFFICULT under difficulty (CLASSIC)\n> type FILENAME          under filename   (CUSTOM)");
+      Page_addComponentText(this, sFieldPromptComponent, sPlayComponent, dWidth - dMargin - 1, dHeight - dMargin / 2, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]   to go back");
       
+      // Garbage collection
+      String_kill(sDividerText);
+
       // Define initial user states
       if(Page_getUserState(this, "play-current-field") == -1) Page_setUserState(this, "play-current-field", cPlayCurrentField);
       if(Page_getUserState(this, "play-field-count") == -1) Page_setUserState(this, "play-field-count", cPlayFieldCount);
@@ -116,10 +127,12 @@ void PageHandler_play(p_obj pArgs_Page) {
           if(!strlen(sTypeField) || 
             !strlen(sFileordiffField)) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
+            Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");
 
           // If invalid mode
           } else if(strcmp(sTypeField, "CLASSIC") && strcmp(sTypeField, "CUSTOM")) {
             Page_setComponentText(this, sErrorPromptComponent, "Error: invalid game type; check whitespaces.");
+            Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");
 
           // If classic mode
           } else if(!strcmp(sTypeField, "CLASSIC")) {
@@ -127,7 +140,8 @@ void PageHandler_play(p_obj pArgs_Page) {
             // It's not easy or difficult
             if(strcmp(sFileordiffField, "EASY") && 
               strcmp(sFileordiffField, "DIFFICULT")) {
-              Page_setComponentText(this, sErrorPromptComponent, "Error: classic has only [easy/difficult].");              
+              Page_setComponentText(this, sErrorPromptComponent, "Error: CLASSIC has only EASY or DIFFICULT.");
+              Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");              
             
             // Proceed to a classic game
             } else {
@@ -144,11 +158,13 @@ void PageHandler_play(p_obj pArgs_Page) {
             
             // Check for valid filename
             if(!String_isValidFilename(sFileordiffField)) {
-              Page_setComponentText(this, sErrorPromptComponent, "Error: invalid filename for custom game.");              
+              Page_setComponentText(this, sErrorPromptComponent, "Error: invalid filename for custom game.");   
+              Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");           
             
             // Check if file exists
             } else if(!Editor_levelExists(pGame, sFileordiffField)) {
-              Page_setComponentText(this, sErrorPromptComponent, "Error: file not found for custom game.");              
+              Page_setComponentText(this, sErrorPromptComponent, "Error: file not found for custom game.");    
+              Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");          
 
             // Proceed to custom game
             } else {
@@ -184,15 +200,17 @@ void PageHandler_play(p_obj pArgs_Page) {
           }
 
           // Clear the error
-          if(EventStore_get(this->pSharedEventStore, "key-pressed"))
-            Page_setComponentText(this, sErrorPromptComponent, "");
+          if(EventStore_get(this->pSharedEventStore, "key-pressed")) {
+            Page_setComponentText(this, sErrorPromptComponent, "> type CLASSIC or CUSTOM under game type           \n\n> type EASY or DIFFICULT under difficulty (CLASSIC)\n> type FILENAME          under filename   (CUSTOM)");
+            Page_setComponentColor(this, sErrorPromptComponent, "primary-darken-0.75", "secondary");
+          }
 
         break;
       }
 
       // Indicate the user input on screen
-      Page_setComponentText(this, sTypeComponent, strlen(sTypeField) ? sTypeField : "[CLASSIC/CUSTOM]");
-      Page_setComponentText(this, sFileordiffComponent, strlen(sFileordiffField) ? sFileordiffField : "[EASY/DIFFICULT] OR <FILENAME>");
+      Page_setComponentText(this, sTypeComponent, strlen(sTypeField) ? sTypeField : "____________________");
+      Page_setComponentText(this, sFileordiffComponent, strlen(sFileordiffField) ? sFileordiffField : "____________________");
 
     break;
 

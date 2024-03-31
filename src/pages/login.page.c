@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-31 20:38:01
+ * @ Modified time: 2024-03-31 21:13:02
  * @ Description:
  * 
  * This file defines the page handler for the login.
@@ -86,7 +86,7 @@ void PageHandler_login(p_obj pArgs_Page) {
       Page_addComponentText(this, sUsernameComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sPasswordPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter password:");
       Page_addComponentText(this, sPasswordComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "primary-darken-0.75", "secondary", "> type EXIT or QUIT to terminate the program");
       Page_addComponentText(this, sFieldPromptComponent, sLoginComponent, dWidth - dMargin - 1, dHeight - dMargin / 2, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to delete a profile");      
       Page_addComponentPopup(this, sPopupComponent, dWidth / 2, dHeight / 2, 56, 14, "secondary", "accent", "", "", "");
 
@@ -139,6 +139,8 @@ void PageHandler_login(p_obj pArgs_Page) {
                 } else {
                   Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
                 }
+
+                Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");
               }
             break;
             
@@ -158,6 +160,8 @@ void PageHandler_login(p_obj pArgs_Page) {
                 } else {
                   Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
                 }
+
+                Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");
               }
             break;
           }
@@ -187,6 +191,7 @@ void PageHandler_login(p_obj pArgs_Page) {
             if(!strlen(sUsernameField) ||
               !strlen(sPasswordField)) {
               Page_setComponentText(this, sErrorPromptComponent, "Error: some fields are empty.");
+              Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");
               
             // If successful
             } else {
@@ -217,6 +222,7 @@ void PageHandler_login(p_obj pArgs_Page) {
               // Login was NOT successful
               } else {
                 Page_setComponentText(this, sErrorPromptComponent, Profile_getErrorMessage(pProfile));
+                Page_setComponentColor(this, sErrorPromptComponent, "secondary", "accent");
 
                 // Create a new account perhaps?
                 if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND && cKeyPressed != 27) {
@@ -252,16 +258,18 @@ void PageHandler_login(p_obj pArgs_Page) {
             }
 
             // Clear the error
-            if(cKeyPressed)
-              Page_setComponentText(this, sErrorPromptComponent, "");
+            if(cKeyPressed) {
+              Page_setComponentText(this, sErrorPromptComponent, "type EXIT to terminate the program");
+              Page_setComponentColor(this, sErrorPromptComponent, "primary-darken-0.75", "secondary");
+            }
 
           break;
         }
       }
 
       // Indicate the user input on screen
-      Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "________________");
-      Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "________________");
+      Page_setComponentText(this, sUsernameComponent, strlen(sUsernameField) ? sUsernameField : "____________________");
+      Page_setComponentText(this, sPasswordComponent, strlen(sPasswordField) ? sPasswordField : "____________________");
 
     break;
 

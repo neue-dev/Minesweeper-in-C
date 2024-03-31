@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-03-30 19:49:44
+ * @ Modified time: 2024-03-31 20:59:54
  * @ Description:
  * 
  * This file defines the page handler for the editor page.
@@ -29,15 +29,16 @@ void PageHandler_editor(p_obj pArgs_Page) {
   Game *pGame = (Game *) this->pSharedObject;
   int dWidth, dHeight, dMargin;
 
-  // Header details
-  char *sHeader = "level editor";
-  char *sHeaderFont = "body-font";
-  char sHeaderKey[STRING_KEY_MAX_LENGTH];
+  // Title details
+  char *sTitle = "level editor";
+  char *sTitleFont = "body-font";
+  char sTitleKey[STRING_KEY_MAX_LENGTH];
 
   // Component names
   char *sEditorComponent = "editor.fixed";
   char *sEditorFormComponent = "editor-form.col";
-  char *sHeaderComponent = "header.acenter-x.atop-y";
+  char *sTitleComponent = "title.aleft-x.abottom-y";
+  char *sDividerComponent = "divider.aleft-x.abottom-y";
   char *sFieldContainerComponent = "field-container.col.aleft-x.atop-y";
   char *sFilenamePromptComponent = "filename-prompt.aleft-x";
   char *sWidthPromptComponent = "width-prompt.aleft-x";
@@ -45,7 +46,7 @@ void PageHandler_editor(p_obj pArgs_Page) {
   char *sFilenameComponent = "filename.aleft-x";
   char *sWidthComponent = "width.aleft-x";
   char *sHeightComponent = "height.aleft-x";
-  char *sFieldPromptComponent = "field-prompt.aleft-x";
+  char *sFieldPromptComponent = "field-prompt.aright-x.abottom-y";
   char *sErrorPromptComponent = "error-prompt.aleft-x";
 
   // Input fields
@@ -55,6 +56,9 @@ void PageHandler_editor(p_obj pArgs_Page) {
   char cEditorCurrentField = 0;
   char cEditorFieldCount = 3;
 
+  // Divider text
+  char *sDividerText;
+
   // Do stuff based on page status
   switch(this->ePageStatus) {
 
@@ -63,26 +67,33 @@ void PageHandler_editor(p_obj pArgs_Page) {
       // Get the dimensions 
       dWidth = IO_getWidth();
       dHeight = IO_getHeight();
-      dMargin = 44;
+      dMargin = 10;
 
       // Create the header
-      String_keyAndStr(sHeaderKey, sHeaderFont, sHeader);
-      AssetManager_createTextAsset(this->pSharedAssetManager, sHeader, sHeaderFont);
+      String_keyAndStr(sTitleKey, sTitleFont, sTitle);
+      AssetManager_createTextAsset(this->pSharedAssetManager, sTitle, sTitleFont);
+
+      // Create divider
+      sDividerText = String_repeat("▄", dWidth - dMargin * 2);
 
       // Create component tree
       Page_addComponentContext(this, sEditorComponent, "root", 0, 0, dWidth, dHeight, "primary", "secondary");
-      Page_addComponentContainer(this, sEditorFormComponent, sEditorComponent, 0, 0);
-      Page_addComponentAsset(this, sHeaderComponent, sEditorFormComponent, dWidth / 2, 6, "", "", sHeaderKey);
-      Page_addComponentContainer(this, sFieldContainerComponent, sEditorFormComponent, dWidth / 2 - dMargin / 2, 4);
+      Page_addComponentContainer(this, sEditorFormComponent, sEditorComponent, dMargin, dMargin / 2);
+      Page_addComponentAsset(this, sTitleComponent, sEditorFormComponent, -1, 1, "", "", sTitleKey);
+      Page_addComponentText(this, sDividerComponent, sEditorFormComponent, 0, 0, "accent", "", sDividerText);
+      Page_addComponentContainer(this, sFieldContainerComponent, sEditorFormComponent, -1, 2);
       Page_addComponentText(this, sFilenamePromptComponent, sFieldContainerComponent, 1, 0, "", "", "Enter filename:");
       Page_addComponentText(this, sFilenameComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sWidthPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of cols (5-15):");
       Page_addComponentText(this, sWidthComponent, sFieldContainerComponent, 1, 0, "", "", "");
       Page_addComponentText(this, sHeightPromptComponent, sFieldContainerComponent, 1, 1, "", "", "Enter number of rows (5-10):");
       Page_addComponentText(this, sHeightComponent, sFieldContainerComponent, 1, 0, "", "", "");
-      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 2, "secondary", "accent", "");
-      Page_addComponentText(this, sFieldPromptComponent, sFieldContainerComponent, 1, 1, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]    to go back");
+      Page_addComponentText(this, sErrorPromptComponent, sFieldContainerComponent, 1, 3, "secondary", "accent", "");
+      Page_addComponentText(this, sFieldPromptComponent, sEditorComponent, dWidth - dMargin - 1, dHeight - dMargin / 2, "primary-darken-0.5", "", "[tab]    to switch between fields\n[enter]  to submit\n[esc]   to go back");
       
+      // Garbage collection
+      String_kill(sDividerText);
+
       // Define initial user states
       if(Page_getUserState(this, "editor-current-field") == -1) Page_setUserState(this, "editor-current-field", cEditorCurrentField);
       if(Page_getUserState(this, "editor-field-count") == -1) Page_setUserState(this, "editor-field-count", cEditorFieldCount);
@@ -198,9 +209,9 @@ void PageHandler_editor(p_obj pArgs_Page) {
       }
 
       // Indicate the user input on screen
-      Page_setComponentText(this, sFilenameComponent, strlen(sFilenameField) ? sFilenameField : "<filename>");
-      Page_setComponentText(this, sWidthComponent, strlen(sWidthField) ? sWidthField : "<width>");
-      Page_setComponentText(this, sHeightComponent, strlen(sHeightField) ? sHeightField : "<height>");
+      Page_setComponentText(this, sFilenameComponent, strlen(sFilenameField) ? sFilenameField : "____________________");
+      Page_setComponentText(this, sWidthComponent, strlen(sWidthField) ? sWidthField : "____________________");
+      Page_setComponentText(this, sHeightComponent, strlen(sHeightField) ? sHeightField : "____________________");
 
     break;
 
