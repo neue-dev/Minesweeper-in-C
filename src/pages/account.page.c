@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-25 15:06:24
- * @ Modified time: 2024-04-01 03:02:43
+ * @ Modified time: 2024-04-01 03:10:45
  * @ Description:
  * 
  * This file defines the page handler for the help page.
@@ -158,7 +158,9 @@ void PageHandler_account(p_obj pArgs_Page) {
 
       // Grid header
       dBoardFieldId = atoi(sBoardIdField);
-      sprintf(sGridText, "Here is the snapshot of the %dth most recent game:\n\n", dBoardFieldId > 0 ? dBoardFieldId : 1);
+      sprintf(sGridText, "Here is the snapshot of the %d%s most recent game:\n\n", 
+        dBoardFieldId > 0 ? dBoardFieldId : 1, 
+        String_getOrdinal(dBoardFieldId > 0 ? dBoardFieldId : 1));
       
       // Get the grid
       Stats_getBoard(pProfile, dBoardFieldId > 0 ? dBoardFieldId - 1 : 0, &nGridBufferHeight, sGridBuffer);

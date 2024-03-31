@@ -1,7 +1,7 @@
 /**
  * @ Author: MMMM
  * @ Create Time: 2024-02-24 18:10:41
- * @ Modified time: 2024-04-01 02:14:01
+ * @ Modified time: 2024-04-01 03:09:39
  * @ Description:
  * 
  * Some helper functions that can help us with strings.
@@ -329,6 +329,30 @@ char *String_formatSecs(int dSeconds) {
     dSeconds % 60);
 
   return sTimeString;
+}
+
+/**
+ * Returns the appropriate string to append to an ordinal number.
+ * 
+ * @param   { int }     dNum      The ordinal number.
+*/
+char *String_getOrdinal(int dNum) {
+  
+  // "st" for numbers ending with 1 (except 11)
+  if(dNum % 10 == 1 && dNum % 100 != 11)
+    return "st";
+
+  // "nd" for numbers ending with 2 (except 12)
+  else if(dNum % 10 == 2 && dNum % 100 != 12)
+    return "nd";
+
+  // "rd" for numbers ending with 3 (except 13)
+  else if(dNum % 10 == 3 && dNum % 100 != 13)
+    return "rd";
+  
+  // "th" for the rest
+  else
+    return "th";
 }
 
 /**
