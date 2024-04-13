@@ -119,8 +119,23 @@ void PageHandler_menu(p_obj pArgs_Page) {
 
         // Increment menu selector
         case '\t':
+        // ctrl+e lol
+        case 5:
           Page_setUserState(this, "menu-selector", ((int) cMenuSelector + 1) % dMenuSelectorLength);
-        break;
+          break;
+
+        // ctrl+w lol
+        case 18:
+        {
+          int previous = ((int)cMenuSelector) - 1;
+          Page_setUserState(
+            this,
+            "menu-selector",
+            previous < 0 ?
+              ((int)dMenuSelectorLength) - 1 
+              : previous
+          );
+        } break;
 
         // Move to page
         case '\n': case '\r':
