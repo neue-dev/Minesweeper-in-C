@@ -183,8 +183,23 @@ void PageHandler_login(p_obj pArgs_Page) {
 
           // Switch fields
           case '\t':
-            Page_setUserState(this, "login-current-field", ((int) cLoginCurrentField + 1) % (int) cLoginFieldCount);
-          break;
+          // ctrl+k lol
+          case 5:
+            Page_setUserState(this, "login-current-field", ((int)cLoginCurrentField + 1) % (int)cLoginFieldCount);
+            break;
+
+          // ctrl+w lol
+          case 18:
+          {
+            int previous = ((int)cLoginCurrentField) - 1;
+            Page_setUserState(
+              this,
+              "login-current-field",
+              previous < 0 ?
+                ((int)cLoginFieldCount) - 1
+                  : previous
+            );
+          } break;
 
           // Do input checking, then go to menu if successful
           case '\n': case '\r': case 27:
@@ -210,7 +225,7 @@ void PageHandler_login(p_obj pArgs_Page) {
                 // Deleting account tho
                 if(cKeyPressed == 27) {
                   Page_enableComponentPopup(this, sPopupComponent);
-                  Page_setComponentPopupText(this, sPopupComponent, "Are.you.sure.you.want.to.delete.the.profile?\nThis.action.cannot.be.undone.");
+                  Page_setComponentPopupText(this, sPopupComponent, "Are you sure you want to delete the profile?\nThis action cannot be undone.");
                   Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
                   Page_setUserState(this, "popup-action", 0);
                   
@@ -235,7 +250,7 @@ void PageHandler_login(p_obj pArgs_Page) {
                 // Create a new account perhaps?
                 if(Profile_getErrorId(pProfile) == PROFILE_ERROR_NOT_FOUND && cKeyPressed != 27) {
                   Page_enableComponentPopup(this, sPopupComponent);
-                  Page_setComponentPopupText(this, sPopupComponent, "This.account.does.not.yet.exist.\nWould.you.like.to.register.it?");
+                  Page_setComponentPopupText(this, sPopupComponent, "This account does not yet exist\nWould you like to register it?");
                   Page_setComponentPopupOptions(this, sPopupComponent, "yes", "no.", "secondary", "accent");
                   Page_setUserState(this, "popup-action", 1);
                 }
